@@ -1,0 +1,12 @@
+{
+  "character": "regent",
+  "cards": [
+    {
+      "id": "_PLACEHOLDER_",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Regent cards need to be populated from gameplay. Add entries following the format of other character files."
+    }
+  ]
+}

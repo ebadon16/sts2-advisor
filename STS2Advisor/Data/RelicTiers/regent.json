@@ -1,0 +1,12 @@
+{
+  "category": "regent",
+  "relics": [
+    {
+      "id": "_PLACEHOLDER_",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Regent relics need to be populated from gameplay."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "category": "necromancer",
+  "relics": [
+    {
+      "id": "_PLACEHOLDER_",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Necromancer relics need to be populated from gameplay."
+    }
+  ]
+}
