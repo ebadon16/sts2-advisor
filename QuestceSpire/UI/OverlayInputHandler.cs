@@ -11,7 +11,7 @@ internal class OverlayInputHandler : Node
 		_owner = owner;
 	}
 
-	public override void _UnhandledInput(InputEvent ev)
+	public override void _Input(InputEvent ev)
 	{
 		_owner.HandleInput(ev);
 	}
