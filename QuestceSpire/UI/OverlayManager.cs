@@ -739,7 +739,12 @@ public class OverlayManager
 		// A1: Win rate
 		UpdateWinRate();
 		UpdateArchetypeChip();
-		UpdateDeckViz(_currentDeckAnalysis);
+		// Deck viz updates deferred — added inside scroll content after advice on non-card screens
+		bool isAdviceScreen = !(_currentCards != null && _currentCards.Count > 0) && !(_currentRelics != null && _currentRelics.Count > 0);
+		if (!isAdviceScreen)
+			UpdateDeckViz(_currentDeckAnalysis);
+		else
+			ClearDeckViz();
 		// Collapsed guard: only update labels, skip full content rebuild
 		if (_collapsed)
 		{
@@ -793,10 +798,6 @@ public class OverlayManager
 		}
 		if (!hasCards && !hasRelics && _mapAdvice != null && _mapAdvice.Count > 0)
 		{
-			string sectionTitle = _currentScreen == "REST SITE" ? "REST SITE" :
-				_currentScreen == "COMBAT" ? "COMBAT STATUS" :
-				_currentScreen == "EVENT" ? "EVENT CONTEXT" : "PATH PRIORITIES";
-			AddSectionHeader(sectionTitle);
 			foreach (var (icon, text, color) in _mapAdvice)
 			{
 				PanelContainer advPanel = new PanelContainer();
@@ -830,6 +831,11 @@ public class OverlayManager
 			label.AddThemeColorOverride("font_color", ClrSub);
 			label.AddThemeFontSizeOverride("font_size", 17);
 			_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		// On advice screens, add deck breakdown after advice (not before)
+		if (isAdviceScreen && _currentDeckAnalysis != null)
+		{
+			AddInlineDeckViz(_currentDeckAnalysis);
 		}
 		// Feature 5: Draw probability panel in combat
 		if (_currentScreen == "COMBAT" && _currentGameState != null && _currentGameState.DrawPile.Count > 0)
@@ -1535,6 +1541,156 @@ public class OverlayManager
 	}
 
 	// === Feature 2: Deck composition visualization ===
+
+	private void ClearDeckViz()
+	{
+		if (_deckVizContainer == null || !GodotObject.IsInstanceValid(_deckVizContainer))
+			return;
+		var vizChildren = _deckVizContainer.GetChildren().ToArray();
+		foreach (Node child in vizChildren)
+		{
+			_deckVizContainer.RemoveChild(child);
+			child.QueueFree();
+		}
+	}
+
+	private void AddInlineDeckViz(DeckAnalysis analysis)
+	{
+		// Add energy curve + type distribution directly into _content (scroll area)
+		if (analysis == null || analysis.TotalCards == 0)
+			return;
+		AddSectionHeader("DECK BREAKDOWN");
+		AddInlineEnergyCurve(analysis);
+		AddInlineTypeDistribution(analysis);
+	}
+
+	private void AddInlineEnergyCurve(DeckAnalysis analysis)
+	{
+		if (analysis.EnergyCurve.Count == 0) return;
+		Label curveHeader = new Label();
+		curveHeader.Text = "Energy Cost";
+		ApplyFont(curveHeader, _fontBody);
+		curveHeader.AddThemeColorOverride("font_color", ClrSub);
+		curveHeader.AddThemeFontSizeOverride("font_size", 14);
+		_content.AddChild(curveHeader, forceReadableName: false, Node.InternalMode.Disabled);
+
+		HBoxContainer costRow = new HBoxContainer();
+		costRow.AddThemeConstantOverride("separation", 2);
+		for (int cost = 0; cost <= 5; cost++)
+		{
+			Label costLbl = new Label();
+			costLbl.Text = cost == 5 ? "5+" : cost.ToString();
+			ApplyFont(costLbl, _fontBody);
+			costLbl.AddThemeColorOverride("font_color", ClrSub);
+			costLbl.AddThemeFontSizeOverride("font_size", 14);
+			costLbl.HorizontalAlignment = HorizontalAlignment.Center;
+			costLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			costRow.AddChild(costLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		_content.AddChild(costRow, forceReadableName: false, Node.InternalMode.Disabled);
+
+		HBoxContainer curveRow = new HBoxContainer();
+		curveRow.AddThemeConstantOverride("separation", 2);
+		curveRow.CustomMinimumSize = new Vector2(0, 18f);
+		int maxCount = analysis.EnergyCurve.Values.Max();
+		Color[] costColors = {
+			new Color(0.3f, 0.8f, 0.4f),
+			new Color(0.4f, 0.8f, 0.9f),
+			new Color(0.92f, 0.88f, 0.78f),
+			new Color(0.9f, 0.75f, 0.3f),
+			new Color(1f, 0.6f, 0.3f),
+			new Color(0.9f, 0.3f, 0.3f)
+		};
+		for (int cost = 0; cost <= 5; cost++)
+		{
+			int count = analysis.EnergyCurve.TryGetValue(cost, out int c) ? c : 0;
+			VBoxContainer col = new VBoxContainer();
+			col.AddThemeConstantOverride("separation", 1);
+			col.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			float barHeight = maxCount > 0 ? (float)count / maxCount * 12f : 0f;
+			ColorRect bar = new ColorRect();
+			bar.Color = costColors[cost];
+			bar.CustomMinimumSize = new Vector2(0, Math.Max(barHeight, 1f));
+			col.AddChild(bar, forceReadableName: false, Node.InternalMode.Disabled);
+			Label lbl = new Label();
+			lbl.Text = count.ToString();
+			ApplyFont(lbl, _fontBody);
+			lbl.AddThemeColorOverride("font_color", ClrSub);
+			lbl.AddThemeFontSizeOverride("font_size", 14);
+			lbl.HorizontalAlignment = HorizontalAlignment.Center;
+			col.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
+			curveRow.AddChild(col, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		_content.AddChild(curveRow, forceReadableName: false, Node.InternalMode.Disabled);
+	}
+
+	private void AddInlineTypeDistribution(DeckAnalysis analysis)
+	{
+		int totalTyped = analysis.AttackCount + analysis.SkillCount + analysis.PowerCount;
+		if (totalTyped == 0) return;
+		HBoxContainer typeRow = new HBoxContainer();
+		typeRow.AddThemeConstantOverride("separation", 0);
+		typeRow.CustomMinimumSize = new Vector2(0, 8f);
+		if (analysis.AttackCount > 0)
+		{
+			ColorRect atkBar = new ColorRect();
+			atkBar.Color = new Color(0.9f, 0.35f, 0.3f);
+			atkBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			atkBar.SizeFlagsStretchRatio = analysis.AttackCount;
+			atkBar.CustomMinimumSize = new Vector2(0, 8f);
+			typeRow.AddChild(atkBar, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		if (analysis.SkillCount > 0)
+		{
+			ColorRect sklBar = new ColorRect();
+			sklBar.Color = new Color(0.3f, 0.5f, 1f);
+			sklBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			sklBar.SizeFlagsStretchRatio = analysis.SkillCount;
+			sklBar.CustomMinimumSize = new Vector2(0, 8f);
+			typeRow.AddChild(sklBar, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		if (analysis.PowerCount > 0)
+		{
+			ColorRect pwrBar = new ColorRect();
+			pwrBar.Color = new Color(0.3f, 0.8f, 0.4f);
+			pwrBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			pwrBar.SizeFlagsStretchRatio = analysis.PowerCount;
+			pwrBar.CustomMinimumSize = new Vector2(0, 8f);
+			typeRow.AddChild(pwrBar, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		_content.AddChild(typeRow, forceReadableName: false, Node.InternalMode.Disabled);
+		HBoxContainer typeLblRow = new HBoxContainer();
+		typeLblRow.AddThemeConstantOverride("separation", 8);
+		typeLblRow.Alignment = BoxContainer.AlignmentMode.Center;
+		if (analysis.AttackCount > 0)
+		{
+			Label atkLbl = new Label();
+			atkLbl.Text = $"{analysis.AttackCount} Atk";
+			ApplyFont(atkLbl, _fontBody);
+			atkLbl.AddThemeColorOverride("font_color", new Color(0.9f, 0.35f, 0.3f));
+			atkLbl.AddThemeFontSizeOverride("font_size", 15);
+			typeLblRow.AddChild(atkLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		if (analysis.SkillCount > 0)
+		{
+			Label sklLbl = new Label();
+			sklLbl.Text = $"{analysis.SkillCount} Skl";
+			ApplyFont(sklLbl, _fontBody);
+			sklLbl.AddThemeColorOverride("font_color", new Color(0.3f, 0.5f, 1f));
+			sklLbl.AddThemeFontSizeOverride("font_size", 15);
+			typeLblRow.AddChild(sklLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		if (analysis.PowerCount > 0)
+		{
+			Label pwrLbl = new Label();
+			pwrLbl.Text = $"{analysis.PowerCount} Pwr";
+			ApplyFont(pwrLbl, _fontBody);
+			pwrLbl.AddThemeColorOverride("font_color", new Color(0.3f, 0.8f, 0.4f));
+			pwrLbl.AddThemeFontSizeOverride("font_size", 15);
+			typeLblRow.AddChild(pwrLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		_content.AddChild(typeLblRow, forceReadableName: false, Node.InternalMode.Disabled);
+	}
 
 	private void UpdateDeckViz(DeckAnalysis analysis)
 	{
