@@ -1,14 +1,13 @@
 {
   "category": "ironclad",
   "relics": [
-    { "id": "Red Skull", "baseTier": "B", "synergies": ["self_damage", "strength"], "antiSynergies": [], "notes": "+3 strength below 50% HP" },
-    { "id": "Paper Phrog", "baseTier": "A", "synergies": ["vulnerable"], "antiSynergies": [], "notes": "Vulnerable = 75% more damage (up from 50%)" },
-    { "id": "Self-Forming Clay", "baseTier": "A", "synergies": ["self_damage", "block"], "antiSynergies": [], "notes": "+3 block next turn when losing HP" },
-    { "id": "Champion Belt", "baseTier": "A", "synergies": ["vulnerable", "weak"], "antiSynergies": [], "notes": "Apply weak when applying vulnerable" },
-    { "id": "Charns Horn", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "+2 max HP for every non-boss monster killed" },
-    { "id": "Magic Flower", "baseTier": "B", "synergies": ["heal"], "antiSynergies": [], "notes": "Healing 50% more effective" },
     { "id": "Brimstone", "baseTier": "A", "synergies": ["strength", "scaling"], "antiSynergies": [], "notes": "+2 strength at start of turn (enemies get +1)" },
-    { "id": "Runic Cube", "baseTier": "A", "synergies": ["self_damage", "draw"], "antiSynergies": [], "notes": "Draw 1 on HP loss" },
-    { "id": "Mark of Pain", "baseTier": "A", "synergies": ["exhaust"], "antiSynergies": [], "notes": "+1 energy, 2 Wounds into hand" }
+    { "id": "Burning Blood", "baseTier": "B", "synergies": ["heal"], "antiSynergies": [], "notes": "Starter relic. Heal 6 HP after combat" },
+    { "id": "Charons Ashes", "baseTier": "A", "synergies": ["exhaust", "damage"], "antiSynergies": [], "notes": "Deal damage when exhausting cards" },
+    { "id": "Demon Tongue", "baseTier": "B", "synergies": ["strength", "scaling"], "antiSynergies": [], "notes": "Strength-related benefit" },
+    { "id": "Paper Phrog", "baseTier": "A", "synergies": ["vulnerable"], "antiSynergies": [], "notes": "Vulnerable = 75% more damage (up from 50%)" },
+    { "id": "Red Skull", "baseTier": "B", "synergies": ["self_damage", "strength"], "antiSynergies": [], "notes": "+3 strength below 50% HP" },
+    { "id": "Ruined Helmet", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Defensive utility relic" },
+    { "id": "Self Forming Clay", "baseTier": "A", "synergies": ["self_damage", "block"], "antiSynergies": [], "notes": "+3 block next turn when losing HP" }
   ]
 }

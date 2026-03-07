@@ -1,12 +1,13 @@
 {
   "category": "defect",
   "relics": [
+    { "id": "Cracked Core", "baseTier": "B", "synergies": ["lightning", "orb"], "antiSynergies": [], "notes": "Starter relic. Channel 1 lightning at combat start" },
     { "id": "Data Disk", "baseTier": "A", "synergies": ["focus", "orb"], "antiSynergies": [], "notes": "+1 focus" },
-    { "id": "Symbiotic Virus", "baseTier": "A", "synergies": ["dark", "orb"], "antiSynergies": [], "notes": "Channel 1 dark at combat start" },
-    { "id": "Nuclear Battery", "baseTier": "S", "synergies": ["plasma", "orb"], "antiSynergies": [], "notes": "Channel 1 plasma at combat start — free energy" },
     { "id": "Emotion Chip", "baseTier": "A", "synergies": ["orb", "evoke"], "antiSynergies": [], "notes": "Trigger orb passives on HP loss" },
-    { "id": "Gold-Plated Cables", "baseTier": "B", "synergies": ["orb"], "antiSynergies": [], "notes": "Rightmost orb triggers at end of turn" },
+    { "id": "Gold Plated Cables", "baseTier": "B", "synergies": ["orb"], "antiSynergies": [], "notes": "Rightmost orb triggers at end of turn" },
+    { "id": "Power Cell", "baseTier": "A", "synergies": ["orb"], "antiSynergies": [], "notes": "Orb utility relic" },
+    { "id": "Metronome", "baseTier": "B", "synergies": ["scaling"], "antiSynergies": [], "notes": "Stacking bonus for same card type" },
     { "id": "Runic Capacitor", "baseTier": "A", "synergies": ["orb"], "antiSynergies": [], "notes": "+3 orb slots" },
-    { "id": "Inserter", "baseTier": "A", "synergies": ["orb"], "antiSynergies": [], "notes": "+1 orb slot every 2 turns" }
+    { "id": "Symbiotic Virus", "baseTier": "A", "synergies": ["dark", "orb"], "antiSynergies": [], "notes": "Channel 1 dark at combat start" }
   ]
 }

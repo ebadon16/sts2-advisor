@@ -146,64 +146,96 @@ namespace STS2Advisor.Core
                 }
             },
 
-            // STS2 new characters — archetypes are speculative, update as you learn them
+            // STS2 new characters — archetypes from community guides (Mobalytics, GameRant, NeonLightsMedia)
             ["regent"] = new List<Archetype>
             {
                 new Archetype
                 {
-                    Id = "command",
-                    DisplayName = "Command / Authority",
-                    CoreTags = new List<string> { "command", "authority" },
-                    SupportTags = new List<string> { "summon", "buff" },
+                    Id = "stars",
+                    DisplayName = "Stars / Energy",
+                    CoreTags = new List<string> { "stars", "star_gen" },
+                    SupportTags = new List<string> { "draw", "scaling" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 },
                 new Archetype
                 {
-                    Id = "summon",
-                    DisplayName = "Summon / Minions",
-                    CoreTags = new List<string> { "summon", "minion" },
-                    SupportTags = new List<string> { "buff", "sacrifice" },
+                    Id = "forge",
+                    DisplayName = "Sovereign Blade / Forge",
+                    CoreTags = new List<string> { "forge", "blade" },
+                    SupportTags = new List<string> { "stars", "damage" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 },
                 new Archetype
                 {
-                    Id = "decree",
-                    DisplayName = "Decree / Edict",
-                    CoreTags = new List<string> { "decree", "edict" },
-                    SupportTags = new List<string> { "retain", "status" },
+                    Id = "cosmic",
+                    DisplayName = "Cosmic Damage",
+                    CoreTags = new List<string> { "cosmic", "aoe" },
+                    SupportTags = new List<string> { "stars", "scaling" },
+                    CoreThreshold = 3,
+                    SupportThreshold = 2
+                },
+                new Archetype
+                {
+                    Id = "star_block",
+                    DisplayName = "Star Defense",
+                    CoreTags = new List<string> { "block", "stars" },
+                    SupportTags = new List<string> { "forge", "scaling" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 }
             },
 
-            ["necromancer"] = new List<Archetype>
+            ["necrobinder"] = new List<Archetype>
             {
                 new Archetype
                 {
-                    Id = "undead",
-                    DisplayName = "Undead / Raise",
-                    CoreTags = new List<string> { "undead", "raise" },
-                    SupportTags = new List<string> { "exhaust", "sacrifice" },
+                    Id = "doom",
+                    DisplayName = "Doom / Debuff Stacking",
+                    CoreTags = new List<string> { "doom", "debuff" },
+                    SupportTags = new List<string> { "block", "scaling" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 },
                 new Archetype
                 {
-                    Id = "curse",
-                    DisplayName = "Curse Synergy",
-                    CoreTags = new List<string> { "curse", "curse_synergy" },
-                    SupportTags = new List<string> { "exhaust", "dark" },
+                    Id = "soul",
+                    DisplayName = "Soul / Exhaust Cycling",
+                    CoreTags = new List<string> { "soul", "exhaust" },
+                    SupportTags = new List<string> { "draw", "scaling" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 },
                 new Archetype
                 {
-                    Id = "sacrifice",
-                    DisplayName = "Sacrifice / Life Tap",
-                    CoreTags = new List<string> { "sacrifice", "hp_loss" },
-                    SupportTags = new List<string> { "heal", "undead" },
+                    Id = "osty",
+                    DisplayName = "Osty / Minion",
+                    CoreTags = new List<string> { "osty", "minion" },
+                    SupportTags = new List<string> { "damage", "scaling" },
+                    CoreThreshold = 3,
+                    SupportThreshold = 2
+                }
+            },
+
+            // Deprived — speculative archetypes, update as you learn them
+            ["deprived"] = new List<Archetype>
+            {
+                new Archetype
+                {
+                    Id = "deprivation",
+                    DisplayName = "Deprivation / Scarcity",
+                    CoreTags = new List<string> { "deprivation", "scarcity" },
+                    SupportTags = new List<string> { "exhaust", "draw" },
+                    CoreThreshold = 3,
+                    SupportThreshold = 2
+                },
+                new Archetype
+                {
+                    Id = "survival",
+                    DisplayName = "Survival / Endurance",
+                    CoreTags = new List<string> { "survival", "block" },
+                    SupportTags = new List<string> { "heal", "retain" },
                     CoreThreshold = 3,
                     SupportThreshold = 2
                 }

@@ -1,12 +1,13 @@
 {
   "category": "regent",
   "relics": [
-    {
-      "id": "_PLACEHOLDER_",
-      "baseTier": "C",
-      "synergies": [],
-      "antiSynergies": [],
-      "notes": "Regent relics need to be populated from gameplay."
-    }
+    { "id": "Divine Right", "baseTier": "A", "synergies": ["stars", "scaling"], "antiSynergies": [], "notes": "Strong scaling relic" },
+    { "id": "Fencing Manual", "baseTier": "S", "synergies": ["forge", "blade"], "antiSynergies": [], "notes": "Makes Sovereign Blade playable turn 1" },
+    { "id": "Galactic Dust", "baseTier": "A", "synergies": ["stars", "cosmic"], "antiSynergies": [], "notes": "Star synergy payoff" },
+    { "id": "Lunar Pastry", "baseTier": "S", "synergies": ["stars", "star_gen"], "antiSynergies": [], "notes": "Passive Star generation, very strong" },
+    { "id": "Mini Regent", "baseTier": "S", "synergies": ["stars", "scaling"], "antiSynergies": [], "notes": "Scaling Strength while spending Stars" },
+    { "id": "Orange Dough", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Defensive utility" },
+    { "id": "Regalite", "baseTier": "A", "synergies": ["stars", "scaling"], "antiSynergies": [], "notes": "Core Regent relic" },
+    { "id": "Vitruvian Minion", "baseTier": "B", "synergies": ["scaling"], "antiSynergies": [], "notes": "Minion enhancement relic" }
   ]
 }

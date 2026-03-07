@@ -1,12 +1,12 @@
 {
-  "category": "necromancer",
+  "category": "deprived",
   "relics": [
     {
       "id": "_PLACEHOLDER_",
       "baseTier": "C",
       "synergies": [],
       "antiSynergies": [],
-      "notes": "Necromancer relics need to be populated from gameplay."
+      "notes": "Deprived relics need to be populated from gameplay."
     }
   ]
 }
