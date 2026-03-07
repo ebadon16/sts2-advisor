@@ -233,7 +233,9 @@ namespace STS2Advisor.GameBridge
             {
                 if (_lastMerchantInventory == null) return result;
 
-                foreach (var entry in _lastMerchantInventory.RelicEntries)
+                var relicEntries = _lastMerchantInventory.RelicEntries;
+                if (relicEntries == null) return result;
+                foreach (var entry in relicEntries)
                 {
                     if (!entry.IsStocked) continue;
                     var relic = entry.Model;

@@ -77,14 +77,18 @@ namespace STS2Advisor.Tracking
             {
                 // Auto-start a run on first decision since we don't have a run-start hook yet
                 string character = "unknown";
+                int ascension = 0;
                 try
                 {
                     var state = GameBridge.GameStateReader.ReadCurrentState();
                     if (state != null)
+                    {
                         character = state.Character;
+                        ascension = state.AscensionLevel;
+                    }
                 }
                 catch { }
-                StartRun(character, "", 0);
+                StartRun(character, "", ascension);
             }
 
             var decision = new DecisionEvent

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using STS2Advisor.Core;
 
@@ -41,6 +42,7 @@ namespace STS2Advisor.UI
 
         private List<ScoredCard> _currentCards;
         private List<ScoredRelic> _currentRelics;
+        private DeckAnalysis _currentDeckAnalysis;
 
         public OverlayManager()
         {
@@ -117,6 +119,7 @@ namespace STS2Advisor.UI
 
             _content = new VBoxContainer();
             _content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            _content.AddThemeConstantOverride("separation", 6);
             scroll.AddChild(_content);
 
             _layer.AddChild(_panel);
@@ -130,24 +133,27 @@ namespace STS2Advisor.UI
             Plugin.Log("Overlay built and attached to scene tree.");
         }
 
-        public void ShowCardAdvice(List<ScoredCard> cards)
+        public void ShowCardAdvice(List<ScoredCard> cards, DeckAnalysis deckAnalysis = null)
         {
             _currentCards = cards;
             _currentRelics = null;
+            _currentDeckAnalysis = deckAnalysis;
             Rebuild();
         }
 
-        public void ShowRelicAdvice(List<ScoredRelic> relics)
+        public void ShowRelicAdvice(List<ScoredRelic> relics, DeckAnalysis deckAnalysis = null)
         {
             _currentRelics = relics;
             _currentCards = null;
+            _currentDeckAnalysis = deckAnalysis;
             Rebuild();
         }
 
-        public void ShowShopAdvice(List<ScoredCard> cards, List<ScoredRelic> relics)
+        public void ShowShopAdvice(List<ScoredCard> cards, List<ScoredRelic> relics, DeckAnalysis deckAnalysis = null)
         {
             _currentCards = cards;
             _currentRelics = relics;
+            _currentDeckAnalysis = deckAnalysis;
             Rebuild();
         }
 
@@ -155,6 +161,7 @@ namespace STS2Advisor.UI
         {
             _currentCards = null;
             _currentRelics = null;
+            _currentDeckAnalysis = null;
             Rebuild();
         }
 
@@ -198,30 +205,46 @@ namespace STS2Advisor.UI
                 }
             }
 
-            if (_currentCards != null && _currentCards.Count > 0)
+            bool hasCards = _currentCards != null && _currentCards.Count > 0;
+            bool hasRelics = _currentRelics != null && _currentRelics.Count > 0;
+
+            // Archetype summary at the top when we have deck analysis
+            if ((hasCards || hasRelics) && _currentDeckAnalysis != null)
+                AddArchetypeSummary(_currentDeckAnalysis);
+
+            if (hasCards)
             {
                 AddHeader("Card Advisor");
                 foreach (var card in _currentCards)
                     AddCardEntry(card);
+
+                // SKIP recommendation when all card scores are low
+                if (_currentCards.All(c => c.FinalScore < 1.5f))
+                    AddSkipHint("Consider SKIP — all offerings are weak");
+                else if (_currentCards.Count > 1 &&
+                         _currentCards[0].FinalScore - _currentCards[1].FinalScore > 2.0f)
+                    AddSkipHint($"Strong pick: {_currentCards[0].Name}");
             }
 
-            if (_currentRelics != null && _currentRelics.Count > 0)
+            if (hasRelics)
             {
-                if (_currentCards != null && _currentCards.Count > 0)
+                if (hasCards)
                     AddSeparator();
                 AddHeader("Relic Advisor");
                 foreach (var relic in _currentRelics)
                     AddRelicEntry(relic);
             }
 
-            if ((_currentCards == null || _currentCards.Count == 0) &&
-                (_currentRelics == null || _currentRelics.Count == 0))
+            if (!hasCards && !hasRelics)
             {
                 var label = new Label();
                 label.Text = "STS2 Advisor | F7: Toggle | F8: Tooltips";
                 label.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f));
                 _content.AddChild(label);
             }
+
+            // Scroll hint if content is tall
+            AddScrollHint();
         }
 
         private void AddHeader(string text)
@@ -326,8 +349,12 @@ namespace STS2Advisor.UI
             _content.AddChild(hbox);
         }
 
-        private PanelContainer CreateBadge(TierGrade grade)
+        private CenterContainer CreateBadge(TierGrade grade)
         {
+            // Wrap badge in CenterContainer so it vertically centers in the row
+            var center = new CenterContainer();
+            center.CustomMinimumSize = new Vector2(40, 40);
+
             var badge = new PanelContainer();
             badge.CustomMinimumSize = new Vector2(36, 36);
 
@@ -347,7 +374,60 @@ namespace STS2Advisor.UI
             label.AddThemeFontSizeOverride("font_size", 16);
             badge.AddChild(label);
 
-            return badge;
+            center.AddChild(badge);
+            return center;
+        }
+
+        private void AddArchetypeSummary(DeckAnalysis analysis)
+        {
+            if (analysis.DetectedArchetypes.Count == 0)
+            {
+                var label = new Label();
+                label.Text = "Deck: No archetype yet";
+                label.AddThemeColorOverride("font_color", new Color(0.6f, 0.6f, 0.7f));
+                label.AddThemeFontSizeOverride("font_size", 12);
+                _content.AddChild(label);
+                return;
+            }
+
+            var archLabel = new Label();
+            var parts = new List<string>();
+            foreach (var match in analysis.DetectedArchetypes)
+            {
+                int pct = (int)(match.Strength * 100);
+                parts.Add($"{match.Archetype.DisplayName} ({pct}%)");
+            }
+            archLabel.Text = "Deck: " + string.Join(", ", parts);
+            archLabel.AddThemeColorOverride("font_color", new Color(0.6f, 0.8f, 1.0f));
+            archLabel.AddThemeFontSizeOverride("font_size", 12);
+            archLabel.AutowrapMode = TextServer.AutowrapMode.Word;
+            _content.AddChild(archLabel);
+
+            AddSeparator();
+        }
+
+        private void AddSkipHint(string text)
+        {
+            var label = new Label();
+            label.Text = text;
+            label.AddThemeColorOverride("font_color", new Color(1.0f, 0.5f, 0.3f));
+            label.AddThemeFontSizeOverride("font_size", 12);
+            _content.AddChild(label);
+        }
+
+        private void AddScrollHint()
+        {
+            // Add a scroll hint at the bottom — always visible when there are 4+ entries
+            // (at that point content almost certainly overflows the 550px panel)
+            int entryCount = (_currentCards?.Count ?? 0) + (_currentRelics?.Count ?? 0);
+            if (entryCount < 4) return;
+
+            var hint = new Label();
+            hint.Text = "scroll for more...";
+            hint.HorizontalAlignment = HorizontalAlignment.Center;
+            hint.AddThemeColorOverride("font_color", new Color(0.5f, 0.5f, 0.6f, 0.7f));
+            hint.AddThemeFontSizeOverride("font_size", 10);
+            _content.AddChild(hint);
         }
     }
 }

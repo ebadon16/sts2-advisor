@@ -178,7 +178,7 @@ namespace STS2Advisor
                     Plugin.AdaptiveScorer
                 );
 
-                Plugin.Overlay?.ShowCardAdvice(scored);
+                Plugin.Overlay?.ShowCardAdvice(scored, deckArchetypes);
 
                 Plugin.RunTracker?.RecordDecision(
                     DecisionEventType.CardReward,
@@ -229,7 +229,7 @@ namespace STS2Advisor
                     Plugin.AdaptiveScorer
                 );
 
-                Plugin.Overlay?.ShowRelicAdvice(scored);
+                Plugin.Overlay?.ShowRelicAdvice(scored, deckArchetypes);
 
                 Plugin.RunTracker?.RecordDecision(
                     DecisionEventType.RelicReward,
@@ -290,7 +290,7 @@ namespace STS2Advisor
                     Plugin.AdaptiveScorer
                 );
 
-                Plugin.Overlay?.ShowShopAdvice(scoredCards, scoredRelics);
+                Plugin.Overlay?.ShowShopAdvice(scoredCards, scoredRelics, deckArchetypes);
             }
             catch (Exception ex)
             {
@@ -444,6 +444,9 @@ namespace STS2Advisor
 
                 // Update the last decision with the chosen card
                 Plugin.RunTracker?.UpdateLastDecisionChoice(chosenId);
+
+                // Auto-hide overlay after picking
+                Plugin.Overlay?.Clear();
             }
             catch (Exception ex)
             {
@@ -482,6 +485,9 @@ namespace STS2Advisor
 
                 Plugin.Log($"Relic picked: {chosenId ?? "(unknown)"}");
                 Plugin.RunTracker?.UpdateLastDecisionChoice(chosenId);
+
+                // Auto-hide overlay after picking
+                Plugin.Overlay?.Clear();
             }
             catch (Exception ex)
             {

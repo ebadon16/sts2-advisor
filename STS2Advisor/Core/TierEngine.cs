@@ -118,7 +118,7 @@ namespace STS2Advisor.Core
                     if (tiers?.Category != null)
                     {
                         _relicTiers[tiers.Category.ToLowerInvariant()] = tiers;
-                        Plugin.Log($"Loaded {tiers.Relics.Count} relic tiers for {tiers.Category}");
+                        Plugin.Log($"Loaded {tiers.Relics?.Count ?? 0} relic tiers for {tiers.Category}");
                     }
                 }
                 catch (Exception ex)
