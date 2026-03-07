@@ -747,6 +747,17 @@ public class OverlayManager
 			return;
 		}
 		bool screenChanged = _currentScreen != _previousScreen;
+		// Clean up any stale in-game badges when switching screens
+		if (screenChanged)
+		{
+			try
+			{
+				SceneTree tree = Engine.GetMainLoop() as SceneTree;
+				if (tree?.Root != null)
+					CleanupInjectedBadges(tree.Root);
+			}
+			catch { }
+		}
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
 		{
 			if (_collapsed)
@@ -1395,9 +1406,9 @@ public class OverlayManager
 		vBoxContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		vBoxContainer.AddThemeConstantOverride("separation", 0);
 		hBoxContainer.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		// Relic name
+		// Relic name (prettify in case Name is raw ID)
 		Label label = new Label();
-		string text = relic.Name ?? relic.Id;
+		string text = PrettifyId(relic.Name ?? relic.Id);
 		label.Text = (relic.IsBestPick ? "\u2605 " : "") + text;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", relic.IsBestPick ? ClrAccent : ClrCream);
@@ -1689,6 +1700,8 @@ public class OverlayManager
 	public void ToggleHistory()
 	{
 		_showHistory = !_showHistory;
+		_settings.ShowDecisionHistory = _showHistory;
+		_settings.Save();
 		Rebuild();
 		Plugin.Log("Decision history " + (_showHistory ? "shown" : "hidden"));
 	}
@@ -2324,26 +2337,38 @@ public class OverlayManager
 
 			TierGrade baseGrade = TierEngine.ParseGrade(tierEntry.BaseTier);
 			float baseScore = (float)baseGrade;
-			float upgScore = baseScore + 0.4f;
-			TierGrade upgGrade = TierEngine.ScoreToGrade(upgScore);
 
-			float priority = upgScore - baseScore;
-			// Archetype bonus: cards in primary archetype get +0.2 priority
+			// Calculate upgrade value based on card properties
+			float upgBonus = 0.3f; // base upgrade value
+			// Higher-tier cards benefit more from upgrades
+			if (baseGrade >= TierGrade.A) upgBonus += 0.3f;
+			else if (baseGrade >= TierGrade.B) upgBonus += 0.15f;
+			// Archetype synergy bonus
 			if (primaryArchId != null && tierEntry.Synergies != null && tierEntry.Synergies.Any(s => s.Contains(primaryArchId)))
-			{
-				priority += 0.2f;
-			}
+				upgBonus += 0.3f;
+			// Scaling cards (typically have synergy tags) benefit more
+			if (tierEntry.Synergies != null && tierEntry.Synergies.Count > 2)
+				upgBonus += 0.1f;
 
-			bool gradeImproves = upgGrade > baseGrade;
-			string cardName = card.Name ?? card.Id;
-			string text = $"\u2B06 {cardName} ({baseGrade}\u2192{upgGrade})";
-			Color color = gradeImproves ? ClrPositive : ClrAqua;
+			float priority = upgBonus;
+			string cardName = PrettifyId(card.Name ?? card.Id);
+			// Show reason instead of misleading grade change
+			string reason = "";
+			if (primaryArchId != null && tierEntry.Synergies != null && tierEntry.Synergies.Any(s => s.Contains(primaryArchId)))
+				reason = " — core card";
+			else if (baseGrade >= TierGrade.A)
+				reason = " — high impact";
+			else if (baseGrade >= TierGrade.B)
+				reason = " — solid pick";
+
+			string text = $"\u2B06 {cardName} [{baseGrade}]{reason}";
+			Color color = upgBonus >= 0.6f ? ClrPositive : upgBonus >= 0.4f ? ClrAqua : ClrCream;
 			candidates.Add((priority, "\u2022", text, color));
 		}
 
 		return candidates
 			.OrderByDescending(c => c.priority)
-			.Take(3)
+			.Take(5)
 			.Select(c => (c.icon, c.text, c.color))
 			.ToList();
 	}
@@ -2947,7 +2972,6 @@ public class OverlayManager
 	// === In-game grade badge injection (STS1 mod inspired) ===
 
 	private const string GradeBadgeGroup = "qcs_grade_badge";
-	private static bool _treeStructureLogged;
 
 	/// <summary>
 	/// Inject grade badges directly onto the game's card reward screen nodes.
@@ -2959,14 +2983,12 @@ public class OverlayManager
 			return;
 		try
 		{
-			// Clean up any previous badges
-			CleanupInjectedBadges(screenNode);
-			// Log tree structure once for debugging
-			if (!_treeStructureLogged)
-			{
-				LogNodeTree(screenNode, "CardReward", 0, 4);
-				_treeStructureLogged = true;
-			}
+			// Clean up ALL previous badges globally (prevents stale badges from other screens)
+			SceneTree tree = Engine.GetMainLoop() as SceneTree;
+			if (tree?.Root != null)
+				CleanupInjectedBadges(tree.Root);
+			// Always log tree structure for card reward debugging
+			LogNodeTree(screenNode, "CardReward", 0, 5);
 			// Defer to next frame so the game's UI is fully laid out
 			Callable.From(() => InjectCardGradesDeferred(screenNode, scoredCards)).CallDeferred();
 		}
@@ -3013,12 +3035,10 @@ public class OverlayManager
 			return;
 		try
 		{
-			CleanupInjectedBadges(screenNode);
-			if (!_treeStructureLogged)
-			{
-				LogNodeTree(screenNode, "RelicReward", 0, 4);
-				_treeStructureLogged = true;
-			}
+			SceneTree tree = Engine.GetMainLoop() as SceneTree;
+			if (tree?.Root != null)
+				CleanupInjectedBadges(tree.Root);
+			LogNodeTree(screenNode, "RelicReward", 0, 5);
 			Callable.From(() => InjectRelicGradesDeferred(screenNode, scoredRelics)).CallDeferred();
 		}
 		catch (Exception ex)
@@ -3061,12 +3081,10 @@ public class OverlayManager
 			return;
 		try
 		{
-			CleanupInjectedBadges(shopNode);
-			if (!_treeStructureLogged)
-			{
-				LogNodeTree(shopNode, "Shop", 0, 4);
-				_treeStructureLogged = true;
-			}
+			SceneTree tree = Engine.GetMainLoop() as SceneTree;
+			if (tree?.Root != null)
+				CleanupInjectedBadges(tree.Root);
+			LogNodeTree(shopNode, "Shop", 0, 5);
 			// Combine scores into a single list with grades for matching
 			var allGrades = new List<(TierGrade grade, bool isBest)>();
 			if (scoredCards != null)
@@ -3187,6 +3205,7 @@ public class OverlayManager
 		var queue = new Queue<Node>();
 		queue.Enqueue(root);
 		List<Control> bestMatch = null;
+		List<Control> relaxedMatch = null;
 
 		while (queue.Count > 0)
 		{
@@ -3196,14 +3215,14 @@ public class OverlayManager
 				var controlChildren = new List<Control>();
 				foreach (Node child in container.GetChildren())
 				{
-					if (child is Control ctrl && ctrl.Visible && ctrl.Size.X > 50 && ctrl.Size.Y > 50)
+					if (child is Control ctrl && ctrl.Visible && ctrl.Size.X > 30 && ctrl.Size.Y > 30)
 					{
 						controlChildren.Add(ctrl);
 					}
 				}
 				if (controlChildren.Count == expectedCount && expectedCount >= 2)
 				{
-					// Check if these children are sizeable (likely card/relic UI elements)
+					// Strict match: all children large (card-sized)
 					bool allSizeable = controlChildren.All(c => c.Size.X >= 80 && c.Size.Y >= 80);
 					if (allSizeable)
 					{
@@ -3211,10 +3230,16 @@ public class OverlayManager
 						bestMatch = controlChildren;
 						break; // Use first match
 					}
+					// Relaxed match: children at least 50x50
+					if (relaxedMatch == null && controlChildren.All(c => c.Size.X >= 50 && c.Size.Y >= 50))
+					{
+						Plugin.Log($"Found relaxed holder: {current.GetType().Name} with {controlChildren.Count} children (sizes: {string.Join(", ", controlChildren.Select(c => $"{c.Size.X:F0}x{c.Size.Y:F0}"))})");
+						relaxedMatch = controlChildren;
+					}
 				}
 			}
-			// Continue BFS (limit depth to 6)
-			if (GetDepth(current, root) < 6)
+			// Continue BFS (limit depth to 8)
+			if (GetDepth(current, root) < 8)
 			{
 				foreach (Node child in current.GetChildren())
 				{
@@ -3222,7 +3247,13 @@ public class OverlayManager
 				}
 			}
 		}
-		return bestMatch;
+		if (bestMatch != null) return bestMatch;
+		if (relaxedMatch != null)
+		{
+			Plugin.Log("Using relaxed match for card holders");
+			return relaxedMatch;
+		}
+		return null;
 	}
 
 	private static int GetDepth(Node node, Node root)
