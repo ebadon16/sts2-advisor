@@ -1,11 +1,24 @@
 # dnSpy Class Discovery Cheat Sheet
 
-Open `Slay the Spire 2_Data/Managed/Assembly-CSharp.dll` in dnSpy.
+Open `data_sts2_windows_x86_64/sts2.dll` in dnSpy (or ILSpy/dotPeek).
 
-## Quick Search (Ctrl+Shift+K)
+This is a Godot 4.5.1 + C# (.NET 9.0) game. Classes extend Godot.Node,
+use _Ready()/_Process(), and communicate via signals.
+
+## Quick Search (Ctrl+Shift+K in dnSpy)
+
+### Game Init / Main Manager
+```
+GameManager
+Main
+_Ready
+Autoload
+AppManager
+```
+You want: the first _Ready() that fires when the game starts.
+We patch this to create our overlay CanvasLayer.
 
 ### Card Reward Screen
-Search these terms and note which class handles card selection:
 ```
 CardReward
 RewardScreen
@@ -13,8 +26,7 @@ CardChoice
 CombatReward
 PostCombat
 ```
-You want: the class that opens when you pick cards after a fight.
-Note: class name, the "open/show" method, and the field holding offered cards.
+You want: the class + method that opens card selection after combat.
 
 ### Relic Reward
 ```
@@ -32,85 +44,90 @@ Store
 ShopItem
 ```
 
-### Player State
+### Player / Run State
 ```
-AbstractPlayer
-PlayerManager
+Player
+RunState
+RunData
 CharacterData
-CharacterType
 MasterDeck
-masterDeck
 ```
+Fields: character, deck (List<>), relics (List<>), currentAct, currentFloor, hp, gold
 
 ### Card Class
 ```
-AbstractCard
+Card
 CardData
+CardDefinition
 BaseCard
 ```
-Fields to note: cardID, name, cost, type, upgraded, keywords
+Fields: id/cardId, name, cost, type, upgraded, keywords/tags
 
 ### Relic Class
 ```
-AbstractRelic
+Relic
 RelicData
-BaseRelic
+RelicDefinition
 ```
-Fields to note: relicId, name, rarity
+Fields: id/relicId, name, rarity
 
-### Act/Dungeon
-```
-AbstractDungeon
-DungeonManager
-actNum
-currentAct
-FloorManager
+## Godot C# Patterns to Recognize
+
+```csharp
+// Godot lifecycle
+public override void _Ready() { }           // Called when node enters tree
+public override void _Process(double delta) { } // Called every frame
+
+// Signals (events)
+[Signal] public delegate void CardSelectedEventHandler(int index);
+EmitSignal(SignalName.CardSelected, index);
+
+// Node references
+var deck = GetNode<DeckManager>("/root/DeckManager");
+var card = GetChild<CardUI>(0);
+
+// Singletons / Autoloads
+var gm = GetNode<GameManager>("/root/GameManager");
 ```
 
 ## What to Write Down
 
 For each class found, note:
-1. Full namespace + class name (e.g., `MegaCrit.GameLogic.CardRewardScreen`)
-2. Singleton access pattern (e.g., `.instance`, `.Instance`, `FindObjectOfType<>()`)
-3. Key method names (Open, Show, Display, Initialize)
-4. Key field names (cards, offerings, inventory, deck)
-5. Field types (List<AbstractCard>, AbstractCard[], etc.)
+1. Full namespace + class name
+2. How to access it (autoload path, singleton, node path)
+3. Key method names (_Ready, Show, Open, PopulateCards)
+4. Key field names (cards, offerings, deck, relics)
+5. Field types (List<Card>, Godot.Collections.Array, etc.)
+6. Signals that fire on screen open/close
 
-## Example Mapping
+## Example Updates
 
-Once found, the GameStateReader.cs updates look like:
-
-```csharp
-// Instead of:
-// Plugin.Log?.LogWarning("GameStateReader.ReadCharacter() is using placeholder!");
-// return "ironclad";
-
-// You write:
-return PlayerManager.Instance.currentCharacter.characterName.ToLowerInvariant();
-```
+Once found, update GameStateReader.cs:
 
 ```csharp
-// Instead of placeholder ReadDeck():
-var deck = new List<CardInfo>();
-foreach (var card in PlayerManager.Instance.masterDeck.cards)
+// Instead of placeholder:
+private static string ReadCharacter()
 {
-    deck.Add(new CardInfo
-    {
-        Id = card.cardID,
-        Name = card.displayName,
-        Cost = card.baseCost,
-        Type = card.cardType.ToString(),
-        Upgraded = card.timesUpgraded > 0,
-        Tags = ExtractTags(card)
-    });
+    // Access the game's run state autoload
+    var runState = ((SceneTree)Engine.GetMainLoop()).Root
+        .GetNode<RunState>("/root/RunState");
+    return runState.Character.ToString().ToLowerInvariant();
 }
-return deck;
 ```
 
-## IL2CPP Warning
+Update Plugin.cs Harmony patches:
 
-If the game folder has `GameAssembly.dll` instead of `Assembly-CSharp.dll`:
-1. Use Il2CppDumper to generate dummy DLLs
-2. Open the generated DLLs in dnSpy instead
-3. Switch to BepInEx 6 with Il2CppInterop
-4. Patching syntax changes slightly (use `Il2CppInterop.Runtime` types)
+```csharp
+// Instead of PlaceholderCardRewardScreen:
+[HarmonyPatch(typeof(ActualNamespace.CardRewardScreen), "ShowRewards")]
+[HarmonyPostfix]
+public static void OnCardRewardOpened() { ... }
+```
+
+## Tips
+
+- sts2.dll is 8.6MB — expect many classes. Use the namespace tree in dnSpy.
+- Look for namespaces like `STS2.Cards`, `STS2.Relics`, `STS2.UI`, `STS2.Combat`
+- Card IDs in our JSON must match the game's exact string IDs
+- The game likely loads card definitions from .tres or .json resource files
+  packed inside SlayTheSpire2.pck

@@ -1,167 +1,178 @@
 # STS2 Advisor - Setup Guide
 
+## Game Info
+
+- **Engine:** Godot 4.5.1 with C# (.NET 9.0)
+- **Game assembly:** `sts2.dll` (in `data_sts2_windows_x86_64/`)
+- **Harmony:** 0Harmony 2.4.2 ships with the game
+- **Mod injection:** .NET Startup Hooks (`DOTNET_STARTUP_HOOKS`)
+
 ## Prerequisites
 
 - **Slay the Spire 2** installed on Windows (Steam)
-- **.NET SDK 8.0** ([download](https://dotnet.microsoft.com/download/dotnet/8.0))
-- **dnSpy** or **ILSpy** for decompiling game assemblies
+- **.NET SDK 9.0** ([download](https://dotnet.microsoft.com/download/dotnet/9.0))
+- **dnSpy**, **ILSpy**, or **dotPeek** for decompiling sts2.dll
 
-## Step 1: Install BepInEx
+## Step 1: Copy Reference DLLs
 
-1. Download **BepInEx 5.x** (check if STS2 is Mono or IL2CPP):
-   - Mono: [BepInEx 5 Stable](https://github.com/BepInEx/BepInEx/releases)
-   - IL2CPP: [BepInEx 6 Bleeding Edge](https://builds.bepinex.dev/projects/bepinex_be)
-2. Extract into the STS2 game folder (where `Slay the Spire 2.exe` lives)
-3. Run the game once, then close it
-4. Verify `BepInEx/` folder now contains `config/`, `plugins/`, etc.
+Create a `lib/` folder in the project root and copy these from
+`<STS2 install>/data_sts2_windows_x86_64/`:
 
-### How to check Mono vs IL2CPP:
-- Look in `Slay the Spire 2_Data/Managed/`
-- If you see `Assembly-CSharp.dll` → **Mono** (use BepInEx 5)
-- If you see `GameAssembly.dll` instead → **IL2CPP** (use BepInEx 6, requires different setup)
-
-## Step 2: Copy Reference DLLs
-
-Create a `lib/` folder in the project root and copy these files:
-
-**From BepInEx/core/:**
 ```
-lib/BepInEx.dll
 lib/0Harmony.dll
+lib/GodotSharp.dll
+lib/sts2.dll
 ```
 
-**From Slay the Spire 2_Data/Managed/:**
-```
-lib/UnityEngine.dll
-lib/UnityEngine.CoreModule.dll
-lib/UnityEngine.IMGUIModule.dll
-lib/UnityEngine.InputLegacyModule.dll
-lib/Assembly-CSharp.dll
-```
+## Step 2: Find Game Classes with dnSpy
 
-## Step 3: Find Game Classes with dnSpy
+Open `sts2.dll` in dnSpy (or ILSpy/dotPeek). This is the game's main assembly
+containing all C# game logic.
 
-This is the critical step. Open `Assembly-CSharp.dll` in dnSpy and find the real class/method names for:
+### 2a: Game Initialization (for overlay creation)
 
-### 3a: Card Reward Screen
+Search for the main game manager or autoload that runs at startup:
+- Look for classes with `_Ready()` methods
+- Search for "GameManager", "Main", "GameController"
+- We need a method that runs after the SceneTree is ready
 
-Search for keywords: `CardReward`, `RewardScreen`, `CombatReward`
+### 2b: Card Reward Screen
 
-What you're looking for:
-- A class that manages the post-combat card selection screen
-- A method that opens/shows this screen (this is what we'll patch)
-- A field/property containing the list of offered cards
-
-Once found, update `Plugin.cs`:
-```csharp
-// Replace PlaceholderCardRewardScreen with the real class
-// Replace "OnOpen" with the real method name
-[HarmonyPatch(typeof(RealCardRewardScreenClass), "RealMethodName")]
-```
-
-### 3b: Relic Selection Screen
-
-Search for: `RelicReward`, `BossRelic`, `RelicChoice`
+Search: `CardReward`, `RewardScreen`, `CardChoice`, `CombatReward`
 
 Look for:
-- Boss relic choice screen
-- Regular relic reward screen
-- The list of offered relics
+- A class that manages card selection after combat
+- A method that opens/shows/populates the reward cards
+- The collection of offered card objects
 
-### 3c: Shop Screen
+### 2c: Relic Selection Screen
 
-Search for: `ShopScreen`, `Merchant`, `StoreScreen`
+Search: `RelicReward`, `BossRelic`, `RelicChoice`, `RelicSelect`
+
+### 2d: Shop Screen
+
+Search: `ShopScreen`, `Merchant`, `Store`, `ShopItem`
+
+### 2e: Player/Deck State
+
+Search: `Player`, `Deck`, `MasterDeck`, `Character`, `RunState`
 
 Look for:
-- The shop inventory class
-- Cards for sale list
-- Relics for sale list
+- Current character (enum, string, or class)
+- Deck contents (List/Array of card objects)
+- Current relics
+- Act/floor number
+- HP, gold
 
-### 3d: Player/Deck State
+### 2f: Card Object
 
-Search for: `AbstractPlayer`, `PlayerManager`, `MasterDeck`, `CharacterType`
-
-Look for:
-- Current character (enum or string)
-- Master deck (List of card objects)
-- Current relics (List of relic objects)
-- Act number
-
-### 3e: Card Object Fields
-
-When you find the card class, note the field names for:
+Search for the card data class. Note field names for:
 - Card ID/name
 - Energy cost
 - Card type (Attack/Skill/Power)
-- Whether it's upgraded
-- Keywords or tags
+- Upgraded status
+- Keywords/tags
 
-## Step 4: Update GameStateReader.cs
+### Godot-Specific Patterns
 
-Replace all placeholder methods in `GameBridge/GameStateReader.cs` with real reads using the class/field names you found in Step 3.
+STS2 uses Godot + C#, so expect:
+- `_Ready()` instead of `Awake()`/`Start()`
+- `_Process(double delta)` instead of `Update()`
+- Signals instead of Unity events
+- Node tree instead of GameObject hierarchy
+- `GetNode<T>()` for references
 
-## Step 5: Update Plugin.cs Harmony Patches
+## Step 3: Update Code
 
-Replace the `PlaceholderCardRewardScreen`, `PlaceholderRelicRewardScreen`, and `PlaceholderShopScreen` references with the real game classes.
+### 3a: GameStateReader.cs
+Replace all placeholder methods with real reads using the class/field names
+found in Step 2.
 
-Then delete or `#if` out the placeholder classes at the bottom of Plugin.cs.
+### 3b: Plugin.cs
+Replace `PlaceholderCardRewardScreen`, `PlaceholderRelicRewardScreen`, and
+`PlaceholderShopScreen` with real game classes. Add the game init patch
+for overlay creation.
 
-## Step 6: Build
+### 3c: Delete Placeholders
+Remove the `#if !STS2_REAL_HOOKS` placeholder classes at the bottom of Plugin.cs.
+
+## Step 4: Build
 
 ```bash
 dotnet build -c Release
 ```
 
-The output DLL will be in `STS2Advisor/bin/Release/netstandard2.1/`.
+Output: `STS2Advisor/bin/Release/net9.0/`
 
-## Step 7: Install
+## Step 5: Install
 
-1. Copy `STS2Advisor.dll` to `BepInEx/plugins/`
-2. Copy the `Data/` folder (with all JSON files) to `BepInEx/plugins/Data/`
-3. Also copy `Newtonsoft.Json.dll` from the build output to `BepInEx/plugins/`
+### Option A: Startup Hook (Recommended)
 
-Your plugins folder should look like:
+1. Copy `STS2Advisor.dll` + `Data/` folder to a mod directory:
+   ```
+   <STS2 install>/mods/STS2Advisor/
+     STS2Advisor.dll
+     Newtonsoft.Json.dll
+     Microsoft.Data.Sqlite.dll
+     SQLitePCLRaw.core.dll
+     SQLitePCLRaw.provider.e_sqlite3.dll
+     Data/
+       CardTiers/*.json
+       RelicTiers/*.json
+   ```
+
+2. Set the startup hook environment variable. Create/edit a batch file:
+   ```batch
+   @echo off
+   set DOTNET_STARTUP_HOOKS=mods\STS2Advisor\STS2Advisor.dll
+   SlayTheSpire2.exe
+   ```
+   Save as `launch_modded.bat` in the game folder.
+
+3. Run `launch_modded.bat` instead of launching from Steam.
+
+### Option B: Steam Launch Options
+
+Right-click STS2 in Steam → Properties → Launch Options:
 ```
-BepInEx/plugins/
-  STS2Advisor.dll
-  Newtonsoft.Json.dll
-  Data/
-    CardTiers/
-      ironclad.json
-      silent.json
-      defect.json
-      regent.json
-      necromancer.json
-      colorless.json
-    RelicTiers/
-      common.json
-      ironclad.json
-      silent.json
-      defect.json
-      regent.json
-      necromancer.json
+DOTNET_STARTUP_HOOKS=data_sts2_windows_x86_64\..\mods\STS2Advisor\STS2Advisor.dll %command%
 ```
 
-## Step 8: Launch and Verify
+Note: The exact path may need adjustment. The startup hook path must be
+relative to the working directory or absolute.
 
-1. Start STS2
-2. Check `BepInEx/LogOutput.log` for: `STS2 Advisor v0.1.0 loaded successfully.`
+## Step 6: Verify
+
+1. Launch game via the modded launcher
+2. Check `mods/STS2Advisor/sts2advisor.log` for:
+   ```
+   [STS2 Advisor] STS2 Advisor v0.2.0 initialized successfully.
+   ```
 3. Start a run and open a card reward screen
-4. Tier badges should appear. Press **F7** to toggle, **F8** for tooltips.
+4. Tier badges should appear on the right side
+5. **F7** to toggle overlay, **F8** for tooltips
 
 ## Troubleshooting
 
-### "Method not found" errors in log
-The Harmony patches are targeting wrong method names. Re-check with dnSpy.
+### Mod doesn't load (no log file)
+- Verify the `DOTNET_STARTUP_HOOKS` path is correct
+- The path must point exactly to `STS2Advisor.dll`
+- Try an absolute path: `C:\...\mods\STS2Advisor\STS2Advisor.dll`
+
+### "Method not found" or "Type not found" in log
+- Harmony patches target wrong class/method names
+- Re-check with dnSpy and update Plugin.cs
 
 ### Overlay doesn't appear
-- Check the log for GameStateReader warnings (placeholder methods)
-- Verify screen detection is triggering (card reward patch firing)
+- The game init patch may be targeting the wrong _Ready() method
+- Check the log for "Overlay created" or "SceneTree not ready"
 
-### Cards not recognized (all showing C-tier)
-- Card IDs in the JSON files must match the game's internal card IDs exactly
-- Open dnSpy, find a card, note its exact `cardID` field value
+### Cards show as C-tier (not recognized)
+- Card IDs in JSON must match sts2.dll's internal card IDs exactly
+- Open dnSpy, find a card class, note the exact ID format
 - Update JSON files to match
 
-### IL2CPP game (no Assembly-CSharp.dll)
-If STS2 uses IL2CPP, you'll need BepInEx 6 with Il2CppInterop. The patching approach is similar but uses `Il2CppInterop.Runtime` instead of direct type references. This requires more setup — see the BepInEx 6 docs.
+### Game crashes on launch
+- Target framework mismatch: ensure you're building for net9.0
+- Missing dependency: copy all required DLLs to the mod folder
+- Check sts2advisor.log for the error before crash

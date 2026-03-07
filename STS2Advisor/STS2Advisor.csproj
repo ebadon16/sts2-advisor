@@ -1,52 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>STS2Advisor</AssemblyName>
     <RootNamespace>STS2Advisor</RootNamespace>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- BepInEx core libraries — copy from BepInEx/core/ in your game install -->
-    <Reference Include="BepInEx">
-      <HintPath>..\lib\BepInEx.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <!-- Harmony — copy 0Harmony.dll from data_sts2_windows_x86_64/ -->
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
 
-    <!-- Unity engine libraries — copy from Slay the Spire 2_Data/Managed/ -->
-    <Reference Include="UnityEngine">
-      <HintPath>..\lib\UnityEngine.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\lib\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\lib\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>
+    <!-- Godot C# runtime — copy from data_sts2_windows_x86_64/ -->
+    <Reference Include="GodotSharp">
+      <HintPath>..\lib\GodotSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
 
-    <!-- Game assembly — copy Assembly-CSharp.dll from Slay the Spire 2_Data/Managed/ -->
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
+    <!-- Game assembly — copy sts2.dll from data_sts2_windows_x86_64/ -->
+    <Reference Include="sts2">
+      <HintPath>..\lib\sts2.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
   </ItemGroup>
 
   <!-- Copy JSON data files to output -->

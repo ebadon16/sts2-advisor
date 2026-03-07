@@ -1,232 +1,302 @@
 using System.Collections.Generic;
+using Godot;
 using STS2Advisor.Core;
-using UnityEngine;
 
 namespace STS2Advisor.UI
 {
-    public class OverlayRenderer : MonoBehaviour
+    /// <summary>
+    /// Manages the Godot CanvasLayer overlay that displays tier badges and advice.
+    ///
+    /// Creates a CanvasLayer on layer 100 (above all game UI) with Control nodes
+    /// for the advisor panel. Toggle with F7, tooltips with F8.
+    ///
+    /// IMPORTANT: This must be instantiated after the SceneTree is available.
+    /// It's created from a Harmony patch on a game init method.
+    /// </summary>
+    public class OverlayManager
     {
-        public static OverlayRenderer Instance { get; private set; }
-
+        private CanvasLayer _layer;
+        private PanelContainer _panel;
+        private VBoxContainer _content;
         private bool _visible = true;
         private bool _showTooltips = true;
-        private List<ScoredCard> _currentCardAdvice;
-        private List<ScoredRelic> _currentRelicAdvice;
-        private List<ScoredCard> _shopCardAdvice;
-        private List<ScoredRelic> _shopRelicAdvice;
-        private string _activeScreen; // "card", "relic", "shop", or null
 
-        private GUIStyle _badgeStyle;
-        private GUIStyle _bestPickStyle;
-        private GUIStyle _tooltipStyle;
-        private GUIStyle _headerStyle;
-        private bool _stylesInitialized;
+        private List<ScoredCard> _currentCards;
+        private List<ScoredRelic> _currentRelics;
 
-        private void Awake()
+        public OverlayManager()
         {
-            Instance = this;
+            BuildOverlay();
         }
 
-        private void Update()
+        private void BuildOverlay()
         {
-            // F7 to toggle overlay visibility
-            if (Input.GetKeyDown(KeyCode.F7))
+            var tree = Engine.GetMainLoop() as SceneTree;
+            if (tree?.Root == null)
             {
-                _visible = !_visible;
-                Plugin.Log.LogInfo($"Advisor overlay {(_visible ? "shown" : "hidden")}");
+                Plugin.Log("SceneTree not ready — overlay deferred.");
+                return;
             }
 
-            // F8 to toggle tooltips
-            if (Input.GetKeyDown(KeyCode.F8))
-            {
-                _showTooltips = !_showTooltips;
-                Plugin.Log.LogInfo($"Advisor tooltips {(_showTooltips ? "shown" : "hidden")}");
-            }
+            _layer = new CanvasLayer();
+            _layer.Layer = 100; // Above everything
+
+            // Main panel — right side of screen
+            _panel = new PanelContainer();
+            _panel.AnchorLeft = 1.0f;
+            _panel.AnchorRight = 1.0f;
+            _panel.AnchorTop = 0.0f;
+            _panel.AnchorBottom = 0.0f;
+            _panel.OffsetLeft = -280;
+            _panel.OffsetRight = -10;
+            _panel.OffsetTop = 50;
+            _panel.OffsetBottom = 600;
+
+            // Semi-transparent dark background
+            var styleBox = new StyleBoxFlat();
+            styleBox.BgColor = new Color(0.05f, 0.05f, 0.1f, 0.85f);
+            styleBox.CornerRadiusTopLeft = 8;
+            styleBox.CornerRadiusTopRight = 8;
+            styleBox.CornerRadiusBottomLeft = 8;
+            styleBox.CornerRadiusBottomRight = 8;
+            styleBox.ContentMarginLeft = 12;
+            styleBox.ContentMarginRight = 12;
+            styleBox.ContentMarginTop = 12;
+            styleBox.ContentMarginBottom = 12;
+            _panel.AddThemeStyleboxOverride("panel", styleBox);
+
+            // Scrollable content
+            var scroll = new ScrollContainer();
+            scroll.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            scroll.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+            _panel.AddChild(scroll);
+
+            _content = new VBoxContainer();
+            _content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            scroll.AddChild(_content);
+
+            _layer.AddChild(_panel);
+            tree.Root.CallDeferred("add_child", _layer);
+
+            // Input handling via process
+            _layer.SetProcessInput(true);
+
+            Plugin.Log("Overlay built and attached to scene tree.");
         }
 
-        public void ShowCardAdvice(List<ScoredCard> scored)
+        public void ShowCardAdvice(List<ScoredCard> cards)
         {
-            _currentCardAdvice = scored;
-            _activeScreen = "card";
+            _currentCards = cards;
+            _currentRelics = null;
+            Rebuild();
         }
 
-        public void ShowRelicAdvice(List<ScoredRelic> scored)
+        public void ShowRelicAdvice(List<ScoredRelic> relics)
         {
-            _currentRelicAdvice = scored;
-            _activeScreen = "relic";
+            _currentRelics = relics;
+            _currentCards = null;
+            Rebuild();
         }
 
-        public void ShowShopAdvice(List<ScoredCard> scoredCards, List<ScoredRelic> scoredRelics)
+        public void ShowShopAdvice(List<ScoredCard> cards, List<ScoredRelic> relics)
         {
-            _shopCardAdvice = scoredCards;
-            _shopRelicAdvice = scoredRelics;
-            _activeScreen = "shop";
+            _currentCards = cards;
+            _currentRelics = relics;
+            Rebuild();
         }
 
-        public void ClearAdvice()
+        public void Clear()
         {
-            _currentCardAdvice = null;
-            _currentRelicAdvice = null;
-            _shopCardAdvice = null;
-            _shopRelicAdvice = null;
-            _activeScreen = null;
+            _currentCards = null;
+            _currentRelics = null;
+            Rebuild();
         }
 
-        private void InitStyles()
+        public void ToggleVisible()
         {
-            if (_stylesInitialized) return;
-
-            _badgeStyle = new GUIStyle(GUI.skin.box)
-            {
-                fontSize = 18,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleCenter,
-                padding = new RectOffset(6, 6, 2, 2)
-            };
-
-            _bestPickStyle = new GUIStyle(GUI.skin.box)
-            {
-                fontSize = 14,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleCenter
-            };
-            _bestPickStyle.normal.textColor = Color.yellow;
-
-            _tooltipStyle = new GUIStyle(GUI.skin.box)
-            {
-                fontSize = 12,
-                alignment = TextAnchor.UpperLeft,
-                wordWrap = true,
-                padding = new RectOffset(8, 8, 6, 6)
-            };
-
-            _headerStyle = new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 16,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleLeft
-            };
-            _headerStyle.normal.textColor = new Color(1f, 0.84f, 0f);
-
-            _stylesInitialized = true;
+            _visible = !_visible;
+            if (_panel != null)
+                _panel.Visible = _visible;
+            Plugin.Log($"Overlay {(_visible ? "shown" : "hidden")}");
         }
 
-        private void OnGUI()
+        public void ToggleTooltips()
         {
-            if (!_visible || _activeScreen == null) return;
-
-            InitStyles();
-
-            switch (_activeScreen)
-            {
-                case "card":
-                    DrawCardAdvice(_currentCardAdvice);
-                    break;
-                case "relic":
-                    DrawRelicAdvice(_currentRelicAdvice);
-                    break;
-                case "shop":
-                    DrawCardAdvice(_shopCardAdvice);
-                    DrawRelicAdvice(_shopRelicAdvice);
-                    break;
-            }
-
-            // Draw toggle hint
-            GUI.Label(
-                new Rect(10, Screen.height - 30, 300, 25),
-                "STS2 Advisor | F7: Toggle | F8: Tooltips",
-                GUI.skin.label
-            );
+            _showTooltips = !_showTooltips;
+            Rebuild();
+            Plugin.Log($"Tooltips {(_showTooltips ? "shown" : "hidden")}");
         }
 
-        private void DrawCardAdvice(List<ScoredCard> cards)
+        public void HandleInput(InputEvent ev)
         {
-            if (cards == null || cards.Count == 0) return;
-
-            // If we have screen positions from the game, draw badges on the cards.
-            // Otherwise, fall back to a summary panel.
-            bool hasPositions = cards.Count > 0 && (cards[0] is ScoredCard);
-
-            // Summary panel on the right side
-            float panelX = Screen.width - 280;
-            float panelY = 60;
-
-            GUI.Box(new Rect(panelX - 10, panelY - 10, 270, 40 + cards.Count * 80), "");
-            GUI.Label(new Rect(panelX, panelY, 250, 25), "Card Advisor", _headerStyle);
-            panelY += 35;
-
-            for (int i = 0; i < cards.Count; i++)
+            if (ev is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo)
             {
-                var card = cards[i];
-                DrawScoredCardEntry(panelX, panelY, card);
-                panelY += 75;
+                if (keyEvent.Keycode == Key.F7)
+                    ToggleVisible();
+                else if (keyEvent.Keycode == Key.F8)
+                    ToggleTooltips();
             }
         }
 
-        private void DrawRelicAdvice(List<ScoredRelic> relics)
+        private void Rebuild()
         {
-            if (relics == null || relics.Count == 0) return;
+            if (_content == null) return;
 
-            float panelX = Screen.width - 280;
-            float panelY = _currentCardAdvice != null
-                ? 60 + 40 + _currentCardAdvice.Count * 80 + 20
-                : 60;
-
-            GUI.Box(new Rect(panelX - 10, panelY - 10, 270, 40 + relics.Count * 80), "");
-            GUI.Label(new Rect(panelX, panelY, 250, 25), "Relic Advisor", _headerStyle);
-            panelY += 35;
-
-            for (int i = 0; i < relics.Count; i++)
+            // Clear existing children
+            foreach (var child in _content.GetChildren())
             {
-                var relic = relics[i];
-                DrawScoredRelicEntry(panelX, panelY, relic);
-                panelY += 75;
+                if (child is Node node)
+                    node.QueueFree();
+            }
+
+            if (_currentCards != null && _currentCards.Count > 0)
+            {
+                AddHeader("Card Advisor");
+                foreach (var card in _currentCards)
+                    AddCardEntry(card);
+            }
+
+            if (_currentRelics != null && _currentRelics.Count > 0)
+            {
+                if (_currentCards != null && _currentCards.Count > 0)
+                    AddSeparator();
+                AddHeader("Relic Advisor");
+                foreach (var relic in _currentRelics)
+                    AddRelicEntry(relic);
+            }
+
+            if ((_currentCards == null || _currentCards.Count == 0) &&
+                (_currentRelics == null || _currentRelics.Count == 0))
+            {
+                var label = new Label();
+                label.Text = "STS2 Advisor | F7: Toggle | F8: Tooltips";
+                label.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f));
+                _content.AddChild(label);
             }
         }
 
-        private void DrawScoredCardEntry(float x, float y, ScoredCard card)
+        private void AddHeader(string text)
         {
-            // Badge
-            Color badgeColor = TierBadge.GetTierColor(card.FinalGrade);
-            GUI.backgroundColor = badgeColor;
-            GUI.Box(new Rect(x, y, 36, 36), card.FinalGrade.ToString(), _badgeStyle);
-            GUI.backgroundColor = Color.white;
+            var label = new Label();
+            label.Text = text;
+            label.AddThemeColorOverride("font_color", new Color(1f, 0.84f, 0f)); // Gold
+            label.AddThemeFontSizeOverride("font_size", 18);
+            _content.AddChild(label);
+        }
 
-            // Card name + score
-            string label = card.IsBestPick
-                ? $"<b>{card.Id}</b>  ★ BEST PICK"
-                : card.Id;
-            GUI.Label(new Rect(x + 44, y + 2, 200, 20), label);
-            GUI.Label(new Rect(x + 44, y + 20, 200, 18),
-                $"Score: {card.FinalScore:F1} (base {card.BaseTier})");
+        private void AddSeparator()
+        {
+            var sep = new HSeparator();
+            sep.CustomMinimumSize = new Vector2(0, 10);
+            _content.AddChild(sep);
+        }
 
-            // Tooltip
-            if (_showTooltips && (card.SynergyReasons.Count > 0 || card.AntiSynergyReasons.Count > 0))
+        private void AddCardEntry(ScoredCard card)
+        {
+            var hbox = new HBoxContainer();
+            hbox.CustomMinimumSize = new Vector2(0, 50);
+
+            // Tier badge
+            var badge = CreateBadge(card.FinalGrade);
+            hbox.AddChild(badge);
+
+            // Info column
+            var vbox = new VBoxContainer();
+            vbox.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+
+            var nameLabel = new Label();
+            nameLabel.Text = card.IsBestPick ? $"{card.Id}  ★ BEST PICK" : card.Id;
+            nameLabel.AddThemeColorOverride("font_color",
+                card.IsBestPick ? new Color(1f, 1f, 0f) : Colors.White);
+            vbox.AddChild(nameLabel);
+
+            var scoreLabel = new Label();
+            scoreLabel.Text = $"Score: {card.FinalScore:F1} (base {card.BaseTier})";
+            scoreLabel.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f));
+            scoreLabel.AddThemeFontSizeOverride("font_size", 12);
+            vbox.AddChild(scoreLabel);
+
+            if (_showTooltips)
             {
                 string tooltip = SynergyTooltip.BuildCardTooltip(card);
-                GUI.Label(new Rect(x + 44, y + 38, 210, 32), tooltip, _tooltipStyle);
+                if (!string.IsNullOrEmpty(tooltip))
+                {
+                    var tipLabel = new Label();
+                    tipLabel.Text = tooltip;
+                    tipLabel.AddThemeColorOverride("font_color", new Color(0.5f, 0.8f, 0.5f));
+                    tipLabel.AddThemeFontSizeOverride("font_size", 11);
+                    tipLabel.AutowrapMode = TextServer.AutowrapMode.Word;
+                    vbox.AddChild(tipLabel);
+                }
             }
+
+            hbox.AddChild(vbox);
+            _content.AddChild(hbox);
         }
 
-        private void DrawScoredRelicEntry(float x, float y, ScoredRelic relic)
+        private void AddRelicEntry(ScoredRelic relic)
         {
-            Color badgeColor = TierBadge.GetTierColor(relic.FinalGrade);
-            GUI.backgroundColor = badgeColor;
-            GUI.Box(new Rect(x, y, 36, 36), relic.FinalGrade.ToString(), _badgeStyle);
-            GUI.backgroundColor = Color.white;
+            var hbox = new HBoxContainer();
+            hbox.CustomMinimumSize = new Vector2(0, 50);
 
-            string label = relic.IsBestPick
-                ? $"<b>{relic.Id}</b>  ★ BEST PICK"
-                : relic.Id;
-            GUI.Label(new Rect(x + 44, y + 2, 200, 20), label);
-            GUI.Label(new Rect(x + 44, y + 20, 200, 18),
-                $"Score: {relic.FinalScore:F1} (base {relic.BaseTier})");
+            var badge = CreateBadge(relic.FinalGrade);
+            hbox.AddChild(badge);
 
-            if (_showTooltips && (relic.SynergyReasons.Count > 0 || relic.AntiSynergyReasons.Count > 0))
+            var vbox = new VBoxContainer();
+            vbox.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+
+            var nameLabel = new Label();
+            nameLabel.Text = relic.IsBestPick ? $"{relic.Id}  ★ BEST PICK" : relic.Id;
+            nameLabel.AddThemeColorOverride("font_color",
+                relic.IsBestPick ? new Color(1f, 1f, 0f) : Colors.White);
+            vbox.AddChild(nameLabel);
+
+            var scoreLabel = new Label();
+            scoreLabel.Text = $"Score: {relic.FinalScore:F1} (base {relic.BaseTier})";
+            scoreLabel.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f));
+            scoreLabel.AddThemeFontSizeOverride("font_size", 12);
+            vbox.AddChild(scoreLabel);
+
+            if (_showTooltips)
             {
                 string tooltip = SynergyTooltip.BuildRelicTooltip(relic);
-                GUI.Label(new Rect(x + 44, y + 38, 210, 32), tooltip, _tooltipStyle);
+                if (!string.IsNullOrEmpty(tooltip))
+                {
+                    var tipLabel = new Label();
+                    tipLabel.Text = tooltip;
+                    tipLabel.AddThemeColorOverride("font_color", new Color(0.5f, 0.8f, 0.5f));
+                    tipLabel.AddThemeFontSizeOverride("font_size", 11);
+                    tipLabel.AutowrapMode = TextServer.AutowrapMode.Word;
+                    vbox.AddChild(tipLabel);
+                }
             }
+
+            hbox.AddChild(vbox);
+            _content.AddChild(hbox);
+        }
+
+        private PanelContainer CreateBadge(TierGrade grade)
+        {
+            var badge = new PanelContainer();
+            badge.CustomMinimumSize = new Vector2(36, 36);
+
+            var style = new StyleBoxFlat();
+            style.BgColor = TierBadge.GetGodotColor(grade);
+            style.CornerRadiusTopLeft = 4;
+            style.CornerRadiusTopRight = 4;
+            style.CornerRadiusBottomLeft = 4;
+            style.CornerRadiusBottomRight = 4;
+            badge.AddThemeStyleboxOverride("panel", style);
+
+            var label = new Label();
+            label.Text = grade.ToString();
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            label.VerticalAlignment = VerticalAlignment.Center;
+            label.AddThemeColorOverride("font_color", new Color(0.05f, 0.05f, 0.05f));
+            label.AddThemeFontSizeOverride("font_size", 16);
+            badge.AddChild(label);
+
+            return badge;
         }
     }
 }

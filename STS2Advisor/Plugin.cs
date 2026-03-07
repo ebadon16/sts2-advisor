@@ -1,149 +1,207 @@
-using BepInEx;
-using BepInEx.Logging;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading;
 using HarmonyLib;
 using STS2Advisor.Core;
-using STS2Advisor.GameBridge;
 using STS2Advisor.Tracking;
 using STS2Advisor.UI;
-using UnityEngine;
 
 namespace STS2Advisor
 {
-    [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    public class Plugin : BaseUnityPlugin
+    /// <summary>
+    /// Entry point for the STS2 Advisor mod.
+    ///
+    /// Loaded via .NET startup hook (DOTNET_STARTUP_HOOKS environment variable).
+    /// The Initialize() method runs before the game's Main().
+    ///
+    /// Since Godot's scene tree isn't ready yet at startup hook time,
+    /// we apply Harmony patches immediately but defer overlay creation
+    /// until the scene tree is available.
+    /// </summary>
+    public static class StartupHook
     {
-        public const string PluginGUID = "com.sts2advisor.mod";
-        public const string PluginName = "STS2 Advisor";
-        public const string PluginVersion = "0.1.0";
-
-        internal static ManualLogSource Log;
-        internal static Plugin Instance;
-
-        private Harmony _harmony;
-        private OverlayRenderer _overlay;
-        private TierEngine _tierEngine;
-        private DeckAnalyzer _deckAnalyzer;
-        private SynergyScorer _synergyScorer;
-        private RunTracker _runTracker;
-        private RunDatabase _runDatabase;
-        private SyncClient _syncClient;
-        private AdaptiveScorer _adaptiveScorer;
-
-        public TierEngine TierEngine => _tierEngine;
-        public DeckAnalyzer DeckAnalyzer => _deckAnalyzer;
-        public SynergyScorer SynergyScorer => _synergyScorer;
-        public RunTracker RunTracker => _runTracker;
-        public AdaptiveScorer AdaptiveScorer => _adaptiveScorer;
-
-        private void Awake()
+        public static void Initialize()
         {
-            Instance = this;
-            Log = Logger;
+            try
+            {
+                Plugin.Init();
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(Plugin.LogPath, $"[STS2Advisor] FATAL: {ex}\n");
+            }
+        }
+    }
 
-            Log.LogInfo($"{PluginName} v{PluginVersion} loading...");
+    public static class Plugin
+    {
+        public const string ModName = "STS2 Advisor";
+        public const string ModVersion = "0.2.0";
+        public const string HarmonyId = "com.sts2advisor.mod";
+
+        public static string PluginFolder { get; private set; }
+        public static string LogPath { get; private set; }
+
+        private static Harmony _harmony;
+
+        public static TierEngine TierEngine { get; private set; }
+        public static DeckAnalyzer DeckAnalyzer { get; private set; }
+        public static SynergyScorer SynergyScorer { get; private set; }
+        public static AdaptiveScorer AdaptiveScorer { get; private set; }
+        public static RunTracker RunTracker { get; private set; }
+        public static RunDatabase RunDatabase { get; private set; }
+        public static SyncClient SyncClient { get; private set; }
+        public static OverlayManager Overlay { get; set; }
+
+        public static void Init()
+        {
+            // Determine mod folder (where STS2Advisor.dll lives)
+            PluginFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            LogPath = Path.Combine(PluginFolder, "sts2advisor.log");
+
+            Log($"{ModName} v{ModVersion} initializing...");
 
             // Initialize core systems
-            string dataPath = System.IO.Path.Combine(
-                System.IO.Path.GetDirectoryName(Info.Location),
-                "Data"
-            );
+            string dataPath = Path.Combine(PluginFolder, "Data");
 
-            _tierEngine = new TierEngine(dataPath);
-            _deckAnalyzer = new DeckAnalyzer();
-            _synergyScorer = new SynergyScorer();
+            TierEngine = new TierEngine(dataPath);
+            DeckAnalyzer = new DeckAnalyzer();
+            SynergyScorer = new SynergyScorer();
 
             // Initialize tracking + community data
-            string pluginFolder = System.IO.Path.GetDirectoryName(Info.Location);
-            _runDatabase = new RunDatabase(pluginFolder);
-            _runTracker = new RunTracker(_runDatabase);
-            _runTracker.Initialize(pluginFolder);
-            _syncClient = new SyncClient(_runDatabase);
-            _adaptiveScorer = new AdaptiveScorer(_runDatabase);
-
-            // Fetch latest community stats on startup (background, non-blocking)
-            _syncClient.FetchCommunityStatsAsync("ironclad");
-            _syncClient.FetchCommunityStatsAsync("silent");
-            _syncClient.FetchCommunityStatsAsync("defect");
-            _syncClient.FetchCommunityStatsAsync("regent");
-            _syncClient.FetchCommunityStatsAsync("necromancer");
-
-            // Upload any unsynced runs from previous sessions
-            _syncClient.UploadRunsAsync();
-
-            // Create overlay
-            _overlay = gameObject.AddComponent<OverlayRenderer>();
+            RunDatabase = new RunDatabase(PluginFolder);
+            RunTracker = new RunTracker(RunDatabase);
+            RunTracker.Initialize(PluginFolder);
+            SyncClient = new SyncClient(RunDatabase);
+            AdaptiveScorer = new AdaptiveScorer(RunDatabase);
 
             // Apply Harmony patches
-            _harmony = new Harmony(PluginGUID);
+            _harmony = new Harmony(HarmonyId);
             _harmony.PatchAll(typeof(GamePatches));
 
-            Log.LogInfo($"{PluginName} loaded successfully. Community data layer active.");
+            Log("Harmony patches applied.");
+
+            // Fetch community stats in background
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                try
+                {
+                    SyncClient.UploadRunsAsync();
+                    foreach (string c in new[] { "ironclad", "silent", "defect", "regent", "necromancer" })
+                        SyncClient.FetchCommunityStatsAsync(c);
+                }
+                catch (Exception ex)
+                {
+                    Log($"Background sync error (non-fatal): {ex.Message}");
+                }
+            });
+
+            Log($"{ModName} initialized successfully. Waiting for scene tree...");
+
+            // Overlay creation is deferred — OverlayManager hooks into the scene tree
+            // via a Harmony patch on a game initialization method (see GamePatches).
         }
 
-        private void OnDestroy()
+        public static void Log(string message)
         {
-            _harmony?.UnpatchSelf();
+            string line = $"[{DateTime.Now:HH:mm:ss}] [STS2Advisor] {message}";
+            try
+            {
+                File.AppendAllText(LogPath, line + "\n");
+            }
+            catch
+            {
+                // Can't log, silently fail
+            }
         }
     }
 
     /// <summary>
-    /// Harmony patches that hook into STS2's card/relic selection screens.
+    /// Harmony patches that hook into STS2's game screens.
     ///
     /// !! PLACEHOLDER HOOKS !!
-    /// These target classes/methods that need to be discovered via dnSpy/ILSpy.
-    /// See SETUP_GUIDE.md for instructions on finding the correct targets.
+    /// These target classes/methods in sts2.dll that need to be discovered
+    /// via dnSpy/ILSpy/dotPeek. See SETUP_GUIDE.md for instructions.
+    ///
+    /// To find the real targets:
+    /// 1. Open sts2.dll in dnSpy (or ILSpy/dotPeek)
+    /// 2. Search for card reward, relic selection, shop screen classes
+    /// 3. Replace the placeholder types and method names below
     /// </summary>
     public static class GamePatches
     {
         // =====================================================================
+        // SCENE TREE READY — Initialize overlay once Godot is running
+        // =====================================================================
+        // TODO: Find a class that runs during game initialization.
+        // Patch its ready/init method to create our overlay.
+        //
+        // In dnSpy, look for:
+        //   - A main game manager or autoload singleton
+        //   - A class with _Ready() or Initialize() that runs at game start
+        //   - Example: GameManager._Ready() or Main._Ready()
+        //
+        // Once patched, this creates the Godot CanvasLayer overlay.
+        // =====================================================================
+
+        // [HarmonyPatch(typeof(SomeGameManager), "_Ready")]
+        // [HarmonyPostfix]
+        // public static void OnGameReady()
+        // {
+        //     if (Plugin.Overlay == null)
+        //     {
+        //         Plugin.Overlay = new OverlayManager();
+        //         Plugin.Log("Overlay created.");
+        //     }
+        // }
+
+        // =====================================================================
         // CARD REWARD SCREEN
         // =====================================================================
-        // TODO: Replace "CardRewardScreen" and "OnOpen" with actual class/method
-        // names found in Assembly-CSharp.dll.
+        // TODO: Replace with actual card reward screen class/method from sts2.dll.
         //
-        // In dnSpy, search for classes related to:
-        //   - Card reward / card selection after combat
-        //   - Look for methods that populate the reward card list
-        //   - The class likely has a List<> of card objects being offered
+        // In dnSpy, search for:
+        //   - Classes with "Reward", "CardReward", "CardChoice"
+        //   - Methods that show/open the card selection after combat
+        //   - The class will have a collection of offered card objects
         //
-        // Example real names might be:
-        //   CardRewardScreenController.Show()
-        //   RewardManager.ShowCardReward()
-        //   CombatRewardScreen.DisplayCards()
+        // Look for Godot patterns:
+        //   - _Ready(), _Process(), Show(), Open(), Initialize()
+        //   - Signal connections like "card_selected", "reward_shown"
         // =====================================================================
 
         [HarmonyPatch(typeof(PlaceholderCardRewardScreen), "OnOpen")]
         [HarmonyPostfix]
         public static void OnCardRewardOpened()
         {
-            Plugin.Log.LogInfo("Card reward screen detected — analyzing offerings...");
+            Plugin.Log("Card reward screen detected — analyzing...");
 
-            var state = GameStateReader.ReadCurrentState();
+            var state = GameBridge.GameStateReader.ReadCurrentState();
             if (state == null) return;
 
-            var deckArchetypes = Plugin.Instance.DeckAnalyzer.Analyze(
+            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
                 state.Character, state.DeckCards
             );
 
-            var scored = Plugin.Instance.SynergyScorer.ScoreOfferings(
+            var scored = Plugin.SynergyScorer.ScoreOfferings(
                 state.OfferedCards,
                 deckArchetypes,
                 state.Character,
                 state.ActNumber,
-                Plugin.Instance.TierEngine,
-                Plugin.Instance.AdaptiveScorer
+                Plugin.TierEngine,
+                Plugin.AdaptiveScorer
             );
 
-            OverlayRenderer.Instance?.ShowCardAdvice(scored);
+            Plugin.Overlay?.ShowCardAdvice(scored);
 
-            // Track this decision point (chosen card recorded later via separate patch)
-            Plugin.Instance.RunTracker?.RecordDecision(
+            Plugin.RunTracker?.RecordDecision(
                 DecisionEventType.CardReward,
                 state.OfferedCards.ConvertAll(c => c.Id),
-                null, // chosen recorded when player actually picks
+                null,
                 state.DeckCards.ConvertAll(c => c.Id),
                 state.CurrentRelics.ConvertAll(r => r.Id),
-                0, 0, 0, // HP/gold filled from state when available
+                0, 0, 0,
                 state.ActNumber, 0
             );
         }
@@ -151,39 +209,32 @@ namespace STS2Advisor
         // =====================================================================
         // RELIC REWARD SCREEN
         // =====================================================================
-        // TODO: Replace "PlaceholderRelicRewardScreen" and "OnOpen" with actual
-        // class/method names.
-        //
-        // Search in dnSpy for:
-        //   - Relic selection / boss relic choice
-        //   - Methods that display relic options to the player
-        // =====================================================================
 
         [HarmonyPatch(typeof(PlaceholderRelicRewardScreen), "OnOpen")]
         [HarmonyPostfix]
         public static void OnRelicRewardOpened()
         {
-            Plugin.Log.LogInfo("Relic reward screen detected — analyzing offerings...");
+            Plugin.Log("Relic reward screen detected — analyzing...");
 
-            var state = GameStateReader.ReadCurrentState();
+            var state = GameBridge.GameStateReader.ReadCurrentState();
             if (state == null) return;
 
-            var deckArchetypes = Plugin.Instance.DeckAnalyzer.Analyze(
+            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
                 state.Character, state.DeckCards
             );
 
-            var scored = Plugin.Instance.SynergyScorer.ScoreRelicOfferings(
+            var scored = Plugin.SynergyScorer.ScoreRelicOfferings(
                 state.OfferedRelics,
                 deckArchetypes,
                 state.Character,
                 state.ActNumber,
-                Plugin.Instance.TierEngine,
-                Plugin.Instance.AdaptiveScorer
+                Plugin.TierEngine,
+                Plugin.AdaptiveScorer
             );
 
-            OverlayRenderer.Instance?.ShowRelicAdvice(scored);
+            Plugin.Overlay?.ShowRelicAdvice(scored);
 
-            Plugin.Instance.RunTracker?.RecordDecision(
+            Plugin.RunTracker?.RecordDecision(
                 DecisionEventType.RelicReward,
                 state.OfferedRelics.ConvertAll(r => r.Id),
                 null,
@@ -197,51 +248,45 @@ namespace STS2Advisor
         // =====================================================================
         // SHOP SCREEN
         // =====================================================================
-        // TODO: Replace with actual shop screen class/method.
-        //
-        // Search in dnSpy for:
-        //   - Shop / merchant screen
-        //   - Methods that populate shop inventory
-        // =====================================================================
 
         [HarmonyPatch(typeof(PlaceholderShopScreen), "OnOpen")]
         [HarmonyPostfix]
         public static void OnShopOpened()
         {
-            Plugin.Log.LogInfo("Shop screen detected — analyzing inventory...");
+            Plugin.Log("Shop screen detected — analyzing...");
 
-            var state = GameStateReader.ReadCurrentState();
+            var state = GameBridge.GameStateReader.ReadCurrentState();
             if (state == null) return;
 
-            var deckArchetypes = Plugin.Instance.DeckAnalyzer.Analyze(
+            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
                 state.Character, state.DeckCards
             );
 
-            var scoredCards = Plugin.Instance.SynergyScorer.ScoreOfferings(
+            var scoredCards = Plugin.SynergyScorer.ScoreOfferings(
                 state.ShopCards,
                 deckArchetypes,
                 state.Character,
                 state.ActNumber,
-                Plugin.Instance.TierEngine,
-                Plugin.Instance.AdaptiveScorer
+                Plugin.TierEngine,
+                Plugin.AdaptiveScorer
             );
 
-            var scoredRelics = Plugin.Instance.SynergyScorer.ScoreRelicOfferings(
+            var scoredRelics = Plugin.SynergyScorer.ScoreRelicOfferings(
                 state.ShopRelics,
                 deckArchetypes,
                 state.Character,
                 state.ActNumber,
-                Plugin.Instance.TierEngine,
-                Plugin.Instance.AdaptiveScorer
+                Plugin.TierEngine,
+                Plugin.AdaptiveScorer
             );
 
-            OverlayRenderer.Instance?.ShowShopAdvice(scoredCards, scoredRelics);
+            Plugin.Overlay?.ShowShopAdvice(scoredCards, scoredRelics);
         }
     }
 
     // =========================================================================
     // PLACEHOLDER CLASSES — DELETE THESE once you find the real game classes.
-    // These exist only so the project compiles without Assembly-CSharp.dll.
+    // These exist only so the project compiles without sts2.dll references.
     // =========================================================================
     #if !STS2_REAL_HOOKS
     public class PlaceholderCardRewardScreen { public void OnOpen() { } }
