@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using STS2Advisor.API.Models;
+using QuestceSpire.API.Models;
 
-namespace STS2Advisor.API.Data;
+namespace QuestceSpire.API.Data;
 
 public class AppDbContext : DbContext
 {

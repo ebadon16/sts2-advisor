@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace STS2Advisor.API.Models;
+namespace QuestceSpire.API.Models;
 
 // ─── Database Entities ───
 

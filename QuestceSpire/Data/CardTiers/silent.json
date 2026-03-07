@@ -1,0 +1,905 @@
+{
+  "character": "silent",
+  "cards": [
+    {
+      "id": "Strike Silent",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter strike, replace when possible"
+    },
+    {
+      "id": "Defend Silent",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter defend, replace when possible"
+    },
+    {
+      "id": "Neutralize",
+      "baseTier": "C",
+      "synergies": [
+        "poison",
+        "weak",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter. 0-cost with weak application"
+    },
+    {
+      "id": "Survivor",
+      "baseTier": "C",
+      "synergies": [
+        "discard",
+        "discard_synergy",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter. Block + discard trigger"
+    },
+    {
+      "id": "Acrobatics",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "discard",
+        "discard_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Draw 3 discard 1, solid cycle"
+    },
+    {
+      "id": "Anticipate",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost defensive skill, decent filler"
+    },
+    {
+      "id": "Backflip",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Block + draw 2, top common"
+    },
+    {
+      "id": "Blade Dance",
+      "baseTier": "A",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Shiv generation with exhaust, strong enabler"
+    },
+    {
+      "id": "Cloak And Dagger",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "block",
+        "shiv_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Block + shiv generation, always good"
+    },
+    {
+      "id": "Dagger Spray",
+      "baseTier": "C",
+      "synergies": [
+        "multi_hit",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE multi-hit, okay early"
+    },
+    {
+      "id": "Dagger Throw",
+      "baseTier": "A",
+      "synergies": [
+        "draw",
+        "discard",
+        "discard_synergy",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Damage + draw 1 + discard 1"
+    },
+    {
+      "id": "Deadly Poison",
+      "baseTier": "B",
+      "synergies": [
+        "poison"
+      ],
+      "antiSynergies": [],
+      "notes": "Solid poison application"
+    },
+    {
+      "id": "Deflect",
+      "baseTier": "C",
+      "synergies": [
+        "block",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost block, niche"
+    },
+    {
+      "id": "Dodge And Roll",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "dexterity"
+      ],
+      "antiSynergies": [],
+      "notes": "Block now + block next turn"
+    },
+    {
+      "id": "Flick Flack",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "shiv",
+        "shiv_synergy",
+        "multi_hit"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE attack with Sly, block-based shiv generation"
+    },
+    {
+      "id": "Leading Strike",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "shiv",
+        "shiv_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Attack that generates 1 shiv"
+    },
+    {
+      "id": "Piercing Wail",
+      "baseTier": "B",
+      "synergies": [
+        "weak",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE strength down 6, exhaust, top common"
+    },
+    {
+      "id": "Poisoned Stab",
+      "baseTier": "C",
+      "synergies": [
+        "poison",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Damage + small poison, mediocre"
+    },
+    {
+      "id": "Prepared",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "discard",
+        "discard_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost cycle card"
+    },
+    {
+      "id": "Ricochet",
+      "baseTier": "B",
+      "synergies": [
+        "multi_hit",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost AoE multi-hit with Sly"
+    },
+    {
+      "id": "Slice",
+      "baseTier": "C",
+      "synergies": [
+        "zero_cost",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost damage, filler"
+    },
+    {
+      "id": "Snakebite",
+      "baseTier": "B",
+      "synergies": [
+        "poison",
+        "damage",
+        "retain"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost with Retain + Sly, poison application"
+    },
+    {
+      "id": "Sucker Punch",
+      "baseTier": "C",
+      "synergies": [
+        "weak",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Damage + weak application"
+    },
+    {
+      "id": "Untouchable",
+      "baseTier": "B",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost block with Sly, decent defense"
+    },
+    {
+      "id": "Accuracy",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: shiv damage boost, needs shiv deck"
+    },
+    {
+      "id": "Backstab",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "exhaust",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost Innate + Exhaust, strong turn 1 damage"
+    },
+    {
+      "id": "Blur",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "dexterity"
+      ],
+      "antiSynergies": [],
+      "notes": "Block carries to next turn"
+    },
+    {
+      "id": "Bouncing Flask",
+      "baseTier": "B",
+      "synergies": [
+        "poison"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost random poison, hits AoE"
+    },
+    {
+      "id": "Bubble Bubble",
+      "baseTier": "B",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Targeted block skill"
+    },
+    {
+      "id": "Calculated Gamble",
+      "baseTier": "B",
+      "synergies": [
+        "discard",
+        "discard_synergy",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost discard hand + redraw, exhaust"
+    },
+    {
+      "id": "Dash",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "damage",
+        "dexterity"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost block + damage, efficient uncommon"
+    },
+    {
+      "id": "Escape Plan",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost draw + conditional block"
+    },
+    {
+      "id": "Expertise",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Draw up to 6, good hand refill"
+    },
+    {
+      "id": "Expose",
+      "baseTier": "B",
+      "synergies": [
+        "vulnerable",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost exhaust, applies debuff power"
+    },
+    {
+      "id": "Finisher",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Damage per attack played this turn, strong with shivs"
+    },
+    {
+      "id": "Flanking",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost targeted attack with draw"
+    },
+    {
+      "id": "Flechettes",
+      "baseTier": "C",
+      "synergies": [
+        "block",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Damage per skill in hand, situational"
+    },
+    {
+      "id": "Follow Through",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "damage",
+        "multi_hit"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE attack with draw synergy"
+    },
+    {
+      "id": "Footwork",
+      "baseTier": "S",
+      "synergies": [
+        "dexterity",
+        "block",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Permanent dexterity, scales all block cards"
+    },
+    {
+      "id": "Hand Trick",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "discard",
+        "discard_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Hand manipulation, draw + discard"
+    },
+    {
+      "id": "Haze",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost AoE block with Sly, expensive"
+    },
+    {
+      "id": "Hidden Daggers",
+      "baseTier": "S",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost, generates 2 shivs"
+    },
+    {
+      "id": "Infinite Blades",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: 1 shiv per turn passively"
+    },
+    {
+      "id": "Leg Sweep",
+      "baseTier": "A",
+      "synergies": [
+        "weak",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost block + weak, very reliable"
+    },
+    {
+      "id": "Memento Mori",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon targeted attack"
+    },
+    {
+      "id": "Noxious Fumes",
+      "baseTier": "S",
+      "synergies": [
+        "poison",
+        "poison_scaling",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Passive 2 poison/turn to all enemies, wins long fights"
+    },
+    {
+      "id": "Outbreak",
+      "baseTier": "B",
+      "synergies": [
+        "poison",
+        "poison_scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: poison synergy, burst poison scaling"
+    },
+    {
+      "id": "Phantom Blades",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: phantom shiv generation"
+    },
+    {
+      "id": "Pinpoint",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost targeted attack, expensive for uncommon"
+    },
+    {
+      "id": "Pounce",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost targeted attack"
+    },
+    {
+      "id": "Precise Cut",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost targeted attack"
+    },
+    {
+      "id": "Predator",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost damage + draw 2 next turn"
+    },
+    {
+      "id": "Reflex",
+      "baseTier": "A",
+      "synergies": [
+        "discard",
+        "discard_synergy",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost with Sly, draw when discarded"
+    },
+    {
+      "id": "Skewer",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "multi_hit",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "X-cost multi-hit attack"
+    },
+    {
+      "id": "Speedster",
+      "baseTier": "B",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: speed scaling"
+    },
+    {
+      "id": "Strangle",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Targeted attack, solid uncommon"
+    },
+    {
+      "id": "Tactician",
+      "baseTier": "B",
+      "synergies": [
+        "discard",
+        "discard_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost with Sly, energy when discarded"
+    },
+    {
+      "id": "Up My Sleeve",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost shiv generation"
+    },
+    {
+      "id": "Well-Laid Plans",
+      "baseTier": "S",
+      "synergies": [
+        "retain",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Retain a card each turn, top power"
+    },
+    {
+      "id": "Abrasive",
+      "baseTier": "B",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: 3-cost with Sly, abrasive scaling"
+    },
+    {
+      "id": "Accelerant",
+      "baseTier": "B",
+      "synergies": [
+        "poison",
+        "poison_scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: accelerate poison, burst scaling"
+    },
+    {
+      "id": "Adrenaline",
+      "baseTier": "S",
+      "synergies": [
+        "draw",
+        "exhaust",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost draw 2 + energy + exhaust, best skill"
+    },
+    {
+      "id": "Afterimage",
+      "baseTier": "S",
+      "synergies": [
+        "block",
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Block per card played, insane with shivs"
+    },
+    {
+      "id": "Assassinate",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "exhaust",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost Innate + Exhaust, massive single-target damage"
+    },
+    {
+      "id": "Blade Of Ink",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Shiv-themed ink blade"
+    },
+    {
+      "id": "Bullet Time",
+      "baseTier": "A",
+      "synergies": [
+        "zero_cost",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost, hand costs 0, can't draw more"
+    },
+    {
+      "id": "Burst",
+      "baseTier": "A",
+      "synergies": [
+        "poison",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Double next skill, incredible with Catalyst or block"
+    },
+    {
+      "id": "Corrosive Wave",
+      "baseTier": "B",
+      "synergies": [
+        "poison",
+        "weak"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE 3 poison + debuffs"
+    },
+    {
+      "id": "Echoing Slash",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "multi_hit"
+      ],
+      "antiSynergies": [],
+      "notes": "AoE multi-hit rare attack"
+    },
+    {
+      "id": "Envenom",
+      "baseTier": "B",
+      "synergies": [
+        "poison",
+        "shiv",
+        "multi_hit",
+        "poison_scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: poison on unblocked damage, great with shivs"
+    },
+    {
+      "id": "Fan Of Knives",
+      "baseTier": "A",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: generates 4 shivs, strong shiv engine"
+    },
+    {
+      "id": "Grand Finale",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "discard",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost 50 damage if draw pile empty, hard to setup"
+    },
+    {
+      "id": "Knife Trap",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "block",
+        "shiv_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost targeted, generates shivs defensively"
+    },
+    {
+      "id": "Malaise",
+      "baseTier": "S",
+      "synergies": [
+        "weak",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "X-cost strength down + weak, exhaust, top debuff"
+    },
+    {
+      "id": "Master Planner",
+      "baseTier": "S",
+      "synergies": [
+        "retain",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: retain and plan cards"
+    },
+    {
+      "id": "Mirage",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Illusory defense, exhaust + Sly"
+    },
+    {
+      "id": "Murder",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost massive single-target damage"
+    },
+    {
+      "id": "Nightmare",
+      "baseTier": "A",
+      "synergies": [
+        "poison",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost exhaust, triple a card next turn"
+    },
+    {
+      "id": "Serpent Form",
+      "baseTier": "A",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: 3-cost serpent transformation, strong scaling"
+    },
+    {
+      "id": "Shadowmeld",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Shadow defense, conditional block"
+    },
+    {
+      "id": "Shadow Step",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Evasive skill, deck manipulation"
+    },
+    {
+      "id": "Sneaky",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: 2-cost with Sly, sneaky shiv scaling"
+    },
+    {
+      "id": "Storm Of Steel",
+      "baseTier": "B",
+      "synergies": [
+        "shiv",
+        "shiv_synergy",
+        "discard"
+      ],
+      "antiSynergies": [],
+      "notes": "Discard hand, gain shivs"
+    },
+    {
+      "id": "The Hunt",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "vulnerable",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Exhaust + Sly, apply vulnerable"
+    },
+    {
+      "id": "Tools Of The Trade",
+      "baseTier": "A",
+      "synergies": [
+        "draw",
+        "discard",
+        "discard_synergy"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: draw + discard each turn, top rare"
+    },
+    {
+      "id": "Tracking",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Power: 2-cost, track and draw specific cards"
+    },
+    {
+      "id": "Wraith Form",
+      "baseTier": "S",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Ancient. Intangible, best defensive card in the game"
+    },
+    {
+      "id": "Suppress",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "Ancient. 0-cost Innate + Sly, strong opener"
+    }
+  ]
+}

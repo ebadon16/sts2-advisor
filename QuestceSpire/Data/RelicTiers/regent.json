@@ -1,0 +1,13 @@
+{
+  "category": "regent",
+  "relics": [
+    { "id": "Divine Right", "baseTier": "B", "synergies": ["stars", "scaling"], "antiSynergies": [], "notes": "Regent starter relic, baseline star/authority support" },
+    { "id": "Fencing Manual", "baseTier": "B", "synergies": ["damage", "forge"], "antiSynergies": [], "notes": "Combat/damage themed, boosts forge attacks" },
+    { "id": "Galactic Dust", "baseTier": "B", "synergies": ["cosmic", "stars"], "antiSynergies": [], "notes": "Cosmic residue, general cosmic synergy" },
+    { "id": "Lunar Pastry", "baseTier": "A", "synergies": ["cosmic", "scaling"], "antiSynergies": [], "notes": "Rare cosmic scaling relic, strong in star-heavy builds" },
+    { "id": "Mini Regent", "baseTier": "A", "synergies": ["minion", "scaling"], "antiSynergies": [], "notes": "Tiny sovereign companion, powerful minion enhancement" },
+    { "id": "Orange Dough", "baseTier": "A", "synergies": ["stars", "forge"], "antiSynergies": [], "notes": "Unique regent resource, strong star generation" },
+    { "id": "Regalite", "baseTier": "B", "synergies": ["scaling", "stars"], "antiSynergies": [], "notes": "Royal crystal, authority/scaling support" },
+    { "id": "Vitruvian Minion", "baseTier": "B", "synergies": ["minion", "block"], "antiSynergies": [], "notes": "Shop minion relic, minion support utility" }
+  ]
+}

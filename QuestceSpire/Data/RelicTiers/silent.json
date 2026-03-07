@@ -1,0 +1,13 @@
+{
+  "category": "silent",
+  "relics": [
+    { "id": "Helical Dart", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Damage themed" },
+    { "id": "Ninja Scroll", "baseTier": "A", "synergies": ["shiv", "shiv_synergy"], "antiSynergies": [], "notes": "Start combat with shivs in hand" },
+    { "id": "Paper Krane", "baseTier": "A", "synergies": ["weak"], "antiSynergies": [], "notes": "Weak enemies deal 40% less (up from 25%)" },
+    { "id": "Ring Of The Snake", "baseTier": "B", "synergies": ["draw"], "antiSynergies": [], "notes": "Silent starter. Draw extra cards turn 1" },
+    { "id": "Snecko Skull", "baseTier": "B", "synergies": ["poison"], "antiSynergies": [], "notes": "+1 poison on poison card play" },
+    { "id": "Tingsha", "baseTier": "B", "synergies": ["discard", "discard_synergy"], "antiSynergies": [], "notes": "Deal damage on discard" },
+    { "id": "Tough Bandages", "baseTier": "A", "synergies": ["discard", "discard_synergy", "block"], "antiSynergies": [], "notes": "Gain block on discard" },
+    { "id": "Twisted Funnel", "baseTier": "A", "synergies": ["poison"], "antiSynergies": [], "notes": "Apply poison to all enemies at start of combat" }
+  ]
+}

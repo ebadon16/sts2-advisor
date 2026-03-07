@@ -3,9 +3,9 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using STS2Advisor.API.Data;
-using STS2Advisor.API.Models;
-using STS2Advisor.API.Services;
+using QuestceSpire.API.Data;
+using QuestceSpire.API.Models;
+using QuestceSpire.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

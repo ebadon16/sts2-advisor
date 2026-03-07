@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>QuestceSpire</AssemblyName>
+    <RootNamespace>QuestceSpire</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Harmony — copy 0Harmony.dll from data_sts2_windows_x86_64/ -->
+    <Reference Include="0Harmony">
+      <HintPath>..\lib\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Godot C# runtime — copy from data_sts2_windows_x86_64/ -->
+    <Reference Include="GodotSharp">
+      <HintPath>..\lib\GodotSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Game assembly — copy sts2.dll from data_sts2_windows_x86_64/ -->
+    <Reference Include="sts2">
+      <HintPath>..\lib\sts2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
+  </ItemGroup>
+
+  <!-- Copy JSON data files to output -->
+  <ItemGroup>
+    <None Include="Data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

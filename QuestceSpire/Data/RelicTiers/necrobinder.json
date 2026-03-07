@@ -1,0 +1,13 @@
+{
+  "category": "necrobinder",
+  "relics": [
+    { "id": "Big Hat", "baseTier": "B", "synergies": ["death", "soul"], "antiSynergies": [], "notes": "General necrobinder relic, broad utility" },
+    { "id": "Bone Flute", "baseTier": "B", "synergies": ["summon", "minion"], "antiSynergies": [], "notes": "Death/summon themed, supports minion builds" },
+    { "id": "Bookmark", "baseTier": "A", "synergies": ["death", "exhaust"], "antiSynergies": [], "notes": "Rare death relic, strong exhaust/death synergy" },
+    { "id": "Book Repair Knife", "baseTier": "B", "synergies": ["death", "exhaust"], "antiSynergies": [], "notes": "Death themed utility, exhaust cycling support" },
+    { "id": "Bound Phylactery", "baseTier": "B", "synergies": ["soul", "death"], "antiSynergies": [], "notes": "Necrobinder starter relic, baseline soul support" },
+    { "id": "Funerary Mask", "baseTier": "B", "synergies": ["death", "block"], "antiSynergies": [], "notes": "Death themed defense, death-triggered blocking" },
+    { "id": "Ivory Tile", "baseTier": "A", "synergies": ["soul", "death"], "antiSynergies": [], "notes": "Rare soul/death relic, powerful soul engine piece" },
+    { "id": "Undying Sigil", "baseTier": "B", "synergies": ["summon", "minion"], "antiSynergies": [], "notes": "Shop undeath relic, revive/minion utility" }
+  ]
+}

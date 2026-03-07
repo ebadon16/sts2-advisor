@@ -1,0 +1,906 @@
+{
+  "character": "regent",
+  "cards": [
+    {
+      "id": "Strike Regent",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter strike, replace when possible"
+    },
+    {
+      "id": "Defend Regent",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter defend, replace when possible"
+    },
+    {
+      "id": "Falling Star",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter 0-cost attack. Weak base damage but free"
+    },
+    {
+      "id": "Venerate",
+      "baseTier": "C",
+      "synergies": [
+        "stars",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Starter skill. Minor star/block utility, replace later"
+    },
+    {
+      "id": "Alignment",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill. Star alignment for setup turns, decent enabler"
+    },
+    {
+      "id": "Arsenal",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare power. Stores forged weapons, strong in forge builds"
+    },
+    {
+      "id": "Astral Pulse",
+      "baseTier": "B",
+      "synergies": [
+        "aoe",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost common AoE attack. Free damage to all enemies, solid early"
+    },
+    {
+      "id": "Beat Into Shape",
+      "baseTier": "B",
+      "synergies": [
+        "forge",
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare attack, CalculatedForge=3. Forges cards while dealing damage"
+    },
+    {
+      "id": "Begone",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common attack. Straightforward single-target damage"
+    },
+    {
+      "id": "Big Bang",
+      "baseTier": "A",
+      "synergies": [
+        "exhaust",
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost rare skill, Exhaust+Sly. Powerful one-shot cosmic effect"
+    },
+    {
+      "id": "Black Hole",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon power. Persistent cosmic effect, good scaling engine"
+    },
+    {
+      "id": "Bombardment",
+      "baseTier": "B",
+      "synergies": [
+        "aoe",
+        "exhaust",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost rare AoE, Exhaust+Sly. Expensive but high burst AoE"
+    },
+    {
+      "id": "Bulwark",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost uncommon skill. Large block with scaling potential"
+    },
+    {
+      "id": "Bundle Of Joy",
+      "baseTier": "A",
+      "synergies": [
+        "minion",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare skill, Exhaust+Sly. Creates a strong minion, key minion payoff"
+    },
+    {
+      "id": "Celestial Might",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "cosmic"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost common attack. Solid cosmic-themed damage"
+    },
+    {
+      "id": "Charge",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Offensive buff, enables big attack turns"
+    },
+    {
+      "id": "Child Of The Stars",
+      "baseTier": "A",
+      "synergies": [
+        "stars",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon power, BlockForStars=2. Generates block from stars passively"
+    },
+    {
+      "id": "Cloak Of Stars",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "block",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost common skill. Free star-to-block conversion, good early pickup"
+    },
+    {
+      "id": "Collision Course",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost common attack. Free damage, decent filler"
+    },
+    {
+      "id": "Comet",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost rare attack. Free damage with strong cosmic effect"
+    },
+    {
+      "id": "Conqueror",
+      "baseTier": "A",
+      "synergies": [
+        "scaling",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon skill targeting single enemy. Authority scaling, strong sustained power"
+    },
+    {
+      "id": "Convergence",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Star convergence enables combos"
+    },
+    {
+      "id": "Cosmic Indifference",
+      "baseTier": "C",
+      "synergies": [
+        "cosmic",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Weak cosmic defense, low impact"
+    },
+    {
+      "id": "Crash Landing",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "aoe"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare AoE attack. Decent multi-target but risky"
+    },
+    {
+      "id": "Crescent Spear",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "forge"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common attack. Solid weapon for forge synergy"
+    },
+    {
+      "id": "Crush Under",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "aoe",
+        "weak"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common AoE, StrengthLoss=1. Deals damage and weakens enemies"
+    },
+    {
+      "id": "Decisions Decisions",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost rare skill, Exhaust+Sly. Card selection utility, flexible"
+    },
+    {
+      "id": "Devastate",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon attack. Big single-target hit with scaling bonus"
+    },
+    {
+      "id": "Dying Star",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "aoe",
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare AoE, Ethereal+Sly, StrengthLoss=9. Massive strength reduction"
+    },
+    {
+      "id": "Foregone Conclusion",
+      "baseTier": "B",
+      "synergies": [
+        "scaling",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare skill. Conditional finisher enabler"
+    },
+    {
+      "id": "Furnace",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon power. Core forge engine, upgrades weapons over time"
+    },
+    {
+      "id": "Gamma Blast",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon attack. Free single-target cosmic damage"
+    },
+    {
+      "id": "Gather Light",
+      "baseTier": "A",
+      "synergies": [
+        "stars",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Star generation + draw, excellent early enabler"
+    },
+    {
+      "id": "Genesis",
+      "baseTier": "S",
+      "synergies": [
+        "stars",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare power, StarsPerTurn=2. Build-defining star engine, enables all star synergies"
+    },
+    {
+      "id": "Glimmer",
+      "baseTier": "C",
+      "synergies": [
+        "stars",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill, PutBack=1. Minor star utility, low impact"
+    },
+    {
+      "id": "Glitterstream",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "stars"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost common skill, BlockNextTurn=4. Block now and next turn, decent sustain"
+    },
+    {
+      "id": "Glow",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Star generation with minor defense"
+    },
+    {
+      "id": "Guards",
+      "baseTier": "A",
+      "synergies": [
+        "minion",
+        "block",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare skill, Exhaust+Sly. Summons guard minions for protection"
+    },
+    {
+      "id": "Guiding Star",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common attack. Deals damage with card draw/tutor effect"
+    },
+    {
+      "id": "Hammer Time",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare power. Forge amplifier, strong in blade builds"
+    },
+    {
+      "id": "Heavenly Drill",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "forge",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost rare attack. Free forge damage, piercing"
+    },
+    {
+      "id": "Hegemony",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost uncommon attack. Authority scaling, permanent power growth"
+    },
+    {
+      "id": "Heirloom Hammer",
+      "baseTier": "B",
+      "synergies": [
+        "forge",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare attack. Forge weapon, grows with forge support"
+    },
+    {
+      "id": "Hidden Cache",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "stars"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Resource discovery, solid utility card"
+    },
+    {
+      "id": "I Am Invincible",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare skill. Massive block burst, excellent boss card"
+    },
+    {
+      "id": "Kingly Kick",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "4-cost uncommon attack. Overcosted, too expensive for the damage"
+    },
+    {
+      "id": "Kingly Punch",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon attack, Increase=3. Grows by 3 damage each play, rewards thin decks"
+    },
+    {
+      "id": "Knockout Blow",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost uncommon attack. Big single hit, expensive but strong finisher"
+    },
+    {
+      "id": "Know Thy Place",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "exhaust",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost common skill targeting enemy, Exhaust+Sly. Free debuff, solid utility"
+    },
+    {
+      "id": "Largesse",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "stars"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill targeting special. Resource generation, wide utility"
+    },
+    {
+      "id": "Lunar Blast",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "multi_hit",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon attack, CalculatedHits=3. Free multi-hit, scales with strength"
+    },
+    {
+      "id": "Make It So",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "draw",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost rare attack. Powerful command effect enabling big plays"
+    },
+    {
+      "id": "Manifest Authority",
+      "baseTier": "A",
+      "synergies": [
+        "scaling",
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Permanent authority scaling, excellent power card"
+    },
+    {
+      "id": "Meteor Shower",
+      "baseTier": "S",
+      "synergies": [
+        "aoe",
+        "cosmic",
+        "multi_hit",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost Ancient AoE attack. Free massive multi-target damage, top-tier AoE"
+    },
+    {
+      "id": "Monarchs Gaze",
+      "baseTier": "A",
+      "synergies": [
+        "scaling",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost rare power. Expensive but powerful authority scaling engine"
+    },
+    {
+      "id": "Monologue",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill. Minor draw/utility, filler"
+    },
+    {
+      "id": "Neutron Aegis",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare power. Cosmic defense engine, excellent sustained block"
+    },
+    {
+      "id": "Orbit",
+      "baseTier": "B",
+      "synergies": [
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost uncommon power. Builds over turns, slow but rewarding"
+    },
+    {
+      "id": "Pale Blue Dot",
+      "baseTier": "B",
+      "synergies": [
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon power, CardPlay=5. Triggers after 5 card plays, rewards engine decks"
+    },
+    {
+      "id": "Parry",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon power. Reactive defense, counterattack on block"
+    },
+    {
+      "id": "Particle Wall",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "cosmic",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill. Free cosmic block, solid defensive option"
+    },
+    {
+      "id": "Patter",
+      "baseTier": "C",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Minor card flow, low impact filler"
+    },
+    {
+      "id": "Photon Cut",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common attack, PutBack=2. Light-speed attack with deck manipulation"
+    },
+    {
+      "id": "Pillar Of Creation",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "stars",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon power. Cosmic star engine, strong persistent scaling"
+    },
+    {
+      "id": "Prophesize",
+      "baseTier": "A",
+      "synergies": [
+        "draw",
+        "stars",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost uncommon skill. Powerful scry/draw effect, great deck control"
+    },
+    {
+      "id": "Quasar",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill. Free cosmic burst, excellent value"
+    },
+    {
+      "id": "Radiate",
+      "baseTier": "B",
+      "synergies": [
+        "aoe",
+        "multi_hit",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon AoE, CalculatedHits=4. Free multi-hit AoE, scales with strength"
+    },
+    {
+      "id": "Refine Blade",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Core forge card, permanently improves weapons"
+    },
+    {
+      "id": "Reflect",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Reflects damage back, decent defensive option"
+    },
+    {
+      "id": "Resonance",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "cosmic",
+        "aoe"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon AoE skill. Star resonance amplifies cosmic effects"
+    },
+    {
+      "id": "Royal Gamble",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon skill, Exhaust+Sly. Random effect, unreliable"
+    },
+    {
+      "id": "Royalties",
+      "baseTier": "B",
+      "synergies": [
+        "stars",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare power. Passive star income, slow but consistent"
+    },
+    {
+      "id": "Seeking Edge",
+      "baseTier": "B",
+      "synergies": [
+        "forge",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare power. Tutors forge cards, good in blade builds"
+    },
+    {
+      "id": "Seven Stars",
+      "baseTier": "S",
+      "synergies": [
+        "stars",
+        "aoe",
+        "cosmic",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare AoE attack. Massive star-powered burst, enables huge combo turns"
+    },
+    {
+      "id": "Shining Strike",
+      "baseTier": "C",
+      "synergies": [
+        "damage",
+        "stars"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon Strike variant. Basic star-enhanced damage, filler"
+    },
+    {
+      "id": "Solar Strike",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "cosmic"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common Strike variant. Solar-powered attack, solid early game"
+    },
+    {
+      "id": "Spectrum Shift",
+      "baseTier": "A",
+      "synergies": [
+        "cosmic",
+        "draw",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost uncommon power. Cosmic resource shifting, enables flexibility"
+    },
+    {
+      "id": "Spoils Of Battle",
+      "baseTier": "B",
+      "synergies": [
+        "draw",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common skill. Reward on combat, resource generation"
+    },
+    {
+      "id": "Stardust",
+      "baseTier": "C",
+      "synergies": [
+        "damage",
+        "zero_cost"
+      ],
+      "antiSynergies": [],
+      "notes": "0-cost uncommon random-target attack. Hits 4 random times but low base impact"
+    },
+    {
+      "id": "Summon Forth",
+      "baseTier": "B",
+      "synergies": [
+        "minion",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Core minion summoning, solid in minion builds"
+    },
+    {
+      "id": "Supermassive",
+      "baseTier": "S",
+      "synergies": [
+        "damage",
+        "cosmic",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon attack. Huge cosmic damage that scales well"
+    },
+    {
+      "id": "Sword Sage",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "2-cost rare power. Master forger, core of blade archetype"
+    },
+    {
+      "id": "Terraforming",
+      "baseTier": "B",
+      "synergies": [
+        "cosmic",
+        "block",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost uncommon skill. Cosmic reshaping, hybrid offense/defense utility"
+    },
+    {
+      "id": "The Sealed Throne",
+      "baseTier": "S",
+      "synergies": [
+        "scaling",
+        "stars",
+        "cosmic"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost Ancient power. Ultimate authority scaling, massive persistent payoff"
+    },
+    {
+      "id": "The Smith",
+      "baseTier": "A",
+      "synergies": [
+        "forge",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare skill. Master forge effect, permanently enhances weapons"
+    },
+    {
+      "id": "Tyranny",
+      "baseTier": "A",
+      "synergies": [
+        "scaling",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost rare power. Oppressive authority scaling, strong in long fights"
+    },
+    {
+      "id": "Void Form",
+      "baseTier": "S",
+      "synergies": [
+        "cosmic",
+        "scaling",
+        "stars"
+      ],
+      "antiSynergies": [],
+      "notes": "3-cost rare power. Major cosmic scaling engine, warps the game around it"
+    },
+    {
+      "id": "Wrought In War",
+      "baseTier": "B",
+      "synergies": [
+        "forge",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "1-cost common attack. Forge-enhanced war attack, decent with forge support"
+    }
+  ]
+}

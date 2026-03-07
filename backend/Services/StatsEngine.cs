@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using STS2Advisor.API.Data;
-using STS2Advisor.API.Models;
+using QuestceSpire.API.Data;
+using QuestceSpire.API.Models;
 
-namespace STS2Advisor.API.Services;
+namespace QuestceSpire.API.Services;
 
 public class StatsEngine
 {
