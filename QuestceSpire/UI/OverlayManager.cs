@@ -63,6 +63,9 @@ public class OverlayManager
 	private bool _showDeckBreakdown = true;
 	private bool _showDrawProb = true;
 
+	// Staleness tracking: clear overlay when game screen changes without a patch firing
+	private ulong _lastUpdateTick;
+
 	// Feature 5: Draw probability
 	private GameState _currentGameState;
 
@@ -251,6 +254,21 @@ public class OverlayManager
 		{
 			return true;
 		}
+		// Remove old nodes from scene tree before rebuilding
+		try
+		{
+			if (_layer != null && GodotObject.IsInstanceValid(_layer))
+			{
+				_layer.GetParent()?.RemoveChild(_layer);
+				_layer.QueueFree();
+			}
+			if (_hoverPreview != null && GodotObject.IsInstanceValid(_hoverPreview))
+			{
+				_hoverPreview.GetParent()?.RemoveChild(_hoverPreview);
+				_hoverPreview.QueueFree();
+			}
+		}
+		catch { }
 		_layer = null;
 		_panel = null;
 		_content = null;
@@ -542,6 +560,61 @@ public class OverlayManager
 		}
 	}
 
+	private void MarkUpdated()
+	{
+		_lastUpdateTick = Time.GetTicksMsec();
+	}
+
+	/// <summary>
+	/// Called periodically (~1s) by OverlayInputHandler._Process.
+	/// Detects when game screen has changed without a patch firing and clears stale data.
+	/// </summary>
+	public void CheckForStaleScreen()
+	{
+		if (_lastUpdateTick == 0) return;
+		ulong elapsed = Time.GetTicksMsec() - _lastUpdateTick;
+		// If we have card/relic advice showing for 8+ seconds, check if screen is still valid
+		if (elapsed > 8000 && (_currentCards != null || _currentRelics != null))
+		{
+			// Check if the game's screen node that generated this advice is still active
+			// by looking for known screen type nodes in the scene tree
+			try
+			{
+				SceneTree tree = Engine.GetMainLoop() as SceneTree;
+				if (tree?.Root == null) return;
+				bool hasCardScreen = HasNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4);
+				bool hasRelicScreen = HasNodeOfType(tree.Root, "NChooseARelicSelection", 4);
+				bool hasShopScreen = HasNodeOfType(tree.Root, "NMerchantInventory", 4);
+				bool isCardAdvice = _currentScreen == "CARD REWARD" || _currentScreen == "CARD REMOVAL" || _currentScreen == "CARD UPGRADE";
+				bool isRelicAdvice = _currentScreen == "RELIC REWARD";
+				bool isShopAdvice = _currentScreen == "MERCHANT SHOP";
+
+				bool screenGone = false;
+				if (isCardAdvice && !hasCardScreen) screenGone = true;
+				if (isRelicAdvice && !hasRelicScreen) screenGone = true;
+				if (isShopAdvice && !hasShopScreen) screenGone = true;
+
+				if (screenGone)
+				{
+					Plugin.Log($"Stale screen detected: {_currentScreen} no longer active — clearing overlay");
+					Clear();
+				}
+			}
+			catch { }
+		}
+	}
+
+	private static bool HasNodeOfType(Node root, string typeName, int maxDepth)
+	{
+		if (maxDepth <= 0 || root == null) return false;
+		if (root.GetType().Name == typeName) return true;
+		foreach (Node child in root.GetChildren())
+		{
+			if (HasNodeOfType(child, typeName, maxDepth - 1)) return true;
+		}
+		return false;
+	}
+
 	public void ShowCardAdvice(List<ScoredCard> cards, DeckAnalysis deckAnalysis = null, string character = null)
 	{
 		_currentCards = cards;
@@ -550,6 +623,7 @@ public class OverlayManager
 		_currentCharacter = character;
 		_currentScreen = "CARD REWARD";
 		_mapAdvice = null;
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -561,6 +635,7 @@ public class OverlayManager
 		_currentCharacter = character;
 		_currentScreen = "RELIC REWARD";
 		_mapAdvice = null;
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -572,6 +647,7 @@ public class OverlayManager
 		_currentCharacter = character;
 		_currentScreen = "CARD REMOVAL";
 		_mapAdvice = null;
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -596,6 +672,7 @@ public class OverlayManager
 		_currentFloor = floor;
 		_currentGameState = gameState;
 		_mapAdvice = GenerateRestSiteAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor, gameState);
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -608,6 +685,7 @@ public class OverlayManager
 		_currentScreen = "CARD UPGRADE";
 		_currentGameState = gameState;
 		_mapAdvice = null;
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -620,6 +698,7 @@ public class OverlayManager
 		_currentFloor = floor;
 		_currentGameState = gameState;
 		_mapAdvice = GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor);
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -632,6 +711,7 @@ public class OverlayManager
 		_currentFloor = floor;
 		_currentGameState = null;
 		_mapAdvice = GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -644,6 +724,7 @@ public class OverlayManager
 		_currentDeckAnalysis = deckAnalysis;
 		_currentScreen = "MAP";
 		_mapAdvice = GenerateMapAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -655,6 +736,7 @@ public class OverlayManager
 		_currentCharacter = character;
 		_currentScreen = "MERCHANT SHOP";
 		_mapAdvice = null;
+		MarkUpdated();
 		Rebuild();
 	}
 
@@ -665,6 +747,7 @@ public class OverlayManager
 		_currentDeckAnalysis = null;
 		_mapAdvice = null;
 		_currentScreen = "MAP / COMBAT";
+		MarkUpdated();
 		if (_hoverPreview != null && GodotObject.IsInstanceValid(_hoverPreview))
 			_hoverPreview.Visible = false;
 		Rebuild();
@@ -2276,8 +2359,6 @@ public class OverlayManager
 		var advice = new List<(string, string, Color)>();
 		float hpRatio = maxHP > 0 ? (float)hp / maxHP : 1f;
 
-		advice.Add(("\u2764", $"HP: {hp}/{maxHP} ({(int)(hpRatio * 100)}%)", hpRatio < 0.5f ? ClrNegative : ClrPositive));
-
 		if (hpRatio < 0.5f)
 		{
 			advice.Add(("\u2B50", "REST recommended — HP is low", ClrNegative));
@@ -2379,9 +2460,6 @@ public class OverlayManager
 		float hpRatio = maxHP > 0 ? (float)hp / maxHP : 1f;
 		int deckSize = deck?.TotalCards ?? 0;
 
-		advice.Add(("\u2764", $"HP: {hp}/{maxHP}", hpRatio < 0.4f ? ClrNegative : hpRatio < 0.65f ? ClrExpensive : ClrPositive));
-		advice.Add(("\u2702", $"Deck: {deckSize} cards", ClrCream));
-
 		if (deck != null && deck.DetectedArchetypes.Count > 0)
 		{
 			var primary = deck.DetectedArchetypes[0];
@@ -2413,11 +2491,6 @@ public class OverlayManager
 		float hpRatio = maxHP > 0 ? (float)hp / maxHP : 1f;
 		int deckSize = deck?.TotalCards ?? 0;
 		bool isDefined = deck != null && !deck.IsUndefined;
-
-		// Context summary
-		advice.Add(("\u2764", $"HP: {hp}/{maxHP} ({(int)(hpRatio * 100)}%)", hpRatio < 0.4f ? ClrNegative : hpRatio < 0.65f ? ClrExpensive : ClrPositive));
-		advice.Add(("\u2B50", $"Gold: {gold}", gold >= 200 ? ClrAccent : ClrSub));
-		advice.Add(("\u2702", $"Deck: {deckSize} cards" + (isDefined ? "" : " (unfocused)"), isDefined ? ClrCream : ClrExpensive));
 
 		// Event-specific guidance
 		if (hpRatio < 0.35f)
