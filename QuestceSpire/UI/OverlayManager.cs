@@ -867,15 +867,10 @@ public class OverlayManager
 		UpdateTitleSepColor();
 		// A1: Win rate
 		UpdateWinRate();
-		UpdateArchetypeChip();
-		// On advice screens (rest/combat/event/map), hide top-level deck chip + viz — shown inline after advice
-		bool isAdviceScreen = !(_currentCards != null && _currentCards.Count > 0) && !(_currentRelics != null && _currentRelics.Count > 0);
+		// Hide top-level chip + viz — deck info now always in collapsible DECK BREAKDOWN section
 		if (_archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
-			_archChipPanel.Visible = !isAdviceScreen;
-		if (!isAdviceScreen)
-			UpdateDeckViz(_currentDeckAnalysis);
-		else
-			ClearDeckViz();
+			_archChipPanel.Visible = false;
+		ClearDeckViz();
 		// Collapsed guard: only update labels, skip full content rebuild
 		if (_collapsed)
 		{
@@ -1038,8 +1033,8 @@ public class OverlayManager
 			label.AddThemeFontSizeOverride("font_size", 17);
 			_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		// On advice screens, add deck breakdown after advice (not before)
-		if (isAdviceScreen && _currentDeckAnalysis != null)
+		// Deck breakdown — always available as collapsible section
+		if (_currentDeckAnalysis != null)
 		{
 			var deckSection = AddCollapsibleSection("DECK BREAKDOWN", "deck", ref _showDeckBreakdown);
 			if (deckSection != null)
