@@ -378,7 +378,7 @@ public class OverlayManager
 		Label label = new Label();
 		label.Text = "QU'EST-CE SPIRE?";
 		ApplyFont(label, _fontBold);
-		label.AddThemeFontSizeOverride("font_size", 24);
+		label.AddThemeFontSizeOverride("font_size", 28);
 		label.AddThemeColorOverride("font_color", ClrHeader);
 		label.AddThemeConstantOverride("outline_size", 4);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
@@ -394,7 +394,7 @@ public class OverlayManager
 		_screenLabel = new Label();
 		_screenLabel.Text = "WAITING...  (drag to move)";
 		ApplyFont(_screenLabel, _fontBold);
-		_screenLabel.AddThemeFontSizeOverride("font_size", 12);
+		_screenLabel.AddThemeFontSizeOverride("font_size", 14);
 		_screenLabel.AddThemeColorOverride("font_color", ClrSub);
 		_screenLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
 		titleBar.AddChild(_screenLabel, forceReadableName: false, Node.InternalMode.Disabled);
@@ -404,7 +404,7 @@ public class OverlayManager
 		_winRateLabel.Text = "";
 		_winRateLabel.Visible = false;
 		ApplyFont(_winRateLabel, _fontBody);
-		_winRateLabel.AddThemeFontSizeOverride("font_size", 10);
+		_winRateLabel.AddThemeFontSizeOverride("font_size", 17);
 		_winRateLabel.AddThemeColorOverride("font_color", ClrSub);
 		_winRateLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
 		titleBar.AddChild(_winRateLabel, forceReadableName: false, Node.InternalMode.Disabled);
@@ -414,7 +414,7 @@ public class OverlayManager
 		_archetypeLabel = new Label();
 		_archetypeLabel.Text = "ANALYZING DECK...";
 		ApplyFont(_archetypeLabel, _fontBold);
-		_archetypeLabel.AddThemeFontSizeOverride("font_size", 14);
+		_archetypeLabel.AddThemeFontSizeOverride("font_size", 16);
 		_archetypeLabel.AddThemeColorOverride("font_color", ClrAccent);
 		_archetypeLabel.HorizontalAlignment = HorizontalAlignment.Center;
 		_archetypeLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -426,7 +426,7 @@ public class OverlayManager
 		vBoxContainer.AddChild(_deckVizContainer, forceReadableName: false, Node.InternalMode.Disabled);
 		_scroll = new ScrollContainer();
 		_scroll.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-		_scroll.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+		_scroll.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
 		_scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
 		_scroll.CustomMinimumSize = new Vector2(0f, 40f);
 		var scrollBar = _scroll.GetVScrollBar();
@@ -815,7 +815,7 @@ public class OverlayManager
 				advLbl.Text = $"{icon}  {text}";
 				ApplyFont(advLbl, _fontBody);
 				advLbl.AddThemeColorOverride("font_color", color);
-				advLbl.AddThemeFontSizeOverride("font_size", 13);
+				advLbl.AddThemeFontSizeOverride("font_size", 17);
 				advLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				advPanel.AddChild(advLbl, forceReadableName: false, Node.InternalMode.Disabled);
 				_content.AddChild(advPanel, forceReadableName: false, Node.InternalMode.Disabled);
@@ -824,11 +824,11 @@ public class OverlayManager
 		else if (!hasCards && !hasRelics)
 		{
 			Label label = new Label();
-			label.Text = "Ready for decision screen.\n(Cards, Relics, or Shop)\n\nF7: Toggle | Shift+F7: Opacity | F8: Tooltips\nF9: Badges | F10: History | F11: Compact";
+			label.Text = "Ready for decision screen.\n(Cards, Relics, or Shop)";
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			ApplyFont(label, _fontBody);
 			label.AddThemeColorOverride("font_color", ClrSub);
-			label.AddThemeFontSizeOverride("font_size", 13);
+			label.AddThemeFontSizeOverride("font_size", 17);
 			_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		// Feature 5: Draw probability panel in combat
@@ -850,6 +850,19 @@ public class OverlayManager
 		if (_currentScreen == "MAP")
 		{
 			AddArchetypeTrajectory();
+		}
+		// Hotkey hints — always visible at the bottom
+		{
+			HSeparator hkSep = new HSeparator();
+			hkSep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
+			_content.AddChild(hkSep, forceReadableName: false, Node.InternalMode.Disabled);
+			Label hkLabel = new Label();
+			hkLabel.Text = "F7 Toggle  |  Shift+F7 Opacity  |  F8 Tooltips\nF9 Badges  |  F10 History  |  F11 Compact";
+			hkLabel.HorizontalAlignment = HorizontalAlignment.Center;
+			ApplyFont(hkLabel, _fontBody);
+			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.7f));
+			hkLabel.AddThemeFontSizeOverride("font_size", 12);
+			_content.AddChild(hkLabel, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		ResizePanelToContent();
 		// V2: Fade-in on screen change
@@ -951,7 +964,7 @@ public class OverlayManager
 		label.Text = text;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", ClrAccent);
-		label.AddThemeFontSizeOverride("font_size", 14);
+		label.AddThemeFontSizeOverride("font_size", 18);
 		label.AddThemeConstantOverride("outline_size", 3);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
@@ -1026,7 +1039,7 @@ public class OverlayManager
 		label.Text = (card.IsBestPick ? "\u2605 " : "") + text + upgradeTag;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", card.IsBestPick ? ClrAccent : ClrCream);
-		label.AddThemeFontSizeOverride("font_size", 15);
+		label.AddThemeFontSizeOverride("font_size", 17);
 		label.AddThemeConstantOverride("outline_size", 2);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		label.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
@@ -1046,7 +1059,7 @@ public class OverlayManager
 		if (oneLiner.Length > 0) metaLbl.Text += $" \u2014 {oneLiner}";
 		ApplyFont(metaLbl, _fontBody);
 		metaLbl.AddThemeColorOverride("font_color", card.Cost >= 3 ? ClrExpensive : ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 11);
+		metaLbl.AddThemeFontSizeOverride("font_size", 17);
 		metaLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		// Shop price with gold icon (inline after meta)
@@ -1064,7 +1077,7 @@ public class OverlayManager
 			priceLbl.Text = $"{card.Price}";
 			ApplyFont(priceLbl, _fontBody);
 			priceLbl.AddThemeColorOverride("font_color", ClrAccent);
-			priceLbl.AddThemeFontSizeOverride("font_size", 11);
+			priceLbl.AddThemeFontSizeOverride("font_size", 17);
 			priceRow.AddChild(priceLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			vBoxContainer.AddChild(priceRow, forceReadableName: false, Node.InternalMode.Disabled);
 		}
@@ -1138,7 +1151,7 @@ public class OverlayManager
 		label.Text = (relic.IsBestPick ? "\u2605 " : "") + text;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", relic.IsBestPick ? ClrAccent : ClrCream);
-		label.AddThemeFontSizeOverride("font_size", 15);
+		label.AddThemeFontSizeOverride("font_size", 17);
 		label.AddThemeConstantOverride("outline_size", 2);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		label.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
@@ -1157,7 +1170,7 @@ public class OverlayManager
 		if (oneLiner.Length > 0) metaLbl.Text += $" \u2014 {oneLiner}";
 		ApplyFont(metaLbl, _fontBody);
 		metaLbl.AddThemeColorOverride("font_color", ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 11);
+		metaLbl.AddThemeFontSizeOverride("font_size", 17);
 		metaLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		// Archetype synergy tags
@@ -1171,7 +1184,7 @@ public class OverlayManager
 				Label tagLbl = new Label();
 				tagLbl.Text = $"[{tag}]";
 				ApplyFont(tagLbl, _fontBody);
-				tagLbl.AddThemeFontSizeOverride("font_size", 10);
+				tagLbl.AddThemeFontSizeOverride("font_size", 17);
 				tagLbl.AddThemeColorOverride("font_color", ClrAccent);
 				tagRow.AddChild(tagLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
@@ -1194,7 +1207,7 @@ public class OverlayManager
 				priceLbl.Text = $"{relic.Price}";
 				ApplyFont(priceLbl, _fontBody);
 				priceLbl.AddThemeColorOverride("font_color", ClrAccent);
-				priceLbl.AddThemeFontSizeOverride("font_size", 11);
+				priceLbl.AddThemeFontSizeOverride("font_size", 17);
 				priceRow.AddChild(priceLbl, forceReadableName: false, Node.InternalMode.Disabled);
 				vBoxContainer.AddChild(priceRow, forceReadableName: false, Node.InternalMode.Disabled);
 			}
@@ -1204,7 +1217,7 @@ public class OverlayManager
 				pLbl.Text = $"{relic.Price}g";
 				ApplyFont(pLbl, _fontBody);
 				pLbl.AddThemeColorOverride("font_color", ClrAccent);
-				pLbl.AddThemeFontSizeOverride("font_size", 11);
+				pLbl.AddThemeFontSizeOverride("font_size", 17);
 				vBoxContainer.AddChild(pLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 		}
@@ -1299,7 +1312,7 @@ public class OverlayManager
 			breakdownLbl.Text = breakdown;
 			ApplyFont(breakdownLbl, _fontBody);
 			breakdownLbl.AddThemeColorOverride("font_color", ClrAqua);
-			breakdownLbl.AddThemeFontSizeOverride("font_size", 12);
+			breakdownLbl.AddThemeFontSizeOverride("font_size", 14);
 			breakdownLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			parent.AddChild(breakdownLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			hasContent = true;
@@ -1313,7 +1326,7 @@ public class OverlayManager
 				lbl.Text = reason;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrPositive);
-				lbl.AddThemeFontSizeOverride("font_size", 11);
+				lbl.AddThemeFontSizeOverride("font_size", 17);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
@@ -1328,7 +1341,7 @@ public class OverlayManager
 				lbl.Text = reason;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrNegative);
-				lbl.AddThemeFontSizeOverride("font_size", 11);
+				lbl.AddThemeFontSizeOverride("font_size", 17);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
@@ -1341,7 +1354,7 @@ public class OverlayManager
 			lbl.Text = (hasContent ? "\n" : "") + notes;
 			ApplyFont(lbl, _fontBody);
 			lbl.AddThemeColorOverride("font_color", ClrNotes);
-			lbl.AddThemeFontSizeOverride("font_size", 11);
+			lbl.AddThemeFontSizeOverride("font_size", 17);
 			lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
@@ -1496,7 +1509,7 @@ public class OverlayManager
 		mainLine.Text = $"{typeIcon} F{evt.Floor}: {chosenName}{gradeStr}";
 		ApplyFont(mainLine, _fontBold);
 		mainLine.AddThemeColorOverride("font_color", evt.ChosenId != null ? ClrAccent : ClrSub);
-		mainLine.AddThemeFontSizeOverride("font_size", 12);
+		mainLine.AddThemeFontSizeOverride("font_size", 14);
 		mainLine.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 		vbox.AddChild(mainLine, forceReadableName: false, Node.InternalMode.Disabled);
 
@@ -1513,7 +1526,7 @@ public class OverlayManager
 			altLine.Text = $"  over {string.Join(", ", altParts)}";
 			ApplyFont(altLine, _fontBody);
 			altLine.AddThemeColorOverride("font_color", ClrSub);
-			altLine.AddThemeFontSizeOverride("font_size", 10);
+			altLine.AddThemeFontSizeOverride("font_size", 17);
 			altLine.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 			vbox.AddChild(altLine, forceReadableName: false, Node.InternalMode.Disabled);
 		}
@@ -1545,7 +1558,7 @@ public class OverlayManager
 			curveHeader.Text = "Energy Cost";
 			ApplyFont(curveHeader, _fontBody);
 			curveHeader.AddThemeColorOverride("font_color", ClrSub);
-			curveHeader.AddThemeFontSizeOverride("font_size", 9);
+			curveHeader.AddThemeFontSizeOverride("font_size", 14);
 			_deckVizContainer.AddChild(curveHeader, forceReadableName: false, Node.InternalMode.Disabled);
 
 			// Cost number row above bars
@@ -1557,7 +1570,7 @@ public class OverlayManager
 				costLbl.Text = cost == 5 ? "5+" : cost.ToString();
 				ApplyFont(costLbl, _fontBody);
 				costLbl.AddThemeColorOverride("font_color", ClrSub);
-				costLbl.AddThemeFontSizeOverride("font_size", 9);
+				costLbl.AddThemeFontSizeOverride("font_size", 14);
 				costLbl.HorizontalAlignment = HorizontalAlignment.Center;
 				costLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 				costRow.AddChild(costLbl, forceReadableName: false, Node.InternalMode.Disabled);
@@ -1595,7 +1608,7 @@ public class OverlayManager
 				lbl.Text = count.ToString();
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrSub);
-				lbl.AddThemeFontSizeOverride("font_size", 9);
+				lbl.AddThemeFontSizeOverride("font_size", 14);
 				lbl.HorizontalAlignment = HorizontalAlignment.Center;
 				col.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 
@@ -1653,7 +1666,7 @@ public class OverlayManager
 				atkLbl.Text = $"{analysis.AttackCount} Atk";
 				ApplyFont(atkLbl, _fontBody);
 				atkLbl.AddThemeColorOverride("font_color", new Color(0.9f, 0.35f, 0.3f));
-				atkLbl.AddThemeFontSizeOverride("font_size", 10);
+				atkLbl.AddThemeFontSizeOverride("font_size", 17);
 				typeLblRow.AddChild(atkLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			if (analysis.SkillCount > 0)
@@ -1662,7 +1675,7 @@ public class OverlayManager
 				sklLbl.Text = $"{analysis.SkillCount} Skl";
 				ApplyFont(sklLbl, _fontBody);
 				sklLbl.AddThemeColorOverride("font_color", new Color(0.3f, 0.5f, 1f));
-				sklLbl.AddThemeFontSizeOverride("font_size", 10);
+				sklLbl.AddThemeFontSizeOverride("font_size", 17);
 				typeLblRow.AddChild(sklLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			if (analysis.PowerCount > 0)
@@ -1671,7 +1684,7 @@ public class OverlayManager
 				pwrLbl.Text = $"{analysis.PowerCount} Pwr";
 				ApplyFont(pwrLbl, _fontBody);
 				pwrLbl.AddThemeColorOverride("font_color", new Color(0.3f, 0.8f, 0.4f));
-				pwrLbl.AddThemeFontSizeOverride("font_size", 10);
+				pwrLbl.AddThemeFontSizeOverride("font_size", 17);
 				typeLblRow.AddChild(pwrLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			_deckVizContainer.AddChild(typeLblRow, forceReadableName: false, Node.InternalMode.Disabled);
@@ -1717,7 +1730,7 @@ public class OverlayManager
 			gradeLbl.Text = entry.Grade.ToString();
 			ApplyFont(gradeLbl, _fontBold);
 			gradeLbl.AddThemeColorOverride("font_color", badgeColor);
-			gradeLbl.AddThemeFontSizeOverride("font_size", 11);
+			gradeLbl.AddThemeFontSizeOverride("font_size", 17);
 			gradeLbl.CustomMinimumSize = new Vector2(14f, 0);
 			row.AddChild(gradeLbl, forceReadableName: false, Node.InternalMode.Disabled);
 
@@ -1726,7 +1739,7 @@ public class OverlayManager
 			nameLbl.Text = entry.Id;
 			ApplyFont(nameLbl, _fontBody);
 			nameLbl.AddThemeColorOverride("font_color", ClrCream);
-			nameLbl.AddThemeFontSizeOverride("font_size", 11);
+			nameLbl.AddThemeFontSizeOverride("font_size", 17);
 			nameLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			nameLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 			row.AddChild(nameLbl, forceReadableName: false, Node.InternalMode.Disabled);
@@ -1742,7 +1755,7 @@ public class OverlayManager
 			pctLbl.Text = $"{probability:F0}%";
 			ApplyFont(pctLbl, _fontBody);
 			pctLbl.AddThemeColorOverride("font_color", ClrSub);
-			pctLbl.AddThemeFontSizeOverride("font_size", 10);
+			pctLbl.AddThemeFontSizeOverride("font_size", 17);
 			pctLbl.CustomMinimumSize = new Vector2(30f, 0);
 			pctLbl.HorizontalAlignment = HorizontalAlignment.Right;
 			row.AddChild(pctLbl, forceReadableName: false, Node.InternalMode.Disabled);
@@ -1988,13 +2001,13 @@ public class OverlayManager
 		label.Text = title;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", ClrSkip);
-		label.AddThemeFontSizeOverride("font_size", 15);
+		label.AddThemeFontSizeOverride("font_size", 17);
 		vBoxContainer.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
 		Label label2 = new Label();
 		label2.Text = reasoning;
 		ApplyFont(label2, _fontBody);
 		label2.AddThemeColorOverride("font_color", ClrSkipSub);
-		label2.AddThemeFontSizeOverride("font_size", 11);
+		label2.AddThemeFontSizeOverride("font_size", 17);
 		label2.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		vBoxContainer.AddChild(label2, forceReadableName: false, Node.InternalMode.Disabled);
 		_content.AddChild(panelContainer, forceReadableName: false, Node.InternalMode.Disabled);
@@ -2256,7 +2269,7 @@ public class OverlayManager
 			nameLbl.Text = displayName;
 			ApplyFont(nameLbl, _fontBold);
 			nameLbl.AddThemeColorOverride("font_color", ClrCream);
-			nameLbl.AddThemeFontSizeOverride("font_size", 11);
+			nameLbl.AddThemeFontSizeOverride("font_size", 17);
 			archRow.AddChild(nameLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			// Mini bar chart
 			HBoxContainer barRow = new HBoxContainer();
@@ -2380,7 +2393,7 @@ public class OverlayManager
 					cLbl.Text = $"F{evt.Floor}: Chose {chosen} [{chosenGrade}] \u2014 Best: {bestId} [{bestGrade}] ({gap} grades below)";
 					ApplyFont(cLbl, _fontBody);
 					cLbl.AddThemeColorOverride("font_color", outcome == RunOutcome.Win ? ClrPositive : ClrNegative);
-					cLbl.AddThemeFontSizeOverride("font_size", 11);
+					cLbl.AddThemeFontSizeOverride("font_size", 17);
 					cLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 					cPanel.AddChild(cLbl, forceReadableName: false, Node.InternalMode.Disabled);
 					_content.AddChild(cPanel, forceReadableName: false, Node.InternalMode.Disabled);
@@ -2392,7 +2405,7 @@ public class OverlayManager
 				noContr.Text = "No controversial picks \u2014 solid decision-making!";
 				ApplyFont(noContr, _fontBody);
 				noContr.AddThemeColorOverride("font_color", ClrPositive);
-				noContr.AddThemeFontSizeOverride("font_size", 12);
+				noContr.AddThemeFontSizeOverride("font_size", 14);
 				_content.AddChild(noContr, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			// Stats line
@@ -2400,7 +2413,7 @@ public class OverlayManager
 			statsLbl.Text = $"Decisions: {events.Count} | Controversial: {controversial.Count}";
 			ApplyFont(statsLbl, _fontBold);
 			statsLbl.AddThemeColorOverride("font_color", ClrSub);
-			statsLbl.AddThemeFontSizeOverride("font_size", 12);
+			statsLbl.AddThemeFontSizeOverride("font_size", 14);
 			_content.AddChild(statsLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			ResizePanelToContent();
 			// V2: Fade in the summary
