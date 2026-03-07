@@ -82,8 +82,7 @@ public class OverlayManager
 	// A1: Win rate tracker
 	private Label _winRateLabel;
 
-	// A3: Archetype trajectory
-	private VBoxContainer _sparklineContainer;
+	private VBoxContainer _archChipVBox;
 
 	// STS2 color palette (matched from game scenes/DLL)
 	private static readonly Color ClrBg = new Color(0.034f, 0.057f, 0.11f, 0.97f);
@@ -439,14 +438,16 @@ public class OverlayManager
 
 		_archChipPanel = new PanelContainer();
 		_archChipPanel.AddThemeStyleboxOverride("panel", _sbChip);
+		_archChipVBox = new VBoxContainer();
+		_archChipVBox.AddThemeConstantOverride("separation", 3);
 		_archetypeLabel = new Label();
 		_archetypeLabel.Text = "ANALYZING DECK...";
 		ApplyFont(_archetypeLabel, _fontBold);
-		_archetypeLabel.AddThemeFontSizeOverride("font_size", 16);
-		_archetypeLabel.AddThemeColorOverride("font_color", ClrAccent);
-		_archetypeLabel.HorizontalAlignment = HorizontalAlignment.Center;
+		_archetypeLabel.AddThemeFontSizeOverride("font_size", 15);
+		_archetypeLabel.AddThemeColorOverride("font_color", ClrCream);
 		_archetypeLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-		_archChipPanel.AddChild(_archetypeLabel, forceReadableName: false, Node.InternalMode.Disabled);
+		_archChipVBox.AddChild(_archetypeLabel, forceReadableName: false, Node.InternalMode.Disabled);
+		_archChipPanel.AddChild(_archChipVBox, forceReadableName: false, Node.InternalMode.Disabled);
 		vBoxContainer.AddChild(_archChipPanel, forceReadableName: false, Node.InternalMode.Disabled);
 		// Deck composition visualization container (Feature 2)
 		_deckVizContainer = new VBoxContainer();
@@ -982,43 +983,88 @@ public class OverlayManager
 		_panel.Size = new Vector2(_panel.Size.X, height);
 	}
 
+	// Archetype bar colors — distinct per slot for easy visual parsing
+	private static readonly Color[] ArchColors = {
+		new Color(0.4f, 0.8f, 0.95f),  // cyan
+		new Color(0.95f, 0.6f, 0.3f),  // orange
+		new Color(0.7f, 0.5f, 0.95f),  // purple
+		new Color(0.3f, 0.9f, 0.5f),   // green
+	};
+
 	private void UpdateArchetypeChip()
 	{
 		if (_archetypeLabel == null || !GodotObject.IsInstanceValid(_archetypeLabel))
 		{
 			return;
 		}
-		// Remove previous sparkline if any
-		if (_sparklineContainer != null && GodotObject.IsInstanceValid(_sparklineContainer))
+		// Clear previous archetype rows (keep _archetypeLabel as first child)
+		if (_archChipVBox != null && GodotObject.IsInstanceValid(_archChipVBox))
 		{
-			_sparklineContainer.GetParent()?.RemoveChild(_sparklineContainer);
-			_sparklineContainer.QueueFree();
-			_sparklineContainer = null;
+			var children = _archChipVBox.GetChildren().ToArray();
+			foreach (Node child in children)
+			{
+				if (child != _archetypeLabel)
+				{
+					_archChipVBox.RemoveChild(child);
+					child.QueueFree();
+				}
+			}
 		}
 		string deckLabel = _currentDeckAnalysis != null ? $"{_currentDeckAnalysis.TotalCards} cards" : "";
 		if (_currentDeckAnalysis == null || _currentDeckAnalysis.DetectedArchetypes.Count == 0)
 		{
-			_archetypeLabel.Text = deckLabel.Length > 0 ? $"YOUR DECK ({deckLabel}): No clear focus" : "YOUR DECK: Analyzing...";
+			_archetypeLabel.Text = deckLabel.Length > 0 ? $"YOUR DECK ({deckLabel})" : "YOUR DECK";
+			// "No clear focus" sub-label
+			if (_archChipVBox != null && GodotObject.IsInstanceValid(_archChipVBox) && deckLabel.Length > 0)
+			{
+				Label noFocus = new Label();
+				noFocus.Text = "No clear archetype focus";
+				ApplyFont(noFocus, _fontBody);
+				noFocus.AddThemeColorOverride("font_color", ClrSub);
+				noFocus.AddThemeFontSizeOverride("font_size", 13);
+				_archChipVBox.AddChild(noFocus, forceReadableName: false, Node.InternalMode.Disabled);
+			}
 			return;
 		}
-		// Normalize percentages so they sum to 100%
-		if (_currentDeckAnalysis.DetectedArchetypes.Count == 1)
+		_archetypeLabel.Text = $"YOUR DECK ({deckLabel})";
+		// Build colored archetype rows
+		if (_archChipVBox == null || !GodotObject.IsInstanceValid(_archChipVBox))
+			return;
+		float totalStrength = _currentDeckAnalysis.DetectedArchetypes.Sum(a => a.Strength);
+		if (totalStrength <= 0) totalStrength = 1f;
+		int colorIdx = 0;
+		foreach (ArchetypeMatch arch in _currentDeckAnalysis.DetectedArchetypes)
 		{
-			var arch = _currentDeckAnalysis.DetectedArchetypes[0];
-			_archetypeLabel.Text = $"YOUR DECK ({deckLabel}): {arch.Archetype.DisplayName} focus ({arch.CoreCount} core cards)";
-		}
-		else
-		{
-			float totalStrength = _currentDeckAnalysis.DetectedArchetypes.Sum(a => a.Strength);
-			List<string> list = new List<string>();
-			foreach (ArchetypeMatch detectedArchetype in _currentDeckAnalysis.DetectedArchetypes)
+			int pct = (int)(arch.Strength / totalStrength * 100f);
+			Color archColor = ArchColors[colorIdx % ArchColors.Length];
+			// Row: [colored bar] Name  pct%
+			HBoxContainer row = new HBoxContainer();
+			row.AddThemeConstantOverride("separation", 6);
+			// Percentage bar (proportional width)
+			ColorRect bar = new ColorRect();
+			bar.Color = new Color(archColor, 0.7f);
+			bar.CustomMinimumSize = new Vector2(Math.Max(pct * 0.8f, 4f), 12f);
+			row.AddChild(bar, forceReadableName: false, Node.InternalMode.Disabled);
+			// Archetype name + percentage
+			Label archLbl = new Label();
+			archLbl.Text = $"{arch.Archetype.DisplayName}  {pct}%";
+			ApplyFont(archLbl, _fontBold);
+			archLbl.AddThemeColorOverride("font_color", archColor);
+			archLbl.AddThemeFontSizeOverride("font_size", 14);
+			row.AddChild(archLbl, forceReadableName: false, Node.InternalMode.Disabled);
+			// Core card count hint
+			if (arch.CoreCount > 0)
 			{
-				int pct = totalStrength > 0 ? (int)(detectedArchetype.Strength / totalStrength * 100f) : 0;
-				list.Add($"{detectedArchetype.Archetype.DisplayName} {pct}%");
+				Label coreLbl = new Label();
+				coreLbl.Text = $"({arch.CoreCount} core)";
+				ApplyFont(coreLbl, _fontBody);
+				coreLbl.AddThemeColorOverride("font_color", ClrSub);
+				coreLbl.AddThemeFontSizeOverride("font_size", 12);
+				row.AddChild(coreLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
-			_archetypeLabel.Text = $"YOUR DECK ({deckLabel}): {string.Join(" \u2022 ", list)}";
+			_archChipVBox.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
+			colorIdx++;
 		}
-		// Sparkline removed — redundant with Archetype Trajectory section and overlaps text
 	}
 
 	private void AddSectionHeader(string text)
@@ -1759,16 +1805,46 @@ public class OverlayManager
 	{
 		if (analysis == null || analysis.TotalCards == 0)
 			return;
-		// Inline archetype info
-		if (_archetypeLabel != null && GodotObject.IsInstanceValid(_archetypeLabel))
+		// Inline archetype info — replicate colored breakdown
+		Label deckHeader = new Label();
+		deckHeader.Text = $"YOUR DECK ({analysis.TotalCards} cards)";
+		ApplyFont(deckHeader, _fontBold);
+		deckHeader.AddThemeFontSizeOverride("font_size", 15);
+		deckHeader.AddThemeColorOverride("font_color", ClrCream);
+		target.AddChild(deckHeader, forceReadableName: false, Node.InternalMode.Disabled);
+		if (analysis.DetectedArchetypes != null && analysis.DetectedArchetypes.Count > 0)
 		{
-			Label archInline = new Label();
-			archInline.Text = _archetypeLabel.Text;
-			ApplyFont(archInline, _fontBold);
-			archInline.AddThemeFontSizeOverride("font_size", 15);
-			archInline.AddThemeColorOverride("font_color", ClrAccent);
-			archInline.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			target.AddChild(archInline, forceReadableName: false, Node.InternalMode.Disabled);
+			float totalStr = analysis.DetectedArchetypes.Sum(a => a.Strength);
+			if (totalStr <= 0) totalStr = 1f;
+			int cIdx = 0;
+			foreach (var arch in analysis.DetectedArchetypes)
+			{
+				int pct = (int)(arch.Strength / totalStr * 100f);
+				Color ac = ArchColors[cIdx % ArchColors.Length];
+				HBoxContainer aRow = new HBoxContainer();
+				aRow.AddThemeConstantOverride("separation", 6);
+				ColorRect aBar = new ColorRect();
+				aBar.Color = new Color(ac, 0.7f);
+				aBar.CustomMinimumSize = new Vector2(Math.Max(pct * 0.6f, 3f), 10f);
+				aRow.AddChild(aBar, forceReadableName: false, Node.InternalMode.Disabled);
+				Label aLbl = new Label();
+				aLbl.Text = $"{arch.Archetype.DisplayName}  {pct}%";
+				ApplyFont(aLbl, _fontBold);
+				aLbl.AddThemeColorOverride("font_color", ac);
+				aLbl.AddThemeFontSizeOverride("font_size", 13);
+				aRow.AddChild(aLbl, forceReadableName: false, Node.InternalMode.Disabled);
+				target.AddChild(aRow, forceReadableName: false, Node.InternalMode.Disabled);
+				cIdx++;
+			}
+		}
+		else
+		{
+			Label noArch = new Label();
+			noArch.Text = "No clear archetype focus";
+			ApplyFont(noArch, _fontBody);
+			noArch.AddThemeColorOverride("font_color", ClrSub);
+			noArch.AddThemeFontSizeOverride("font_size", 13);
+			target.AddChild(noArch, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		AddInlineEnergyCurve(target, analysis);
 		AddInlineTypeDistribution(target, analysis);
