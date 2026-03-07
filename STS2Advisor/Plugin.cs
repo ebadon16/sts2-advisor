@@ -1,8 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
+using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.Shops;
+using MegaCrit.Sts2.Core.Entities.Relics;
+using MegaCrit.Sts2.Core.Runs;
 using STS2Advisor.Core;
 using STS2Advisor.Tracking;
 using STS2Advisor.UI;
@@ -14,10 +22,6 @@ namespace STS2Advisor
     ///
     /// Loaded via .NET startup hook (DOTNET_STARTUP_HOOKS environment variable).
     /// The Initialize() method runs before the game's Main().
-    ///
-    /// Since Godot's scene tree isn't ready yet at startup hook time,
-    /// we apply Harmony patches immediately but defer overlay creation
-    /// until the scene tree is available.
     /// </summary>
     public static class StartupHook
     {
@@ -29,7 +33,9 @@ namespace STS2Advisor
             }
             catch (Exception ex)
             {
-                File.AppendAllText(Plugin.LogPath, $"[STS2Advisor] FATAL: {ex}\n");
+                string fallbackLog = Plugin.LogPath
+                    ?? Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "sts2advisor.log");
+                File.AppendAllText(fallbackLog, $"[STS2Advisor] FATAL: {ex}\n");
             }
         }
     }
@@ -37,7 +43,7 @@ namespace STS2Advisor
     public static class Plugin
     {
         public const string ModName = "STS2 Advisor";
-        public const string ModVersion = "0.2.0";
+        public const string ModVersion = "0.3.0";
         public const string HarmonyId = "com.sts2advisor.mod";
 
         public static string PluginFolder { get; private set; }
@@ -51,56 +57,38 @@ namespace STS2Advisor
         public static AdaptiveScorer AdaptiveScorer { get; private set; }
         public static RunTracker RunTracker { get; private set; }
         public static RunDatabase RunDatabase { get; private set; }
-        public static SyncClient SyncClient { get; private set; }
+        public static LocalStatsComputer LocalStats { get; private set; }
         public static OverlayManager Overlay { get; set; }
 
         public static void Init()
         {
-            // Determine mod folder (where STS2Advisor.dll lives)
             PluginFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(PluginFolder))
+                PluginFolder = Path.GetDirectoryName(typeof(Plugin).Assembly.Location);
+            if (string.IsNullOrEmpty(PluginFolder))
+                PluginFolder = Path.Combine(AppContext.BaseDirectory, "mods", "STS2Advisor");
             LogPath = Path.Combine(PluginFolder, "sts2advisor.log");
 
             Log($"{ModName} v{ModVersion} initializing...");
 
-            // Initialize core systems
             string dataPath = Path.Combine(PluginFolder, "Data");
 
             TierEngine = new TierEngine(dataPath);
             DeckAnalyzer = new DeckAnalyzer();
             SynergyScorer = new SynergyScorer();
 
-            // Initialize tracking + community data
             RunDatabase = new RunDatabase(PluginFolder);
             RunTracker = new RunTracker(RunDatabase);
             RunTracker.Initialize(PluginFolder);
-            SyncClient = new SyncClient(RunDatabase);
+            LocalStats = new LocalStatsComputer(RunDatabase);
             AdaptiveScorer = new AdaptiveScorer(RunDatabase);
 
-            // Apply Harmony patches
             _harmony = new Harmony(HarmonyId);
-            _harmony.PatchAll(typeof(GamePatches));
+            _harmony.PatchAll(typeof(GamePatches).Assembly);
+            GamePatches.ApplyManualPatches(_harmony);
 
             Log("Harmony patches applied.");
-
-            // Fetch community stats in background
-            ThreadPool.QueueUserWorkItem(_ =>
-            {
-                try
-                {
-                    SyncClient.UploadRunsAsync();
-                    foreach (string c in new[] { "ironclad", "silent", "defect", "regent", "necromancer" })
-                        SyncClient.FetchCommunityStatsAsync(c);
-                }
-                catch (Exception ex)
-                {
-                    Log($"Background sync error (non-fatal): {ex.Message}");
-                }
-            });
-
             Log($"{ModName} initialized successfully. Waiting for scene tree...");
-
-            // Overlay creation is deferred — OverlayManager hooks into the scene tree
-            // via a Harmony patch on a game initialization method (see GamePatches).
         }
 
         public static void Log(string message)
@@ -112,7 +100,6 @@ namespace STS2Advisor
             }
             catch
             {
-                // Can't log, silently fail
             }
         }
     }
@@ -120,177 +107,386 @@ namespace STS2Advisor
     /// <summary>
     /// Harmony patches that hook into STS2's game screens.
     ///
-    /// !! PLACEHOLDER HOOKS !!
-    /// These target classes/methods in sts2.dll that need to be discovered
-    /// via dnSpy/ILSpy/dotPeek. See SETUP_GUIDE.md for instructions.
-    ///
-    /// To find the real targets:
-    /// 1. Open sts2.dll in dnSpy (or ILSpy/dotPeek)
-    /// 2. Search for card reward, relic selection, shop screen classes
-    /// 3. Replace the placeholder types and method names below
+    /// Targets real classes discovered from sts2.dll:
+    ///   - NCardRewardSelectionScreen.ShowScreen — card reward after combat
+    ///   - NChooseARelicSelection.ShowScreen — relic selection (boss/treasure)
+    ///   - NMerchantInventory.Open — shop screen
+    ///   - NCardRewardSelectionScreen._Ready — used to create overlay on first screen
     /// </summary>
     public static class GamePatches
     {
         // =====================================================================
-        // SCENE TREE READY — Initialize overlay once Godot is running
-        // =====================================================================
-        // TODO: Find a class that runs during game initialization.
-        // Patch its ready/init method to create our overlay.
-        //
-        // In dnSpy, look for:
-        //   - A main game manager or autoload singleton
-        //   - A class with _Ready() or Initialize() that runs at game start
-        //   - Example: GameManager._Ready() or Main._Ready()
-        //
-        // Once patched, this creates the Godot CanvasLayer overlay.
+        // OVERLAY CREATION — called from any screen patch to ensure overlay exists
         // =====================================================================
 
-        // [HarmonyPatch(typeof(SomeGameManager), "_Ready")]
-        // [HarmonyPostfix]
-        // public static void OnGameReady()
-        // {
-        //     if (Plugin.Overlay == null)
-        //     {
-        //         Plugin.Overlay = new OverlayManager();
-        //         Plugin.Log("Overlay created.");
-        //     }
-        // }
-
-        // =====================================================================
-        // CARD REWARD SCREEN
-        // =====================================================================
-        // TODO: Replace with actual card reward screen class/method from sts2.dll.
-        //
-        // In dnSpy, search for:
-        //   - Classes with "Reward", "CardReward", "CardChoice"
-        //   - Methods that show/open the card selection after combat
-        //   - The class will have a collection of offered card objects
-        //
-        // Look for Godot patterns:
-        //   - _Ready(), _Process(), Show(), Open(), Initialize()
-        //   - Signal connections like "card_selected", "reward_shown"
-        // =====================================================================
-
-        [HarmonyPatch(typeof(PlaceholderCardRewardScreen), "OnOpen")]
-        [HarmonyPostfix]
-        public static void OnCardRewardOpened()
+        private static void EnsureOverlay()
         {
-            Plugin.Log("Card reward screen detected — analyzing...");
+            if (Plugin.Overlay == null)
+            {
+                try
+                {
+                    Plugin.Overlay = new OverlayManager();
+                    Plugin.Log("Overlay created.");
+                }
+                catch (Exception ex)
+                {
+                    Plugin.Log($"Overlay creation failed: {ex}");
+                }
+            }
+        }
 
-            var state = GameBridge.GameStateReader.ReadCurrentState();
-            if (state == null) return;
-
-            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
-                state.Character, state.DeckCards
-            );
-
-            var scored = Plugin.SynergyScorer.ScoreOfferings(
-                state.OfferedCards,
-                deckArchetypes,
-                state.Character,
-                state.ActNumber,
-                Plugin.TierEngine,
-                Plugin.AdaptiveScorer
-            );
-
-            Plugin.Overlay?.ShowCardAdvice(scored);
-
-            Plugin.RunTracker?.RecordDecision(
-                DecisionEventType.CardReward,
-                state.OfferedCards.ConvertAll(c => c.Id),
-                null,
-                state.DeckCards.ConvertAll(c => c.Id),
-                state.CurrentRelics.ConvertAll(r => r.Id),
-                0, 0, 0,
-                state.ActNumber, 0
-            );
+        [HarmonyPatch(typeof(NCardRewardSelectionScreen), "_Ready")]
+        [HarmonyPostfix]
+        public static void OnCardRewardScreenReady(NCardRewardSelectionScreen __instance)
+        {
+            EnsureOverlay();
         }
 
         // =====================================================================
-        // RELIC REWARD SCREEN
+        // CARD REWARD SCREEN — intercept ShowScreen to capture offered cards
         // =====================================================================
 
-        [HarmonyPatch(typeof(PlaceholderRelicRewardScreen), "OnOpen")]
+        [HarmonyPatch(typeof(NCardRewardSelectionScreen), "ShowScreen")]
         [HarmonyPostfix]
-        public static void OnRelicRewardOpened()
+        public static void OnCardRewardOpened(
+            IReadOnlyList<CardCreationResult> options,
+            IReadOnlyList<MegaCrit.Sts2.Core.Entities.CardRewardAlternatives.CardRewardAlternative> extraOptions)
         {
-            Plugin.Log("Relic reward screen detected — analyzing...");
+            try
+            {
+                EnsureOverlay();
+                Plugin.Log("Card reward screen detected — analyzing...");
 
-            var state = GameBridge.GameStateReader.ReadCurrentState();
-            if (state == null) return;
+                // Store the offered cards for GameStateReader
+                GameBridge.GameStateReader._lastCardOptions = options;
+                GameBridge.GameStateReader._lastRelicOptions = null;
+                GameBridge.GameStateReader._lastMerchantInventory = null;
 
-            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
-                state.Character, state.DeckCards
-            );
+                var state = GameBridge.GameStateReader.ReadCurrentState();
+                if (state == null) return;
 
-            var scored = Plugin.SynergyScorer.ScoreRelicOfferings(
-                state.OfferedRelics,
-                deckArchetypes,
-                state.Character,
-                state.ActNumber,
-                Plugin.TierEngine,
-                Plugin.AdaptiveScorer
-            );
+                var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
+                    state.Character, state.DeckCards, Plugin.TierEngine
+                );
 
-            Plugin.Overlay?.ShowRelicAdvice(scored);
+                var scored = Plugin.SynergyScorer.ScoreOfferings(
+                    state.OfferedCards,
+                    deckArchetypes,
+                    state.Character,
+                    state.ActNumber,
+                    Plugin.TierEngine,
+                    Plugin.AdaptiveScorer
+                );
 
-            Plugin.RunTracker?.RecordDecision(
-                DecisionEventType.RelicReward,
-                state.OfferedRelics.ConvertAll(r => r.Id),
-                null,
-                state.DeckCards.ConvertAll(c => c.Id),
-                state.CurrentRelics.ConvertAll(r => r.Id),
-                0, 0, 0,
-                state.ActNumber, 0
-            );
+                Plugin.Overlay?.ShowCardAdvice(scored);
+
+                Plugin.RunTracker?.RecordDecision(
+                    DecisionEventType.CardReward,
+                    state.OfferedCards.ConvertAll(c => c.Id),
+                    null,
+                    state.DeckCards.ConvertAll(c => c.Id),
+                    state.CurrentRelics.ConvertAll(r => r.Id),
+                    state.CurrentHP, state.MaxHP, state.Gold,
+                    state.ActNumber, state.Floor
+                );
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnCardRewardOpened error: {ex}");
+            }
         }
 
         // =====================================================================
-        // SHOP SCREEN
+        // RELIC SELECTION SCREEN — intercept ShowScreen
         // =====================================================================
 
-        [HarmonyPatch(typeof(PlaceholderShopScreen), "OnOpen")]
+        [HarmonyPatch(typeof(NChooseARelicSelection), "ShowScreen")]
         [HarmonyPostfix]
-        public static void OnShopOpened()
+        public static void OnRelicRewardOpened(IReadOnlyList<RelicModel> relics)
         {
-            Plugin.Log("Shop screen detected — analyzing...");
+            try
+            {
+                EnsureOverlay();
+                Plugin.Log("Relic reward screen detected — analyzing...");
 
-            var state = GameBridge.GameStateReader.ReadCurrentState();
-            if (state == null) return;
+                GameBridge.GameStateReader._lastCardOptions = null;
+                GameBridge.GameStateReader._lastRelicOptions = relics;
+                GameBridge.GameStateReader._lastMerchantInventory = null;
 
-            var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
-                state.Character, state.DeckCards
-            );
+                var state = GameBridge.GameStateReader.ReadCurrentState();
+                if (state == null) return;
 
-            var scoredCards = Plugin.SynergyScorer.ScoreOfferings(
-                state.ShopCards,
-                deckArchetypes,
-                state.Character,
-                state.ActNumber,
-                Plugin.TierEngine,
-                Plugin.AdaptiveScorer
-            );
+                var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
+                    state.Character, state.DeckCards, Plugin.TierEngine
+                );
 
-            var scoredRelics = Plugin.SynergyScorer.ScoreRelicOfferings(
-                state.ShopRelics,
-                deckArchetypes,
-                state.Character,
-                state.ActNumber,
-                Plugin.TierEngine,
-                Plugin.AdaptiveScorer
-            );
+                var scored = Plugin.SynergyScorer.ScoreRelicOfferings(
+                    state.OfferedRelics,
+                    deckArchetypes,
+                    state.Character,
+                    state.ActNumber,
+                    Plugin.TierEngine,
+                    Plugin.AdaptiveScorer
+                );
 
-            Plugin.Overlay?.ShowShopAdvice(scoredCards, scoredRelics);
+                Plugin.Overlay?.ShowRelicAdvice(scored);
+
+                Plugin.RunTracker?.RecordDecision(
+                    DecisionEventType.RelicReward,
+                    state.OfferedRelics.ConvertAll(r => r.Id),
+                    null,
+                    state.DeckCards.ConvertAll(c => c.Id),
+                    state.CurrentRelics.ConvertAll(r => r.Id),
+                    state.CurrentHP, state.MaxHP, state.Gold,
+                    state.ActNumber, state.Floor
+                );
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnRelicRewardOpened error: {ex}");
+            }
+        }
+
+        // =====================================================================
+        // SHOP SCREEN — intercept NMerchantInventory.Open
+        // =====================================================================
+
+        [HarmonyPatch(typeof(NMerchantInventory), "Open")]
+        [HarmonyPostfix]
+        public static void OnShopOpened(NMerchantInventory __instance)
+        {
+            try
+            {
+                EnsureOverlay();
+                Plugin.Log("Shop screen detected — analyzing...");
+
+                var inventory = __instance.Inventory;
+                GameBridge.GameStateReader._lastCardOptions = null;
+                GameBridge.GameStateReader._lastRelicOptions = null;
+                GameBridge.GameStateReader._lastMerchantInventory = inventory;
+
+                var state = GameBridge.GameStateReader.ReadCurrentState();
+                if (state == null) return;
+
+                var deckArchetypes = Plugin.DeckAnalyzer.Analyze(
+                    state.Character, state.DeckCards, Plugin.TierEngine
+                );
+
+                var scoredCards = Plugin.SynergyScorer.ScoreOfferings(
+                    state.ShopCards,
+                    deckArchetypes,
+                    state.Character,
+                    state.ActNumber,
+                    Plugin.TierEngine,
+                    Plugin.AdaptiveScorer
+                );
+
+                var scoredRelics = Plugin.SynergyScorer.ScoreRelicOfferings(
+                    state.ShopRelics,
+                    deckArchetypes,
+                    state.Character,
+                    state.ActNumber,
+                    Plugin.TierEngine,
+                    Plugin.AdaptiveScorer
+                );
+
+                Plugin.Overlay?.ShowShopAdvice(scoredCards, scoredRelics);
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnShopOpened error: {ex}");
+            }
+        }
+
+        // =====================================================================
+        // RUN LIFECYCLE — detect run start and end
+        // =====================================================================
+
+        [HarmonyPatch(typeof(RunManager), "Launch")]
+        [HarmonyPostfix]
+        public static void OnRunLaunched(RunManager __instance, RunState __result)
+        {
+            try
+            {
+                if (__result == null) return;
+
+                var player = __result.Players?.FirstOrDefault();
+                string character = "unknown";
+                int ascension = __result.AscensionLevel;
+
+                if (player?.Character?.Id != null)
+                    character = player.Character.Id.Entry?.ToLowerInvariant() ?? "unknown";
+
+                Plugin.RunTracker?.StartRun(character, "", ascension);
+                Plugin.Log($"Run launched: {character} A{ascension}");
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnRunLaunched error: {ex}");
+            }
+        }
+
+        [HarmonyPatch(typeof(RunManager), "OnEnded")]
+        [HarmonyPostfix]
+        public static void OnRunEnded(RunManager __instance, bool isVictory)
+        {
+            try
+            {
+                var state = GameBridge.GameStateReader.ReadCurrentState();
+                int floor = state?.Floor ?? 0;
+                int act = state?.ActNumber ?? 0;
+
+                var outcome = isVictory ? RunOutcome.Win : RunOutcome.Loss;
+                Plugin.RunTracker?.EndRun(outcome, floor, act);
+                Plugin.LocalStats?.RecomputeAll();
+                Plugin.Overlay?.Clear();
+                Plugin.Log($"Run ended: {outcome} on floor {floor} (act {act})");
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnRunEnded error: {ex}");
+            }
+        }
+
+        // =====================================================================
+        // CARD/RELIC PICK TRACKING — manual patches for private SelectCard/SelectHolder
+        // Registered from Plugin.Init() via ApplyManualPatches()
+        // =====================================================================
+
+        public static void ApplyManualPatches(Harmony harmony)
+        {
+            try
+            {
+                // Patch NCardRewardSelectionScreen.SelectCard (private)
+                var selectCard = AccessTools.Method(
+                    typeof(NCardRewardSelectionScreen), "SelectCard");
+                if (selectCard != null)
+                {
+                    var postfix = typeof(GamePatches).GetMethod(
+                        nameof(OnCardSelected),
+                        BindingFlags.Static | BindingFlags.Public);
+                    harmony.Patch(selectCard, postfix: new HarmonyMethod(postfix));
+                    Plugin.Log("Patched NCardRewardSelectionScreen.SelectCard");
+                }
+
+                // Patch NChooseARelicSelection.SelectHolder (private)
+                var selectHolder = AccessTools.Method(
+                    typeof(NChooseARelicSelection), "SelectHolder");
+                if (selectHolder != null)
+                {
+                    var postfix = typeof(GamePatches).GetMethod(
+                        nameof(OnRelicSelected),
+                        BindingFlags.Static | BindingFlags.Public);
+                    harmony.Patch(selectHolder, postfix: new HarmonyMethod(postfix));
+                    Plugin.Log("Patched NChooseARelicSelection.SelectHolder");
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"Manual patch error (non-fatal): {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Postfix for NCardRewardSelectionScreen.SelectCard.
+        /// The cardHolder parameter is typed as object to avoid compile-time dependency on NCardHolder.
+        /// We extract the chosen card ID via reflection.
+        /// </summary>
+        public static void OnCardSelected(object __0)
+        {
+            try
+            {
+                string chosenId = null;
+
+                // Try to get card model from the holder via reflection
+                // NCardHolder typically has a Card or CardModel property
+                if (__0 != null)
+                {
+                    var holderType = __0.GetType();
+                    // Try common property names
+                    var cardProp = holderType.GetProperty("Card") ?? holderType.GetProperty("CardModel");
+                    if (cardProp != null)
+                    {
+                        var cardObj = cardProp.GetValue(__0);
+                        if (cardObj != null)
+                        {
+                            var idProp = cardObj.GetType().GetProperty("Id");
+                            var idVal = idProp?.GetValue(cardObj);
+                            if (idVal != null)
+                            {
+                                var entryProp = idVal.GetType().GetProperty("Entry");
+                                chosenId = entryProp?.GetValue(idVal)?.ToString();
+                            }
+                        }
+                    }
+
+                    // Fallback: try CreationResult.Card pattern
+                    if (chosenId == null)
+                    {
+                        var crProp = holderType.GetProperty("CreationResult");
+                        if (crProp != null)
+                        {
+                            var cr = crProp.GetValue(__0);
+                            var cardProp2 = cr?.GetType().GetProperty("Card");
+                            var card = cardProp2?.GetValue(cr);
+                            if (card != null)
+                            {
+                                var idProp = card.GetType().GetProperty("Id");
+                                var idVal = idProp?.GetValue(card);
+                                var entryProp = idVal?.GetType().GetProperty("Entry");
+                                chosenId = entryProp?.GetValue(idVal)?.ToString();
+                            }
+                        }
+                    }
+                }
+
+                Plugin.Log($"Card picked: {chosenId ?? "(unknown)"}");
+
+                // Update the last decision with the chosen card
+                Plugin.RunTracker?.UpdateLastDecisionChoice(chosenId);
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnCardSelected error: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Postfix for NChooseARelicSelection.SelectHolder.
+        /// </summary>
+        public static void OnRelicSelected(object __0)
+        {
+            try
+            {
+                string chosenId = null;
+
+                if (__0 != null)
+                {
+                    var holderType = __0.GetType();
+                    var relicProp = holderType.GetProperty("Relic") ?? holderType.GetProperty("RelicModel") ?? holderType.GetProperty("Model");
+                    if (relicProp != null)
+                    {
+                        var relic = relicProp.GetValue(__0);
+                        if (relic != null)
+                        {
+                            var idProp = relic.GetType().GetProperty("Id");
+                            var idVal = idProp?.GetValue(relic);
+                            if (idVal != null)
+                            {
+                                var entryProp = idVal.GetType().GetProperty("Entry");
+                                chosenId = entryProp?.GetValue(idVal)?.ToString();
+                            }
+                        }
+                    }
+                }
+
+                Plugin.Log($"Relic picked: {chosenId ?? "(unknown)"}");
+                Plugin.RunTracker?.UpdateLastDecisionChoice(chosenId);
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"OnRelicSelected error: {ex}");
+            }
         }
     }
-
-    // =========================================================================
-    // PLACEHOLDER CLASSES — DELETE THESE once you find the real game classes.
-    // These exist only so the project compiles without sts2.dll references.
-    // =========================================================================
-    #if !STS2_REAL_HOOKS
-    public class PlaceholderCardRewardScreen { public void OnOpen() { } }
-    public class PlaceholderRelicRewardScreen { public void OnOpen() { } }
-    public class PlaceholderShopScreen { public void OnOpen() { } }
-    #endif
 }

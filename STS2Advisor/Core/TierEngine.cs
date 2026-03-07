@@ -40,6 +40,7 @@ namespace STS2Advisor.Core
     public class ScoredCard
     {
         public string Id { get; set; }
+        public string Name { get; set; }
         public TierGrade BaseTier { get; set; }
         public float FinalScore { get; set; }
         public TierGrade FinalGrade { get; set; }
@@ -52,6 +53,7 @@ namespace STS2Advisor.Core
     public class ScoredRelic
     {
         public string Id { get; set; }
+        public string Name { get; set; }
         public TierGrade BaseTier { get; set; }
         public float FinalScore { get; set; }
         public TierGrade FinalGrade { get; set; }
@@ -76,7 +78,7 @@ namespace STS2Advisor.Core
         {
             if (!Directory.Exists(folder))
             {
-                Plugin.Log?.LogWarning($"Card tier folder not found: {folder}");
+                Plugin.Log($"Card tier folder not found: {folder}");
                 return;
             }
 
@@ -89,12 +91,12 @@ namespace STS2Advisor.Core
                     if (tiers?.Character != null)
                     {
                         _cardTiers[tiers.Character.ToLowerInvariant()] = tiers;
-                        Plugin.Log?.LogInfo($"Loaded {tiers.Cards.Count} card tiers for {tiers.Character}");
+                        Plugin.Log($"Loaded {tiers.Cards?.Count ?? 0} card tiers for {tiers.Character}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Plugin.Log?.LogError($"Failed to load card tiers from {file}: {ex.Message}");
+                    Plugin.Log($"Failed to load card tiers from {file}: {ex.Message}");
                 }
             }
         }
@@ -103,7 +105,7 @@ namespace STS2Advisor.Core
         {
             if (!Directory.Exists(folder))
             {
-                Plugin.Log?.LogWarning($"Relic tier folder not found: {folder}");
+                Plugin.Log($"Relic tier folder not found: {folder}");
                 return;
             }
 
@@ -116,24 +118,35 @@ namespace STS2Advisor.Core
                     if (tiers?.Category != null)
                     {
                         _relicTiers[tiers.Category.ToLowerInvariant()] = tiers;
-                        Plugin.Log?.LogInfo($"Loaded {tiers.Relics.Count} relic tiers for {tiers.Category}");
+                        Plugin.Log($"Loaded {tiers.Relics.Count} relic tiers for {tiers.Category}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Plugin.Log?.LogError($"Failed to load relic tiers from {file}: {ex.Message}");
+                    Plugin.Log($"Failed to load relic tiers from {file}: {ex.Message}");
                 }
             }
         }
 
+        /// <summary>
+        /// Normalizes an ID for comparison: replaces spaces with underscores.
+        /// JSON tier data uses "Body Slam" but game uses "BODY_SLAM".
+        /// </summary>
+        private static string NormalizeId(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return "";
+            return id.Replace(' ', '_').Replace('-', '_').Replace("'", "");
+        }
+
         public CardTierEntry GetCardTier(string character, string cardId)
         {
+            string normalizedCardId = NormalizeId(cardId);
             string key = character?.ToLowerInvariant();
             if (key != null && _cardTiers.TryGetValue(key, out var charTiers))
             {
                 foreach (var entry in charTiers.Cards)
                 {
-                    if (string.Equals(entry.Id, cardId, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(NormalizeId(entry.Id), normalizedCardId, StringComparison.OrdinalIgnoreCase))
                         return entry;
                 }
             }
@@ -143,7 +156,7 @@ namespace STS2Advisor.Core
             {
                 foreach (var entry in colorless.Cards)
                 {
-                    if (string.Equals(entry.Id, cardId, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(NormalizeId(entry.Id), normalizedCardId, StringComparison.OrdinalIgnoreCase))
                         return entry;
                 }
             }
@@ -153,6 +166,7 @@ namespace STS2Advisor.Core
 
         public RelicTierEntry GetRelicTier(string character, string relicId)
         {
+            string normalizedRelicId = NormalizeId(relicId);
             // Check character-specific first, then common
             string[] categories = { character?.ToLowerInvariant(), "common" };
 
@@ -162,7 +176,7 @@ namespace STS2Advisor.Core
                 {
                     foreach (var entry in relicFile.Relics)
                     {
-                        if (string.Equals(entry.Id, relicId, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(NormalizeId(entry.Id), normalizedRelicId, StringComparison.OrdinalIgnoreCase))
                             return entry;
                     }
                 }

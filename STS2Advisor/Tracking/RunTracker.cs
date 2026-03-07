@@ -1,42 +1,39 @@
 using System;
 using System.Collections.Generic;
-using BepInEx.Configuration;
+using System.IO;
 
 namespace STS2Advisor.Tracking
 {
     public class RunTracker
     {
-        private static RunTracker _instance;
-        public static RunTracker Instance => _instance ?? (_instance = new RunTracker());
-
         private RunLog _currentRun;
         private readonly List<DecisionEvent> _currentEvents = new List<DecisionEvent>();
         private string _playerId;
+        private readonly RunDatabase _db;
 
-        private RunTracker() { }
-
-        /// <summary>
-        /// Initializes the tracker with a persistent anonymous player ID.
-        /// Call once during plugin startup.
-        /// </summary>
-        public void Initialize(ConfigFile config)
+        public RunTracker(RunDatabase db)
         {
-            var playerIdEntry = config.Bind(
-                "Tracking",
-                "PlayerId",
-                "",
-                "Anonymous player ID for community stats. Auto-generated, do not edit."
-            );
+            _db = db;
+        }
 
-            if (string.IsNullOrEmpty(playerIdEntry.Value))
+        public void Initialize(string pluginFolder)
+        {
+            // Use a simple file-based player ID instead of BepInEx config
+            string idPath = Path.Combine(pluginFolder, "player_id.txt");
+            if (File.Exists(idPath))
             {
-                playerIdEntry.Value = Guid.NewGuid().ToString();
+                _playerId = File.ReadAllText(idPath).Trim();
             }
 
-            _playerId = playerIdEntry.Value;
+            if (string.IsNullOrEmpty(_playerId))
+            {
+                _playerId = Guid.NewGuid().ToString();
+                try { File.WriteAllText(idPath, _playerId); }
+                catch { /* Non-fatal: player ID won't persist across sessions */ }
+            }
 
-            RunDatabase.Instance.InitializeDatabase();
-            Plugin.Log.LogInfo($"RunTracker initialized. PlayerId: {_playerId.Substring(0, 8)}...");
+            _db.InitializeDatabase();
+            Plugin.Log($"RunTracker initialized. PlayerId: {_playerId.Substring(0, Math.Min(_playerId.Length, 8))}...");
         }
 
         public bool IsRunActive => _currentRun != null;
@@ -45,7 +42,7 @@ namespace STS2Advisor.Tracking
         {
             if (_currentRun != null)
             {
-                Plugin.Log.LogWarning("StartRun called while a run is already active. Ending previous run as loss.");
+                Plugin.Log("StartRun called while a run is already active. Ending previous run as loss.");
                 EndRun(RunOutcome.Loss, _currentRun.FinalFloor ?? 0, _currentRun.FinalAct ?? 0);
             }
 
@@ -61,7 +58,7 @@ namespace STS2Advisor.Tracking
             };
 
             _currentEvents.Clear();
-            Plugin.Log.LogInfo($"Run started: {_currentRun.RunId.Substring(0, 8)}... ({character}, A{ascensionLevel})");
+            Plugin.Log($"Run started: {_currentRun.RunId.Substring(0, 8)}... ({character}, A{ascensionLevel})");
         }
 
         public void RecordDecision(
@@ -73,13 +70,21 @@ namespace STS2Advisor.Tracking
             int hp,
             int maxHp,
             int gold,
-            int floor,
-            int act)
+            int act,
+            int floor)
         {
             if (_currentRun == null)
             {
-                Plugin.Log.LogWarning("RecordDecision called with no active run. Ignoring.");
-                return;
+                // Auto-start a run on first decision since we don't have a run-start hook yet
+                string character = "unknown";
+                try
+                {
+                    var state = GameBridge.GameStateReader.ReadCurrentState();
+                    if (state != null)
+                        character = state.Character;
+                }
+                catch { }
+                StartRun(character, "", 0);
             }
 
             var decision = new DecisionEvent
@@ -99,14 +104,23 @@ namespace STS2Advisor.Tracking
             };
 
             _currentEvents.Add(decision);
-            Plugin.Log.LogInfo($"Decision recorded: {eventType} on floor {floor} — chose {chosenId ?? "(skip)"}");
+            Plugin.Log($"Decision recorded: {eventType} on floor {floor} — chose {chosenId ?? "(skip)"}");
+        }
+
+        public void UpdateLastDecisionChoice(string chosenId)
+        {
+            if (_currentEvents.Count > 0)
+            {
+                _currentEvents[_currentEvents.Count - 1].ChosenId = chosenId;
+                Plugin.Log($"Updated last decision with choice: {chosenId}");
+            }
         }
 
         public void EndRun(RunOutcome outcome, int finalFloor, int finalAct)
         {
             if (_currentRun == null)
             {
-                Plugin.Log.LogWarning("EndRun called with no active run. Ignoring.");
+                Plugin.Log("EndRun called with no active run. Ignoring.");
                 return;
             }
 
@@ -117,23 +131,13 @@ namespace STS2Advisor.Tracking
 
             try
             {
-                RunDatabase.Instance.SaveRun(_currentRun, _currentEvents);
-                Plugin.Log.LogInfo($"Run ended: {outcome} on floor {finalFloor} (act {finalAct}). " +
-                                   $"{_currentEvents.Count} decisions saved.");
+                _db.SaveRun(_currentRun, _currentEvents);
+                Plugin.Log($"Run ended: {outcome} on floor {finalFloor} (act {finalAct}). " +
+                           $"{_currentEvents.Count} decisions saved.");
             }
             catch (Exception ex)
             {
-                Plugin.Log.LogError($"Failed to save run to database: {ex.Message}");
-            }
-
-            // Queue sync on background thread
-            try
-            {
-                SyncClient.Instance.QueueSync();
-            }
-            catch (Exception ex)
-            {
-                Plugin.Log.LogWarning($"Failed to queue sync: {ex.Message}");
+                Plugin.Log($"Failed to save run to database: {ex.Message}");
             }
 
             _currentRun = null;

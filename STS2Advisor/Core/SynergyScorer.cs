@@ -91,12 +91,17 @@ namespace STS2Advisor.Core
             var synergyReasons = new List<string>();
             var antiSynergyReasons = new List<string>();
 
-            List<string> synergies = tierEntry?.Synergies ?? card.Tags;
+            // When no tier entry exists, fall back to game tags normalized to lowercase
+            // (archetype tags are lowercase, game CardKeyword tags are PascalCase)
+            List<string> synergies = tierEntry?.Synergies
+                ?? card.Tags.ConvertAll(t => t.ToLowerInvariant());
             List<string> antiSynergies = tierEntry?.AntiSynergies ?? new List<string>();
 
-            // Synergy bonuses
+            // Synergy bonuses (cap at one per archetype, max 2 archetypes to prevent unbounded inflation)
+            int archetypeBonusCount = 0;
             foreach (var archMatch in deckAnalysis.DetectedArchetypes)
             {
+                if (archetypeBonusCount >= 2) break;
                 foreach (string syn in synergies)
                 {
                     if (archMatch.Archetype.CoreTags.Contains(syn) ||
@@ -107,6 +112,7 @@ namespace STS2Advisor.Core
                             : SynergyBoostPerMatch;
                         score += boost;
                         synergyReasons.Add($"+{boost:F1} synergy with {archMatch.Archetype.DisplayName}");
+                        archetypeBonusCount++;
                         break; // One bonus per archetype
                     }
                 }
@@ -148,12 +154,14 @@ namespace STS2Advisor.Core
                 }
             }
 
-            // Missing piece detection: if deck has an archetype but lacks scaling
+            // Missing piece detection: if deck has an archetype but lacks a support tag
+            // Only award once to prevent stacking across archetypes
+            bool missingPieceAwarded = false;
             foreach (var archMatch in deckAnalysis.DetectedArchetypes)
             {
+                if (missingPieceAwarded) break;
                 if (archMatch.Strength > 0.3f && archMatch.Strength < 0.7f)
                 {
-                    // Check if this card provides a support tag the deck is missing
                     foreach (string syn in synergies)
                     {
                         if (archMatch.Archetype.SupportTags.Contains(syn))
@@ -164,6 +172,7 @@ namespace STS2Advisor.Core
                             {
                                 score += MissingPieceBonus;
                                 synergyReasons.Add($"+{MissingPieceBonus:F1} fills gap: {syn}");
+                                missingPieceAwarded = true;
                                 break;
                             }
                         }
@@ -171,11 +180,13 @@ namespace STS2Advisor.Core
                 }
             }
 
-            score = Math.Max(score, 0f);
+            // Clamp final score to [0, 5.5] to keep on a consistent scale
+            score = Math.Max(0f, Math.Min(5.5f, score));
 
             return new ScoredCard
             {
                 Id = card.Id,
+                Name = card.Name ?? card.Id,
                 BaseTier = baseTier,
                 FinalScore = score,
                 FinalGrade = TierEngine.ScoreToGrade(score),
@@ -236,11 +247,12 @@ namespace STS2Advisor.Core
                 }
             }
 
-            score = Math.Max(score, 0f);
+            score = Math.Max(0f, Math.Min(5.5f, score));
 
             return new ScoredRelic
             {
                 Id = relic.Id,
+                Name = relic.Name ?? relic.Id,
                 BaseTier = baseTier,
                 FinalScore = score,
                 FinalGrade = TierEngine.ScoreToGrade(score),

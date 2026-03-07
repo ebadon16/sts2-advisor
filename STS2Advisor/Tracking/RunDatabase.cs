@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
@@ -8,17 +9,30 @@ namespace STS2Advisor.Tracking
 {
     public class RunDatabase
     {
-        private static RunDatabase _instance;
-        public static RunDatabase Instance => _instance ?? (_instance = new RunDatabase());
-
         private string _connectionString;
+        private readonly string _pluginFolder;
+        private bool _initialized;
 
-        private RunDatabase() { }
+        internal string ConnectionString => _initialized ? _connectionString : null;
+
+        public RunDatabase(string pluginFolder)
+        {
+            _pluginFolder = pluginFolder;
+        }
+
+        private bool EnsureInitialized()
+        {
+            if (!_initialized || _connectionString == null)
+            {
+                Plugin.Log("RunDatabase not initialized — skipping operation.");
+                return false;
+            }
+            return true;
+        }
 
         public void InitializeDatabase()
         {
-            string pluginDir = Path.GetDirectoryName(Plugin.Instance.Info.Location);
-            string dbPath = Path.Combine(pluginDir, "sts2advisor.db");
+            string dbPath = Path.Combine(_pluginFolder, "sts2advisor.db");
             _connectionString = $"Data Source={dbPath}";
 
             using (var conn = new SqliteConnection(_connectionString))
@@ -90,11 +104,13 @@ namespace STS2Advisor.Tracking
                 }
             }
 
-            Plugin.Log.LogInfo("RunDatabase initialized.");
+            _initialized = true;
+            Plugin.Log("RunDatabase initialized.");
         }
 
         public void SaveRun(RunLog run, List<DecisionEvent> decisions)
         {
+            if (!EnsureInitialized()) return;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -158,6 +174,7 @@ namespace STS2Advisor.Tracking
         public List<(RunLog Run, List<DecisionEvent> Decisions)> GetUnsynced()
         {
             var results = new List<(RunLog, List<DecisionEvent>)>();
+            if (!EnsureInitialized()) return results;
 
             using (var conn = new SqliteConnection(_connectionString))
             {
@@ -202,6 +219,7 @@ namespace STS2Advisor.Tracking
 
         public void MarkSynced(string runId)
         {
+            if (!EnsureInitialized()) return;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -216,6 +234,7 @@ namespace STS2Advisor.Tracking
 
         public void SaveCommunityCardStats(List<CommunityCardStats> statsList)
         {
+            if (!EnsureInitialized()) return;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -250,6 +269,7 @@ namespace STS2Advisor.Tracking
 
         public void SaveCommunityRelicStats(List<CommunityRelicStats> statsList)
         {
+            if (!EnsureInitialized()) return;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -284,6 +304,7 @@ namespace STS2Advisor.Tracking
 
         public CommunityCardStats GetCommunityCardStats(string character, string cardId)
         {
+            if (!EnsureInitialized()) return null;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -319,6 +340,7 @@ namespace STS2Advisor.Tracking
 
         public CommunityRelicStats GetCommunityRelicStats(string character, string relicId)
         {
+            if (!EnsureInitialized()) return null;
             using (var conn = new SqliteConnection(_connectionString))
             {
                 conn.Open();
@@ -360,16 +382,20 @@ namespace STS2Advisor.Tracking
                 PlayerId = reader.GetString(reader.GetOrdinal("player_id")),
                 Character = reader.GetString(reader.GetOrdinal("character")),
                 Seed = reader.IsDBNull(reader.GetOrdinal("seed")) ? null : reader.GetString(reader.GetOrdinal("seed")),
-                StartTime = DateTime.Parse(reader.GetString(reader.GetOrdinal("start_time"))),
+                StartTime = DateTime.Parse(reader.GetString(reader.GetOrdinal("start_time")), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                 AscensionLevel = reader.GetInt32(reader.GetOrdinal("ascension_level")),
                 Synced = reader.GetInt32(reader.GetOrdinal("synced")) == 1
             };
 
             if (!reader.IsDBNull(reader.GetOrdinal("end_time")))
-                run.EndTime = DateTime.Parse(reader.GetString(reader.GetOrdinal("end_time")));
+                run.EndTime = DateTime.Parse(reader.GetString(reader.GetOrdinal("end_time")), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
             if (!reader.IsDBNull(reader.GetOrdinal("outcome")))
-                run.Outcome = (RunOutcome)Enum.Parse(typeof(RunOutcome), reader.GetString(reader.GetOrdinal("outcome")));
+            {
+                string outcomeStr = reader.GetString(reader.GetOrdinal("outcome"));
+                if (Enum.TryParse<RunOutcome>(outcomeStr, out var outcome))
+                    run.Outcome = outcome;
+            }
 
             if (!reader.IsDBNull(reader.GetOrdinal("final_floor")))
                 run.FinalFloor = reader.GetInt32(reader.GetOrdinal("final_floor"));
@@ -387,7 +413,7 @@ namespace STS2Advisor.Tracking
                 RunId = reader.GetString(reader.GetOrdinal("run_id")),
                 Floor = reader.GetInt32(reader.GetOrdinal("floor")),
                 Act = reader.GetInt32(reader.GetOrdinal("act")),
-                EventType = (DecisionEventType)Enum.Parse(typeof(DecisionEventType), reader.GetString(reader.GetOrdinal("event_type"))),
+                EventType = Enum.TryParse<DecisionEventType>(reader.GetString(reader.GetOrdinal("event_type")), out var et) ? et : DecisionEventType.CardReward,
                 OfferedIds = JsonConvert.DeserializeObject<List<string>>(reader.GetString(reader.GetOrdinal("offered_ids"))),
                 ChosenId = reader.IsDBNull(reader.GetOrdinal("chosen_id")) ? null : reader.GetString(reader.GetOrdinal("chosen_id")),
                 DeckSnapshot = JsonConvert.DeserializeObject<List<string>>(reader.GetString(reader.GetOrdinal("deck_snapshot"))),
@@ -395,7 +421,7 @@ namespace STS2Advisor.Tracking
                 CurrentHP = reader.GetInt32(reader.GetOrdinal("current_hp")),
                 MaxHP = reader.GetInt32(reader.GetOrdinal("max_hp")),
                 Gold = reader.GetInt32(reader.GetOrdinal("gold")),
-                Timestamp = DateTime.Parse(reader.GetString(reader.GetOrdinal("timestamp")))
+                Timestamp = DateTime.Parse(reader.GetString(reader.GetOrdinal("timestamp")), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
             };
         }
 

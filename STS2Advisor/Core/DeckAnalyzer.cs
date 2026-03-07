@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using STS2Advisor.GameBridge;
@@ -39,7 +40,17 @@ namespace STS2Advisor.Core
 
     public class DeckAnalyzer
     {
-        public DeckAnalysis Analyze(string character, List<CardInfo> deck)
+        /// <summary>
+        /// Analyzes a deck to detect archetype commitment.
+        ///
+        /// Tags come from TWO sources:
+        /// 1. CardKeyword tags from the game (Exhaust, Ethereal, etc.) — only 8 values
+        /// 2. Synergy tags from tier JSON data (strength, poison, shiv, etc.) — the main source
+        ///
+        /// Without tierEngine, archetype detection is very limited since game card tags
+        /// only have a few keyword values, not archetype-relevant tags like "strength" or "poison".
+        /// </summary>
+        public DeckAnalysis Analyze(string character, List<CardInfo> deck, TierEngine tierEngine = null)
         {
             var analysis = new DeckAnalysis
             {
@@ -47,16 +58,39 @@ namespace STS2Advisor.Core
                 TotalCards = deck.Count
             };
 
-            // Count all tags in the deck
+            // Count tags from both game card data and tier JSON synergies
+            // Use a HashSet per card to avoid double-counting when a tag appears
+            // in both game keywords and tier JSON synergies
             foreach (var card in deck)
             {
+                var seenTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                // Source 1: Game card tags (CardKeyword: Exhaust, Ethereal, etc.)
                 foreach (string tag in card.Tags)
                 {
                     string key = tag.ToLowerInvariant();
-                    if (analysis.TagCounts.ContainsKey(key))
-                        analysis.TagCounts[key]++;
-                    else
-                        analysis.TagCounts[key] = 1;
+                    seenTags.Add(key);
+                }
+
+                // Source 2: Tier JSON synergy tags (strength, poison, shiv, orb, etc.)
+                // This is the primary source of archetype-relevant tags
+                if (tierEngine != null)
+                {
+                    var tierEntry = tierEngine.GetCardTier(character, card.Id);
+                    if (tierEntry?.Synergies != null)
+                    {
+                        foreach (string syn in tierEntry.Synergies)
+                        {
+                            string key = syn.ToLowerInvariant();
+                            seenTags.Add(key);
+                        }
+                    }
+                }
+
+                // Increment each unique tag once per card
+                foreach (string key in seenTags)
+                {
+                    IncrementTag(analysis.TagCounts, key);
                 }
             }
 
@@ -106,6 +140,14 @@ namespace STS2Advisor.Core
             analysis.DetectedArchetypes.Sort((a, b) => b.Strength.CompareTo(a.Strength));
 
             return analysis;
+        }
+
+        private static void IncrementTag(Dictionary<string, int> tagCounts, string key)
+        {
+            if (tagCounts.ContainsKey(key))
+                tagCounts[key]++;
+            else
+                tagCounts[key] = 1;
         }
     }
 }

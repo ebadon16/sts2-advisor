@@ -5,6 +5,24 @@ using STS2Advisor.Core;
 namespace STS2Advisor.UI
 {
     /// <summary>
+    /// Small Node added to the scene tree to forward input events to OverlayManager.
+    /// </summary>
+    internal partial class OverlayInputHandler : Node
+    {
+        private OverlayManager _owner;
+
+        public OverlayInputHandler(OverlayManager owner)
+        {
+            _owner = owner;
+        }
+
+        public override void _UnhandledInput(InputEvent ev)
+        {
+            _owner.HandleInput(ev);
+        }
+    }
+
+    /// <summary>
     /// Manages the Godot CanvasLayer overlay that displays tier badges and advice.
     ///
     /// Creates a CanvasLayer on layer 100 (above all game UI) with Control nodes
@@ -27,6 +45,32 @@ namespace STS2Advisor.UI
         public OverlayManager()
         {
             BuildOverlay();
+        }
+
+        /// <summary>
+        /// Returns true if all Godot nodes are still alive and usable.
+        /// </summary>
+        private bool IsOverlayValid()
+        {
+            return _layer != null && GodotObject.IsInstanceValid(_layer)
+                && _panel != null && GodotObject.IsInstanceValid(_panel)
+                && _content != null && GodotObject.IsInstanceValid(_content);
+        }
+
+        /// <summary>
+        /// Ensures the overlay exists and is valid. Rebuilds if nodes were freed
+        /// (e.g. after a scene transition).
+        /// </summary>
+        private bool EnsureOverlay()
+        {
+            if (IsOverlayValid()) return true;
+
+            // Nodes were freed or never created — try to rebuild
+            _layer = null;
+            _panel = null;
+            _content = null;
+            BuildOverlay();
+            return IsOverlayValid();
         }
 
         private void BuildOverlay()
@@ -76,10 +120,12 @@ namespace STS2Advisor.UI
             scroll.AddChild(_content);
 
             _layer.AddChild(_panel);
-            tree.Root.CallDeferred("add_child", _layer);
 
-            // Input handling via process
-            _layer.SetProcessInput(true);
+            // Input handler node to capture F7/F8 keypresses
+            var inputHandler = new OverlayInputHandler(this);
+            _layer.AddChild(inputHandler);
+
+            tree.Root.CallDeferred("add_child", _layer);
 
             Plugin.Log("Overlay built and attached to scene tree.");
         }
@@ -114,9 +160,9 @@ namespace STS2Advisor.UI
 
         public void ToggleVisible()
         {
+            if (!EnsureOverlay()) return;
             _visible = !_visible;
-            if (_panel != null)
-                _panel.Visible = _visible;
+            _panel.Visible = _visible;
             Plugin.Log($"Overlay {(_visible ? "shown" : "hidden")}");
         }
 
@@ -140,13 +186,16 @@ namespace STS2Advisor.UI
 
         private void Rebuild()
         {
-            if (_content == null) return;
+            if (!EnsureOverlay()) return;
 
-            // Clear existing children
+            // Clear existing children — remove from tree first, then free
             foreach (var child in _content.GetChildren())
             {
                 if (child is Node node)
+                {
+                    _content.RemoveChild(node);
                     node.QueueFree();
+                }
             }
 
             if (_currentCards != null && _currentCards.Count > 0)
@@ -205,7 +254,8 @@ namespace STS2Advisor.UI
             vbox.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
             var nameLabel = new Label();
-            nameLabel.Text = card.IsBestPick ? $"{card.Id}  ★ BEST PICK" : card.Id;
+            string cardDisplayName = card.Name ?? card.Id;
+            nameLabel.Text = card.IsBestPick ? $"{cardDisplayName}  ★ BEST PICK" : cardDisplayName;
             nameLabel.AddThemeColorOverride("font_color",
                 card.IsBestPick ? new Color(1f, 1f, 0f) : Colors.White);
             vbox.AddChild(nameLabel);
@@ -246,7 +296,8 @@ namespace STS2Advisor.UI
             vbox.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
             var nameLabel = new Label();
-            nameLabel.Text = relic.IsBestPick ? $"{relic.Id}  ★ BEST PICK" : relic.Id;
+            string relicDisplayName = relic.Name ?? relic.Id;
+            nameLabel.Text = relic.IsBestPick ? $"{relicDisplayName}  ★ BEST PICK" : relicDisplayName;
             nameLabel.AddThemeColorOverride("font_color",
                 relic.IsBestPick ? new Color(1f, 1f, 0f) : Colors.White);
             vbox.AddChild(nameLabel);

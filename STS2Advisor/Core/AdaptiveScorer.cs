@@ -5,21 +5,22 @@ using STS2Advisor.Tracking;
 namespace STS2Advisor.Core
 {
     /// <summary>
-    /// Blends static JSON tier data with live community win rate data.
+    /// Blends static JSON tier data with local play statistics.
     ///
-    /// When community sample size is low, static tiers dominate.
-    /// As sample size grows, community data takes over.
-    /// Archetype-specific context stats further refine the score.
+    /// When sample size is low, static tiers dominate.
+    /// As the player plays more runs, local win rate data takes over.
+    /// For characters with no static tier data (Regent, Necrobinder, Deprived),
+    /// scores start at C-tier but improve as the player accumulates data.
     /// </summary>
     public class AdaptiveScorer
     {
-        // How many times a card must be offered before community data
+        // How many times a card must be offered before local data
         // starts influencing the score. Below this, static tiers dominate.
-        private const int MinSampleSize = 30;
+        private const int MinSampleSize = 5;
 
-        // At this sample size, community data is weighted at 100%.
+        // At this sample size, local data is weighted at 100%.
         // Between Min and Full, it's linearly interpolated.
-        private const int FullConfidenceSampleSize = 500;
+        private const int FullConfidenceSampleSize = 50;
 
         // Community win rate is converted to a 0-5 scale to blend with static tiers.
         // These define the mapping: 60% win rate = S-tier equivalent, etc.
@@ -68,10 +69,10 @@ namespace STS2Advisor.Core
             // Win rate differential: if win rate when picked >> when skipped, strong signal
             float winDiff = stats.WinRateWhenPicked - stats.WinRateWhenSkipped;
             if (Math.Abs(winDiff) > 0.03f) // Only if meaningful difference
-            {
                 communityScore += winDiff * 2f; // Scale up the signal
-                communityScore = Math.Max(0f, Math.Min(5f, communityScore));
-            }
+
+            // Clamp community score consistently after all adjustments
+            communityScore = Math.Max(0f, Math.Min(5f, communityScore));
 
             // Blend static and community based on confidence
             float confidence = GetConfidence(stats.SampleSize);
@@ -100,10 +101,9 @@ namespace STS2Advisor.Core
 
             float winDiff = stats.WinRateWhenPicked - stats.WinRateWhenSkipped;
             if (Math.Abs(winDiff) > 0.03f)
-            {
                 communityScore += winDiff * 2f;
-                communityScore = Math.Max(0f, Math.Min(5f, communityScore));
-            }
+
+            communityScore = Math.Max(0f, Math.Min(5f, communityScore));
 
             float confidence = GetConfidence(stats.SampleSize);
             float blended = staticScore * (1f - confidence) + communityScore * confidence;
