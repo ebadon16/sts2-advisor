@@ -16,8 +16,6 @@ public class OverlayManager
 
 	private VBoxContainer _content;
 
-	private bool _isCompact;
-
 	private Label _compactToggle;
 
 	private Label _archetypeLabel;
@@ -410,9 +408,7 @@ public class OverlayManager
 		{
 			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
 			{
-				_isCompact = !_isCompact;
-				if (_content != null) _content.Visible = !_isCompact;
-				_compactToggle.Text = _isCompact ? "\u25BC" : "\u25B2";
+				ToggleCollapsed();
 			}
 		};
 		titleRow.AddChild(_compactToggle, forceReadableName: false, Node.InternalMode.Disabled);
@@ -584,7 +580,7 @@ public class OverlayManager
 			_settings.OffsetLeft = _panel.OffsetLeft;
 			_settings.OffsetRight = _panel.OffsetRight;
 			_settings.OffsetTop = _panel.OffsetTop;
-			_settings.OffsetBottom = _panel.OffsetBottom;
+			// Don't save OffsetBottom — auto-calculated from content height
 			_settings.Save();
 		}
 	}
@@ -712,27 +708,30 @@ public class OverlayManager
 	{
 		if (ev is InputEventKey { Pressed: not false, Echo: false } inputEventKey)
 		{
-			if (inputEventKey.Keycode == Key.F7 && inputEventKey.ShiftPressed)
+			bool ctrl = inputEventKey.CtrlPressed;
+			Key key = inputEventKey.Keycode;
+			// F-keys (standard keyboards) or Ctrl+7-0/- (mini/Fn keyboards)
+			if ((key == Key.F7 && inputEventKey.ShiftPressed) || (ctrl && key == Key.Key7 && inputEventKey.ShiftPressed))
 			{
 				CycleOpacity();
 			}
-			else if (inputEventKey.Keycode == Key.F7)
+			else if (key == Key.F7 || (ctrl && key == Key.Key7))
 			{
 				ToggleVisible();
 			}
-			else if (inputEventKey.Keycode == Key.F8)
+			else if (key == Key.F8 || (ctrl && key == Key.Key8))
 			{
 				ToggleTooltips();
 			}
-			else if (inputEventKey.Keycode == Key.F9)
+			else if (key == Key.F9 || (ctrl && key == Key.Key9))
 			{
 				ToggleInGameBadges();
 			}
-			else if (inputEventKey.Keycode == Key.F10)
+			else if (key == Key.F10 || (ctrl && key == Key.Key0))
 			{
 				ToggleHistory();
 			}
-			else if (inputEventKey.Keycode == Key.F11)
+			else if (key == Key.F11 || (ctrl && key == Key.Minus))
 			{
 				ToggleCollapsed();
 			}
@@ -947,7 +946,7 @@ public class OverlayManager
 			hkSep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
 			_content.AddChild(hkSep, forceReadableName: false, Node.InternalMode.Disabled);
 			Label hkLabel = new Label();
-			hkLabel.Text = "F7 Toggle  |  Shift+F7 Opacity  |  F8 Tooltips\nF9 Badges  |  F10 History  |  F11 Compact";
+			hkLabel.Text = "F7/Ctrl+7 Toggle  |  F8/Ctrl+8 Tooltips  |  F9/Ctrl+9 Badges\nF10/Ctrl+0 History  |  F11/Ctrl+- Minimize";
 			hkLabel.HorizontalAlignment = HorizontalAlignment.Center;
 			ApplyFont(hkLabel, _fontBody);
 			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.7f));
@@ -977,7 +976,10 @@ public class OverlayManager
 		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
 			return;
 		Vector2 minSize = _panel.GetCombinedMinimumSize();
-		_panel.OffsetBottom = _panel.OffsetTop + minSize.Y;
+		float height = Math.Max(minSize.Y, 40f);
+		_panel.OffsetBottom = _panel.OffsetTop + height;
+		// Force panel size to match content — prevents stale dead space
+		_panel.Size = new Vector2(_panel.Size.X, height);
 	}
 
 	private void UpdateArchetypeChip()
@@ -1561,8 +1563,15 @@ public class OverlayManager
 			_archChipPanel.Visible = !_collapsed;
 		if (_deckVizContainer != null && GodotObject.IsInstanceValid(_deckVizContainer))
 			_deckVizContainer.Visible = !_collapsed;
+		if (_titleSep != null && GodotObject.IsInstanceValid(_titleSep))
+			_titleSep.Visible = !_collapsed;
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
-			_screenLabel.Text = _collapsed ? GetCollapsedSummary() : _currentScreen.ToUpper();
+			_screenLabel.Visible = !_collapsed;
+		if (_winRateLabel != null && GodotObject.IsInstanceValid(_winRateLabel))
+			_winRateLabel.Visible = !_collapsed;
+		// Update compact toggle arrow
+		if (_compactToggle != null && GodotObject.IsInstanceValid(_compactToggle))
+			_compactToggle.Text = _collapsed ? "\u25BC" : "\u25B2";
 		ResizePanelToContent();
 		Plugin.Log("Overlay " + (_collapsed ? "collapsed" : "expanded"));
 	}
