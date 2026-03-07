@@ -473,6 +473,7 @@ public class OverlayManager
 		_hoverPreview = new PanelContainer();
 		_hoverPreview.Visible = false;
 		_hoverPreview.ZIndex = 101;
+		_hoverPreview.ClipContents = true;
 		_hoverPreview.MouseFilter = Control.MouseFilterEnum.Ignore;
 		StyleBoxFlat hpStyle = new StyleBoxFlat();
 		hpStyle.BgColor = ClrBg;
@@ -848,10 +849,27 @@ public class OverlayManager
 		}
 		else if (hasCards)
 		{
-			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : "CARD ANALYSIS");
-			foreach (ScoredCard currentCard in _currentCards)
+			bool isShop = _currentScreen == "MERCHANT SHOP";
+			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : "CARD ANALYSIS");
+			// Shop: only show top picks (grade B+ or best 3, whichever is more)
+			var cardsToShow = isShop
+				? _currentCards.Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(5).ToList()
+				: _currentCards.ToList();
+			if (isShop && cardsToShow.Count == 0 && _currentCards.Count > 0)
+				cardsToShow = _currentCards.Take(3).ToList();
+			foreach (ScoredCard currentCard in cardsToShow)
 			{
 				AddCardEntry(currentCard);
+			}
+			int skippedCards = _currentCards.Count - cardsToShow.Count;
+			if (isShop && skippedCards > 0)
+			{
+				Label skipLbl = new Label();
+				skipLbl.Text = $"  + {skippedCards} lower-rated cards";
+				ApplyFont(skipLbl, _fontBody);
+				skipLbl.AddThemeColorOverride("font_color", ClrSub);
+				skipLbl.AddThemeFontSizeOverride("font_size", 13);
+				_content.AddChild(skipLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			float skipThreshold = 1.5f;
 			if (_currentDeckAnalysis != null && _currentDeckAnalysis.TotalCards <= 15)
@@ -868,10 +886,26 @@ public class OverlayManager
 		}
 		if (hasRelics)
 		{
-			AddSectionHeader("RELIC ANALYSIS");
-			foreach (ScoredRelic currentRelic in _currentRelics)
+			bool isShop = _currentScreen == "MERCHANT SHOP";
+			AddSectionHeader(isShop ? "BEST RELICS IN SHOP" : "RELIC ANALYSIS");
+			var relicsToShow = isShop
+				? _currentRelics.Where(r => r.IsBestPick || r.FinalGrade >= TierGrade.B).Take(3).ToList()
+				: _currentRelics.ToList();
+			if (isShop && relicsToShow.Count == 0 && _currentRelics.Count > 0)
+				relicsToShow = _currentRelics.Take(2).ToList();
+			foreach (ScoredRelic currentRelic in relicsToShow)
 			{
 				AddRelicEntry(currentRelic);
+			}
+			int skippedRelics = _currentRelics.Count - relicsToShow.Count;
+			if (isShop && skippedRelics > 0)
+			{
+				Label skipRLbl = new Label();
+				skipRLbl.Text = $"  + {skippedRelics} lower-rated relics";
+				ApplyFont(skipRLbl, _fontBody);
+				skipRLbl.AddThemeColorOverride("font_color", ClrSub);
+				skipRLbl.AddThemeFontSizeOverride("font_size", 13);
+				_content.AddChild(skipRLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 		}
 		if (!hasCards && !hasRelics && _mapAdvice != null && _mapAdvice.Count > 0)
@@ -1190,16 +1224,27 @@ public class OverlayManager
 				}
 			}).CallDeferred();
 		}
-		// Card portrait thumbnail
+		// Card portrait thumbnail (rounded corners)
 		Texture2D portrait = GetCardPortrait(card.Id, _currentCharacter);
 		if (portrait != null)
 		{
+			PanelContainer thumbClip = new PanelContainer();
+			thumbClip.ClipContents = true;
+			thumbClip.CustomMinimumSize = new Vector2(36f, 36f);
+			StyleBoxFlat thumbStyle = new StyleBoxFlat();
+			thumbStyle.BgColor = new Color(0, 0, 0, 0);
+			thumbStyle.CornerRadiusTopLeft = 6;
+			thumbStyle.CornerRadiusTopRight = 6;
+			thumbStyle.CornerRadiusBottomLeft = 6;
+			thumbStyle.CornerRadiusBottomRight = 6;
+			thumbClip.AddThemeStyleboxOverride("panel", thumbStyle);
 			TextureRect thumb = new TextureRect();
 			thumb.Texture = portrait;
 			thumb.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
 			thumb.StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
 			thumb.CustomMinimumSize = new Vector2(36f, 36f);
-			hBoxContainer.AddChild(thumb, forceReadableName: false, Node.InternalMode.Disabled);
+			thumbClip.AddChild(thumb, forceReadableName: false, Node.InternalMode.Disabled);
+			hBoxContainer.AddChild(thumbClip, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		// V4: Card art hover preview
 		if (_showTooltips && portrait != null)
