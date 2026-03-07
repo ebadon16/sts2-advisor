@@ -360,7 +360,7 @@ public class OverlayManager
 		_panel.OffsetLeft = _settings.OffsetLeft;
 		_panel.OffsetRight = _settings.OffsetRight;
 		_panel.OffsetTop = _settings.OffsetTop;
-		_panel.OffsetBottom = _settings.OffsetBottom;
+		// OffsetBottom not loaded — auto-calculated by FitPanelHeight
 		_panel.AddThemeStyleboxOverride("panel", _sbPanel);
 		_panel.MouseFilter = Control.MouseFilterEnum.Stop;
 		VBoxContainer vBoxContainer = new VBoxContainer();
@@ -710,8 +710,10 @@ public class OverlayManager
 		// A1: Win rate
 		UpdateWinRate();
 		UpdateArchetypeChip();
-		// Deck viz updates deferred — added inside scroll content after advice on non-card screens
+		// On advice screens (rest/combat/event/map), hide top-level deck chip + viz — shown inline after advice
 		bool isAdviceScreen = !(_currentCards != null && _currentCards.Count > 0) && !(_currentRelics != null && _currentRelics.Count > 0);
+		if (_archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
+			_archChipPanel.Visible = !isAdviceScreen;
 		if (!isAdviceScreen)
 			UpdateDeckViz(_currentDeckAnalysis);
 		else
@@ -1515,10 +1517,21 @@ public class OverlayManager
 
 	private void AddInlineDeckViz(DeckAnalysis analysis)
 	{
-		// Add energy curve + type distribution directly into _content (scroll area)
+		// Add archetype + energy curve + type distribution directly into _content
 		if (analysis == null || analysis.TotalCards == 0)
 			return;
 		AddSectionHeader("DECK BREAKDOWN");
+		// Inline archetype info
+		if (_archetypeLabel != null && GodotObject.IsInstanceValid(_archetypeLabel))
+		{
+			Label archInline = new Label();
+			archInline.Text = _archetypeLabel.Text;
+			ApplyFont(archInline, _fontBold);
+			archInline.AddThemeFontSizeOverride("font_size", 15);
+			archInline.AddThemeColorOverride("font_color", ClrAccent);
+			archInline.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			_content.AddChild(archInline, forceReadableName: false, Node.InternalMode.Disabled);
+		}
 		AddInlineEnergyCurve(analysis);
 		AddInlineTypeDistribution(analysis);
 	}
