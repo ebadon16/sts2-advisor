@@ -152,6 +152,26 @@ public static class GamePatches
 		}
 	}
 
+	public static void OnUpgradeScreenOpened(object __instance)
+	{
+		try
+		{
+			EnsureOverlay();
+			Plugin.Log("Upgrade card selection detected — showing upgrade priorities...");
+			GameState gameState = GameStateReader.ReadCurrentState();
+			if (gameState != null)
+			{
+				string character = gameState.Character ?? "unknown";
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine);
+				Plugin.Overlay?.ShowUpgradeAdvice(deckAnalysis, gameState, character);
+			}
+		}
+		catch (Exception value)
+		{
+			Plugin.Log($"OnUpgradeScreenOpened error: {value}");
+		}
+	}
+
 	public static void OnCombatSetup(NCombatRoom __result)
 	{
 		try
@@ -299,6 +319,16 @@ public static class GamePatches
 		PatchMethod(harmony, typeof(NEventRoom), "Create", nameof(OnEventShowChoices));
 		PatchMethod(harmony, typeof(NCombatRoom), "Create", nameof(OnCombatSetup));
 		PatchMethod(harmony, typeof(NRestSiteRoom), "Create", nameof(OnRestSiteOpened));
+		// Upgrade card selection screen — use Type.GetType since it may not be directly referenced
+		try
+		{
+			var upgradeScreenType = AccessTools.TypeByName("MegaCrit.Sts2.Core.Nodes.Screens.CardSelection.NDeckUpgradeSelectScreen");
+			if (upgradeScreenType != null)
+				PatchMethod(harmony, upgradeScreenType, "ShowScreen", nameof(OnUpgradeScreenOpened));
+			else
+				Plugin.Log("WARN: NDeckUpgradeSelectScreen not found — upgrade advice unavailable");
+		}
+		catch (Exception ex) { Plugin.Log($"WARN: Upgrade screen patch failed: {ex.Message}"); }
 		PatchMethod(harmony, typeof(RunManager), "Launch", nameof(OnRunLaunched));
 		PatchMethod(harmony, typeof(RunManager), "OnEnded", nameof(OnRunEnded));
 	}

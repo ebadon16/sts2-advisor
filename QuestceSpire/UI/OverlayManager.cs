@@ -568,6 +568,18 @@ public class OverlayManager
 		Rebuild();
 	}
 
+	public void ShowUpgradeAdvice(DeckAnalysis deckAnalysis, GameState gameState, string character)
+	{
+		_currentCards = null;
+		_currentRelics = null;
+		_currentDeckAnalysis = deckAnalysis;
+		_currentCharacter = character;
+		_currentScreen = "CARD UPGRADE";
+		_currentGameState = gameState;
+		_mapAdvice = null;
+		Rebuild();
+	}
+
 	public void ShowCombatAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int actNumber, int floor, GameState gameState = null)
 	{
 		_currentCards = null;
@@ -737,7 +749,53 @@ public class OverlayManager
 		bool hasCards = _currentCards != null && _currentCards.Count > 0;
 		bool hasRelics = _currentRelics != null && _currentRelics.Count > 0;
 		bool isRemoval = _currentScreen == "CARD REMOVAL";
-		if (hasCards)
+		bool isUpgrade = _currentScreen == "CARD UPGRADE";
+		// Upgrade screen: show ranked upgrade priorities
+		if (isUpgrade && _currentGameState != null && _currentDeckAnalysis != null)
+		{
+			AddSectionHeader("BEST CARDS TO UPGRADE");
+			string character = _currentCharacter ?? _currentGameState.Character ?? "unknown";
+			var priorities = GetUpgradePriorities(_currentGameState, _currentDeckAnalysis, character);
+			if (priorities.Count > 0)
+			{
+				int rank = 1;
+				foreach (var (icon, text, color) in priorities)
+				{
+					PanelContainer upgPanel = new PanelContainer();
+					StyleBoxFlat upgStyle = new StyleBoxFlat();
+					upgStyle.BgColor = rank == 1 ? new Color(0.831f, 0.714f, 0.357f, 0.1f) : new Color(0.06f, 0.08f, 0.14f, 0.6f);
+					upgStyle.CornerRadiusTopRight = 12;
+					upgStyle.CornerRadiusBottomRight = 12;
+					upgStyle.BorderWidthLeft = rank == 1 ? 4 : 3;
+					upgStyle.BorderColor = rank == 1 ? ClrAccent : new Color(color, 0.6f);
+					upgStyle.ContentMarginLeft = 14f;
+					upgStyle.ContentMarginRight = 10f;
+					upgStyle.ContentMarginTop = 8f;
+					upgStyle.ContentMarginBottom = 8f;
+					upgPanel.AddThemeStyleboxOverride("panel", upgStyle);
+					Label upgLbl = new Label();
+					string prefix = rank == 1 ? "\u2605 BEST: " : $"#{rank} ";
+					upgLbl.Text = prefix + text;
+					ApplyFont(upgLbl, rank == 1 ? _fontBold : _fontBody);
+					upgLbl.AddThemeColorOverride("font_color", color);
+					upgLbl.AddThemeFontSizeOverride("font_size", rank == 1 ? 17 : 15);
+					upgLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+					upgPanel.AddChild(upgLbl, forceReadableName: false, Node.InternalMode.Disabled);
+					_content.AddChild(upgPanel, forceReadableName: false, Node.InternalMode.Disabled);
+					rank++;
+				}
+			}
+			else
+			{
+				Label noUpg = new Label();
+				noUpg.Text = "No significant upgrade targets found.";
+				ApplyFont(noUpg, _fontBody);
+				noUpg.AddThemeColorOverride("font_color", ClrSub);
+				noUpg.AddThemeFontSizeOverride("font_size", 15);
+				_content.AddChild(noUpg, forceReadableName: false, Node.InternalMode.Disabled);
+			}
+		}
+		else if (hasCards)
 		{
 			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : "CARD ANALYSIS");
 			foreach (ScoredCard currentCard in _currentCards)
