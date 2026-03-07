@@ -20,7 +20,7 @@ public class OverlayManager
 
 	private Label _screenLabel;
 
-	private ScrollContainer _scroll;
+
 
 	private bool _visible = true;
 
@@ -246,7 +246,6 @@ public class OverlayManager
 		_layer = null;
 		_panel = null;
 		_content = null;
-		_scroll = null;
 		_archetypeLabel = null;
 		_screenLabel = null;
 		_archChipPanel = null;
@@ -424,39 +423,11 @@ public class OverlayManager
 		_deckVizContainer = new VBoxContainer();
 		_deckVizContainer.AddThemeConstantOverride("separation", 4);
 		vBoxContainer.AddChild(_deckVizContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		_scroll = new ScrollContainer();
-		_scroll.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-		_scroll.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
-		_scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
-		_scroll.CustomMinimumSize = new Vector2(0f, 40f);
-		var scrollBar = _scroll.GetVScrollBar();
-		scrollBar.CustomMinimumSize = new Vector2(8f, 0f);
-		// Style scrollbar grabber and track
-		StyleBoxFlat sbScrollGrabber = new StyleBoxFlat();
-		sbScrollGrabber.BgColor = new Color(ClrBorder, 0.5f);
-		sbScrollGrabber.CornerRadiusTopLeft = 4;
-		sbScrollGrabber.CornerRadiusTopRight = 4;
-		sbScrollGrabber.CornerRadiusBottomLeft = 4;
-		sbScrollGrabber.CornerRadiusBottomRight = 4;
-		scrollBar.AddThemeStyleboxOverride("grabber", sbScrollGrabber);
-		StyleBoxFlat sbScrollGrabberHl = sbScrollGrabber.Duplicate() as StyleBoxFlat;
-		if (sbScrollGrabberHl != null)
-		{
-			sbScrollGrabberHl.BgColor = new Color(ClrBorder, 0.75f);
-			scrollBar.AddThemeStyleboxOverride("grabber_highlight", sbScrollGrabberHl);
-		}
-		StyleBoxFlat sbScrollBg = new StyleBoxFlat();
-		sbScrollBg.BgColor = new Color(0.02f, 0.03f, 0.06f, 0.3f);
-		sbScrollBg.CornerRadiusTopLeft = 4;
-		sbScrollBg.CornerRadiusTopRight = 4;
-		sbScrollBg.CornerRadiusBottomLeft = 4;
-		sbScrollBg.CornerRadiusBottomRight = 4;
-		scrollBar.AddThemeStyleboxOverride("scroll", sbScrollBg);
-		vBoxContainer.AddChild(_scroll, forceReadableName: false, Node.InternalMode.Disabled);
+		// Content container — no scroll, panel auto-expands to fit
 		_content = new VBoxContainer();
 		_content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		_content.AddThemeConstantOverride("separation", 6);
-		_scroll.AddChild(_content, forceReadableName: false, Node.InternalMode.Disabled);
+		vBoxContainer.AddChild(_content, forceReadableName: false, Node.InternalMode.Disabled);
 		_layer.AddChild(_panel, forceReadableName: false, Node.InternalMode.Disabled);
 		OverlayInputHandler node = new OverlayInputHandler(this);
 		_layer.AddChild(node, forceReadableName: false, Node.InternalMode.Disabled);
@@ -464,7 +435,7 @@ public class OverlayManager
 		// Apply collapsed state
 		if (_collapsed)
 		{
-			_scroll.Visible = false;
+			_content.Visible = false;
 			_archChipPanel.Visible = false;
 			_deckVizContainer.Visible = false;
 		}
@@ -752,10 +723,6 @@ public class OverlayManager
 			_previousScreen = _currentScreen;
 			return;
 		}
-		if (_scroll != null && GodotObject.IsInstanceValid(_scroll))
-		{
-			_scroll.ScrollVertical = 0;
-		}
 		var children = _content.GetChildren().ToArray();
 		foreach (Node child in children)
 		{
@@ -872,10 +839,10 @@ public class OverlayManager
 		}
 		ResizePanelToContent();
 		// V2: Fade-in on screen change
-		if (screenChanged && _scroll != null && GodotObject.IsInstanceValid(_scroll))
+		if (screenChanged && _content != null && GodotObject.IsInstanceValid(_content))
 		{
-			_scroll.Modulate = new Color(1, 1, 1, 0);
-			_scroll.CreateTween()?.TweenProperty(_scroll, "modulate", Colors.White, 0.2f);
+			_content.Modulate = new Color(1, 1, 1, 0);
+			_content.CreateTween()?.TweenProperty(_content, "modulate", Colors.White, 0.2f);
 		}
 		_previousScreen = _currentScreen;
 	}
@@ -892,16 +859,8 @@ public class OverlayManager
 	{
 		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
 			return;
-		float viewportH = _panel.GetViewportRect().Size.Y;
-		float maxBottom = viewportH - 15f; // allow nearly full height
 		Vector2 minSize = _panel.GetCombinedMinimumSize();
-		float desiredBottom = _panel.OffsetTop + minSize.Y;
-		_panel.OffsetBottom = Mathf.Min(desiredBottom, maxBottom);
-		// Auto scrollbar — only shows when content truly overflows
-		if (_scroll != null && GodotObject.IsInstanceValid(_scroll))
-		{
-			_scroll.VerticalScrollMode = ScrollContainer.ScrollMode.Auto;
-		}
+		_panel.OffsetBottom = _panel.OffsetTop + minSize.Y;
 	}
 
 	private void UpdateArchetypeChip()
@@ -1397,8 +1356,8 @@ public class OverlayManager
 		_collapsed = !_collapsed;
 		_settings.Collapsed = _collapsed;
 		_settings.Save();
-		if (_scroll != null && GodotObject.IsInstanceValid(_scroll))
-			_scroll.Visible = !_collapsed;
+		if (_content != null && GodotObject.IsInstanceValid(_content))
+			_content.Visible = !_collapsed;
 		if (_archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
 			_archChipPanel.Visible = !_collapsed;
 		if (_deckVizContainer != null && GodotObject.IsInstanceValid(_deckVizContainer))
@@ -2480,8 +2439,6 @@ public class OverlayManager
 				ResizePanelToContent();
 				return;
 			}
-			if (_scroll != null && GodotObject.IsInstanceValid(_scroll))
-				_scroll.ScrollVertical = 0;
 			var children = _content.GetChildren().ToArray();
 			foreach (Node child in children)
 			{
@@ -2573,10 +2530,10 @@ public class OverlayManager
 			_content.AddChild(statsLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			ResizePanelToContent();
 			// V2: Fade in the summary
-			if (_scroll != null && GodotObject.IsInstanceValid(_scroll))
+			if (_content != null && GodotObject.IsInstanceValid(_content))
 			{
-				_scroll.Modulate = new Color(1, 1, 1, 0);
-				_scroll.CreateTween()?.TweenProperty(_scroll, "modulate", Colors.White, 0.3f);
+				_content.Modulate = new Color(1, 1, 1, 0);
+				_content.CreateTween()?.TweenProperty(_content, "modulate", Colors.White, 0.3f);
 			}
 			_previousScreen = _currentScreen;
 		}
