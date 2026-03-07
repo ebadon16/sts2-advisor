@@ -16,6 +16,10 @@ public class OverlayManager
 
 	private VBoxContainer _content;
 
+	private bool _isCompact;
+
+	private Label _compactToggle;
+
 	private Label _archetypeLabel;
 
 	private Label _screenLabel;
@@ -56,6 +60,10 @@ public class OverlayManager
 
 	// Feature 1: Decision history
 	private bool _showHistory;
+
+	// Section toggles (persisted)
+	private bool _showDeckBreakdown = true;
+	private bool _showDrawProb = true;
 
 	// Feature 5: Draw probability
 	private GameState _currentGameState;
@@ -148,6 +156,9 @@ public class OverlayManager
 		_opacityIndex = Array.IndexOf(OpacitySteps, _panelOpacity);
 		if (_opacityIndex < 0) _opacityIndex = 0;
 		_collapsed = _settings.Collapsed;
+		_showDeckBreakdown = _settings.ShowDeckBreakdown;
+		_showHistory = _settings.ShowDecisionHistory;
+		_showDrawProb = _settings.ShowDrawProbability;
 		LoadGameFonts();
 		LoadGameIcons();
 		InitializeStyles();
@@ -282,10 +293,10 @@ public class OverlayManager
 		_sbPanel.ShadowColor = new Color(0f, 0f, 0f, 0.5f);
 		_sbEntry = new StyleBoxFlat();
 		_sbEntry.BgColor = new Color(0.06f, 0.08f, 0.14f, 0.6f);
-		_sbEntry.CornerRadiusTopLeft = 0;
-		_sbEntry.CornerRadiusTopRight = 12;
-		_sbEntry.CornerRadiusBottomLeft = 0;
-		_sbEntry.CornerRadiusBottomRight = 12;
+		_sbEntry.CornerRadiusTopLeft = 8;
+		_sbEntry.CornerRadiusTopRight = 8;
+		_sbEntry.CornerRadiusBottomLeft = 8;
+		_sbEntry.CornerRadiusBottomRight = 8;
 		StyleBoxFlat sbEntry3 = _sbEntry;
 		contentMarginLeft = (_sbEntry.ContentMarginRight = 14f);
 		sbEntry3.ContentMarginLeft = contentMarginLeft;
@@ -374,6 +385,9 @@ public class OverlayManager
 		titleBar.GuiInput += (InputEvent ev) => OnTitleBarInput(ev);
 		vBoxContainer.AddChild(titleBar, forceReadableName: false, Node.InternalMode.Disabled);
 
+		HBoxContainer titleRow = new HBoxContainer();
+		titleRow.MouseFilter = Control.MouseFilterEnum.Ignore;
+		titleBar.AddChild(titleRow, forceReadableName: false, Node.InternalMode.Disabled);
 		Label label = new Label();
 		label.Text = "QU'EST-CE SPIRE?";
 		ApplyFont(label, _fontBold);
@@ -382,7 +396,26 @@ public class OverlayManager
 		label.AddThemeConstantOverride("outline_size", 4);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		label.MouseFilter = Control.MouseFilterEnum.Ignore;
-		titleBar.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+		label.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+		titleRow.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+		// Compact/expand toggle
+		_compactToggle = new Label();
+		_compactToggle.Text = "\u25B2";
+		ApplyFont(_compactToggle, _fontBold);
+		_compactToggle.AddThemeFontSizeOverride("font_size", 18);
+		_compactToggle.AddThemeColorOverride("font_color", ClrSub);
+		_compactToggle.MouseFilter = Control.MouseFilterEnum.Stop;
+		_compactToggle.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		_compactToggle.GuiInput += (InputEvent ev) =>
+		{
+			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+			{
+				_isCompact = !_isCompact;
+				if (_content != null) _content.Visible = !_isCompact;
+				_compactToggle.Text = _isCompact ? "\u25BC" : "\u25B2";
+			}
+		};
+		titleRow.AddChild(_compactToggle, forceReadableName: false, Node.InternalMode.Disabled);
 
 		// Decorative separator under title (V1: color-coded)
 		_titleSep = new HSeparator();
@@ -715,7 +748,25 @@ public class OverlayManager
 		bool screenChanged = _currentScreen != _previousScreen;
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
 		{
-			_screenLabel.Text = _collapsed ? GetCollapsedSummary() : _currentScreen.ToUpper();
+			if (_collapsed)
+				_screenLabel.Text = GetCollapsedSummary();
+			else
+			{
+				// Show a helpful context label instead of raw screen name
+				string screenText = _currentScreen switch
+				{
+					"MAP" => "MAP — Choose your path",
+					"REST SITE" => "REST SITE — Rest or upgrade?",
+					"CARD UPGRADE" => "CARD UPGRADE — Pick wisely",
+					"CARD REMOVAL" => "CARD REMOVAL — Trim your deck",
+					"MERCHANT SHOP" => "SHOP — Browse carefully",
+					"COMBAT" => "COMBAT",
+					"EVENT" => "EVENT",
+					"IDLE" => "WAITING...  (drag to move)",
+					_ => _currentScreen
+				};
+				_screenLabel.Text = screenText;
+			}
 		}
 		// V1: Color-coded title separator
 		UpdateTitleSepColor();
@@ -862,12 +913,16 @@ public class OverlayManager
 		// On advice screens, add deck breakdown after advice (not before)
 		if (isAdviceScreen && _currentDeckAnalysis != null)
 		{
-			AddInlineDeckViz(_currentDeckAnalysis);
+			var deckSection = AddCollapsibleSection("DECK BREAKDOWN", "deck", ref _showDeckBreakdown);
+			if (deckSection != null)
+				AddInlineDeckVizTo(deckSection, _currentDeckAnalysis);
 		}
 		// Feature 5: Draw probability panel in combat
 		if (_currentScreen == "COMBAT" && _currentGameState != null && _currentGameState.DrawPile.Count > 0)
 		{
-			AddDrawProbabilityPanel(_currentGameState);
+			var drawSection = AddCollapsibleSection("DRAW CHANCES", "draw", ref _showDrawProb);
+			if (drawSection != null)
+				AddDrawProbabilityTo(drawSection, _currentGameState);
 		}
 		// Feature 1: Decision history log
 		if (_showHistory)
@@ -877,7 +932,9 @@ public class OverlayManager
 		// On MAP screen: always show last 3 decisions as mini-section
 		else if (_currentScreen == "MAP")
 		{
-			AddRecentDecisions(3);
+			var histSection = AddCollapsibleSection("RECENT CHOICES", "history", ref _showHistory);
+			if (histSection != null)
+				AddRecentDecisionsTo(histSection, 3);
 		}
 		// A3: Archetype trajectory on MAP screen
 		if (_currentScreen == "MAP")
@@ -959,21 +1016,7 @@ public class OverlayManager
 			}
 			_archetypeLabel.Text = $"YOUR DECK ({deckLabel}): {string.Join(" \u2022 ", list)}";
 		}
-		// A3: Add sparkline for primary archetype
-		if (_currentDeckAnalysis.DetectedArchetypes.Count > 0 && _archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
-		{
-			string primaryId = _currentDeckAnalysis.DetectedArchetypes[0].Archetype.Id;
-			_sparklineContainer = new VBoxContainer();
-			_sparklineContainer.AddThemeConstantOverride("separation", 0);
-			DrawSparkline(_sparklineContainer, primaryId);
-			if (_sparklineContainer.GetChildCount() > 0)
-				_archChipPanel.AddChild(_sparklineContainer, forceReadableName: false, Node.InternalMode.Disabled);
-			else
-			{
-				_sparklineContainer.QueueFree();
-				_sparklineContainer = null;
-			}
-		}
+		// Sparkline removed — redundant with Archetype Trajectory section and overlaps text
 	}
 
 	private void AddSectionHeader(string text)
@@ -993,6 +1036,84 @@ public class OverlayManager
 		label.AddThemeConstantOverride("outline_size", 3);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+	}
+
+	/// <summary>
+	/// Adds a collapsible section: clickable header with toggle arrow, returns content VBox.
+	/// sectionKey is used for persisting collapsed state in settings.
+	/// Returns null if section is collapsed (caller should skip adding children).
+	/// </summary>
+	private VBoxContainer AddCollapsibleSection(string text, string sectionKey, ref bool isExpanded)
+	{
+		// Separator
+		if (_content.GetChildCount() > 0)
+		{
+			HSeparator sep = new HSeparator();
+			sep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.4f), Thickness = 1 });
+			_content.AddChild(sep, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		// Header row: clickable toggle
+		HBoxContainer headerRow = new HBoxContainer();
+		headerRow.MouseFilter = Control.MouseFilterEnum.Stop;
+		headerRow.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		Label arrow = new Label();
+		arrow.Text = isExpanded ? "\u25BC " : "\u25B6 ";
+		ApplyFont(arrow, _fontBold);
+		arrow.AddThemeColorOverride("font_color", ClrSub);
+		arrow.AddThemeFontSizeOverride("font_size", 14);
+		arrow.MouseFilter = Control.MouseFilterEnum.Ignore;
+		headerRow.AddChild(arrow, forceReadableName: false, Node.InternalMode.Disabled);
+		Label headerLabel = new Label();
+		headerLabel.Text = text;
+		ApplyFont(headerLabel, _fontBold);
+		headerLabel.AddThemeColorOverride("font_color", ClrAccent);
+		headerLabel.AddThemeFontSizeOverride("font_size", 16);
+		headerLabel.AddThemeConstantOverride("outline_size", 3);
+		headerLabel.AddThemeColorOverride("font_outline_color", ClrOutline);
+		headerLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+		headerRow.AddChild(headerLabel, forceReadableName: false, Node.InternalMode.Disabled);
+		_content.AddChild(headerRow, forceReadableName: false, Node.InternalMode.Disabled);
+		if (!isExpanded)
+		{
+			// Capture for click handler
+			bool localExpanded = isExpanded;
+			string localKey = sectionKey;
+			headerRow.GuiInput += (InputEvent ev) =>
+			{
+				if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+				{
+					ToggleSectionSetting(localKey, true);
+					Rebuild();
+				}
+			};
+			return null;
+		}
+		// Section is expanded — add content container
+		VBoxContainer sectionContent = new VBoxContainer();
+		sectionContent.AddThemeConstantOverride("separation", 4);
+		_content.AddChild(sectionContent, forceReadableName: false, Node.InternalMode.Disabled);
+		// Click to collapse
+		string collapseKey = sectionKey;
+		headerRow.GuiInput += (InputEvent ev) =>
+		{
+			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+			{
+				ToggleSectionSetting(collapseKey, false);
+				Rebuild();
+			}
+		};
+		return sectionContent;
+	}
+
+	private void ToggleSectionSetting(string key, bool value)
+	{
+		switch (key)
+		{
+			case "deck": _showDeckBreakdown = value; _settings.ShowDeckBreakdown = value; break;
+			case "history": _showHistory = value; _settings.ShowDecisionHistory = value; break;
+			case "draw": _showDrawProb = value; _settings.ShowDrawProbability = value; break;
+		}
+		_settings.Save();
 	}
 
 	private void AddCardEntry(ScoredCard card)
@@ -1081,12 +1202,23 @@ public class OverlayManager
 		string oneLiner = BuildOneLiner(card.SynergyReasons, card.AntiSynergyReasons, card.BaseTier, card.FinalGrade);
 		Label metaLbl = new Label();
 		metaLbl.Text = $"{typeLower} \u2022 {costStr}{priceStr}";
-		if (oneLiner.Length > 0) metaLbl.Text += $" \u2014 {oneLiner}";
 		ApplyFont(metaLbl, _fontBody);
 		metaLbl.AddThemeColorOverride("font_color", card.Cost >= 3 ? ClrExpensive : ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 17);
+		metaLbl.AddThemeFontSizeOverride("font_size", 15);
 		metaLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		// One-liner on its own line so it never gets cut off
+		if (oneLiner.Length > 0)
+		{
+			Label reasonLbl = new Label();
+			reasonLbl.Text = oneLiner;
+			ApplyFont(reasonLbl, _fontBody);
+			bool isNegative = card.AntiSynergyReasons != null && card.AntiSynergyReasons.Count > 0;
+			reasonLbl.AddThemeColorOverride("font_color", isNegative ? ClrNegative : ClrPositive);
+			reasonLbl.AddThemeFontSizeOverride("font_size", 15);
+			reasonLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			vBoxContainer.AddChild(reasonLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
 		// Shop price with gold icon (inline after meta)
 		if (card.Price > 0 && _goldIcon != null)
 		{
@@ -1291,24 +1423,31 @@ public class OverlayManager
 		// Priority: show most impactful single reason in plain English
 		if (antiSynergies != null && antiSynergies.Count > 0)
 		{
+			string anti = antiSynergies[0];
+			if (anti.IndexOf("conflict") >= 0) return "conflicts with deck";
+			if (anti.IndexOf("expensive") >= 0) return "too costly right now";
+			if (anti.IndexOf("redundant") >= 0) return "redundant pick";
 			return "doesn't fit your deck";
 		}
 		if (synergies != null && synergies.Count > 0)
 		{
 			string syn = synergies[0];
-			int synIdx = syn.IndexOf("synergy with ");
-			if (synIdx >= 0) return "good for your deck";
-			int fillsIdx = syn.IndexOf("fills gap: ");
-			if (fillsIdx >= 0) return "adds " + syn.Substring(fillsIdx + 11).Trim();
-			int scalingIdx = syn.IndexOf("scaling");
-			if (scalingIdx >= 0) return "scales well";
-			int flexIdx = syn.IndexOf("flexible");
-			if (flexIdx >= 0) return "versatile";
-			int defIdx = syn.IndexOf("defense");
-			if (defIdx >= 0) return "adds defense";
-			int upgIdx = syn.IndexOf("upgraded");
-			if (upgIdx >= 0) return "upgraded";
-			return syn.Length > 30 ? syn.Substring(0, 30) + "..." : syn;
+			if (syn.IndexOf("synergy with ") >= 0)
+			{
+				// Extract archetype name for specificity
+				string arch = syn.Substring(syn.IndexOf("synergy with ") + 13).Trim();
+				if (arch.Length > 0 && arch.Length <= 20) return $"synergizes with {arch}";
+				return "fits your deck well";
+			}
+			if (syn.IndexOf("fills gap: ") >= 0) return "adds " + syn.Substring(syn.IndexOf("fills gap: ") + 11).Trim();
+			if (syn.IndexOf("scaling") >= 0) return "scales well late";
+			if (syn.IndexOf("flexible") >= 0) return "versatile pick";
+			if (syn.IndexOf("defense") >= 0) return "shores up defense";
+			if (syn.IndexOf("upgraded") >= 0) return "upgraded";
+			if (syn.IndexOf("aoe") >= 0 || syn.IndexOf("AoE") >= 0) return "good AoE";
+			if (syn.IndexOf("draw") >= 0) return "adds card draw";
+			if (syn.IndexOf("energy") >= 0) return "energy efficient";
+			return syn.Length > 25 ? syn.Substring(0, 25) + "..." : syn;
 		}
 		if (finalGrade != baseTier)
 		{
@@ -1326,8 +1465,8 @@ public class OverlayManager
 		bool notableSource = scoreSource == "adaptive" || scoreSource == "default";
 		if (baseScore > 0f && (hasAdjustments || notableSource))
 		{
-			string srcTag = scoreSource == "adaptive" ? " [adaptive]" : scoreSource == "default" ? " [no data]" : "";
-			string breakdown = $"{TierEngine.ScoreToGrade(baseScore)}({baseScore:F1}){srcTag}";
+			string srcTag = scoreSource == "adaptive" ? " [learned]" : scoreSource == "default" ? " [no data]" : "";
+			string breakdown = $"Score: {TierEngine.ScoreToGrade(baseScore)}({baseScore:F1}){srcTag}";
 			if (synergyDelta != 0f) breakdown += $" {synergyDelta:+0.0;-0.0} syn";
 			if (floorAdjust != 0f) breakdown += $" {floorAdjust:+0.0;-0.0} floor";
 			if (deckSizeAdjust != 0f) breakdown += $" {deckSizeAdjust:+0.0;-0.0} size";
@@ -1337,7 +1476,7 @@ public class OverlayManager
 			breakdownLbl.Text = breakdown;
 			ApplyFont(breakdownLbl, _fontBody);
 			breakdownLbl.AddThemeColorOverride("font_color", ClrAqua);
-			breakdownLbl.AddThemeFontSizeOverride("font_size", 14);
+			breakdownLbl.AddThemeFontSizeOverride("font_size", 15);
 			breakdownLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			parent.AddChild(breakdownLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			hasContent = true;
@@ -1348,10 +1487,10 @@ public class OverlayManager
 			foreach (string reason in synergies.Take(3))
 			{
 				Label lbl = new Label();
-				lbl.Text = reason;
+				lbl.Text = "\u2714 " + reason;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrPositive);
-				lbl.AddThemeFontSizeOverride("font_size", 17);
+				lbl.AddThemeFontSizeOverride("font_size", 15);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
@@ -1363,10 +1502,10 @@ public class OverlayManager
 			foreach (string reason in antiSynergies.Take(2))
 			{
 				Label lbl = new Label();
-				lbl.Text = reason;
+				lbl.Text = "\u2718 " + reason;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrNegative);
-				lbl.AddThemeFontSizeOverride("font_size", 17);
+				lbl.AddThemeFontSizeOverride("font_size", 15);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
@@ -1376,10 +1515,10 @@ public class OverlayManager
 		if (!string.IsNullOrEmpty(notes))
 		{
 			Label lbl = new Label();
-			lbl.Text = (hasContent ? "\n" : "") + notes;
+			lbl.Text = (hasContent ? "" : "") + notes;
 			ApplyFont(lbl, _fontBody);
 			lbl.AddThemeColorOverride("font_color", ClrNotes);
-			lbl.AddThemeFontSizeOverride("font_size", 17);
+			lbl.AddThemeFontSizeOverride("font_size", 15);
 			lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
@@ -1463,6 +1602,20 @@ public class OverlayManager
 		return TierGrade.C;
 	}
 
+	/// <summary>Convert UPPER_SNAKE_CASE game IDs to readable Title Case names.</summary>
+	private static string PrettifyId(string id)
+	{
+		if (string.IsNullOrEmpty(id)) return id;
+		// Try to look up the real name from tier data (it stores Title Case)
+		var cardTier = Plugin.TierEngine?.GetCardTier(null, id);
+		if (cardTier != null && !string.IsNullOrEmpty(cardTier.Id)) return cardTier.Id;
+		var relicTier = Plugin.TierEngine?.GetRelicTier(null, id);
+		if (relicTier != null && !string.IsNullOrEmpty(relicTier.Id)) return relicTier.Id;
+		// Fallback: UPPER_SNAKE_CASE → Title Case
+		return string.Join(" ", id.Split('_').Select(w =>
+			w.Length > 0 ? char.ToUpper(w[0]) + w.Substring(1).ToLower() : w));
+	}
+
 	private void AddDecisionHistory()
 	{
 		var events = Plugin.RunTracker?.GetCurrentRunEvents();
@@ -1480,14 +1633,26 @@ public class OverlayManager
 		var events = Plugin.RunTracker?.GetCurrentRunEvents();
 		if (events == null || events.Count == 0) return;
 		AddSectionHeader("RECENT CHOICES");
+		AddRecentDecisionsTo(_content, maxCount);
+	}
+
+	private void AddRecentDecisionsTo(VBoxContainer target, int maxCount)
+	{
+		var events = Plugin.RunTracker?.GetCurrentRunEvents();
+		if (events == null || events.Count == 0) return;
 		int count = Math.Min(events.Count, maxCount);
 		for (int i = events.Count - 1; i >= events.Count - count; i--)
 		{
-			AddDecisionEntry(events[i]);
+			AddDecisionEntry(target, events[i]);
 		}
 	}
 
 	private void AddDecisionEntry(DecisionEvent evt)
+	{
+		AddDecisionEntry(_content, evt);
+	}
+
+	private void AddDecisionEntry(VBoxContainer target, DecisionEvent evt)
 	{
 		string character = _currentCharacter ?? _currentDeckAnalysis?.Character ?? "unknown";
 		string typeIcon = evt.EventType switch
@@ -1527,7 +1692,7 @@ public class OverlayManager
 		entryPanel.AddChild(vbox, forceReadableName: false, Node.InternalMode.Disabled);
 
 		// Main line: chosen card/relic with grade
-		string chosenName = evt.ChosenId ?? "Skipped";
+		string chosenName = evt.ChosenId != null ? PrettifyId(evt.ChosenId) : "Skipped";
 		TierGrade chosenGrade = evt.ChosenId != null ? LookupGrade(evt.ChosenId, character) : TierGrade.F;
 		string gradeStr = evt.ChosenId != null ? $" [{chosenGrade}]" : "";
 		Label mainLine = new Label();
@@ -1545,7 +1710,7 @@ public class OverlayManager
 			var altParts = alternatives.Select(id =>
 			{
 				TierGrade g = LookupGrade(id, character);
-				return $"{id} [{g}]";
+				return $"{PrettifyId(id)} [{g}]";
 			});
 			Label altLine = new Label();
 			altLine.Text = $"  over {string.Join(", ", altParts)}";
@@ -1556,7 +1721,7 @@ public class OverlayManager
 			vbox.AddChild(altLine, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 
-		_content.AddChild(entryPanel, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(entryPanel, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	// === Feature 2: Deck composition visualization ===
@@ -1575,10 +1740,16 @@ public class OverlayManager
 
 	private void AddInlineDeckViz(DeckAnalysis analysis)
 	{
-		// Add archetype + energy curve + type distribution directly into _content
 		if (analysis == null || analysis.TotalCards == 0)
 			return;
 		AddSectionHeader("DECK BREAKDOWN");
+		AddInlineDeckVizTo(_content, analysis);
+	}
+
+	private void AddInlineDeckVizTo(VBoxContainer target, DeckAnalysis analysis)
+	{
+		if (analysis == null || analysis.TotalCards == 0)
+			return;
 		// Inline archetype info
 		if (_archetypeLabel != null && GodotObject.IsInstanceValid(_archetypeLabel))
 		{
@@ -1588,13 +1759,13 @@ public class OverlayManager
 			archInline.AddThemeFontSizeOverride("font_size", 15);
 			archInline.AddThemeColorOverride("font_color", ClrAccent);
 			archInline.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			_content.AddChild(archInline, forceReadableName: false, Node.InternalMode.Disabled);
+			target.AddChild(archInline, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		AddInlineEnergyCurve(analysis);
-		AddInlineTypeDistribution(analysis);
+		AddInlineEnergyCurve(target, analysis);
+		AddInlineTypeDistribution(target, analysis);
 	}
 
-	private void AddInlineEnergyCurve(DeckAnalysis analysis)
+	private void AddInlineEnergyCurve(VBoxContainer target, DeckAnalysis analysis)
 	{
 		if (analysis.EnergyCurve.Count == 0) return;
 		Label curveHeader = new Label();
@@ -1602,7 +1773,7 @@ public class OverlayManager
 		ApplyFont(curveHeader, _fontBody);
 		curveHeader.AddThemeColorOverride("font_color", ClrSub);
 		curveHeader.AddThemeFontSizeOverride("font_size", 14);
-		_content.AddChild(curveHeader, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(curveHeader, forceReadableName: false, Node.InternalMode.Disabled);
 
 		HBoxContainer costRow = new HBoxContainer();
 		costRow.AddThemeConstantOverride("separation", 2);
@@ -1617,7 +1788,7 @@ public class OverlayManager
 			costLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			costRow.AddChild(costLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		_content.AddChild(costRow, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(costRow, forceReadableName: false, Node.InternalMode.Disabled);
 
 		HBoxContainer curveRow = new HBoxContainer();
 		curveRow.AddThemeConstantOverride("separation", 2);
@@ -1651,10 +1822,10 @@ public class OverlayManager
 			col.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 			curveRow.AddChild(col, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		_content.AddChild(curveRow, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(curveRow, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
-	private void AddInlineTypeDistribution(DeckAnalysis analysis)
+	private void AddInlineTypeDistribution(VBoxContainer target, DeckAnalysis analysis)
 	{
 		int totalTyped = analysis.AttackCount + analysis.SkillCount + analysis.PowerCount;
 		if (totalTyped == 0) return;
@@ -1688,7 +1859,7 @@ public class OverlayManager
 			pwrBar.CustomMinimumSize = new Vector2(0, 8f);
 			typeRow.AddChild(pwrBar, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		_content.AddChild(typeRow, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(typeRow, forceReadableName: false, Node.InternalMode.Disabled);
 		HBoxContainer typeLblRow = new HBoxContainer();
 		typeLblRow.AddThemeConstantOverride("separation", 8);
 		typeLblRow.Alignment = BoxContainer.AlignmentMode.Center;
@@ -1719,7 +1890,7 @@ public class OverlayManager
 			pwrLbl.AddThemeFontSizeOverride("font_size", 15);
 			typeLblRow.AddChild(pwrLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
-		_content.AddChild(typeLblRow, forceReadableName: false, Node.InternalMode.Disabled);
+		target.AddChild(typeLblRow, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	private void UpdateDeckViz(DeckAnalysis analysis)
@@ -1884,6 +2055,13 @@ public class OverlayManager
 		if (gameState.DrawPile == null || gameState.DrawPile.Count == 0) return;
 		string character = _currentCharacter ?? gameState.Character ?? "unknown";
 		AddSectionHeader("DRAW CHANCES");
+		AddDrawProbabilityTo(_content, gameState);
+	}
+
+	private void AddDrawProbabilityTo(VBoxContainer target, GameState gameState)
+	{
+		if (gameState.DrawPile == null || gameState.DrawPile.Count == 0) return;
+		string character = _currentCharacter ?? gameState.Character ?? "unknown";
 
 		// Count unique cards in draw pile
 		var cardCounts = new Dictionary<string, int>();
@@ -1922,7 +2100,7 @@ public class OverlayManager
 
 			// Card name
 			Label nameLbl = new Label();
-			nameLbl.Text = entry.Id;
+			nameLbl.Text = PrettifyId(entry.Id);
 			ApplyFont(nameLbl, _fontBody);
 			nameLbl.AddThemeColorOverride("font_color", ClrCream);
 			nameLbl.AddThemeFontSizeOverride("font_size", 17);
@@ -1946,7 +2124,7 @@ public class OverlayManager
 			pctLbl.HorizontalAlignment = HorizontalAlignment.Right;
 			row.AddChild(pctLbl, forceReadableName: false, Node.InternalMode.Disabled);
 
-			_content.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
+			target.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 	}
 
@@ -2431,7 +2609,6 @@ public class OverlayManager
 			{
 				if (!allArchetypes.ContainsKey(archetypeId))
 				{
-					// Try to get display name from definitions
 					string displayName = archetypeId;
 					if (_currentDeckAnalysis?.DetectedArchetypes != null)
 					{
@@ -2442,40 +2619,61 @@ public class OverlayManager
 				}
 			}
 		}
-		// Show max 3 archetypes, last 10 floors
+		// Show max 3 archetypes, last 8 floors
 		var floors = history.Keys.OrderBy(k => k).ToList();
-		var recentFloors = floors.Skip(Math.Max(0, floors.Count - 10)).ToList();
+		var recentFloors = floors.Skip(Math.Max(0, floors.Count - 8)).ToList();
 		int shown = 0;
 		foreach (var (archId, displayName) in allArchetypes)
 		{
 			if (shown >= 3) break;
-			VBoxContainer archRow = new VBoxContainer();
-			archRow.AddThemeConstantOverride("separation", 1);
+			// Get first and last strength for trend
+			float firstStr = 0f, lastStr = 0f;
+			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[0], out var firstData))
+			{
+				var e = firstData.FirstOrDefault(a => a.archetypeId == archId);
+				if (e.archetypeId != null) firstStr = e.strength;
+			}
+			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[recentFloors.Count - 1], out var lastData))
+			{
+				var e = lastData.FirstOrDefault(a => a.archetypeId == archId);
+				if (e.archetypeId != null) lastStr = e.strength;
+			}
+			// Trend arrow
+			string trend = lastStr > firstStr + 0.05f ? "\u2197" : lastStr < firstStr - 0.05f ? "\u2198" : "\u2192";
+			Color trendColor = lastStr > firstStr + 0.05f ? ClrPositive : lastStr < firstStr - 0.05f ? ClrNegative : ClrSub;
+			// Build row: "Strength ↗ 45% → 68%"
+			HBoxContainer archRow = new HBoxContainer();
+			archRow.AddThemeConstantOverride("separation", 6);
 			Label nameLbl = new Label();
 			nameLbl.Text = displayName;
 			ApplyFont(nameLbl, _fontBold);
 			nameLbl.AddThemeColorOverride("font_color", ClrCream);
-			nameLbl.AddThemeFontSizeOverride("font_size", 17);
+			nameLbl.AddThemeFontSizeOverride("font_size", 15);
+			nameLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			archRow.AddChild(nameLbl, forceReadableName: false, Node.InternalMode.Disabled);
-			// Mini bar chart
-			HBoxContainer barRow = new HBoxContainer();
-			barRow.AddThemeConstantOverride("separation", 1);
-			foreach (int floor in recentFloors)
-			{
-				float strength = 0f;
-				if (history.TryGetValue(floor, out var floorData))
-				{
-					var entry = floorData.FirstOrDefault(a => a.archetypeId == archId);
-					if (entry.archetypeId != null) strength = entry.strength;
-				}
-				ColorRect bar = new ColorRect();
-				bar.Color = strength > 0.5f ? new Color(ClrPositive, 0.8f) :
-					strength > 0.2f ? new Color(ClrAccent, 0.7f) : new Color(ClrSub, 0.4f);
-				bar.CustomMinimumSize = new Vector2(8f, Math.Max(strength * 14f, 1f));
-				barRow.AddChild(bar, forceReadableName: false, Node.InternalMode.Disabled);
-			}
-			archRow.AddChild(barRow, forceReadableName: false, Node.InternalMode.Disabled);
+			Label trendLbl = new Label();
+			trendLbl.Text = $"{trend} {(int)(firstStr * 100)}% \u2192 {(int)(lastStr * 100)}%";
+			ApplyFont(trendLbl, _fontBody);
+			trendLbl.AddThemeColorOverride("font_color", trendColor);
+			trendLbl.AddThemeFontSizeOverride("font_size", 15);
+			archRow.AddChild(trendLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			_content.AddChild(archRow, forceReadableName: false, Node.InternalMode.Disabled);
+			// Fixed-height progress bar showing current strength
+			HBoxContainer barRow = new HBoxContainer();
+			barRow.AddThemeConstantOverride("separation", 0);
+			ColorRect filledBar = new ColorRect();
+			filledBar.Color = new Color(trendColor, 0.6f);
+			filledBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			filledBar.SizeFlagsStretchRatio = Math.Max(lastStr, 0.01f);
+			filledBar.CustomMinimumSize = new Vector2(0, 4f);
+			barRow.AddChild(filledBar, forceReadableName: false, Node.InternalMode.Disabled);
+			ColorRect emptyBar = new ColorRect();
+			emptyBar.Color = new Color(ClrSub, 0.2f);
+			emptyBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			emptyBar.SizeFlagsStretchRatio = Math.Max(1f - lastStr, 0.01f);
+			emptyBar.CustomMinimumSize = new Vector2(0, 4f);
+			barRow.AddChild(emptyBar, forceReadableName: false, Node.InternalMode.Disabled);
+			_content.AddChild(barRow, forceReadableName: false, Node.InternalMode.Disabled);
 			shown++;
 		}
 	}
@@ -2558,8 +2756,9 @@ public class OverlayManager
 				_content.AddChild(contrHeader, forceReadableName: false, Node.InternalMode.Disabled);
 				foreach (var (evt, chosenGrade, bestGrade) in controversial.Take(8))
 				{
-					string chosen = evt.ChosenId ?? "Skipped";
+					string chosen = evt.ChosenId != null ? PrettifyId(evt.ChosenId) : "Skipped";
 					string bestId = evt.OfferedIds.OrderByDescending(id => (int)LookupGrade(id, character)).First();
+					string bestName = PrettifyId(bestId);
 					int gap = (int)bestGrade - (int)chosenGrade;
 					PanelContainer cPanel = new PanelContainer();
 					StyleBoxFlat cStyle = new StyleBoxFlat();
@@ -2574,7 +2773,7 @@ public class OverlayManager
 					cStyle.ContentMarginBottom = 4f;
 					cPanel.AddThemeStyleboxOverride("panel", cStyle);
 					Label cLbl = new Label();
-					cLbl.Text = $"F{evt.Floor}: Chose {chosen} [{chosenGrade}] \u2014 Best: {bestId} [{bestGrade}] ({gap} grades below)";
+					cLbl.Text = $"F{evt.Floor}: Chose {chosen} [{chosenGrade}] \u2014 Best: {bestName} [{bestGrade}] ({gap} grades below)";
 					ApplyFont(cLbl, _fontBody);
 					cLbl.AddThemeColorOverride("font_color", outcome == RunOutcome.Win ? ClrPositive : ClrNegative);
 					cLbl.AddThemeFontSizeOverride("font_size", 17);
@@ -2805,6 +3004,10 @@ public class OverlayManager
 				}
 				if (!hasLargeChild && depth >= 2)
 				{
+					// Skip navigation buttons (back, close, etc.) — they aren't items
+					string nodeName = ctrl.Name.ToString().ToLowerInvariant();
+					if (nodeName.Contains("back") || nodeName.Contains("close") || nodeName.Contains("exit") || nodeName.Contains("return") || ctrl is Godot.BaseButton)
+						continue;
 					result.Add(ctrl);
 					continue; // Don't recurse further into this item
 				}
