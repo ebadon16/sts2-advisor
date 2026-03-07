@@ -10,14 +10,23 @@ namespace STS2Advisor.UI
         {
             var sb = new StringBuilder();
 
-            foreach (string reason in card.SynergyReasons.Take(3))
-                sb.AppendLine(reason);
+            if (card.SynergyReasons.Any())
+            {
+                foreach (string reason in card.SynergyReasons.Take(3))
+                    sb.AppendLine($"+ {reason}");
+            }
 
-            foreach (string reason in card.AntiSynergyReasons.Take(2))
-                sb.AppendLine(reason);
+            if (card.AntiSynergyReasons.Any())
+            {
+                foreach (string reason in card.AntiSynergyReasons.Take(2))
+                    sb.AppendLine($"- {reason}");
+            }
 
             if (!string.IsNullOrEmpty(card.Notes))
-                sb.AppendLine(card.Notes);
+            {
+                if (sb.Length > 0) sb.AppendLine();
+                sb.AppendLine($"# {card.Notes}");
+            }
 
             return sb.ToString().TrimEnd();
         }
@@ -26,14 +35,23 @@ namespace STS2Advisor.UI
         {
             var sb = new StringBuilder();
 
-            foreach (string reason in relic.SynergyReasons.Take(3))
-                sb.AppendLine(reason);
+            if (relic.SynergyReasons.Any())
+            {
+                foreach (string reason in relic.SynergyReasons.Take(3))
+                    sb.AppendLine($"+ {reason}");
+            }
 
-            foreach (string reason in relic.AntiSynergyReasons.Take(2))
-                sb.AppendLine(reason);
+            if (relic.AntiSynergyReasons.Any())
+            {
+                foreach (string reason in relic.AntiSynergyReasons.Take(2))
+                    sb.AppendLine($"- {reason}");
+            }
 
             if (!string.IsNullOrEmpty(relic.Notes))
-                sb.AppendLine(relic.Notes);
+            {
+                if (sb.Length > 0) sb.AppendLine();
+                sb.AppendLine($"# {relic.Notes}");
+            }
 
             return sb.ToString().TrimEnd();
         }

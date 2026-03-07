@@ -41,6 +41,8 @@ namespace STS2Advisor.Core
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
+        public int Cost { get; set; }
         public TierGrade BaseTier { get; set; }
         public float FinalScore { get; set; }
         public TierGrade FinalGrade { get; set; }
@@ -54,6 +56,7 @@ namespace STS2Advisor.Core
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Rarity { get; set; }
         public TierGrade BaseTier { get; set; }
         public float FinalScore { get; set; }
         public TierGrade FinalGrade { get; set; }

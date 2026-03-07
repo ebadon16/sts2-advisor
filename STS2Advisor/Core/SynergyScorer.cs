@@ -187,6 +187,8 @@ namespace STS2Advisor.Core
             {
                 Id = card.Id,
                 Name = card.Name ?? card.Id,
+                Type = card.Type,
+                Cost = card.Cost,
                 BaseTier = baseTier,
                 FinalScore = score,
                 FinalGrade = TierEngine.ScoreToGrade(score),
@@ -253,6 +255,7 @@ namespace STS2Advisor.Core
             {
                 Id = relic.Id,
                 Name = relic.Name ?? relic.Id,
+                Rarity = relic.Rarity,
                 BaseTier = baseTier,
                 FinalScore = score,
                 FinalGrade = TierEngine.ScoreToGrade(score),
