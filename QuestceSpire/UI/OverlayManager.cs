@@ -3049,7 +3049,11 @@ public class OverlayManager
 		{
 			// Shop items may be in multiple containers. Find all sizeable Control leaves.
 			var shopItems = FindAllSizeableControls(shopNode, minW: 60, minH: 60, maxDepth: 8);
+			// Log found controls for debugging
+			foreach (var item in shopItems)
+				Plugin.Log($"  Shop item: {item.Name} ({item.GetType().Name}) size={item.Size} children={item.GetChildCount()}");
 			Plugin.Log($"Shop: found {shopItems.Count} sizeable controls, have {allGrades.Count} grades");
+			// Only badge up to the number of grades we have
 			int matched = Math.Min(shopItems.Count, allGrades.Count);
 			for (int i = 0; i < matched; i++)
 			{
@@ -3089,9 +3093,8 @@ public class OverlayManager
 				}
 				if (!hasLargeChild && depth >= 2)
 				{
-					// Skip navigation buttons (back, close, etc.) — they aren't items
-					string nodeName = ctrl.Name.ToString().ToLowerInvariant();
-					if (nodeName.Contains("back") || nodeName.Contains("close") || nodeName.Contains("exit") || nodeName.Contains("return") || ctrl is Godot.BaseButton)
+					// Skip navigation buttons — check node name AND walk up ancestors
+					if (IsButtonNode(ctrl))
 						continue;
 					result.Add(ctrl);
 					continue; // Don't recurse further into this item
@@ -3103,6 +3106,30 @@ public class OverlayManager
 			}
 		}
 		return result;
+	}
+
+	/// <summary>
+	/// Check if a node is a button or part of a button (back, close, nav, etc.)
+	/// Checks the node itself, its name, its type, and up to 3 ancestors.
+	/// </summary>
+	private static bool IsButtonNode(Control ctrl)
+	{
+		// Check the node and its ancestors (up to 3 levels)
+		Node current = ctrl;
+		for (int i = 0; i < 4 && current != null; i++)
+		{
+			if (current is Godot.BaseButton)
+				return true;
+			string name = current.Name.ToString().ToLowerInvariant();
+			string typeName = current.GetType().Name.ToLowerInvariant();
+			if (name.Contains("back") || name.Contains("close") || name.Contains("exit") ||
+				name.Contains("return") || name.Contains("button") || name.Contains("btn") ||
+				name.Contains("nav") || name.Contains("cancel") ||
+				typeName.Contains("button"))
+				return true;
+			current = current.GetParent();
+		}
+		return false;
 	}
 
 	/// <summary>
