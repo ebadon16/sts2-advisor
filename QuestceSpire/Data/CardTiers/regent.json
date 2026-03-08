@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "Strike Regent",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -12,7 +12,7 @@
     },
     {
       "id": "Defend Regent",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -242,7 +242,7 @@
     },
     {
       "id": "Cosmic Indifference",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "cosmic",
         "block",
@@ -665,7 +665,7 @@
     },
     {
       "id": "Patter",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "draw"
       ],
@@ -965,16 +965,6 @@
       ],
       "antiSynergies": [],
       "notes": "1-cost common attack. Forge-enhanced war attack, decent with forge support"
-    },
-    {
-      "id": "Iam Invincible",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "scaling"
-      ],
-      "antiSynergies": [],
-      "notes": ""
     }
   ]
 }

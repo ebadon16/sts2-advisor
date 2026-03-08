@@ -24,13 +24,13 @@ public class OverlayManager
 
 	// Settings menu
 	private PanelContainer _settingsMenu;
-	private Label _gearButton;
+	private Button _gearButton;
 
 
 
 	private bool _visible = true;
 
-	private bool _showTooltips = true;
+	private readonly bool _showTooltips = true;
 
 	private bool _showInGameBadges = true;
 
@@ -65,7 +65,7 @@ public class OverlayManager
 
 	// Section toggles (persisted)
 	private bool _showDeckBreakdown = true;
-	private bool _showDrawProb = true;
+	// _showDrawProb removed — feature wasn't useful
 
 	// Staleness tracking: clear overlay when game screen changes without a patch firing
 	private ulong _lastUpdateTick;
@@ -88,6 +88,14 @@ public class OverlayManager
 
 	// A1: Win rate tracker
 	private Label _winRateLabel;
+
+	// _minimizeBtn removed — collapse to title bar instead
+
+	// Layout stabilization counter (re-runs FitPanelHeight for first N process ticks)
+	private int _layoutTicksRemaining;
+
+	// Shop refresh: track item count to detect purchases
+	private int _shopItemCount;
 
 	// _archChipVBox removed — deck info lives in DECK BREAKDOWN section
 
@@ -153,16 +161,14 @@ public class OverlayManager
 	public OverlayManager()
 	{
 		_settings = OverlaySettings.Load();
-		_visible = _settings.Visible;
-		_showTooltips = _settings.ShowTooltips;
+		_visible = true; // Always start visible — hide is session-only
 		_showInGameBadges = _settings.ShowInGameBadges;
 		_panelOpacity = _settings.PanelOpacity;
 		_opacityIndex = Array.IndexOf(OpacitySteps, _panelOpacity);
 		if (_opacityIndex < 0) _opacityIndex = 0;
 		_collapsed = _settings.Collapsed;
 		_showDeckBreakdown = _settings.ShowDeckBreakdown;
-		_showHistory = _settings.ShowDecisionHistory;
-		_showDrawProb = _settings.ShowDrawProbability;
+		_showHistory = false; // Always start off — user can enable in settings
 		LoadGameFonts();
 		LoadGameIcons();
 		InitializeStyles();
@@ -388,22 +394,23 @@ public class OverlayManager
 		_panel.OffsetLeft = _settings.OffsetLeft;
 		_panel.OffsetRight = _settings.OffsetRight;
 		_panel.OffsetTop = _settings.OffsetTop;
-		// OffsetBottom not loaded — auto-calculated by FitPanelHeight
+		_panel.OffsetBottom = _settings.OffsetTop + 40;
+		_panel.GrowVertical = Control.GrowDirection.End;
 		_panel.AddThemeStyleboxOverride("panel", _sbPanel);
 		_panel.MouseFilter = Control.MouseFilterEnum.Stop;
 		VBoxContainer vBoxContainer = new VBoxContainer();
 		vBoxContainer.AddThemeConstantOverride("separation", 10);
 		_panel.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
 
-		// Title bar area (draggable)
+		// Title bar area (draggable) — Pass so child buttons still receive clicks
 		VBoxContainer titleBar = new VBoxContainer();
-		titleBar.MouseFilter = Control.MouseFilterEnum.Stop;
+		titleBar.MouseFilter = Control.MouseFilterEnum.Pass;
 		titleBar.MouseDefaultCursorShape = Control.CursorShape.Drag;
 		titleBar.GuiInput += (InputEvent ev) => OnTitleBarInput(ev);
 		vBoxContainer.AddChild(titleBar, forceReadableName: false, Node.InternalMode.Disabled);
 
 		HBoxContainer titleRow = new HBoxContainer();
-		titleRow.MouseFilter = Control.MouseFilterEnum.Ignore;
+		titleRow.MouseFilter = Control.MouseFilterEnum.Pass;
 		titleBar.AddChild(titleRow, forceReadableName: false, Node.InternalMode.Disabled);
 		Label label = new Label();
 		label.Text = "QU'EST-CE SPIRE?";
@@ -415,27 +422,7 @@ public class OverlayManager
 		label.MouseFilter = Control.MouseFilterEnum.Ignore;
 		label.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		titleRow.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
-		// Settings gear button
-		_gearButton = new Label();
-		_gearButton.Text = "\u2699";
-		ApplyFont(_gearButton, _fontBold);
-		_gearButton.AddThemeFontSizeOverride("font_size", 20);
-		_gearButton.AddThemeColorOverride("font_color", ClrSub);
-		_gearButton.MouseFilter = Control.MouseFilterEnum.Stop;
-		_gearButton.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
-		_gearButton.GuiInput += (InputEvent ev) =>
-		{
-			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
-			{
-				ToggleSettingsMenu();
-			}
-		};
-		titleRow.AddChild(_gearButton, forceReadableName: false, Node.InternalMode.Disabled);
-		// Spacer
-		var gearSpacer = new Label();
-		gearSpacer.Text = " ";
-		gearSpacer.MouseFilter = Control.MouseFilterEnum.Ignore;
-		titleRow.AddChild(gearSpacer, forceReadableName: false, Node.InternalMode.Disabled);
+		// (Settings button added at bottom of content in Rebuild)
 		// Compact/expand toggle
 		_compactToggle = new Label();
 		_compactToggle.Text = "\u25B2";
@@ -447,9 +434,7 @@ public class OverlayManager
 		_compactToggle.GuiInput += (InputEvent ev) =>
 		{
 			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
-			{
 				ToggleCollapsed();
-			}
 		};
 		titleRow.AddChild(_compactToggle, forceReadableName: false, Node.InternalMode.Disabled);
 
@@ -530,8 +515,16 @@ public class OverlayManager
 		_hoverPreview.AddChild(_hoverPreviewTex, forceReadableName: false, Node.InternalMode.Disabled);
 		_layer.AddChild(_hoverPreview, forceReadableName: false, Node.InternalMode.Disabled);
 
+		_layoutTicksRemaining = 5;
+
 		sceneTree.Root.CallDeferred("add_child", _layer);
 		Plugin.Log("Overlay built and attached to scene tree.");
+	}
+
+	private bool IsClickOnControl(Vector2 globalPos, Control control)
+	{
+		if (control == null || !GodotObject.IsInstanceValid(control)) return false;
+		return control.GetGlobalRect().HasPoint(globalPos);
 	}
 
 	private void OnTitleBarInput(InputEvent ev)
@@ -540,6 +533,7 @@ public class OverlayManager
 		{
 			if (mb.ButtonIndex == MouseButton.Left)
 			{
+				// Compact toggle now handles its own click via GuiInput
 				if (mb.DoubleClick)
 				{
 					ToggleCollapsed();
@@ -584,6 +578,16 @@ public class OverlayManager
 	public void CheckForStaleScreen()
 	{
 		if (_lastUpdateTick == 0) return;
+		// Shop live-refresh: re-read shop state every tick to catch purchases
+		if (_currentScreen == "MERCHANT SHOP")
+		{
+			try { RefreshShopIfChanged(); } catch { }
+		}
+		// Event card offering: detect when an event offers cards (not handled by ShowScreen patch)
+		if (_currentScreen == "EVENT" && _currentCards == null)
+		{
+			try { CheckForEventCardOffering(); } catch { }
+		}
 		ulong elapsed = Time.GetTicksMsec() - _lastUpdateTick;
 		// If advice is showing for 8+ seconds, check if the game screen is still valid
 		if (elapsed > 8000 && _currentScreen != null)
@@ -623,6 +627,57 @@ public class OverlayManager
 		}
 	}
 
+	private void CheckForEventCardOffering()
+	{
+		GameState gameState = GameStateReader.ReadCurrentState();
+		if (gameState == null) return;
+		if (gameState.OfferedCards == null || gameState.OfferedCards.Count == 0) return;
+		// Event is now offering cards — show advice
+		Plugin.Log($"Event card offering detected: {gameState.OfferedCards.Count} cards");
+		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+		ShowCardAdvice(cards, deckAnalysis, gameState.Character);
+	}
+
+	private void RefreshShopIfChanged()
+	{
+		GameState gameState = GameStateReader.ReadCurrentState();
+		if (gameState == null) return;
+		int currentCount = (gameState.ShopCards?.Count ?? 0) + (gameState.ShopRelics?.Count ?? 0);
+		if (currentCount == _shopItemCount) return;
+		// Item count changed — a purchase happened
+		Plugin.Log($"Shop inventory changed ({_shopItemCount} → {currentCount}), refreshing...");
+		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+		List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+		ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);
+	}
+
+	private static bool IsInsideMerchant(Node node)
+	{
+		Node current = node;
+		while (current != null)
+		{
+			string typeName = current.GetType().Name;
+			if (typeName.Contains("Merchant") || typeName.Contains("merchant"))
+				return true;
+			current = current.GetParent();
+		}
+		return false;
+	}
+
+	private static Node FindNodeOfType(Node root, string typeName, int maxDepth)
+	{
+		if (maxDepth <= 0 || root == null) return null;
+		if (root.GetType().Name == typeName) return root;
+		foreach (Node child in root.GetChildren())
+		{
+			Node found = FindNodeOfType(child, typeName, maxDepth - 1);
+			if (found != null) return found;
+		}
+		return null;
+	}
+
 	private static bool HasNodeOfType(Node root, string typeName, int maxDepth)
 	{
 		if (maxDepth <= 0 || root == null) return false;
@@ -643,6 +698,12 @@ public class OverlayManager
 		_currentScreen = "CARD REWARD";
 		_mapAdvice = null;
 		MarkUpdated();
+		Rebuild();
+	}
+
+	public void SetScreenLabel(string screen)
+	{
+		_currentScreen = screen;
 		Rebuild();
 	}
 
@@ -753,6 +814,7 @@ public class OverlayManager
 		_currentRelics = relics;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
+		_shopItemCount = (cards?.Count ?? 0) + (relics?.Count ?? 0);
 		_currentScreen = "MERCHANT SHOP";
 		_mapAdvice = null;
 		MarkUpdated();
@@ -775,6 +837,10 @@ public class OverlayManager
 	private void BuildSettingsMenu()
 	{
 		_settingsMenu = new PanelContainer();
+		_settingsMenu.AnchorLeft = 1f;
+		_settingsMenu.AnchorRight = 1f;
+		_settingsMenu.AnchorTop = 0f;
+		_settingsMenu.AnchorBottom = 0f;
 		_settingsMenu.Visible = false;
 		_settingsMenu.ZIndex = 102;
 		_settingsMenu.MouseFilter = Control.MouseFilterEnum.Stop;
@@ -792,25 +858,41 @@ public class OverlayManager
 		menuVBox.AddThemeConstantOverride("separation", 4);
 		_settingsMenu.AddChild(menuVBox, forceReadableName: false, Node.InternalMode.Disabled);
 
-		// Header
+		// Header row with close button
+		HBoxContainer headerRow = new HBoxContainer();
+		headerRow.MouseFilter = Control.MouseFilterEnum.Ignore;
 		Label header = new Label();
 		header.Text = "SETTINGS";
 		ApplyFont(header, _fontBold);
 		header.AddThemeFontSizeOverride("font_size", 14);
 		header.AddThemeColorOverride("font_color", ClrHeader);
 		header.MouseFilter = Control.MouseFilterEnum.Ignore;
-		menuVBox.AddChild(header, forceReadableName: false, Node.InternalMode.Disabled);
+		header.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+		headerRow.AddChild(header, forceReadableName: false, Node.InternalMode.Disabled);
+
+		Label closeBtn = new Label();
+		closeBtn.Text = "[X]";
+		ApplyFont(closeBtn, _fontBold);
+		closeBtn.AddThemeFontSizeOverride("font_size", 14);
+		closeBtn.AddThemeColorOverride("font_color", ClrSub);
+		closeBtn.MouseFilter = Control.MouseFilterEnum.Stop;
+		closeBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		closeBtn.GuiInput += (InputEvent ev2) =>
+		{
+			if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
+				_settingsMenu.Visible = false;
+		};
+		headerRow.AddChild(closeBtn, forceReadableName: false, Node.InternalMode.Disabled);
+		menuVBox.AddChild(headerRow, forceReadableName: false, Node.InternalMode.Disabled);
 
 		HSeparator sep = new HSeparator();
 		sep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.4f), Thickness = 1 });
 		menuVBox.AddChild(sep, forceReadableName: false, Node.InternalMode.Disabled);
 
 		// Menu items
-		AddSettingsToggle(menuVBox, "Tooltips", _showTooltips, () => { ToggleTooltips(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "In-Game Badges", _showInGameBadges, () => { ToggleInGameBadges(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Decision Log", _showHistory, () => { ToggleHistory(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Deck Breakdown", _showDeckBreakdown, () => { _showDeckBreakdown = !_showDeckBreakdown; _settings.ShowDeckBreakdown = _showDeckBreakdown; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
-		AddSettingsToggle(menuVBox, "Draw Probability", _showDrawProb, () => { _showDrawProb = !_showDrawProb; _settings.ShowDrawProbability = _showDrawProb; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
 
 		// Opacity section
 		HSeparator sep2 = new HSeparator();
@@ -856,16 +938,93 @@ public class OverlayManager
 		}
 		menuVBox.AddChild(opacityRow, forceReadableName: false, Node.InternalMode.Disabled);
 
+		// Community stats export/import
+		HSeparator sepStats = new HSeparator();
+		sepStats.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
+		menuVBox.AddChild(sepStats, forceReadableName: false, Node.InternalMode.Disabled);
+
+		Label exportBtn = new Label();
+		exportBtn.Text = "Export Stats";
+		ApplyFont(exportBtn, _fontBody);
+		exportBtn.AddThemeFontSizeOverride("font_size", 13);
+		exportBtn.AddThemeColorOverride("font_color", ClrAqua);
+		exportBtn.MouseFilter = Control.MouseFilterEnum.Stop;
+		exportBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		exportBtn.GuiInput += (InputEvent ev2) =>
+		{
+			if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
+			{
+				try
+				{
+					var (path, cards, relics) = StatsExporter.ExportToFile(Plugin.RunDatabase, Plugin.PluginFolder);
+					Plugin.Log($"Stats exported: {cards} cards, {relics} relics → {path}");
+					exportBtn.Text = $"Exported! ({cards} cards, {relics} relics)";
+					exportBtn.AddThemeColorOverride("font_color", ClrPositive);
+				}
+				catch (Exception ex)
+				{
+					Plugin.Log($"Export failed: {ex.Message}");
+					exportBtn.Text = "Export failed!";
+					exportBtn.AddThemeColorOverride("font_color", ClrNegative);
+				}
+			}
+		};
+		menuVBox.AddChild(exportBtn, forceReadableName: false, Node.InternalMode.Disabled);
+
+		Label importBtn = new Label();
+		importBtn.Text = "Import Stats";
+		ApplyFont(importBtn, _fontBody);
+		importBtn.AddThemeFontSizeOverride("font_size", 13);
+		importBtn.AddThemeColorOverride("font_color", ClrAqua);
+		importBtn.MouseFilter = Control.MouseFilterEnum.Stop;
+		importBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		importBtn.GuiInput += (InputEvent ev2) =>
+		{
+			if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
+			{
+				try
+				{
+					string importPath = StatsExporter.FindImportFile(Plugin.PluginFolder);
+					if (importPath == null)
+					{
+						importBtn.Text = "Drop questcespire_stats_export.json in Downloads";
+						importBtn.AddThemeColorOverride("font_color", ClrSub);
+						return;
+					}
+					var (cards, relics) = StatsExporter.ImportFromFile(Plugin.RunDatabase, importPath);
+					if (cards == -1)
+					{
+						importBtn.Text = "Import file not readable";
+						importBtn.AddThemeColorOverride("font_color", ClrSub);
+					}
+					else
+					{
+						string fileName = System.IO.Path.GetFileName(importPath);
+						Plugin.Log($"Stats imported from {fileName}: {cards} cards, {relics} relics");
+						importBtn.Text = $"Imported {fileName} ({cards}c/{relics}r)";
+						importBtn.AddThemeColorOverride("font_color", ClrPositive);
+					}
+				}
+				catch (Exception ex)
+				{
+					Plugin.Log($"Import failed: {ex.Message}");
+					importBtn.Text = "Import failed!";
+					importBtn.AddThemeColorOverride("font_color", ClrNegative);
+				}
+			}
+		};
+		menuVBox.AddChild(importBtn, forceReadableName: false, Node.InternalMode.Disabled);
+
 		// Hide overlay option
 		HSeparator sep3 = new HSeparator();
 		sep3.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
 		menuVBox.AddChild(sep3, forceReadableName: false, Node.InternalMode.Disabled);
 
 		Label hideBtn = new Label();
-		hideBtn.Text = "Hide Overlay";
+		hideBtn.Text = "Collapse Overlay";
 		ApplyFont(hideBtn, _fontBody);
 		hideBtn.AddThemeFontSizeOverride("font_size", 13);
-		hideBtn.AddThemeColorOverride("font_color", ClrNegative);
+		hideBtn.AddThemeColorOverride("font_color", ClrSub);
 		hideBtn.MouseFilter = Control.MouseFilterEnum.Stop;
 		hideBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
 		hideBtn.GuiInput += (InputEvent ev2) =>
@@ -873,7 +1032,7 @@ public class OverlayManager
 			if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
 			{
 				_settingsMenu.Visible = false;
-				ToggleVisible();
+				if (!_collapsed) ToggleCollapsed();
 			}
 		};
 		menuVBox.AddChild(hideBtn, forceReadableName: false, Node.InternalMode.Disabled);
@@ -962,21 +1121,10 @@ public class OverlayManager
 		{
 			_visible = !_visible;
 			_panel.Visible = _visible;
-			_settings.Visible = _visible;
-			_settings.Save();
 			if (!_visible && _settingsMenu != null)
 				_settingsMenu.Visible = false;
 			Plugin.Log("Overlay " + (_visible ? "shown" : "hidden"));
 		}
-	}
-
-	public void ToggleTooltips()
-	{
-		_showTooltips = !_showTooltips;
-		_settings.ShowTooltips = _showTooltips;
-		_settings.Save();
-		Rebuild();
-		Plugin.Log("Tooltips " + (_showTooltips ? "shown" : "hidden"));
 	}
 
 	public void ToggleInGameBadges()
@@ -984,19 +1132,35 @@ public class OverlayManager
 		_showInGameBadges = !_showInGameBadges;
 		_settings.ShowInGameBadges = _showInGameBadges;
 		_settings.Save();
-		if (!_showInGameBadges)
+		SceneTree tree = Engine.GetMainLoop() as SceneTree;
+		if (tree?.Root != null)
 		{
-			// Clean up existing badges
-			SceneTree tree = Engine.GetMainLoop() as SceneTree;
-			if (tree?.Root != null)
-				CleanupInjectedBadges(tree.Root);
+			// Always clean up existing badges first
+			CleanupInjectedBadges(tree.Root);
+			// Re-inject if turning on and a badge-supporting screen is active
+			if (_showInGameBadges && _currentScreen == "CARD REWARD" && _currentCards != null)
+			{
+				try
+				{
+					Node screenNode = FindNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4);
+					if (screenNode != null)
+						InjectCardGrades(screenNode, _currentCards);
+				}
+				catch (Exception ex)
+				{
+					Plugin.Log($"ToggleInGameBadges reinject error: {ex.Message}");
+				}
+			}
 		}
+		Rebuild();
 		Plugin.Log("In-game badges " + (_showInGameBadges ? "shown" : "hidden"));
 	}
 
-	public void HandleInput(InputEvent ev)
+	/// <summary>
+	/// Called from _Input — handles settings menu close on Escape/click-outside.
+	/// </summary>
+	public void HandleSettingsClose(InputEvent ev)
 	{
-		// Close settings menu on click outside or Escape
 		if (_settingsMenu != null && _settingsMenu.Visible)
 		{
 			if (ev is InputEventKey { Pressed: not false } escKey && escKey.Keycode == Key.Escape)
@@ -1013,16 +1177,24 @@ public class OverlayManager
 				}
 			}
 		}
-		// Hotkeys still work as fallback
+	}
+
+	/// <summary>
+	/// Called from _UnhandledKeyInput — hotkeys that the game didn't consume.
+	/// </summary>
+	public void HandleInput(InputEvent ev)
+	{
 		if (ev is InputEventKey { Pressed: not false, Echo: false } inputEventKey)
 		{
 			Key key = inputEventKey.Keycode;
 			Key pkey = inputEventKey.PhysicalKeycode;
-			bool ctrl = inputEventKey.CtrlPressed;
-			bool alt = inputEventKey.AltPressed;
-			bool mod = ctrl || alt;
-			bool isKey7 = key == Key.Key7 || pkey == Key.Key7;
-			if (mod && isKey7)
+			if (key == Key.F7 || pkey == Key.F7)
+				ToggleVisible();
+			else if (inputEventKey.AltPressed && (key == Key.H || pkey == Key.H))
+				ToggleVisible();
+			// Backtick/tilde as no-modifier fallback (STS2 doesn't use it)
+			else if (!inputEventKey.AltPressed && !inputEventKey.CtrlPressed && !inputEventKey.ShiftPressed
+				&& (key == Key.Quoteleft || pkey == Key.Quoteleft))
 				ToggleVisible();
 		}
 	}
@@ -1094,68 +1266,23 @@ public class OverlayManager
 		bool hasRelics = _currentRelics != null && _currentRelics.Count > 0;
 		bool isRemoval = _currentScreen == "CARD REMOVAL";
 		bool isUpgrade = _currentScreen == "CARD UPGRADE";
-		// Upgrade screen: show ranked upgrade priorities
-		if (isUpgrade && _currentGameState != null && _currentDeckAnalysis != null)
-		{
-			AddSectionHeader("UPGRADE PRIORITIES (in deck)");
-			string character = _currentCharacter ?? _currentGameState.Character ?? "unknown";
-			var priorities = GetUpgradePriorities(_currentGameState, _currentDeckAnalysis, character);
-			if (priorities.Count > 0)
-			{
-				int rank = 1;
-				foreach (var (icon, text, color) in priorities)
-				{
-					PanelContainer upgPanel = new PanelContainer();
-					StyleBoxFlat upgStyle = new StyleBoxFlat();
-					upgStyle.BgColor = rank == 1 ? new Color(0.831f, 0.714f, 0.357f, 0.1f) : new Color(0.06f, 0.08f, 0.14f, 0.6f);
-					upgStyle.CornerRadiusTopRight = 12;
-					upgStyle.CornerRadiusBottomRight = 12;
-					upgStyle.BorderWidthLeft = rank == 1 ? 4 : 3;
-					upgStyle.BorderColor = rank == 1 ? ClrAccent : new Color(color, 0.6f);
-					upgStyle.ContentMarginLeft = 14f;
-					upgStyle.ContentMarginRight = 10f;
-					upgStyle.ContentMarginTop = 8f;
-					upgStyle.ContentMarginBottom = 8f;
-					upgPanel.AddThemeStyleboxOverride("panel", upgStyle);
-					Label upgLbl = new Label();
-					string prefix = rank == 1 ? "\u2605 BEST: " : $"#{rank} ";
-					upgLbl.Text = prefix + text;
-					ApplyFont(upgLbl, rank == 1 ? _fontBold : _fontBody);
-					upgLbl.AddThemeColorOverride("font_color", color);
-					upgLbl.AddThemeFontSizeOverride("font_size", rank == 1 ? 17 : 15);
-					upgLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-					upgPanel.AddChild(upgLbl, forceReadableName: false, Node.InternalMode.Disabled);
-					_content.AddChild(upgPanel, forceReadableName: false, Node.InternalMode.Disabled);
-					rank++;
-				}
-			}
-			else
-			{
-				Label noUpg = new Label();
-				noUpg.Text = "No significant upgrade targets found.";
-				ApplyFont(noUpg, _fontBody);
-				noUpg.AddThemeColorOverride("font_color", ClrSub);
-				noUpg.AddThemeFontSizeOverride("font_size", 15);
-				_content.AddChild(noUpg, forceReadableName: false, Node.InternalMode.Disabled);
-			}
-		}
-		else if (hasCards)
+		if (hasCards)
 		{
 			bool isShop = _currentScreen == "MERCHANT SHOP";
-			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : "CARD ANALYSIS");
-			// Shop: only show top picks sorted by score (grade B+ or best 3)
+			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : isUpgrade ? "BEST UPGRADE TARGETS" : "CARD ANALYSIS");
+			// Shop/upgrade: only show top picks sorted by score (grade B+ or best 3)
 			// Non-shop: preserve game order so overlay matches on-screen badge positions
-			var cardsToShow = isShop
+			var cardsToShow = (isShop || isUpgrade)
 				? _currentCards.OrderByDescending(c => c.FinalScore).Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(3).ToList()
 				: _currentCards.ToList();
-			if (isShop && cardsToShow.Count == 0 && _currentCards.Count > 0)
+			if ((isShop || isUpgrade) && cardsToShow.Count == 0 && _currentCards.Count > 0)
 				cardsToShow = _currentCards.Take(3).ToList();
 			foreach (ScoredCard currentCard in cardsToShow)
 			{
 				AddCardEntry(currentCard);
 			}
 			int skippedCards = _currentCards.Count - cardsToShow.Count;
-			if (isShop && skippedCards > 0)
+			if ((isShop || isUpgrade) && skippedCards > 0)
 			{
 				Label skipLbl = new Label();
 				skipLbl.Text = $"  + {skippedCards} lower-rated cards";
@@ -1165,7 +1292,7 @@ public class OverlayManager
 				_content.AddChild(skipLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			// Skip recommendation — consider deck size, card quality, and archetype fit
-			if (!isRemoval && !isShop)
+			if (!isRemoval && !isShop && !isUpgrade)
 			{
 				int deckSize = _currentDeckAnalysis?.TotalCards ?? 20;
 				bool hasFocusedDeck = _currentDeckAnalysis?.DetectedArchetypes?.Count > 0 &&
@@ -1239,52 +1366,31 @@ public class OverlayManager
 				_content.AddChild(advPanel, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 		}
-		else if (!hasCards && !hasRelics)
+		// (no placeholder when no cards/relics — deck breakdown below is sufficient)
+		// Deck breakdown — only shown when enabled in settings
+		if (_showDeckBreakdown && _currentDeckAnalysis != null)
 		{
-			Label label = new Label();
-			label.Text = "Ready for decision screen.\n(Cards, Relics, or Shop)";
-			label.HorizontalAlignment = HorizontalAlignment.Center;
-			ApplyFont(label, _fontBody);
-			label.AddThemeColorOverride("font_color", ClrSub);
-			label.AddThemeFontSizeOverride("font_size", 17);
-			_content.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+			AddSectionHeader("DECK BREAKDOWN");
+			AddInlineDeckVizTo(_content, _currentDeckAnalysis);
 		}
-		// Deck breakdown — always available as collapsible section
-		if (_currentDeckAnalysis != null)
-		{
-			var deckSection = AddCollapsibleSection("DECK BREAKDOWN", "deck", ref _showDeckBreakdown);
-			if (deckSection != null)
-				AddInlineDeckVizTo(deckSection, _currentDeckAnalysis);
-		}
-		// Feature 5: Draw probability panel in combat
-		if (_currentScreen == "COMBAT" && _currentGameState != null && _currentGameState.DrawPile.Count > 0)
-		{
-			var drawSection = AddCollapsibleSection("DRAW CHANCES", "draw", ref _showDrawProb);
-			if (drawSection != null)
-				AddDrawProbabilityTo(drawSection, _currentGameState);
-		}
-		// Feature 1: Decision history log
+		// Decision history — only shown when explicitly enabled in settings
 		if (_showHistory)
 		{
 			AddDecisionHistory();
 		}
-		// On MAP screen: always show last 3 decisions as mini-section
-		else if (_currentScreen == "MAP")
+		// Settings button at bottom
 		{
-			var histSection = AddCollapsibleSection("RECENT CHOICES", "history", ref _showHistory);
-			if (histSection != null)
-				AddRecentDecisionsTo(histSection, 3);
-		}
-		// Settings hint — minimal
-		{
-			Label hkLabel = new Label();
-			hkLabel.Text = "\u2699 for settings";
-			hkLabel.HorizontalAlignment = HorizontalAlignment.Center;
-			ApplyFont(hkLabel, _fontBody);
-			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.5f));
-			hkLabel.AddThemeFontSizeOverride("font_size", 11);
-			hkLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
-			_content.AddChild(hkLabel, forceReadableName: false, Node.InternalMode.Disabled);
+			_gearButton = new Button();
+			_gearButton.Text = "\u2699 Settings";
+			_gearButton.Flat = true;
+			if (_fontBody != null) _gearButton.AddThemeFontOverride("font", _fontBody);
+			_gearButton.AddThemeFontSizeOverride("font_size", 13);
+			_gearButton.AddThemeColorOverride("font_color", new Color(ClrSub, 0.7f));
+			_gearButton.AddThemeColorOverride("font_hover_color", ClrHeader);
+			_gearButton.MouseFilter = Control.MouseFilterEnum.Stop;
+			_gearButton.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+			_gearButton.Pressed += () => ToggleSettingsMenu();
+			_content.AddChild(_gearButton, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		ResizePanelToContent();
 		// V2: Fade-in on screen change
@@ -1308,13 +1414,34 @@ public class OverlayManager
 	{
 		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
 			return;
-		// Reset size to zero so Godot recomputes from content
-		_panel.Size = Vector2.Zero;
+		// Reset to let Godot recalculate from children
+		_panel.CustomMinimumSize = Vector2.Zero;
 		_panel.ResetSize();
-		Vector2 minSize = _panel.GetCombinedMinimumSize();
-		float height = Math.Max(minSize.Y, 40f);
+		// After ResetSize, the panel collapses to minimum. Read its actual size.
+		// Use a second deferred call so Godot has a frame to re-layout.
+		Callable.From(FitPanelHeightFinalize).CallDeferred();
+	}
+
+	private void FitPanelHeightFinalize()
+	{
+		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
+			return;
+		float height = _panel.Size.Y;
+		if (height < 40f) height = _panel.GetCombinedMinimumSize().Y;
+		height = Math.Max(height, 40f);
+		var viewport = _panel.GetViewportRect().Size;
+		if (viewport.Y > 0) height = Math.Min(height, viewport.Y - _panel.OffsetTop - 10f);
 		_panel.OffsetBottom = _panel.OffsetTop + height;
-		_panel.Size = new Vector2(_panel.Size.X, height);
+	}
+
+	/// <summary>
+	/// Called from OverlayInputHandler._Process for the first few ticks to let layout stabilize.
+	/// </summary>
+	public void StabilizeLayout()
+	{
+		if (_layoutTicksRemaining <= 0) return;
+		_layoutTicksRemaining--;
+		FitPanelHeight();
 	}
 
 	// Archetype bar colors — distinct per slot for easy visual parsing
@@ -1417,7 +1544,7 @@ public class OverlayManager
 		{
 			case "deck": _showDeckBreakdown = value; _settings.ShowDeckBreakdown = value; break;
 			case "history": _showHistory = value; _settings.ShowDecisionHistory = value; break;
-			case "draw": _showDrawProb = value; _settings.ShowDrawProbability = value; break;
+			// "draw" case removed — draw probability feature removed
 		}
 		_settings.Save();
 	}
@@ -1948,7 +2075,11 @@ public class OverlayManager
 		// Update compact toggle arrow
 		if (_compactToggle != null && GodotObject.IsInstanceValid(_compactToggle))
 			_compactToggle.Text = _collapsed ? "\u25BC" : "\u25B2";
-		ResizePanelToContent();
+		// When expanding, rebuild content since Rebuild() skips content when collapsed
+		if (!_collapsed)
+			Rebuild();
+		else
+			ResizePanelToContent();
 		Plugin.Log("Overlay " + (_collapsed ? "collapsed" : "expanded"));
 	}
 
@@ -2008,11 +2139,30 @@ public class OverlayManager
 		var events = Plugin.RunTracker?.GetCurrentRunEvents();
 		if (events == null || events.Count == 0) return;
 		AddSectionHeader("DECISION LOG (F10)");
-		int count = Math.Min(events.Count, 10);
+
+		// Wrap in a scroll container so long logs don't stretch the panel
+		ScrollContainer scroll = new ScrollContainer();
+		scroll.CustomMinimumSize = new Vector2(0, 0);
+		// Cap height so it doesn't push the panel too tall
+		scroll.SizeFlagsVertical = Control.SizeFlags.Fill;
+		float maxScrollHeight = 250f;
+		var viewport = _panel?.GetViewportRect().Size ?? new Vector2(0, 800);
+		if (viewport.Y > 0) maxScrollHeight = Math.Min(maxScrollHeight, viewport.Y * 0.3f);
+		scroll.CustomMinimumSize = new Vector2(0, Math.Min(events.Count * 50f, maxScrollHeight));
+		scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
+		scroll.MouseFilter = Control.MouseFilterEnum.Stop;
+
+		VBoxContainer scrollContent = new VBoxContainer();
+		scrollContent.AddThemeConstantOverride("separation", 6);
+		scrollContent.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+		scroll.AddChild(scrollContent, forceReadableName: false, Node.InternalMode.Disabled);
+
+		int count = Math.Min(events.Count, 15);
 		for (int i = events.Count - 1; i >= events.Count - count; i--)
 		{
-			AddDecisionEntry(events[i]);
+			AddDecisionEntry(scrollContent, events[i]);
 		}
+		_content.AddChild(scroll, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	private void AddRecentDecisions(int maxCount)
@@ -2465,85 +2615,7 @@ public class OverlayManager
 		}
 	}
 
-	// === Feature 5: Draw probability panel ===
-
-	private void AddDrawProbabilityPanel(GameState gameState)
-	{
-		if (gameState.DrawPile == null || gameState.DrawPile.Count == 0) return;
-		string character = _currentCharacter ?? gameState.Character ?? "unknown";
-		AddSectionHeader("DRAW CHANCES");
-		AddDrawProbabilityTo(_content, gameState);
-	}
-
-	private void AddDrawProbabilityTo(VBoxContainer target, GameState gameState)
-	{
-		if (gameState.DrawPile == null || gameState.DrawPile.Count == 0) return;
-		string character = _currentCharacter ?? gameState.Character ?? "unknown";
-
-		// Count unique cards in draw pile
-		var cardCounts = new Dictionary<string, int>();
-		foreach (var card in gameState.DrawPile)
-		{
-			string key = card.Id;
-			if (cardCounts.ContainsKey(key)) cardCounts[key]++;
-			else cardCounts[key] = 1;
-		}
-		int totalDraw = gameState.DrawPile.Count;
-
-		// Sort by grade (best first), then by probability
-		var sorted = cardCounts
-			.Select(kvp => new { Id = kvp.Key, Count = kvp.Value, Grade = LookupGrade(kvp.Key, character) })
-			.OrderByDescending(x => (int)x.Grade)
-			.ThenByDescending(x => x.Count)
-			.Take(5)
-			.ToList();
-
-		foreach (var entry in sorted)
-		{
-			float probability = (float)entry.Count / totalDraw * 100f;
-			Color badgeColor = TierBadge.GetGodotColor(entry.Grade);
-
-			HBoxContainer row = new HBoxContainer();
-			row.AddThemeConstantOverride("separation", 6);
-
-			// Grade badge (small)
-			Label gradeLbl = new Label();
-			gradeLbl.Text = entry.Grade.ToString();
-			ApplyFont(gradeLbl, _fontBold);
-			gradeLbl.AddThemeColorOverride("font_color", badgeColor);
-			gradeLbl.AddThemeFontSizeOverride("font_size", 17);
-			gradeLbl.CustomMinimumSize = new Vector2(14f, 0);
-			row.AddChild(gradeLbl, forceReadableName: false, Node.InternalMode.Disabled);
-
-			// Card name
-			Label nameLbl = new Label();
-			nameLbl.Text = PrettifyId(entry.Id);
-			ApplyFont(nameLbl, _fontBody);
-			nameLbl.AddThemeColorOverride("font_color", ClrCream);
-			nameLbl.AddThemeFontSizeOverride("font_size", 17);
-			nameLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-			nameLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
-			row.AddChild(nameLbl, forceReadableName: false, Node.InternalMode.Disabled);
-
-			// Probability bar
-			ColorRect probBar = new ColorRect();
-			probBar.Color = new Color(badgeColor, 0.6f);
-			probBar.CustomMinimumSize = new Vector2(probability * 0.8f, 10f);
-			row.AddChild(probBar, forceReadableName: false, Node.InternalMode.Disabled);
-
-			// Percentage
-			Label pctLbl = new Label();
-			pctLbl.Text = $"{probability:F0}%";
-			ApplyFont(pctLbl, _fontBody);
-			pctLbl.AddThemeColorOverride("font_color", ClrSub);
-			pctLbl.AddThemeFontSizeOverride("font_size", 17);
-			pctLbl.CustomMinimumSize = new Vector2(30f, 0);
-			pctLbl.HorizontalAlignment = HorizontalAlignment.Right;
-			row.AddChild(pctLbl, forceReadableName: false, Node.InternalMode.Disabled);
-
-			target.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
-		}
-	}
+	// Draw probability feature removed — never fired (draw pile empty at combat setup) and not useful
 
 	private List<(string icon, string text, Color color)> GenerateRestSiteAdvice(DeckAnalysis deck, int hp, int maxHP, int act, int floor, GameState gameState = null)
 	{
@@ -2597,51 +2669,40 @@ public class OverlayManager
 
 	private List<(string icon, string text, Color color)> GetUpgradePriorities(GameState gs, DeckAnalysis deck, string character)
 	{
-		var candidates = new List<(float priority, string icon, string text, Color color)>();
-		string primaryArchId = deck.DetectedArchetypes.Count > 0 ? deck.DetectedArchetypes[0].Archetype.Id : null;
-
+		// Filter to non-upgraded, upgradeable cards
+		var upgradeable = new List<CardInfo>();
 		foreach (var card in gs.DeckCards)
 		{
 			if (card.Upgraded) continue;
-
-			var tierEntry = Plugin.TierEngine?.GetCardTier(character, card.Id);
-			if (tierEntry == null) continue;
-
-			TierGrade baseGrade = TierEngine.ParseGrade(tierEntry.BaseTier);
-			float baseScore = (float)baseGrade;
-
-			// Calculate upgrade value based on card properties
-			float upgBonus = 0.3f; // base upgrade value
-			// Higher-tier cards benefit more from upgrades
-			if (baseGrade >= TierGrade.A) upgBonus += 0.3f;
-			else if (baseGrade >= TierGrade.B) upgBonus += 0.15f;
-			// Archetype synergy bonus
-			if (primaryArchId != null && tierEntry.Synergies != null && tierEntry.Synergies.Any(s => s.Contains(primaryArchId)))
-				upgBonus += 0.3f;
-			// Scaling cards (typically have synergy tags) benefit more
-			if (tierEntry.Synergies != null && tierEntry.Synergies.Count > 2)
-				upgBonus += 0.1f;
-
-			float priority = upgBonus;
-			string cardName = PrettifyId(card.Id);
-			// Show reason instead of misleading grade change
-			string reason = "";
-			if (primaryArchId != null && tierEntry.Synergies != null && tierEntry.Synergies.Any(s => s.Contains(primaryArchId)))
-				reason = " — core card";
-			else if (baseGrade >= TierGrade.A)
-				reason = " — high impact";
-			else if (baseGrade >= TierGrade.B)
-				reason = " — solid pick";
-
-			string text = $"\u2B06 {cardName} [{baseGrade}]{reason}";
-			Color color = upgBonus >= 0.6f ? ClrPositive : upgBonus >= 0.4f ? ClrAqua : ClrCream;
-			candidates.Add((priority, "\u2022", text, color));
+			if (card.Type == "Status" || card.Type == "Curse") continue;
+			upgradeable.Add(card);
 		}
+		if (upgradeable.Count == 0) return new List<(string, string, Color)>();
 
-		return candidates
-			.OrderByDescending(c => c.priority)
+		// Use full scoring engine — same as card reward/shop screens
+		var scored = Plugin.SynergyScorer.ScoreOfferings(upgradeable, deck, character,
+			gs.ActNumber, gs.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+
+		// Build display from top 3 scored cards
+		return scored
+			.OrderByDescending(c => c.FinalScore)
 			.Take(3)
-			.Select(c => (c.icon, c.text, c.color))
+			.Select(c =>
+			{
+				string cardName = PrettifyId(c.Id);
+				string reason;
+				if (c.SynergyDelta > 0.4f)
+					reason = " — core synergy";
+				else if (c.FinalGrade >= TierGrade.A)
+					reason = " — high impact";
+				else if (c.FinalGrade >= TierGrade.B)
+					reason = " — solid pick";
+				else
+					reason = " — basic upgrade";
+				string text = $"\u2B06 {cardName}{reason}";
+				Color color = c.FinalGrade >= TierGrade.A ? ClrPositive : c.FinalGrade >= TierGrade.B ? ClrAqua : ClrCream;
+				return ((string)"\u2022", text, color);
+			})
 			.ToList();
 	}
 
@@ -2650,12 +2711,6 @@ public class OverlayManager
 		var advice = new List<(string, string, Color)>();
 		float hpRatio = maxHP > 0 ? (float)hp / maxHP : 1f;
 		int deckSize = deck?.TotalCards ?? 0;
-
-		if (deck != null && deck.DetectedArchetypes.Count > 0)
-		{
-			var primary = deck.DetectedArchetypes[0];
-			advice.Add(("\u2694", $"Strategy: {primary.Archetype.DisplayName} ({(int)(primary.Strength * 100)}%)", ClrAccent));
-		}
 
 		// Deck size combat tips
 		if (deckSize <= 12)
@@ -2751,7 +2806,7 @@ public class OverlayManager
 		}
 
 		// Act-based
-		if (act >= 2 && hpRatio > 0.7f && isDefined)
+		if (act >= 2 && hpRatio > 0.7f && isDefined && deckSize < 25)
 		{
 			advice.Add(("\u2694", "Deck focused + healthy — elites for relics", ClrPositive));
 		}
@@ -2805,7 +2860,7 @@ public class OverlayManager
 		StyleBoxFlat hoverStyle = isSTier ? (_sbSTierHover ?? _sbHoverBest ?? _sbEntry) :
 			(isBest ? _sbHoverBest : _sbHover) ?? _sbEntry;
 		panel.AddThemeStyleboxOverride("panel", normalStyle);
-		panel.MouseFilter = Control.MouseFilterEnum.Pass;
+		panel.MouseFilter = Control.MouseFilterEnum.Stop;
 		panel.Connect("mouse_entered", Callable.From(delegate
 		{
 			if (GodotObject.IsInstanceValid(panel))
@@ -3128,6 +3183,12 @@ public class OverlayManager
 	{
 		if (!_showInGameBadges || screenNode == null || !GodotObject.IsInstanceValid(screenNode) || scoredCards == null || scoredCards.Count == 0)
 			return;
+		// Only inject on card reward screens (not removal/shop/upgrade/pile viewers which reuse the same screen class)
+		if (_currentScreen != "CARD REWARD" || IsInsideMerchant(screenNode))
+			return;
+		// Card rewards have 3-4 cards; draw/discard pile viewers have many more
+		if (scoredCards.Count > 5)
+			return;
 		try
 		{
 			// Clean up ALL previous badges globally (prevents stale badges from other screens)
@@ -3148,6 +3209,9 @@ public class OverlayManager
 	private void InjectCardGradesDeferred(Node screenNode, List<ScoredCard> scoredCards)
 	{
 		if (screenNode == null || !GodotObject.IsInstanceValid(screenNode))
+			return;
+		// Re-check in deferred call (screen may have changed)
+		if (!_showInGameBadges || _currentScreen != "CARD REWARD")
 			return;
 		try
 		{
@@ -3430,25 +3494,17 @@ public class OverlayManager
 		badgeStyle.CornerRadiusTopRight = 6;
 		badgeStyle.CornerRadiusBottomLeft = 6;
 		badgeStyle.CornerRadiusBottomRight = 6;
-		badgeStyle.BorderWidthTop = 2;
-		badgeStyle.BorderWidthBottom = 2;
-		badgeStyle.BorderWidthLeft = 2;
-		badgeStyle.BorderWidthRight = 2;
+		badgeStyle.BorderWidthTop = isBestPick ? 3 : 2;
+		badgeStyle.BorderWidthBottom = isBestPick ? 3 : 2;
+		badgeStyle.BorderWidthLeft = isBestPick ? 3 : 2;
+		badgeStyle.BorderWidthRight = isBestPick ? 3 : 2;
 		badgeStyle.BorderColor = isBestPick ? ClrAccent : badgeColor.Darkened(0.4f);
-		if (isBestPick)
-		{
-			badgeStyle.ShadowSize = 8;
-			badgeStyle.ShadowColor = new Color(ClrAccent, 0.5f);
-		}
-		else
-		{
-			badgeStyle.ShadowSize = 4;
-			badgeStyle.ShadowColor = new Color(0f, 0f, 0f, 0.6f);
-		}
+		badgeStyle.ShadowSize = isBestPick ? 12 : 4;
+		badgeStyle.ShadowColor = isBestPick ? new Color(ClrAccent, 0.7f) : new Color(0f, 0f, 0f, 0.6f);
 		badge.AddThemeStyleboxOverride("panel", badgeStyle);
 
 		Label gradeLbl = new Label();
-		string gradeText = isBestPick ? $"\u2605{grade}" : grade.ToString();
+		string gradeText = grade.ToString();
 		gradeLbl.Text = gradeText;
 		ApplyFont(gradeLbl, _fontHeader);
 		gradeLbl.AddThemeColorOverride("font_color", textColor);

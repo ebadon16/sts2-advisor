@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "Strike Silent",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -12,7 +12,7 @@
     },
     {
       "id": "Defend Silent",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -96,7 +96,7 @@
     },
     {
       "id": "Dagger Spray",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "multi_hit",
         "damage"
@@ -211,7 +211,7 @@
     },
     {
       "id": "Slice",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "zero_cost",
         "damage"

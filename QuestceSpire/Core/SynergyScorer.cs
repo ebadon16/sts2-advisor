@@ -13,6 +13,8 @@ public class SynergyScorer
 
 	private const float AntiSynergyPenalty = 0.6f;
 
+	private const float AntiSynergyCap = -1.2f;
+
 	private const float EarlyFloorDamageBonus = 0.3f;
 
 	private const float MidFloorBlockBonus = 0.2f;
@@ -58,34 +60,68 @@ public class SynergyScorer
 	}
 
 	/// <summary>
-	/// Score deck cards for removal. Lower-scored cards are better removal candidates.
-	/// Returns list sorted by removal priority (worst cards first = best to remove).
+	/// Rank deck cards for removal using simple priority buckets.
+	/// Returns list sorted by removal priority (best to remove first).
 	/// </summary>
 	public List<ScoredCard> ScoreForRemoval(List<CardInfo> deck, DeckAnalysis deckAnalysis, string character, int actNumber, int floorNumber, TierEngine tierEngine, AdaptiveScorer adaptiveScorer = null)
 	{
 		List<ScoredCard> list = new List<ScoredCard>();
 		foreach (CardInfo card in deck)
 		{
-			CardTierEntry cardTier = tierEngine.GetCardTier(character, card.Id);
-			ScoredCard scored = ScoreCard(card, cardTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
-			// Add removal-specific reasoning
-			if (card.Type?.ToLowerInvariant() == "curse" || card.Type?.ToLowerInvariant() == "status")
+			string type = card.Type?.ToLowerInvariant() ?? "";
+			bool isCurse = type == "curse" || type == "status";
+			bool isStrike = card.Tags != null && card.Tags.Contains("strike");
+			bool isDefend = card.Tags != null && card.Tags.Contains("defend");
+
+			float score;
+			string reason;
+			TierGrade grade;
+
+			if (isCurse)
 			{
-				scored.FinalScore = Math.Max(0f, scored.FinalScore - 2f);
-				scored.SynergyReasons.Insert(0, "Curse/Status — top removal priority");
+				score = 5.0f; grade = TierGrade.S;
+				reason = "Curse/Status — always remove first";
 			}
-			else if (scored.BaseTier <= TierGrade.D && scored.SynergyDelta <= 0f)
+			else if ((isStrike || isDefend) && !card.Upgraded)
 			{
-				scored.SynergyReasons.Insert(0, "Low tier with no synergy — good removal");
+				score = 4.0f; grade = TierGrade.A;
+				reason = isStrike ? "Basic Strike — safe removal to thin deck" : "Basic Defend — safe removal to thin deck";
 			}
-			list.Add(scored);
+			else if ((isStrike || isDefend) && card.Upgraded)
+			{
+				score = 3.0f; grade = TierGrade.B;
+				reason = "Upgraded basic — still worth removing in lean decks";
+			}
+			else
+			{
+				// Non-basic: use tier data to find genuinely bad cards
+				CardTierEntry cardTier = tierEngine.GetCardTier(character, card.Id);
+				TierGrade cardGrade = cardTier != null ? TierEngine.ParseGrade(cardTier.BaseTier) : TierGrade.C;
+				// Invert: bad cards get high removal score
+				score = Math.Max(0f, 3.0f - (float)cardGrade);
+				grade = TierEngine.ScoreToGrade(score);
+				reason = cardGrade <= TierGrade.D ? "Low-tier card — consider removing" : "Decent card — probably keep";
+			}
+
+			list.Add(new ScoredCard
+			{
+				Id = card.Id,
+				Name = card.Name ?? card.Id,
+				Type = card.Type,
+				Cost = card.Cost,
+				BaseTier = grade,
+				FinalScore = score,
+				FinalGrade = grade,
+				SynergyReasons = new List<string> { reason },
+				AntiSynergyReasons = new List<string>(),
+				Notes = "",
+				Upgraded = card.Upgraded,
+				ScoreSource = "removal"
+			});
 		}
-		// Sort ascending — worst cards first (best removal candidates)
-		list.Sort((ScoredCard a, ScoredCard b) => a.FinalScore.CompareTo(b.FinalScore));
+		list.Sort((ScoredCard a, ScoredCard b) => b.FinalScore.CompareTo(a.FinalScore));
 		if (list.Count > 0)
-		{
-			list[0].IsBestPick = true; // "best pick" here means "best to remove"
-		}
+			list[0].IsBestPick = true;
 		return list;
 	}
 
@@ -125,7 +161,7 @@ public class SynergyScorer
 		float deckSizeAdjust = 0f;
 		List<string> list = new List<string>();
 		List<string> list2 = new List<string>();
-		List<string> list3 = tierEntry?.Synergies ?? card.Tags.ConvertAll((string t) => t.ToLowerInvariant());
+		List<string> list3 = tierEntry?.Synergies ?? (card.Tags != null ? card.Tags.ConvertAll((string t) => t.ToLowerInvariant()) : new List<string>());
 		List<string> list4 = tierEntry?.AntiSynergies ?? new List<string>();
 		int num2 = 0;
 		foreach (ArchetypeMatch detectedArchetype in deckAnalysis.DetectedArchetypes)
@@ -138,7 +174,7 @@ public class SynergyScorer
 			{
 				if (detectedArchetype.Archetype.CoreTags.Contains(item) || detectedArchetype.Archetype.SupportTags.Contains(item) || detectedArchetype.Archetype.Id == item)
 				{
-					float num3 = ((detectedArchetype.Strength > 0.5f) ? 0.8f : 0.5f);
+					float num3 = ((detectedArchetype.Strength > 0.5f) ? StrongSynergyBoost : SynergyBoostPerMatch);
 					num += num3;
 					synergyDelta += num3;
 					list.Add($"+{num3:F1} synergy with {detectedArchetype.Archetype.DisplayName}");
@@ -153,12 +189,20 @@ public class SynergyScorer
 			{
 				if (detectedArchetype2.Archetype.CoreTags.Contains(item2) || detectedArchetype2.Archetype.Id == item2)
 				{
-					num -= 0.6f;
-					synergyDelta -= 0.6f;
-					list2.Add($"-{0.6f:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
+					num -= AntiSynergyPenalty;
+					synergyDelta -= AntiSynergyPenalty;
+					list2.Add($"-{AntiSynergyPenalty:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
 					break;
 				}
 			}
+		}
+		// Cap anti-synergy penalty to prevent excessive stacking
+		float antiTotal = list2.Count * -AntiSynergyPenalty;
+		if (antiTotal < AntiSynergyCap)
+		{
+			float excess = AntiSynergyCap - antiTotal;
+			num += excess;
+			synergyDelta += excess;
 		}
 		// Floor-aware scoring (replaces act-based logic)
 		if (floorNumber <= 6 && deckAnalysis.IsUndefined)
@@ -275,7 +319,7 @@ public class SynergyScorer
 			{
 				if (detectedArchetype.Archetype.CoreTags.Contains(item) || detectedArchetype.Archetype.SupportTags.Contains(item) || detectedArchetype.Archetype.Id == item)
 				{
-					float num2 = ((detectedArchetype.Strength > 0.5f) ? 0.8f : 0.5f);
+					float num2 = ((detectedArchetype.Strength > 0.5f) ? StrongSynergyBoost : SynergyBoostPerMatch);
 					num += num2;
 					synergyDelta += num2;
 					list.Add($"+{num2:F1} synergy with {detectedArchetype.Archetype.DisplayName}");
@@ -290,12 +334,20 @@ public class SynergyScorer
 			{
 				if (detectedArchetype2.Archetype.CoreTags.Contains(item2) || detectedArchetype2.Archetype.Id == item2)
 				{
-					num -= 0.6f;
-					synergyDelta -= 0.6f;
-					list2.Add($"-{0.6f:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
+					num -= AntiSynergyPenalty;
+					synergyDelta -= AntiSynergyPenalty;
+					list2.Add($"-{AntiSynergyPenalty:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
 					break;
 				}
 			}
+		}
+		// Cap anti-synergy penalty to prevent excessive stacking
+		float antiTotal = list2.Count * -AntiSynergyPenalty;
+		if (antiTotal < AntiSynergyCap)
+		{
+			float excess = AntiSynergyCap - antiTotal;
+			num += excess;
+			synergyDelta += excess;
 		}
 		// Floor-aware: late-game scaling bonus for relics too
 		if (floorNumber >= 19 && list3.Any((string s) => ScalingTags.Contains(s)))

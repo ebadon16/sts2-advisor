@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "Strike Ironclad",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -12,7 +12,7 @@
     },
     {
       "id": "Defend Ironclad",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -190,7 +190,7 @@
     },
     {
       "id": "Cinder",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "exhaust",
         "damage"
@@ -463,7 +463,7 @@
     },
     {
       "id": "Infernal Blade",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "exhaust"
       ],
@@ -873,15 +873,6 @@
       ],
       "antiSynergies": [],
       "notes": "X-cost AoE. Scales with strength and energy generation"
-    },
-    {
-      "id": "Expect Afight",
-      "baseTier": "B",
-      "synergies": [
-        "scaling"
-      ],
-      "antiSynergies": [],
-      "notes": ""
     }
   ]
 }

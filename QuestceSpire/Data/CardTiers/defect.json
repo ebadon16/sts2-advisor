@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "Strike Defect",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -12,7 +12,7 @@
     },
     {
       "id": "Defend Defect",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -86,7 +86,7 @@
     },
     {
       "id": "Beam Cell",
-      "baseTier": "C",
+      "baseTier": "F",
       "synergies": [
         "damage",
         "vulnerable"
@@ -107,7 +107,7 @@
     },
     {
       "id": "Boost Away",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "block",
         "orb"
@@ -117,7 +117,7 @@
     },
     {
       "id": "Boot Sequence",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -158,7 +158,7 @@
     },
     {
       "id": "Chaos",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "orb",
         "channel"
@@ -177,7 +177,7 @@
     },
     {
       "id": "Chill",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "frost",
         "orb",
@@ -221,7 +221,7 @@
     },
     {
       "id": "Compile Driver",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "draw",
         "orb",
@@ -380,7 +380,7 @@
     },
     {
       "id": "Fusion",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "orb",
         "channel"
@@ -433,7 +433,7 @@
     },
     {
       "id": "Gunk Up",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -442,7 +442,7 @@
     },
     {
       "id": "Hailstorm",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "frost",
         "channel",
@@ -475,7 +475,7 @@
     },
     {
       "id": "Hotfix",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "draw",
         "zero_cost"
@@ -497,7 +497,7 @@
     },
     {
       "id": "Ice Lance",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "frost",
         "damage",
@@ -569,7 +569,7 @@
     },
     {
       "id": "Meteor Strike",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "orb",
@@ -580,7 +580,7 @@
     },
     {
       "id": "Modded",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "orb",
         "draw"
@@ -611,7 +611,7 @@
     },
     {
       "id": "Null",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "orb",
         "focus",
@@ -654,7 +654,7 @@
     },
     {
       "id": "Reboot",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "draw",
         "exhaust"
@@ -695,7 +695,7 @@
     },
     {
       "id": "Scrape",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "zero_cost",
         "draw",
@@ -728,7 +728,7 @@
     },
     {
       "id": "Signal Boost",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "focus",
         "orb",
@@ -758,7 +758,7 @@
     },
     {
       "id": "Spinner",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "scaling"
@@ -789,7 +789,7 @@
     },
     {
       "id": "Sunder",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage"
       ],
@@ -830,7 +830,7 @@
     },
     {
       "id": "Synthesis",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "orb",
         "damage"
@@ -861,7 +861,7 @@
     },
     {
       "id": "Thunder",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "lightning",
         "orb",
@@ -872,7 +872,7 @@
     },
     {
       "id": "Trash To Treasure",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "exhaust"
       ],
@@ -881,7 +881,7 @@
     },
     {
       "id": "Turbo",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "zero_cost",
         "scaling"
@@ -891,7 +891,7 @@
     },
     {
       "id": "Uproar",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "orb"
@@ -901,7 +901,7 @@
     },
     {
       "id": "Voltaic",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "lightning",
         "channel",
@@ -913,7 +913,7 @@
     },
     {
       "id": "White Noise",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "exhaust"
       ],

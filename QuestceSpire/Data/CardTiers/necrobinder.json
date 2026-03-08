@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "Strike Necrobinder",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -12,7 +12,7 @@
     },
     {
       "id": "Defend Necrobinder",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -586,7 +586,7 @@
     },
     {
       "id": "Poke",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage",
         "minion",
@@ -818,7 +818,7 @@
     },
     {
       "id": "Snap",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage",
         "minion",

@@ -249,7 +249,7 @@
     },
     {
       "id": "Impatience",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "draw",
         "zero_cost"
@@ -335,7 +335,7 @@
     },
     {
       "id": "Mind Blast",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -542,7 +542,7 @@
     },
     {
       "id": "Splash",
-      "baseTier": "C",
+      "baseTier": "D",
       "synergies": [
         "aoe"
       ],
