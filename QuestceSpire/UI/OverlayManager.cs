@@ -2812,8 +2812,10 @@ public class OverlayManager
 		var dataPoints = new List<float>();
 		foreach (var kvp in history.OrderBy(k => k.Key))
 		{
+			float total = kvp.Value.Sum(a => a.strength);
 			var match = kvp.Value.FirstOrDefault(a => a.archetypeId == archetypeId);
-			dataPoints.Add(match.archetypeId != null ? match.strength : 0f);
+			float normalized = (match.archetypeId != null && total > 0) ? match.strength / total : 0f;
+			dataPoints.Add(normalized);
 		}
 		if (dataPoints.Count < 2)
 			return;
@@ -2867,17 +2869,25 @@ public class OverlayManager
 		foreach (var (archId, displayName) in allArchetypes)
 		{
 			if (shown >= 3) break;
-			// Get first and last strength for trend
+			// Get first and last strength for trend (normalized so all archetypes sum to 100%)
 			float firstStr = 0f, lastStr = 0f;
 			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[0], out var firstData))
 			{
-				var e = firstData.FirstOrDefault(a => a.archetypeId == archId);
-				if (e.archetypeId != null) firstStr = e.strength;
+				float totalFirst = firstData.Sum(a => a.strength);
+				if (totalFirst > 0)
+				{
+					var e = firstData.FirstOrDefault(a => a.archetypeId == archId);
+					if (e.archetypeId != null) firstStr = e.strength / totalFirst;
+				}
 			}
 			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[recentFloors.Count - 1], out var lastData))
 			{
-				var e = lastData.FirstOrDefault(a => a.archetypeId == archId);
-				if (e.archetypeId != null) lastStr = e.strength;
+				float totalLast = lastData.Sum(a => a.strength);
+				if (totalLast > 0)
+				{
+					var e = lastData.FirstOrDefault(a => a.archetypeId == archId);
+					if (e.archetypeId != null) lastStr = e.strength / totalLast;
+				}
 			}
 			// Trend arrow
 			string trend = lastStr > firstStr + 0.05f ? "\u2197" : lastStr < firstStr - 0.05f ? "\u2198" : "\u2192";
