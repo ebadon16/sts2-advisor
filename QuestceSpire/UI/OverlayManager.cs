@@ -3264,11 +3264,35 @@ public class OverlayManager
 	/// </summary>
 	private List<Control> FindCardHolderNodes(Node root, int expectedCount)
 	{
-		// BFS to find a container with the right number of meaningful Control children
+		// Strategy 1: Find NGridCardHolder nodes by type name (card reward screen)
+		// Tree structure: CardRow > NGridCardHolder > NCardHolderHitbox (300x422)
+		var gridHolders = new List<Control>();
+		FindNodesByTypeName(root, "NGridCardHolder", gridHolders, 8);
+		if (gridHolders.Count == expectedCount)
+		{
+			// Use the hitbox child of each grid holder (it has the actual size)
+			var hitboxes = new List<Control>();
+			foreach (var holder in gridHolders)
+			{
+				foreach (Node child in holder.GetChildren())
+				{
+					if (child is Control ctrl && ctrl.GetType().Name.Contains("Hitbox"))
+					{
+						hitboxes.Add(ctrl);
+						break;
+					}
+				}
+				if (hitboxes.Count < gridHolders.IndexOf(holder) + 1)
+					hitboxes.Add(holder); // fallback to holder itself
+			}
+			Plugin.Log($"Found {hitboxes.Count} card holders via NGridCardHolder hitboxes");
+			return hitboxes;
+		}
+
+		// Strategy 2: Find by container child count (relic reward, etc.)
 		var queue = new Queue<Node>();
 		queue.Enqueue(root);
 		List<Control> bestMatch = null;
-		List<Control> relaxedMatch = null;
 
 		while (queue.Count > 0)
 		{
@@ -3278,45 +3302,36 @@ public class OverlayManager
 				var controlChildren = new List<Control>();
 				foreach (Node child in container.GetChildren())
 				{
-					if (child is Control ctrl && ctrl.Visible && ctrl.Size.X > 30 && ctrl.Size.Y > 30)
-					{
+					if (child is Control ctrl && ctrl.Visible && ctrl.Size.X >= 50 && ctrl.Size.Y >= 50)
 						controlChildren.Add(ctrl);
-					}
 				}
 				if (controlChildren.Count == expectedCount && expectedCount >= 2)
 				{
-					// Strict match: all children large (card-sized)
 					bool allSizeable = controlChildren.All(c => c.Size.X >= 80 && c.Size.Y >= 80);
 					if (allSizeable)
 					{
-						Plugin.Log($"Found holder container: {current.GetType().Name} with {controlChildren.Count} children (sizes: {string.Join(", ", controlChildren.Select(c => $"{c.Size.X:F0}x{c.Size.Y:F0}"))})");
+						Plugin.Log($"Found holder container: {current.GetType().Name} with {controlChildren.Count} children");
 						bestMatch = controlChildren;
-						break; // Use first match
-					}
-					// Relaxed match: children at least 50x50
-					if (relaxedMatch == null && controlChildren.All(c => c.Size.X >= 50 && c.Size.Y >= 50))
-					{
-						Plugin.Log($"Found relaxed holder: {current.GetType().Name} with {controlChildren.Count} children (sizes: {string.Join(", ", controlChildren.Select(c => $"{c.Size.X:F0}x{c.Size.Y:F0}"))})");
-						relaxedMatch = controlChildren;
+						break;
 					}
 				}
 			}
-			// Continue BFS (limit depth to 8)
 			if (GetDepth(current, root) < 8)
 			{
 				foreach (Node child in current.GetChildren())
-				{
 					queue.Enqueue(child);
-				}
 			}
 		}
-		if (bestMatch != null) return bestMatch;
-		if (relaxedMatch != null)
-		{
-			Plugin.Log("Using relaxed match for card holders");
-			return relaxedMatch;
-		}
-		return null;
+		return bestMatch;
+	}
+
+	private static void FindNodesByTypeName(Node root, string typeName, List<Control> results, int maxDepth)
+	{
+		if (root == null || maxDepth <= 0) return;
+		if (root is Control ctrl && root.GetType().Name == typeName)
+			results.Add(ctrl);
+		foreach (Node child in root.GetChildren())
+			FindNodesByTypeName(child, typeName, results, maxDepth - 1);
 	}
 
 	private static int GetDepth(Node node, Node root)
