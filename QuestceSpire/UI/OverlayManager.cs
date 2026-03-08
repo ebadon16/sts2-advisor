@@ -22,6 +22,10 @@ public class OverlayManager
 
 	private Label _screenLabel;
 
+	// Settings menu
+	private PanelContainer _settingsMenu;
+	private Label _gearButton;
+
 
 
 	private bool _visible = true;
@@ -411,6 +415,27 @@ public class OverlayManager
 		label.MouseFilter = Control.MouseFilterEnum.Ignore;
 		label.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		titleRow.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
+		// Settings gear button
+		_gearButton = new Label();
+		_gearButton.Text = "\u2699";
+		ApplyFont(_gearButton, _fontBold);
+		_gearButton.AddThemeFontSizeOverride("font_size", 20);
+		_gearButton.AddThemeColorOverride("font_color", ClrSub);
+		_gearButton.MouseFilter = Control.MouseFilterEnum.Stop;
+		_gearButton.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		_gearButton.GuiInput += (InputEvent ev) =>
+		{
+			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+			{
+				ToggleSettingsMenu();
+			}
+		};
+		titleRow.AddChild(_gearButton, forceReadableName: false, Node.InternalMode.Disabled);
+		// Spacer
+		var gearSpacer = new Label();
+		gearSpacer.Text = " ";
+		gearSpacer.MouseFilter = Control.MouseFilterEnum.Ignore;
+		titleRow.AddChild(gearSpacer, forceReadableName: false, Node.InternalMode.Disabled);
 		// Compact/expand toggle
 		_compactToggle = new Label();
 		_compactToggle.Text = "\u25B2";
@@ -466,6 +491,7 @@ public class OverlayManager
 		_layer.AddChild(_panel, forceReadableName: false, Node.InternalMode.Disabled);
 		OverlayInputHandler node = new OverlayInputHandler(this);
 		_layer.AddChild(node, forceReadableName: false, Node.InternalMode.Disabled);
+		BuildSettingsMenu();
 		_panel.Visible = _visible;
 		// Apply collapsed state
 		if (_collapsed)
@@ -746,6 +772,190 @@ public class OverlayManager
 		Rebuild();
 	}
 
+	private void BuildSettingsMenu()
+	{
+		_settingsMenu = new PanelContainer();
+		_settingsMenu.Visible = false;
+		_settingsMenu.ZIndex = 102;
+		_settingsMenu.MouseFilter = Control.MouseFilterEnum.Stop;
+
+		StyleBoxFlat menuStyle = new StyleBoxFlat();
+		menuStyle.BgColor = new Color(0.03f, 0.05f, 0.1f, 0.97f);
+		menuStyle.BorderWidthTop = menuStyle.BorderWidthBottom = menuStyle.BorderWidthLeft = menuStyle.BorderWidthRight = 2;
+		menuStyle.BorderColor = ClrBorder;
+		menuStyle.CornerRadiusTopLeft = menuStyle.CornerRadiusTopRight = menuStyle.CornerRadiusBottomLeft = menuStyle.CornerRadiusBottomRight = 6;
+		menuStyle.ContentMarginLeft = menuStyle.ContentMarginRight = 12;
+		menuStyle.ContentMarginTop = menuStyle.ContentMarginBottom = 8;
+		_settingsMenu.AddThemeStyleboxOverride("panel", menuStyle);
+
+		VBoxContainer menuVBox = new VBoxContainer();
+		menuVBox.AddThemeConstantOverride("separation", 4);
+		_settingsMenu.AddChild(menuVBox, forceReadableName: false, Node.InternalMode.Disabled);
+
+		// Header
+		Label header = new Label();
+		header.Text = "SETTINGS";
+		ApplyFont(header, _fontBold);
+		header.AddThemeFontSizeOverride("font_size", 14);
+		header.AddThemeColorOverride("font_color", ClrHeader);
+		header.MouseFilter = Control.MouseFilterEnum.Ignore;
+		menuVBox.AddChild(header, forceReadableName: false, Node.InternalMode.Disabled);
+
+		HSeparator sep = new HSeparator();
+		sep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.4f), Thickness = 1 });
+		menuVBox.AddChild(sep, forceReadableName: false, Node.InternalMode.Disabled);
+
+		// Menu items
+		AddSettingsToggle(menuVBox, "Tooltips", _showTooltips, () => { ToggleTooltips(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "In-Game Badges", _showInGameBadges, () => { ToggleInGameBadges(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Decision Log", _showHistory, () => { ToggleHistory(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Deck Breakdown", _showDeckBreakdown, () => { _showDeckBreakdown = !_showDeckBreakdown; _settings.ShowDeckBreakdown = _showDeckBreakdown; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Draw Probability", _showDrawProb, () => { _showDrawProb = !_showDrawProb; _settings.ShowDrawProbability = _showDrawProb; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+
+		// Opacity section
+		HSeparator sep2 = new HSeparator();
+		sep2.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
+		menuVBox.AddChild(sep2, forceReadableName: false, Node.InternalMode.Disabled);
+
+		HBoxContainer opacityRow = new HBoxContainer();
+		opacityRow.MouseFilter = Control.MouseFilterEnum.Ignore;
+		Label opLabel = new Label();
+		opLabel.Text = "Opacity:";
+		ApplyFont(opLabel, _fontBody);
+		opLabel.AddThemeFontSizeOverride("font_size", 13);
+		opLabel.AddThemeColorOverride("font_color", ClrCream);
+		opLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+		opLabel.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+		opacityRow.AddChild(opLabel, forceReadableName: false, Node.InternalMode.Disabled);
+
+		foreach (float step in OpacitySteps)
+		{
+			Label stepBtn = new Label();
+			int pct = (int)(step * 100);
+			bool isActive = Math.Abs(_panelOpacity - step) < 0.01f;
+			stepBtn.Text = $" {pct}% ";
+			ApplyFont(stepBtn, _fontBold);
+			stepBtn.AddThemeFontSizeOverride("font_size", 13);
+			stepBtn.AddThemeColorOverride("font_color", isActive ? ClrHeader : ClrSub);
+			stepBtn.MouseFilter = Control.MouseFilterEnum.Stop;
+			stepBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+			float capturedStep = step;
+			stepBtn.GuiInput += (InputEvent ev2) =>
+			{
+				if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
+				{
+					_panelOpacity = capturedStep;
+					_opacityIndex = Array.IndexOf(OpacitySteps, capturedStep);
+					ApplyOpacity(_panelOpacity);
+					_settings.PanelOpacity = _panelOpacity;
+					_settings.Save();
+					RefreshSettingsMenu();
+				}
+			};
+			opacityRow.AddChild(stepBtn, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+		menuVBox.AddChild(opacityRow, forceReadableName: false, Node.InternalMode.Disabled);
+
+		// Hide overlay option
+		HSeparator sep3 = new HSeparator();
+		sep3.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
+		menuVBox.AddChild(sep3, forceReadableName: false, Node.InternalMode.Disabled);
+
+		Label hideBtn = new Label();
+		hideBtn.Text = "Hide Overlay";
+		ApplyFont(hideBtn, _fontBody);
+		hideBtn.AddThemeFontSizeOverride("font_size", 13);
+		hideBtn.AddThemeColorOverride("font_color", ClrNegative);
+		hideBtn.MouseFilter = Control.MouseFilterEnum.Stop;
+		hideBtn.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+		hideBtn.GuiInput += (InputEvent ev2) =>
+		{
+			if (ev2 is InputEventMouseButton mb2 && mb2.Pressed && mb2.ButtonIndex == MouseButton.Left)
+			{
+				_settingsMenu.Visible = false;
+				ToggleVisible();
+			}
+		};
+		menuVBox.AddChild(hideBtn, forceReadableName: false, Node.InternalMode.Disabled);
+
+		_layer.AddChild(_settingsMenu, forceReadableName: false, Node.InternalMode.Disabled);
+	}
+
+	private void AddSettingsToggle(VBoxContainer parent, string label, bool currentValue, Action onToggle)
+	{
+		HBoxContainer row = new HBoxContainer();
+		row.MouseFilter = Control.MouseFilterEnum.Stop;
+		row.MouseDefaultCursorShape = Control.CursorShape.PointingHand;
+
+		Label checkmark = new Label();
+		checkmark.Text = currentValue ? "\u2611" : "\u2610";
+		ApplyFont(checkmark, _fontBody);
+		checkmark.AddThemeFontSizeOverride("font_size", 15);
+		checkmark.AddThemeColorOverride("font_color", currentValue ? ClrPositive : ClrSub);
+		checkmark.MouseFilter = Control.MouseFilterEnum.Ignore;
+		row.AddChild(checkmark, forceReadableName: false, Node.InternalMode.Disabled);
+
+		Label text = new Label();
+		text.Text = $" {label}";
+		ApplyFont(text, _fontBody);
+		text.AddThemeFontSizeOverride("font_size", 13);
+		text.AddThemeColorOverride("font_color", ClrCream);
+		text.MouseFilter = Control.MouseFilterEnum.Ignore;
+		text.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+		row.AddChild(text, forceReadableName: false, Node.InternalMode.Disabled);
+
+		row.GuiInput += (InputEvent ev) =>
+		{
+			if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+			{
+				onToggle();
+			}
+		};
+
+		parent.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
+	}
+
+	private void ToggleSettingsMenu()
+	{
+		if (_settingsMenu == null || !GodotObject.IsInstanceValid(_settingsMenu))
+			return;
+		_settingsMenu.Visible = !_settingsMenu.Visible;
+		if (_settingsMenu.Visible)
+		{
+			PositionSettingsMenu();
+		}
+	}
+
+	private void PositionSettingsMenu()
+	{
+		if (_settingsMenu == null || _panel == null) return;
+		// Position below the gear button, aligned to right edge of panel
+		float panelRight = _panel.OffsetRight;
+		float panelTop = _panel.OffsetTop;
+		_settingsMenu.OffsetLeft = panelRight - 220;
+		_settingsMenu.OffsetRight = panelRight;
+		_settingsMenu.OffsetTop = panelTop + 40;
+		_settingsMenu.OffsetBottom = panelTop + 300;
+		_settingsMenu.ResetSize();
+	}
+
+	private void RefreshSettingsMenu()
+	{
+		// Rebuild the menu to reflect new toggle states
+		if (_settingsMenu != null && GodotObject.IsInstanceValid(_settingsMenu))
+		{
+			bool wasVisible = _settingsMenu.Visible;
+			_settingsMenu.QueueFree();
+			_settingsMenu = null;
+			BuildSettingsMenu();
+			if (wasVisible)
+			{
+				_settingsMenu.Visible = true;
+				PositionSettingsMenu();
+			}
+		}
+	}
+
 	public void ToggleVisible()
 	{
 		if (EnsureOverlay())
@@ -754,6 +964,8 @@ public class OverlayManager
 			_panel.Visible = _visible;
 			_settings.Visible = _visible;
 			_settings.Save();
+			if (!_visible && _settingsMenu != null)
+				_settingsMenu.Visible = false;
 			Plugin.Log("Overlay " + (_visible ? "shown" : "hidden"));
 		}
 	}
@@ -784,55 +996,34 @@ public class OverlayManager
 
 	public void HandleInput(InputEvent ev)
 	{
+		// Close settings menu on click outside or Escape
+		if (_settingsMenu != null && _settingsMenu.Visible)
+		{
+			if (ev is InputEventKey { Pressed: not false } escKey && escKey.Keycode == Key.Escape)
+			{
+				_settingsMenu.Visible = false;
+				return;
+			}
+			if (ev is InputEventMouseButton { Pressed: true } click)
+			{
+				Rect2 menuRect = _settingsMenu.GetGlobalRect();
+				if (!menuRect.HasPoint(click.GlobalPosition))
+				{
+					_settingsMenu.Visible = false;
+				}
+			}
+		}
+		// Hotkeys still work as fallback
 		if (ev is InputEventKey { Pressed: not false, Echo: false } inputEventKey)
 		{
+			Key key = inputEventKey.Keycode;
+			Key pkey = inputEventKey.PhysicalKeycode;
 			bool ctrl = inputEventKey.CtrlPressed;
 			bool alt = inputEventKey.AltPressed;
-			bool shift = inputEventKey.ShiftPressed;
-			Key key = inputEventKey.Keycode;
-			// Also check PhysicalKeycode — some keyboards/layouts report differently
-			Key pkey = inputEventKey.PhysicalKeycode;
-			bool isKey7 = key == Key.Key7 || pkey == Key.Key7;
-			bool isKey8 = key == Key.Key8 || pkey == Key.Key8;
-			bool isKey9 = key == Key.Key9 || pkey == Key.Key9;
-			bool isKey0 = key == Key.Key0 || pkey == Key.Key0;
-			bool isMinus = key == Key.Minus || pkey == Key.Minus;
-			bool isF7 = key == Key.F7 || pkey == Key.F7;
-			bool isF8 = key == Key.F8 || pkey == Key.F8;
-			bool isF9 = key == Key.F9 || pkey == Key.F9;
-			bool isF10 = key == Key.F10 || pkey == Key.F10;
-			bool isF11 = key == Key.F11 || pkey == Key.F11;
 			bool mod = ctrl || alt;
-			// F-keys, Ctrl+number, or Alt+number — multiple combos for keyboard compatibility
-			if ((isF7 && shift) || (mod && isKey7 && shift))
-			{
-				CycleOpacity();
-			}
-			else if (isF7 || (mod && isKey7))
-			{
+			bool isKey7 = key == Key.Key7 || pkey == Key.Key7;
+			if (mod && isKey7)
 				ToggleVisible();
-			}
-			else if (isF8 || (mod && isKey8))
-			{
-				ToggleTooltips();
-			}
-			else if (isF9 || (mod && isKey9))
-			{
-				ToggleInGameBadges();
-			}
-			else if (isF10 || (mod && isKey0))
-			{
-				ToggleHistory();
-			}
-			else if (isF11 || (mod && isMinus))
-			{
-				ToggleCollapsed();
-			}
-			// Debug: log unrecognized key presses with modifiers to help diagnose
-			else if (mod && !shift)
-			{
-				Plugin.Log($"Key press: key={key} pkey={pkey} ctrl={ctrl} alt={alt}");
-			}
 		}
 	}
 
@@ -1084,22 +1275,15 @@ public class OverlayManager
 			if (histSection != null)
 				AddRecentDecisionsTo(histSection, 3);
 		}
-		// A3: Archetype trajectory on MAP screen
-		if (_currentScreen == "MAP")
+		// Settings hint — minimal
 		{
-			AddArchetypeTrajectory();
-		}
-		// Hotkey hints — always visible at the bottom
-		{
-			HSeparator hkSep = new HSeparator();
-			hkSep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
-			_content.AddChild(hkSep, forceReadableName: false, Node.InternalMode.Disabled);
 			Label hkLabel = new Label();
-			hkLabel.Text = "Alt+7 Toggle  |  Alt+8 Tooltips  |  Alt+9 Badges\nAlt+0 History  |  Alt+- Minimize  (or F7-F11)";
+			hkLabel.Text = "\u2699 for settings";
 			hkLabel.HorizontalAlignment = HorizontalAlignment.Center;
 			ApplyFont(hkLabel, _fontBody);
-			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.7f));
-			hkLabel.AddThemeFontSizeOverride("font_size", 12);
+			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.5f));
+			hkLabel.AddThemeFontSizeOverride("font_size", 11);
+			hkLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
 			_content.AddChild(hkLabel, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		ResizePanelToContent();
@@ -2793,133 +2977,6 @@ public class OverlayManager
 		catch
 		{
 			_winRateLabel.Visible = false;
-		}
-	}
-
-	// === A3: Archetype trajectory + sparkline ===
-
-	private void DrawSparkline(VBoxContainer parent, string archetypeId)
-	{
-		var history = Plugin.RunTracker?.GetArchetypeHistory();
-		if (history == null || history.Count < 2)
-			return;
-		var dataPoints = new List<float>();
-		foreach (var kvp in history.OrderBy(k => k.Key))
-		{
-			float total = kvp.Value.Sum(a => a.strength);
-			var match = kvp.Value.FirstOrDefault(a => a.archetypeId == archetypeId);
-			float normalized = (match.archetypeId != null && total > 0) ? match.strength / total : 0f;
-			dataPoints.Add(normalized);
-		}
-		if (dataPoints.Count < 2)
-			return;
-		HBoxContainer sparkRow = new HBoxContainer();
-		sparkRow.AddThemeConstantOverride("separation", 1);
-		float maxVal = dataPoints.Max();
-		if (maxVal <= 0) maxVal = 1f;
-		bool trending = dataPoints.Count >= 2 && dataPoints[dataPoints.Count - 1] >= dataPoints[dataPoints.Count - 2];
-		Color barColor = trending ? ClrPositive : ClrNegative;
-		// Show last 10 data points max
-		var points = dataPoints.Skip(Math.Max(0, dataPoints.Count - 10)).ToList();
-		foreach (float val in points)
-		{
-			ColorRect bar = new ColorRect();
-			bar.Color = new Color(barColor, 0.7f);
-			float h = val / maxVal * 14f;
-			bar.CustomMinimumSize = new Vector2(2f, Math.Max(h, 1f));
-			sparkRow.AddChild(bar, forceReadableName: false, Node.InternalMode.Disabled);
-		}
-		parent.AddChild(sparkRow, forceReadableName: false, Node.InternalMode.Disabled);
-	}
-
-	private void AddArchetypeTrajectory()
-	{
-		var history = Plugin.RunTracker?.GetArchetypeHistory();
-		if (history == null || history.Count < 2)
-			return;
-		AddSectionHeader("ARCHETYPE TRAJECTORY");
-		// Collect all archetypes that appeared
-		var allArchetypes = new Dictionary<string, string>(); // id -> displayName
-		foreach (var kvp in history)
-		{
-			foreach (var (archetypeId, _) in kvp.Value)
-			{
-				if (!allArchetypes.ContainsKey(archetypeId))
-				{
-					string displayName = archetypeId;
-					if (_currentDeckAnalysis?.DetectedArchetypes != null)
-					{
-						var match = _currentDeckAnalysis.DetectedArchetypes.FirstOrDefault(a => a.Archetype.Id == archetypeId);
-						if (match != null) displayName = match.Archetype.DisplayName;
-					}
-					allArchetypes[archetypeId] = displayName;
-				}
-			}
-		}
-		// Show max 3 archetypes, last 8 floors
-		var floors = history.Keys.OrderBy(k => k).ToList();
-		var recentFloors = floors.Skip(Math.Max(0, floors.Count - 8)).ToList();
-		int shown = 0;
-		foreach (var (archId, displayName) in allArchetypes)
-		{
-			if (shown >= 3) break;
-			// Get first and last strength for trend (normalized so all archetypes sum to 100%)
-			float firstStr = 0f, lastStr = 0f;
-			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[0], out var firstData))
-			{
-				float totalFirst = firstData.Sum(a => a.strength);
-				if (totalFirst > 0)
-				{
-					var e = firstData.FirstOrDefault(a => a.archetypeId == archId);
-					if (e.archetypeId != null) firstStr = e.strength / totalFirst;
-				}
-			}
-			if (recentFloors.Count > 0 && history.TryGetValue(recentFloors[recentFloors.Count - 1], out var lastData))
-			{
-				float totalLast = lastData.Sum(a => a.strength);
-				if (totalLast > 0)
-				{
-					var e = lastData.FirstOrDefault(a => a.archetypeId == archId);
-					if (e.archetypeId != null) lastStr = e.strength / totalLast;
-				}
-			}
-			// Trend arrow
-			string trend = lastStr > firstStr + 0.05f ? "\u2197" : lastStr < firstStr - 0.05f ? "\u2198" : "\u2192";
-			Color trendColor = lastStr > firstStr + 0.05f ? ClrPositive : lastStr < firstStr - 0.05f ? ClrNegative : ClrSub;
-			// Build row: "Strength ↗ 45% → 68%"
-			HBoxContainer archRow = new HBoxContainer();
-			archRow.AddThemeConstantOverride("separation", 6);
-			Label nameLbl = new Label();
-			nameLbl.Text = displayName;
-			ApplyFont(nameLbl, _fontBold);
-			nameLbl.AddThemeColorOverride("font_color", ClrCream);
-			nameLbl.AddThemeFontSizeOverride("font_size", 15);
-			nameLbl.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-			archRow.AddChild(nameLbl, forceReadableName: false, Node.InternalMode.Disabled);
-			Label trendLbl = new Label();
-			trendLbl.Text = $"{trend} {(int)(firstStr * 100)}% \u2192 {(int)(lastStr * 100)}%";
-			ApplyFont(trendLbl, _fontBody);
-			trendLbl.AddThemeColorOverride("font_color", trendColor);
-			trendLbl.AddThemeFontSizeOverride("font_size", 15);
-			archRow.AddChild(trendLbl, forceReadableName: false, Node.InternalMode.Disabled);
-			_content.AddChild(archRow, forceReadableName: false, Node.InternalMode.Disabled);
-			// Fixed-height progress bar showing current strength
-			HBoxContainer barRow = new HBoxContainer();
-			barRow.AddThemeConstantOverride("separation", 0);
-			ColorRect filledBar = new ColorRect();
-			filledBar.Color = new Color(trendColor, 0.6f);
-			filledBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-			filledBar.SizeFlagsStretchRatio = Math.Max(lastStr, 0.01f);
-			filledBar.CustomMinimumSize = new Vector2(0, 4f);
-			barRow.AddChild(filledBar, forceReadableName: false, Node.InternalMode.Disabled);
-			ColorRect emptyBar = new ColorRect();
-			emptyBar.Color = new Color(ClrSub, 0.2f);
-			emptyBar.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-			emptyBar.SizeFlagsStretchRatio = Math.Max(1f - lastStr, 0.01f);
-			emptyBar.CustomMinimumSize = new Vector2(0, 4f);
-			barRow.AddChild(emptyBar, forceReadableName: false, Node.InternalMode.Disabled);
-			_content.AddChild(barRow, forceReadableName: false, Node.InternalMode.Disabled);
-			shown++;
 		}
 	}
 
