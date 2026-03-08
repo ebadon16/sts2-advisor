@@ -1715,8 +1715,11 @@ public class OverlayManager
 		{
 			foreach (string reason in synergies.Take(3))
 			{
+				// Clean up numeric jargon from synergy reasons
+				string clean = CleanSynergyText(reason);
+				if (string.IsNullOrEmpty(clean)) continue;
 				Label lbl = new Label();
-				lbl.Text = "\u2714 " + reason;
+				lbl.Text = "\u2714 " + clean;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrPositive);
 				lbl.AddThemeFontSizeOverride("font_size", 15);
@@ -1730,8 +1733,10 @@ public class OverlayManager
 		{
 			foreach (string reason in antiSynergies.Take(2))
 			{
+				string clean = CleanSynergyText(reason);
+				if (string.IsNullOrEmpty(clean)) continue;
 				Label lbl = new Label();
-				lbl.Text = "\u2718 " + reason;
+				lbl.Text = "\u2718 " + clean;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrNegative);
 				lbl.AddThemeFontSizeOverride("font_size", 15);
@@ -1741,7 +1746,8 @@ public class OverlayManager
 			}
 		}
 
-		if (!string.IsNullOrEmpty(notes))
+		// Skip notes that are just filler descriptions (type/rarity/cost info already shown)
+		if (!string.IsNullOrEmpty(notes) && !IsFillerNote(notes))
 		{
 			Label lbl = new Label();
 			lbl.Text = (hasContent ? "" : "") + notes;
@@ -1751,6 +1757,42 @@ public class OverlayManager
 			lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
+	}
+
+	/// <summary>
+	/// Strip numeric scoring jargon from synergy/anti-synergy reason strings.
+	/// "+0.8 synergy with Minion / Summoner" → "synergy with Minion / Summoner"
+	/// </summary>
+	private static string CleanSynergyText(string text)
+	{
+		if (string.IsNullOrEmpty(text)) return text;
+		// Strip leading "+0.8 " or "-0.4 " numeric prefixes
+		string cleaned = text;
+		if (cleaned.Length > 2 && (cleaned[0] == '+' || cleaned[0] == '-') && char.IsDigit(cleaned[1]))
+		{
+			int spaceIdx = cleaned.IndexOf(' ');
+			if (spaceIdx > 0 && spaceIdx < 8)
+				cleaned = cleaned.Substring(spaceIdx + 1);
+		}
+		// Capitalize first letter
+		if (cleaned.Length > 0)
+			cleaned = char.ToUpper(cleaned[0]) + cleaned.Substring(1);
+		return cleaned;
+	}
+
+	/// <summary>
+	/// Filter out notes that just describe card type/rarity/cost (already shown in meta line).
+	/// </summary>
+	private static bool IsFillerNote(string notes)
+	{
+		string lower = notes.ToLowerInvariant();
+		// Skip notes like "1-cost common strike variant", "Filler attack with Strike tag"
+		if (lower.Contains("filler")) return true;
+		if (lower.Contains("-cost") && lower.Contains("variant")) return true;
+		if (lower.Contains("basic") && lower.Contains("strike")) return true;
+		if (lower.Contains("basic") && lower.Contains("defend")) return true;
+		if (lower.Contains("starter card")) return true;
+		return false;
 	}
 
 	// === Feature 3: Opacity control ===
