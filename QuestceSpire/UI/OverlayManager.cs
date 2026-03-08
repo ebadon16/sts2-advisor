@@ -942,7 +942,7 @@ public class OverlayManager
 			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : "CARD ANALYSIS");
 			// Shop: only show top picks (grade B+ or best 3, whichever is more)
 			var cardsToShow = isShop
-				? _currentCards.Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(5).ToList()
+				? _currentCards.Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(3).ToList()
 				: _currentCards.ToList();
 			if (isShop && cardsToShow.Count == 0 && _currentCards.Count > 0)
 				cardsToShow = _currentCards.Take(3).ToList();
@@ -3145,31 +3145,8 @@ public class OverlayManager
 	/// </summary>
 	public void InjectShopGrades(Node shopNode, List<ScoredCard> scoredCards, List<ScoredRelic> scoredRelics)
 	{
-		if (!_showInGameBadges || shopNode == null || !GodotObject.IsInstanceValid(shopNode))
-			return;
-		try
-		{
-			SceneTree tree = Engine.GetMainLoop() as SceneTree;
-			if (tree?.Root != null)
-				CleanupInjectedBadges(tree.Root);
-			LogNodeTree(shopNode, "Shop", 0, 5);
-			// Combine scores into a single list with grades for matching
-			var allGrades = new List<(TierGrade grade, bool isBest)>();
-			if (scoredCards != null)
-				foreach (var c in scoredCards)
-					allGrades.Add((c.FinalGrade, c.IsBestPick));
-			if (scoredRelics != null)
-				foreach (var r in scoredRelics)
-					allGrades.Add((r.FinalGrade, r.IsBestPick));
-
-			if (allGrades.Count == 0) return;
-
-			Callable.From(() => InjectShopGradesDeferred(shopNode, allGrades)).CallDeferred();
-		}
-		catch (Exception ex)
-		{
-			Plugin.Log($"InjectShopGrades error: {ex.Message}");
-		}
+		// Shop badge injection disabled — positional matching is unreliable
+		// (hits potions, card removal, nav buttons). Overlay panel shows grades instead.
 	}
 
 	private void InjectShopGradesDeferred(Node shopNode, List<(TierGrade grade, bool isBest)> allGrades)
