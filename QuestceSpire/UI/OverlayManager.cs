@@ -18,7 +18,7 @@ public class OverlayManager
 
 	private Label _compactToggle;
 
-	private Label _archetypeLabel;
+	// _archetypeLabel removed — deck info lives in DECK BREAKDOWN section
 
 	private Label _screenLabel;
 
@@ -53,7 +53,7 @@ public class OverlayManager
 
 	// Feature 4: Collapsible mode
 	private bool _collapsed;
-	private PanelContainer _archChipPanel;
+	// _archChipPanel removed — deck info lives in DECK BREAKDOWN section
 	private VBoxContainer _deckVizContainer;
 
 	// Feature 1: Decision history
@@ -85,7 +85,7 @@ public class OverlayManager
 	// A1: Win rate tracker
 	private Label _winRateLabel;
 
-	private VBoxContainer _archChipVBox;
+	// _archChipVBox removed — deck info lives in DECK BREAKDOWN section
 
 	// STS2 color palette (matched from game scenes/DLL)
 	private static readonly Color ClrBg = new Color(0.034f, 0.057f, 0.11f, 0.97f);
@@ -272,9 +272,7 @@ public class OverlayManager
 		_layer = null;
 		_panel = null;
 		_content = null;
-		_archetypeLabel = null;
 		_screenLabel = null;
-		_archChipPanel = null;
 		_deckVizContainer = null;
 		_titleSep = null;
 		_winRateLabel = null;
@@ -454,20 +452,7 @@ public class OverlayManager
 		_winRateLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
 		titleBar.AddChild(_winRateLabel, forceReadableName: false, Node.InternalMode.Disabled);
 
-		_archChipPanel = new PanelContainer();
-		_archChipPanel.AddThemeStyleboxOverride("panel", _sbChip);
-		_archChipPanel.Visible = false; // hidden — deck info lives in DECK BREAKDOWN section
-		_archChipVBox = new VBoxContainer();
-		_archChipVBox.AddThemeConstantOverride("separation", 3);
-		_archetypeLabel = new Label();
-		_archetypeLabel.Text = "";
-		ApplyFont(_archetypeLabel, _fontBold);
-		_archetypeLabel.AddThemeFontSizeOverride("font_size", 15);
-		_archetypeLabel.AddThemeColorOverride("font_color", ClrCream);
-		_archetypeLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-		_archChipVBox.AddChild(_archetypeLabel, forceReadableName: false, Node.InternalMode.Disabled);
-		_archChipPanel.AddChild(_archChipVBox, forceReadableName: false, Node.InternalMode.Disabled);
-		vBoxContainer.AddChild(_archChipPanel, forceReadableName: false, Node.InternalMode.Disabled);
+		// Archetype chip panel removed — deck info lives in DECK BREAKDOWN collapsible section
 		// Deck composition visualization container (Feature 2)
 		_deckVizContainer = new VBoxContainer();
 		_deckVizContainer.AddThemeConstantOverride("separation", 4);
@@ -486,7 +471,6 @@ public class OverlayManager
 		if (_collapsed)
 		{
 			_content.Visible = false;
-			_archChipPanel.Visible = false;
 			_deckVizContainer.Visible = false;
 		}
 		// V4: Card art hover preview
@@ -585,13 +569,15 @@ public class OverlayManager
 				bool hasCardScreen = HasNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4);
 				bool hasRelicScreen = HasNodeOfType(tree.Root, "NChooseARelicSelection", 4);
 				bool hasShopScreen = HasNodeOfType(tree.Root, "NMerchantInventory", 4);
-				bool hasRestSite = HasNodeOfType(tree.Root, "NRestSite", 4);
+				bool hasRestSite = HasNodeOfType(tree.Root, "NRestSiteRoom", 4);
 				bool hasCombat = HasNodeOfType(tree.Root, "NCombatRoom", 4);
+				bool hasEvent = HasNodeOfType(tree.Root, "NEventRoom", 4);
 				bool isCardAdvice = _currentScreen == "CARD REWARD" || _currentScreen == "CARD REMOVAL" || _currentScreen == "CARD UPGRADE";
 				bool isRelicAdvice = _currentScreen == "RELIC REWARD";
 				bool isShopAdvice = _currentScreen == "MERCHANT SHOP";
 				bool isRestAdvice = _currentScreen == "REST SITE";
 				bool isCombatAdvice = _currentScreen == "COMBAT";
+				bool isEventAdvice = _currentScreen == "EVENT";
 
 				bool screenGone = false;
 				if (isCardAdvice && !hasCardScreen) screenGone = true;
@@ -599,6 +585,7 @@ public class OverlayManager
 				if (isShopAdvice && !hasShopScreen) screenGone = true;
 				if (isRestAdvice && !hasRestSite) screenGone = true;
 				if (isCombatAdvice && !hasCombat) screenGone = true;
+				if (isEventAdvice && !hasEvent) screenGone = true;
 
 				if (screenGone)
 				{
@@ -894,8 +881,7 @@ public class OverlayManager
 		// A1: Win rate
 		UpdateWinRate();
 		// Hide top-level chip + viz — deck info now always in collapsible DECK BREAKDOWN section
-		if (_archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
-			_archChipPanel.Visible = false;
+		// Archetype chip removed — deck info in DECK BREAKDOWN section
 		ClearDeckViz();
 		// Collapsed guard: only update labels, skip full content rebuild
 		if (_collapsed)
@@ -987,17 +973,29 @@ public class OverlayManager
 				skipLbl.AddThemeFontSizeOverride("font_size", 13);
 				_content.AddChild(skipLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
-			float skipThreshold = 1.5f;
-			if (_currentDeckAnalysis != null && _currentDeckAnalysis.TotalCards <= 15)
+			// Skip recommendation — consider deck size, card quality, and archetype fit
+			if (!isRemoval && !isShop)
 			{
-				skipThreshold = 2.0f;
-			}
-			if (!isRemoval && _currentCards.All((ScoredCard c) => c.FinalScore < skipThreshold))
-			{
-				string skipMsg = skipThreshold > 1.5f
-					? "All offerings are weak — thin deck, be very selective."
-					: "All offerings are weak — keep your deck lean.";
-				AddSkipEntry("SKIP CARDS", skipMsg);
+				int deckSize = _currentDeckAnalysis?.TotalCards ?? 20;
+				bool hasFocusedDeck = _currentDeckAnalysis?.DetectedArchetypes?.Count > 0 &&
+					_currentDeckAnalysis.DetectedArchetypes[0].Strength > 0.4f;
+				// Higher threshold for lean/focused decks (harder to justify adding cards)
+				float skipThreshold = deckSize <= 12 ? 2.5f : deckSize <= 18 ? 2.0f : hasFocusedDeck ? 1.8f : 1.5f;
+				bool allWeak = _currentCards.All(c => c.FinalScore < skipThreshold);
+				bool bestIsLow = _currentCards.Count > 0 && _currentCards.Max(c => c.FinalScore) < 2.0f;
+				if (allWeak)
+				{
+					string skipMsg = deckSize <= 15
+						? "None of these improve your deck — skip to stay lean."
+						: hasFocusedDeck
+							? "Nothing fits your archetype — consider skipping."
+							: "All offerings are weak — skipping keeps your deck lean.";
+					AddSkipEntry("\u26A0 CONSIDER SKIPPING", skipMsg);
+				}
+				else if (bestIsLow && deckSize >= 20)
+				{
+					AddSkipEntry("\u26A0 DECK IS BLOATED", $"At {deckSize} cards, only take high-impact additions.");
+				}
 			}
 		}
 		if (hasRelics)
@@ -1142,82 +1140,6 @@ public class OverlayManager
 		new Color(0.7f, 0.5f, 0.95f),  // purple
 		new Color(0.3f, 0.9f, 0.5f),   // green
 	};
-
-	private void UpdateArchetypeChip()
-	{
-		if (_archetypeLabel == null || !GodotObject.IsInstanceValid(_archetypeLabel))
-		{
-			return;
-		}
-		// Clear previous archetype rows (keep _archetypeLabel as first child)
-		if (_archChipVBox != null && GodotObject.IsInstanceValid(_archChipVBox))
-		{
-			var children = _archChipVBox.GetChildren().ToArray();
-			foreach (Node child in children)
-			{
-				if (child != _archetypeLabel)
-				{
-					_archChipVBox.RemoveChild(child);
-					child.QueueFree();
-				}
-			}
-		}
-		string deckLabel = _currentDeckAnalysis != null ? $"{_currentDeckAnalysis.TotalCards} cards" : "";
-		if (_currentDeckAnalysis == null || _currentDeckAnalysis.DetectedArchetypes.Count == 0)
-		{
-			_archetypeLabel.Text = deckLabel.Length > 0 ? $"YOUR DECK ({deckLabel})" : "YOUR DECK";
-			// "No clear focus" sub-label
-			if (_archChipVBox != null && GodotObject.IsInstanceValid(_archChipVBox) && deckLabel.Length > 0)
-			{
-				Label noFocus = new Label();
-				noFocus.Text = "No clear archetype focus";
-				ApplyFont(noFocus, _fontBody);
-				noFocus.AddThemeColorOverride("font_color", ClrSub);
-				noFocus.AddThemeFontSizeOverride("font_size", 13);
-				_archChipVBox.AddChild(noFocus, forceReadableName: false, Node.InternalMode.Disabled);
-			}
-			return;
-		}
-		_archetypeLabel.Text = $"YOUR DECK ({deckLabel})";
-		// Build colored archetype rows
-		if (_archChipVBox == null || !GodotObject.IsInstanceValid(_archChipVBox))
-			return;
-		float totalStrength = _currentDeckAnalysis.DetectedArchetypes.Sum(a => a.Strength);
-		if (totalStrength <= 0) totalStrength = 1f;
-		int colorIdx = 0;
-		foreach (ArchetypeMatch arch in _currentDeckAnalysis.DetectedArchetypes)
-		{
-			int pct = (int)(arch.Strength / totalStrength * 100f);
-			Color archColor = ArchColors[colorIdx % ArchColors.Length];
-			// Row: [colored bar] Name  pct%
-			HBoxContainer row = new HBoxContainer();
-			row.AddThemeConstantOverride("separation", 6);
-			// Percentage bar (proportional width)
-			ColorRect bar = new ColorRect();
-			bar.Color = new Color(archColor, 0.7f);
-			bar.CustomMinimumSize = new Vector2(Math.Max(pct * 0.8f, 4f), 12f);
-			row.AddChild(bar, forceReadableName: false, Node.InternalMode.Disabled);
-			// Archetype name + percentage
-			Label archLbl = new Label();
-			archLbl.Text = $"{arch.Archetype.DisplayName}  {pct}%";
-			ApplyFont(archLbl, _fontBold);
-			archLbl.AddThemeColorOverride("font_color", archColor);
-			archLbl.AddThemeFontSizeOverride("font_size", 14);
-			row.AddChild(archLbl, forceReadableName: false, Node.InternalMode.Disabled);
-			// Core card count hint
-			if (arch.CoreCount > 0)
-			{
-				Label coreLbl = new Label();
-				coreLbl.Text = $"({arch.CoreCount} core)";
-				ApplyFont(coreLbl, _fontBody);
-				coreLbl.AddThemeColorOverride("font_color", ClrSub);
-				coreLbl.AddThemeFontSizeOverride("font_size", 12);
-				row.AddChild(coreLbl, forceReadableName: false, Node.InternalMode.Disabled);
-			}
-			_archChipVBox.AddChild(row, forceReadableName: false, Node.InternalMode.Disabled);
-			colorIdx++;
-		}
-	}
 
 	private void AddSectionHeader(string text)
 	{
@@ -1832,7 +1754,7 @@ public class OverlayManager
 		_settings.Save();
 		if (_content != null && GodotObject.IsInstanceValid(_content))
 			_content.Visible = !_collapsed;
-		// _archChipPanel and _deckVizContainer stay hidden — deck info in DECK BREAKDOWN
+		// _deckVizContainer stays hidden — deck info in DECK BREAKDOWN
 		if (_titleSep != null && GodotObject.IsInstanceValid(_titleSep))
 			_titleSep.Visible = !_collapsed;
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
