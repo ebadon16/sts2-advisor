@@ -575,11 +575,9 @@ public class OverlayManager
 	{
 		if (_lastUpdateTick == 0) return;
 		ulong elapsed = Time.GetTicksMsec() - _lastUpdateTick;
-		// If we have card/relic advice showing for 8+ seconds, check if screen is still valid
-		if (elapsed > 8000 && (_currentCards != null || _currentRelics != null))
+		// If advice is showing for 8+ seconds, check if the game screen is still valid
+		if (elapsed > 8000 && _currentScreen != null)
 		{
-			// Check if the game's screen node that generated this advice is still active
-			// by looking for known screen type nodes in the scene tree
 			try
 			{
 				SceneTree tree = Engine.GetMainLoop() as SceneTree;
@@ -587,14 +585,20 @@ public class OverlayManager
 				bool hasCardScreen = HasNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4);
 				bool hasRelicScreen = HasNodeOfType(tree.Root, "NChooseARelicSelection", 4);
 				bool hasShopScreen = HasNodeOfType(tree.Root, "NMerchantInventory", 4);
+				bool hasRestSite = HasNodeOfType(tree.Root, "NRestSite", 4);
+				bool hasCombat = HasNodeOfType(tree.Root, "NCombatRoom", 4);
 				bool isCardAdvice = _currentScreen == "CARD REWARD" || _currentScreen == "CARD REMOVAL" || _currentScreen == "CARD UPGRADE";
 				bool isRelicAdvice = _currentScreen == "RELIC REWARD";
 				bool isShopAdvice = _currentScreen == "MERCHANT SHOP";
+				bool isRestAdvice = _currentScreen == "REST SITE";
+				bool isCombatAdvice = _currentScreen == "COMBAT";
 
 				bool screenGone = false;
 				if (isCardAdvice && !hasCardScreen) screenGone = true;
 				if (isRelicAdvice && !hasRelicScreen) screenGone = true;
 				if (isShopAdvice && !hasShopScreen) screenGone = true;
+				if (isRestAdvice && !hasRestSite) screenGone = true;
+				if (isCombatAdvice && !hasCombat) screenGone = true;
 
 				if (screenGone)
 				{
@@ -1392,7 +1396,7 @@ public class OverlayManager
 		hBoxContainer.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
 		// Card name
 		Label label = new Label();
-		string text = card.Name ?? card.Id;
+		string text = PrettifyId(card.Id);
 		string upgradeTag = card.Upgraded ? " +" : "";
 		label.Text = (card.IsBestPick ? "\u2605 " : "") + text + upgradeTag;
 		ApplyFont(label, _fontBold);
@@ -2513,7 +2517,7 @@ public class OverlayManager
 				upgBonus += 0.1f;
 
 			float priority = upgBonus;
-			string cardName = PrettifyId(card.Name ?? card.Id);
+			string cardName = PrettifyId(card.Id);
 			// Show reason instead of misleading grade change
 			string reason = "";
 			if (primaryArchId != null && tierEntry.Synergies != null && tierEntry.Synergies.Any(s => s.Contains(primaryArchId)))
