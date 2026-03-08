@@ -1484,16 +1484,16 @@ public class OverlayManager
 		vBoxContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		vBoxContainer.AddThemeConstantOverride("separation", 0);
 		hBoxContainer.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		// Relic name (prettify in case Name is raw ID)
+		// Relic name (always prettify from ID — game Title can be a localization key)
 		Label label = new Label();
-		string text = PrettifyId(relic.Name ?? relic.Id);
+		string text = PrettifyId(relic.Id);
 		label.Text = (relic.IsBestPick ? "\u2605 " : "") + text;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", relic.IsBestPick ? ClrAccent : ClrCream);
 		label.AddThemeFontSizeOverride("font_size", 17);
 		label.AddThemeConstantOverride("outline_size", 2);
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
-		label.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
+		label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		vBoxContainer.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
 		// Compact summary with relic tenure
 		string rarityLower = relic.Rarity?.ToLowerInvariant() ?? "";
@@ -1506,12 +1506,23 @@ public class OverlayManager
 		}
 		Label metaLbl = new Label();
 		metaLbl.Text = rarityLower + tenureStr;
-		if (oneLiner.Length > 0) metaLbl.Text += $" \u2014 {oneLiner}";
 		ApplyFont(metaLbl, _fontBody);
 		metaLbl.AddThemeColorOverride("font_color", ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 17);
-		metaLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
+		metaLbl.AddThemeFontSizeOverride("font_size", 15);
+		metaLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		// One-liner on its own line (prevents cutoff)
+		if (oneLiner.Length > 0)
+		{
+			Label oneLinerLbl = new Label();
+			oneLinerLbl.Text = oneLiner;
+			ApplyFont(oneLinerLbl, _fontBody);
+			bool isNegative = oneLiner.Contains("doesn't") || oneLiner.Contains("conflict") || oneLiner.Contains("weaker") || oneLiner.Contains("costly") || oneLiner.Contains("redundant");
+			oneLinerLbl.AddThemeColorOverride("font_color", isNegative ? ClrNegative : ClrPositive);
+			oneLinerLbl.AddThemeFontSizeOverride("font_size", 14);
+			oneLinerLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			vBoxContainer.AddChild(oneLinerLbl, forceReadableName: false, Node.InternalMode.Disabled);
+		}
 		// Archetype synergy tags
 		var archTags = ExtractArchetypeTags(relic.SynergyReasons);
 		if (archTags.Count > 0)
