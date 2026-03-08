@@ -16,7 +16,7 @@ public class OverlaySettings
 	public float PanelOpacity { get; set; } = 1.0f;
 	public bool Collapsed { get; set; } = false;
 	public bool ShowDeckBreakdown { get; set; } = true;
-	public bool ShowDecisionHistory { get; set; } = true;
+	public bool ShowDecisionHistory { get; set; } = false;
 	public bool ShowDrawProbability { get; set; } = true;
 
 	private static string GetSettingsPath()
