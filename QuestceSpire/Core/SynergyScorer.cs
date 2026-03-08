@@ -43,10 +43,16 @@ public class SynergyScorer
 			item.Price = offering.Price;
 			list.Add(item);
 		}
-		list.Sort((ScoredCard a, ScoredCard b) => b.FinalScore.CompareTo(a.FinalScore));
+		// Mark best pick without reordering — preserve game's card order for badge alignment
 		if (list.Count > 0)
 		{
-			list[0].IsBestPick = true;
+			int bestIdx = 0;
+			for (int i = 1; i < list.Count; i++)
+			{
+				if (list[i].FinalScore > list[bestIdx].FinalScore)
+					bestIdx = i;
+			}
+			list[bestIdx].IsBestPick = true;
 		}
 		return list;
 	}
@@ -93,10 +99,16 @@ public class SynergyScorer
 			item.Price = offering.Price;
 			list.Add(item);
 		}
-		list.Sort((ScoredRelic a, ScoredRelic b) => b.FinalScore.CompareTo(a.FinalScore));
+		// Mark best pick without reordering — preserve game's order for badge alignment
 		if (list.Count > 0)
 		{
-			list[0].IsBestPick = true;
+			int bestIdx = 0;
+			for (int i = 1; i < list.Count; i++)
+			{
+				if (list[i].FinalScore > list[bestIdx].FinalScore)
+					bestIdx = i;
+			}
+			list[bestIdx].IsBestPick = true;
 		}
 		return list;
 	}

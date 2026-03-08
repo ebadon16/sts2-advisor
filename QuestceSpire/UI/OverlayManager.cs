@@ -456,10 +456,11 @@ public class OverlayManager
 
 		_archChipPanel = new PanelContainer();
 		_archChipPanel.AddThemeStyleboxOverride("panel", _sbChip);
+		_archChipPanel.Visible = false; // hidden — deck info lives in DECK BREAKDOWN section
 		_archChipVBox = new VBoxContainer();
 		_archChipVBox.AddThemeConstantOverride("separation", 3);
 		_archetypeLabel = new Label();
-		_archetypeLabel.Text = "ANALYZING DECK...";
+		_archetypeLabel.Text = "";
 		ApplyFont(_archetypeLabel, _fontBold);
 		_archetypeLabel.AddThemeFontSizeOverride("font_size", 15);
 		_archetypeLabel.AddThemeColorOverride("font_color", ClrCream);
@@ -470,6 +471,7 @@ public class OverlayManager
 		// Deck composition visualization container (Feature 2)
 		_deckVizContainer = new VBoxContainer();
 		_deckVizContainer.AddThemeConstantOverride("separation", 4);
+		_deckVizContainer.Visible = false; // hidden — deck info lives in DECK BREAKDOWN section
 		vBoxContainer.AddChild(_deckVizContainer, forceReadableName: false, Node.InternalMode.Disabled);
 		// Content container — no scroll, panel auto-expands to fit
 		_content = new VBoxContainer();
@@ -797,35 +799,48 @@ public class OverlayManager
 			bool alt = inputEventKey.AltPressed;
 			bool shift = inputEventKey.ShiftPressed;
 			Key key = inputEventKey.Keycode;
+			// Also check PhysicalKeycode — some keyboards/layouts report differently
+			Key pkey = inputEventKey.PhysicalKeycode;
+			bool isKey7 = key == Key.Key7 || pkey == Key.Key7;
+			bool isKey8 = key == Key.Key8 || pkey == Key.Key8;
+			bool isKey9 = key == Key.Key9 || pkey == Key.Key9;
+			bool isKey0 = key == Key.Key0 || pkey == Key.Key0;
+			bool isMinus = key == Key.Minus || pkey == Key.Minus;
+			bool isF7 = key == Key.F7 || pkey == Key.F7;
+			bool isF8 = key == Key.F8 || pkey == Key.F8;
+			bool isF9 = key == Key.F9 || pkey == Key.F9;
+			bool isF10 = key == Key.F10 || pkey == Key.F10;
+			bool isF11 = key == Key.F11 || pkey == Key.F11;
+			bool mod = ctrl || alt;
 			// F-keys, Ctrl+number, or Alt+number — multiple combos for keyboard compatibility
-			if ((key == Key.F7 && shift) || (ctrl && key == Key.Key7 && shift) || (alt && key == Key.Key7 && shift))
+			if ((isF7 && shift) || (mod && isKey7 && shift))
 			{
 				CycleOpacity();
 			}
-			else if (key == Key.F7 || (ctrl && key == Key.Key7) || (alt && key == Key.Key7))
+			else if (isF7 || (mod && isKey7))
 			{
 				ToggleVisible();
 			}
-			else if (key == Key.F8 || (ctrl && key == Key.Key8) || (alt && key == Key.Key8))
+			else if (isF8 || (mod && isKey8))
 			{
 				ToggleTooltips();
 			}
-			else if (key == Key.F9 || (ctrl && key == Key.Key9) || (alt && key == Key.Key9))
+			else if (isF9 || (mod && isKey9))
 			{
 				ToggleInGameBadges();
 			}
-			else if (key == Key.F10 || (ctrl && key == Key.Key0) || (alt && key == Key.Key0))
+			else if (isF10 || (mod && isKey0))
 			{
 				ToggleHistory();
 			}
-			else if (key == Key.F11 || (ctrl && key == Key.Minus) || (alt && key == Key.Minus))
+			else if (isF11 || (mod && isMinus))
 			{
 				ToggleCollapsed();
 			}
 			// Debug: log unrecognized key presses with modifiers to help diagnose
-			else if ((ctrl || alt) && !shift)
+			else if (mod && !shift)
 			{
-				Plugin.Log($"Key press: {key} ctrl={ctrl} alt={alt} shift={shift}");
+				Plugin.Log($"Key press: key={key} pkey={pkey} ctrl={ctrl} alt={alt}");
 			}
 		}
 	}
@@ -901,7 +916,7 @@ public class OverlayManager
 		// Upgrade screen: show ranked upgrade priorities
 		if (isUpgrade && _currentGameState != null && _currentDeckAnalysis != null)
 		{
-			AddSectionHeader("BEST CARDS TO UPGRADE");
+			AddSectionHeader("UPGRADE PRIORITIES (in deck)");
 			string character = _currentCharacter ?? _currentGameState.Character ?? "unknown";
 			var priorities = GetUpgradePriorities(_currentGameState, _currentDeckAnalysis, character);
 			if (priorities.Count > 0)
@@ -947,9 +962,10 @@ public class OverlayManager
 		{
 			bool isShop = _currentScreen == "MERCHANT SHOP";
 			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : "CARD ANALYSIS");
-			// Shop: only show top picks (grade B+ or best 3, whichever is more)
+			// Shop: only show top picks sorted by score (grade B+ or best 3)
+			// Non-shop: preserve game order so overlay matches on-screen badge positions
 			var cardsToShow = isShop
-				? _currentCards.Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(3).ToList()
+				? _currentCards.OrderByDescending(c => c.FinalScore).Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(3).ToList()
 				: _currentCards.ToList();
 			if (isShop && cardsToShow.Count == 0 && _currentCards.Count > 0)
 				cardsToShow = _currentCards.Take(3).ToList();
@@ -985,7 +1001,7 @@ public class OverlayManager
 			bool isShop = _currentScreen == "MERCHANT SHOP";
 			AddSectionHeader(isShop ? "BEST RELICS IN SHOP" : "RELIC ANALYSIS");
 			var relicsToShow = isShop
-				? _currentRelics.Where(r => r.IsBestPick || r.FinalGrade >= TierGrade.B).Take(3).ToList()
+				? _currentRelics.OrderByDescending(r => r.FinalScore).Where(r => r.IsBestPick || r.FinalGrade >= TierGrade.B).Take(3).ToList()
 				: _currentRelics.ToList();
 			if (isShop && relicsToShow.Count == 0 && _currentRelics.Count > 0)
 				relicsToShow = _currentRelics.Take(2).ToList();
@@ -1106,10 +1122,12 @@ public class OverlayManager
 	{
 		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
 			return;
+		// Reset size to zero so Godot recomputes from content
+		_panel.Size = Vector2.Zero;
+		_panel.ResetSize();
 		Vector2 minSize = _panel.GetCombinedMinimumSize();
 		float height = Math.Max(minSize.Y, 40f);
 		_panel.OffsetBottom = _panel.OffsetTop + height;
-		// Force panel size to match content — prevents stale dead space
 		_panel.Size = new Vector2(_panel.Size.X, height);
 	}
 
@@ -1320,7 +1338,7 @@ public class OverlayManager
 				}
 			}).CallDeferred();
 		}
-		// Card portrait thumbnail (rounded corners)
+		// Card portrait thumbnail (rounded corners with border)
 		Texture2D portrait = GetCardPortrait(card.Id, _currentCharacter);
 		if (portrait != null)
 		{
@@ -1333,6 +1351,11 @@ public class OverlayManager
 			thumbStyle.CornerRadiusTopRight = 6;
 			thumbStyle.CornerRadiusBottomLeft = 6;
 			thumbStyle.CornerRadiusBottomRight = 6;
+			thumbStyle.BorderWidthTop = 2;
+			thumbStyle.BorderWidthBottom = 2;
+			thumbStyle.BorderWidthLeft = 2;
+			thumbStyle.BorderWidthRight = 2;
+			thumbStyle.BorderColor = new Color(ClrBorder, 0.8f);
 			thumbClip.AddThemeStyleboxOverride("panel", thumbStyle);
 			TextureRect thumb = new TextureRect();
 			thumb.Texture = portrait;
@@ -1476,16 +1499,32 @@ public class OverlayManager
 				}
 			}).CallDeferred();
 		}
-		// Relic icon thumbnail
+		// Relic icon thumbnail (rounded corners with border)
 		Texture2D relicIcon = GetRelicIcon(relic.Id);
 		if (relicIcon != null)
 		{
+			PanelContainer relicClip = new PanelContainer();
+			relicClip.ClipContents = true;
+			relicClip.CustomMinimumSize = new Vector2(36f, 36f);
+			StyleBoxFlat relicThumbStyle = new StyleBoxFlat();
+			relicThumbStyle.BgColor = new Color(0, 0, 0, 0);
+			relicThumbStyle.CornerRadiusTopLeft = 6;
+			relicThumbStyle.CornerRadiusTopRight = 6;
+			relicThumbStyle.CornerRadiusBottomLeft = 6;
+			relicThumbStyle.CornerRadiusBottomRight = 6;
+			relicThumbStyle.BorderWidthTop = 2;
+			relicThumbStyle.BorderWidthBottom = 2;
+			relicThumbStyle.BorderWidthLeft = 2;
+			relicThumbStyle.BorderWidthRight = 2;
+			relicThumbStyle.BorderColor = new Color(ClrBorder, 0.8f);
+			relicClip.AddThemeStyleboxOverride("panel", relicThumbStyle);
 			TextureRect thumb = new TextureRect();
 			thumb.Texture = relicIcon;
 			thumb.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
 			thumb.StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
 			thumb.CustomMinimumSize = new Vector2(36f, 36f);
-			hBoxContainer.AddChild(thumb, forceReadableName: false, Node.InternalMode.Disabled);
+			relicClip.AddChild(thumb, forceReadableName: false, Node.InternalMode.Disabled);
+			hBoxContainer.AddChild(relicClip, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		VBoxContainer vBoxContainer = new VBoxContainer();
 		vBoxContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
@@ -1660,25 +1699,15 @@ public class OverlayManager
 	{
 		bool hasContent = false;
 
-		// Scoring breakdown line — show when there are adjustments OR when score source is notable
-		bool hasAdjustments = synergyDelta != 0f || floorAdjust != 0f || deckSizeAdjust != 0f || upgradeAdjust != 0f;
-		bool notableSource = scoreSource == "adaptive" || scoreSource == "default";
-		if (baseScore > 0f && (hasAdjustments || notableSource))
+		// Score source hint — only show if learned from play data
+		if (scoreSource == "adaptive")
 		{
-			string srcTag = scoreSource == "adaptive" ? " [learned]" : scoreSource == "default" ? " [no data]" : "";
-			string breakdown = $"Score: {TierEngine.ScoreToGrade(baseScore)}({baseScore:F1}){srcTag}";
-			if (synergyDelta != 0f) breakdown += $" {synergyDelta:+0.0;-0.0} syn";
-			if (floorAdjust != 0f) breakdown += $" {floorAdjust:+0.0;-0.0} floor";
-			if (deckSizeAdjust != 0f) breakdown += $" {deckSizeAdjust:+0.0;-0.0} size";
-			if (upgradeAdjust != 0f) breakdown += $" {upgradeAdjust:+0.0;-0.0} upg";
-			breakdown += $" = {finalScore:F1}";
-			Label breakdownLbl = new Label();
-			breakdownLbl.Text = breakdown;
-			ApplyFont(breakdownLbl, _fontBody);
-			breakdownLbl.AddThemeColorOverride("font_color", ClrAqua);
-			breakdownLbl.AddThemeFontSizeOverride("font_size", 15);
-			breakdownLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			parent.AddChild(breakdownLbl, forceReadableName: false, Node.InternalMode.Disabled);
+			Label srcLbl = new Label();
+			srcLbl.Text = "\u2139 rating based on your play data";
+			ApplyFont(srcLbl, _fontBody);
+			srcLbl.AddThemeColorOverride("font_color", ClrAqua);
+			srcLbl.AddThemeFontSizeOverride("font_size", 13);
+			parent.AddChild(srcLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			hasContent = true;
 		}
 
@@ -1757,10 +1786,7 @@ public class OverlayManager
 		_settings.Save();
 		if (_content != null && GodotObject.IsInstanceValid(_content))
 			_content.Visible = !_collapsed;
-		if (_archChipPanel != null && GodotObject.IsInstanceValid(_archChipPanel))
-			_archChipPanel.Visible = !_collapsed;
-		if (_deckVizContainer != null && GodotObject.IsInstanceValid(_deckVizContainer))
-			_deckVizContainer.Visible = !_collapsed;
+		// _archChipPanel and _deckVizContainer stay hidden — deck info in DECK BREAKDOWN
 		if (_titleSep != null && GodotObject.IsInstanceValid(_titleSep))
 			_titleSep.Visible = !_collapsed;
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
@@ -2462,7 +2488,7 @@ public class OverlayManager
 
 		return candidates
 			.OrderByDescending(c => c.priority)
-			.Take(5)
+			.Take(3)
 			.Select(c => (c.icon, c.text, c.color))
 			.ToList();
 	}
