@@ -578,6 +578,20 @@ public class OverlayManager
 	public void CheckForStaleScreen()
 	{
 		if (_lastUpdateTick == 0) return;
+		// Fast badge cleanup: badges should only exist on CARD REWARD screens.
+		// If we've moved to any other screen, or badges are orphaned, remove them immediately.
+		try
+		{
+			SceneTree btree = Engine.GetMainLoop() as SceneTree;
+			if (btree?.Root != null && btree.GetNodesInGroup(GradeBadgeGroup).Count > 0)
+			{
+				if (_currentScreen != "CARD REWARD")
+				{
+					CleanupInjectedBadges(btree.Root);
+				}
+			}
+		}
+		catch { }
 		// Shop live-refresh: re-read shop state every tick to catch purchases
 		if (_currentScreen == "MERCHANT SHOP")
 		{
@@ -1270,13 +1284,12 @@ public class OverlayManager
 		{
 			bool isShop = _currentScreen == "MERCHANT SHOP";
 			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : isUpgrade ? "BEST UPGRADE TARGETS" : "CARD ANALYSIS");
-			// Shop/upgrade: only show top picks sorted by score (grade B+ or best 3)
+			// Shop: show top 3 by score to keep panel compact
+			// Upgrade: show top 3 upgrade targets
 			// Non-shop: preserve game order so overlay matches on-screen badge positions
 			var cardsToShow = (isShop || isUpgrade)
-				? _currentCards.OrderByDescending(c => c.FinalScore).Where(c => c.IsBestPick || c.FinalGrade >= TierGrade.B).Take(3).ToList()
+				? _currentCards.OrderByDescending(c => c.FinalScore).Take(3).ToList()
 				: _currentCards.ToList();
-			if ((isShop || isUpgrade) && cardsToShow.Count == 0 && _currentCards.Count > 0)
-				cardsToShow = _currentCards.Take(3).ToList();
 			foreach (ScoredCard currentCard in cardsToShow)
 			{
 				AddCardEntry(currentCard);
@@ -1321,10 +1334,8 @@ public class OverlayManager
 			bool isShop = _currentScreen == "MERCHANT SHOP";
 			AddSectionHeader(isShop ? "BEST RELICS IN SHOP" : "RELIC ANALYSIS");
 			var relicsToShow = isShop
-				? _currentRelics.OrderByDescending(r => r.FinalScore).Where(r => r.IsBestPick || r.FinalGrade >= TierGrade.B).Take(3).ToList()
+				? _currentRelics.OrderByDescending(r => r.FinalScore).Take(3).ToList()
 				: _currentRelics.ToList();
-			if (isShop && relicsToShow.Count == 0 && _currentRelics.Count > 0)
-				relicsToShow = _currentRelics.Take(2).ToList();
 			foreach (ScoredRelic currentRelic in relicsToShow)
 			{
 				AddRelicEntry(currentRelic);
@@ -1555,7 +1566,7 @@ public class OverlayManager
 		HBoxContainer hBoxContainer = new HBoxContainer();
 		hBoxContainer.AddThemeConstantOverride("separation", 8);
 		panelContainer.AddChild(hBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		CenterContainer badge = CreateBadge(card.FinalGrade);
+		CenterContainer badge = CreateBadge(card.FinalGrade, card.FinalScore);
 		hBoxContainer.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
 		// V2: Pulse animation on best pick badge
 		if (card.IsBestPick)
@@ -1716,7 +1727,7 @@ public class OverlayManager
 		HBoxContainer hBoxContainer = new HBoxContainer();
 		hBoxContainer.AddThemeConstantOverride("separation", 8);
 		panelContainer.AddChild(hBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		CenterContainer relicBadge = CreateBadge(relic.FinalGrade);
+		CenterContainer relicBadge = CreateBadge(relic.FinalGrade, relic.FinalScore);
 		hBoxContainer.AddChild(relicBadge, forceReadableName: false, Node.InternalMode.Disabled);
 		// V2: Pulse animation on best pick badge
 		if (relic.IsBestPick)
@@ -2690,6 +2701,7 @@ public class OverlayManager
 			.Select(c =>
 			{
 				string cardName = PrettifyId(c.Id);
+				string subGrade = TierEngine.ScoreToSubGrade(c.FinalScore);
 				string reason;
 				if (c.SynergyDelta > 0.4f)
 					reason = " — core synergy";
@@ -2699,7 +2711,7 @@ public class OverlayManager
 					reason = " — solid pick";
 				else
 					reason = " — basic upgrade";
-				string text = $"\u2B06 {cardName}{reason}";
+				string text = $"\u2B06 {cardName} [{subGrade}]{reason}";
 				Color color = c.FinalGrade >= TierGrade.A ? ClrPositive : c.FinalGrade >= TierGrade.B ? ClrAqua : ClrCream;
 				return ((string)"\u2022", text, color);
 			})
@@ -2898,15 +2910,16 @@ public class OverlayManager
 		return panel;
 	}
 
-	private CenterContainer CreateBadge(TierGrade grade)
+	private CenterContainer CreateBadge(TierGrade grade, float score = -1f)
 	{
+		string subGrade = score >= 0f ? TierEngine.ScoreToSubGrade(score) : grade.ToString();
 		CenterContainer obj = new CenterContainer
 		{
 			CustomMinimumSize = new Vector2(34f, 34f)
 		};
 		PanelContainer panelContainer = new PanelContainer
 		{
-			CustomMinimumSize = new Vector2(30f, 30f)
+			CustomMinimumSize = new Vector2(subGrade.Length > 1 ? 38f : 30f, 30f)
 		};
 		Color badgeColor = TierBadge.GetGodotColor(grade);
 		StyleBoxFlat styleBoxFlat = new StyleBoxFlat
@@ -2924,12 +2937,12 @@ public class OverlayManager
 		styleBoxFlat.BorderColor = badgeColor.Darkened(0.3f);
 		panelContainer.AddThemeStyleboxOverride("panel", styleBoxFlat);
 		Label label = new Label();
-		label.Text = grade.ToString();
+		label.Text = subGrade;
 		ApplyFont(label, _fontHeader);
 		label.HorizontalAlignment = HorizontalAlignment.Center;
 		label.VerticalAlignment = VerticalAlignment.Center;
 		label.AddThemeColorOverride("font_color", TierBadge.GetTextColor(grade));
-		label.AddThemeFontSizeOverride("font_size", 20);
+		label.AddThemeFontSizeOverride("font_size", subGrade.Length > 1 ? 17 : 20);
 		label.AddThemeConstantOverride("outline_size", 0);
 		panelContainer.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
 		obj.AddChild(panelContainer, forceReadableName: false, Node.InternalMode.Disabled);
@@ -3228,7 +3241,7 @@ public class OverlayManager
 			// Match holders to scored cards by index (same order as ShowScreen receives them)
 			for (int i = 0; i < Math.Min(cardHolders.Count, scoredCards.Count); i++)
 			{
-				AttachGradeBadge(cardHolders[i], scoredCards[i].FinalGrade, scoredCards[i].IsBestPick);
+				AttachGradeBadge(cardHolders[i], scoredCards[i].FinalGrade, scoredCards[i].IsBestPick, scoredCards[i].FinalScore);
 			}
 		}
 		catch (Exception ex)
@@ -3273,7 +3286,7 @@ public class OverlayManager
 			Plugin.Log($"Found {relicHolders.Count} relic holders — injecting grade badges");
 			for (int i = 0; i < Math.Min(relicHolders.Count, scoredRelics.Count); i++)
 			{
-				AttachGradeBadge(relicHolders[i], scoredRelics[i].FinalGrade, scoredRelics[i].IsBestPick);
+				AttachGradeBadge(relicHolders[i], scoredRelics[i].FinalGrade, scoredRelics[i].IsBestPick, scoredRelics[i].FinalScore);
 			}
 		}
 		catch (Exception ex)
@@ -3475,18 +3488,19 @@ public class OverlayManager
 	/// Attaches a floating grade badge to a game UI node (card or relic holder).
 	/// Badge is positioned at the bottom-center of the node.
 	/// </summary>
-	private void AttachGradeBadge(Control targetNode, TierGrade grade, bool isBestPick)
+	private void AttachGradeBadge(Control targetNode, TierGrade grade, bool isBestPick, float score = -1f)
 	{
 		if (targetNode == null || !GodotObject.IsInstanceValid(targetNode))
 			return;
 
+		string subGrade = score >= 0f ? TierEngine.ScoreToSubGrade(score) : grade.ToString();
 		Color badgeColor = TierBadge.GetGodotColor(grade);
 		Color textColor = TierBadge.GetTextColor(grade);
 
 		// Create badge panel
 		PanelContainer badge = new PanelContainer();
 		badge.AddToGroup(GradeBadgeGroup);
-		badge.CustomMinimumSize = new Vector2(44f, 28f);
+		badge.CustomMinimumSize = new Vector2(subGrade.Length > 1 ? 52f : 44f, 28f);
 
 		StyleBoxFlat badgeStyle = new StyleBoxFlat();
 		badgeStyle.BgColor = badgeColor;
@@ -3504,11 +3518,10 @@ public class OverlayManager
 		badge.AddThemeStyleboxOverride("panel", badgeStyle);
 
 		Label gradeLbl = new Label();
-		string gradeText = grade.ToString();
-		gradeLbl.Text = gradeText;
+		gradeLbl.Text = subGrade;
 		ApplyFont(gradeLbl, _fontHeader);
 		gradeLbl.AddThemeColorOverride("font_color", textColor);
-		gradeLbl.AddThemeFontSizeOverride("font_size", 18);
+		gradeLbl.AddThemeFontSizeOverride("font_size", subGrade.Length > 1 ? 16 : 18);
 		gradeLbl.HorizontalAlignment = HorizontalAlignment.Center;
 		gradeLbl.VerticalAlignment = VerticalAlignment.Center;
 		gradeLbl.AddThemeConstantOverride("outline_size", 2);

@@ -178,4 +178,23 @@ public class TierEngine
 		}
 		return TierGrade.F;
 	}
+
+	/// <summary>
+	/// Returns a sub-grade string (e.g. "A+", "B-") for finer differentiation.
+	/// Each major grade spans 1.0 points; +/- split the top/bottom third.
+	/// </summary>
+	public static string ScoreToSubGrade(float score)
+	{
+		if (score >= 4.5f) return "S";
+		if (score >= 4.17f) return "A+";
+		if (score >= 3.83f) return "A";
+		if (score >= 3.5f) return "A-";
+		if (score >= 3.17f) return "B+";
+		if (score >= 2.83f) return "B";
+		if (score >= 2.5f) return "B-";
+		if (score >= 2.0f) return "C+";
+		if (score >= 1.5f) return "C";
+		if (score >= 0.5f) return "D";
+		return "F";
+	}
 }
