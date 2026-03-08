@@ -492,7 +492,7 @@
     },
     {
       "id": "Secret Technique",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "draw",
         "exhaust",
@@ -503,7 +503,7 @@
     },
     {
       "id": "Secret Weapon",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "draw",
         "exhaust",

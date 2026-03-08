@@ -1,128 +1,1015 @@
 {
   "category": "common",
   "relics": [
-    { "id": "Amethyst Aubergine", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Common. Minor passive benefit" },
-    { "id": "Anchor", "baseTier": "A", "synergies": ["block"], "antiSynergies": [], "notes": "Common. +10 block first turn" },
-    { "id": "Bag Of Preparation", "baseTier": "B", "synergies": ["draw"], "antiSynergies": [], "notes": "Common. Draw 2 extra cards turn 1" },
-    { "id": "Blood Vial", "baseTier": "C", "synergies": ["healing"], "antiSynergies": [], "notes": "Common. Heal 2 at start of combat" },
-    { "id": "Book Of Five Rings", "baseTier": "B", "synergies": ["draw"], "antiSynergies": [], "notes": "Common. Draw benefit from stance or skill use" },
-    { "id": "Bronze Scales", "baseTier": "A", "synergies": ["damage", "scaling"], "antiSynergies": [], "notes": "Common. 3 thorns, strong in multi-hit fights" },
-    { "id": "Centennial Puzzle", "baseTier": "B", "synergies": ["draw"], "antiSynergies": [], "notes": "Common. Draw 3 first time you lose HP each combat" },
-    { "id": "Festive Popper", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Common. Random minor effect" },
-    { "id": "Gorget", "baseTier": "C", "synergies": ["block"], "antiSynergies": [], "notes": "Common. Minor block benefit" },
-    { "id": "Happy Flower", "baseTier": "A", "synergies": ["energy"], "antiSynergies": [], "notes": "Common. +1 energy every 3 turns, reliable ramp" },
-    { "id": "Juzu Bracelet", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Common. No monster encounters in ? rooms" },
-    { "id": "Lantern", "baseTier": "A", "synergies": ["energy"], "antiSynergies": [], "notes": "Common. +1 energy turn 1, strong opener" },
-    { "id": "Meal Ticket", "baseTier": "C", "synergies": ["healing"], "antiSynergies": [], "notes": "Common. Heal 15 at shops" },
-    { "id": "Oddly Smooth Stone", "baseTier": "A", "synergies": ["dexterity", "block"], "antiSynergies": [], "notes": "Common. +1 dexterity permanently" },
-    { "id": "Pendulum", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Common. Alternating energy/block benefit" },
-    { "id": "Permafrost", "baseTier": "C", "synergies": ["block"], "antiSynergies": [], "notes": "Common. Frost-related, niche" },
-    { "id": "Potion Belt", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Common. +2 potion slots" },
-    { "id": "Regal Pillow", "baseTier": "C", "synergies": ["healing"], "antiSynergies": [], "notes": "Common. +15 HP at rest sites" },
-    { "id": "Strawberry", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Common. +7 max HP" },
-    { "id": "Strike Dummy", "baseTier": "C", "synergies": ["damage"], "antiSynergies": [], "notes": "Common. Benefits from Strikes, weak in refined decks" },
-    { "id": "Tiny Mailbox", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Common. Minor passive benefit" },
-    { "id": "Vajra", "baseTier": "A", "synergies": ["strength", "damage"], "antiSynergies": [], "notes": "Common. +1 strength permanently" },
-    { "id": "Venerable Tea Set", "baseTier": "B", "synergies": ["energy"], "antiSynergies": [], "notes": "Common. +2 energy first combat after rest sites" },
-    { "id": "War Paint", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Common. Upgrade 2 random skills on pickup" },
-    { "id": "Whetstone", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Common. Upgrade 2 random attacks on pickup" },
-
-    { "id": "Akabeko", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. +8 damage on first attack each combat" },
-    { "id": "Bag Of Marbles", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. Apply vulnerable to all enemies turn 1" },
-    { "id": "Bellows", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. Defensive buff at combat start" },
-    { "id": "Bowler Hat", "baseTier": "C", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. Minor block benefit" },
-    { "id": "Candelabra", "baseTier": "B", "synergies": ["draw"], "antiSynergies": [], "notes": "Uncommon. Draw benefit" },
-    { "id": "Eternal Feather", "baseTier": "C", "synergies": ["healing"], "antiSynergies": [], "notes": "Uncommon. Heal based on deck size, minimal impact" },
-    { "id": "Gremlin Horn", "baseTier": "B", "synergies": ["energy", "draw"], "antiSynergies": [], "notes": "Uncommon. Gain energy + draw on enemy kill" },
-    { "id": "Horn Cleat", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. Block bonus on second turn" },
-    { "id": "Joss Paper", "baseTier": "C", "synergies": ["exhaust"], "antiSynergies": [], "notes": "Uncommon. Benefit on exhaust, niche" },
-    { "id": "Kusarigama", "baseTier": "B", "synergies": ["damage", "draw"], "antiSynergies": [], "notes": "Uncommon. Chain weapon, draw and damage benefit" },
-    { "id": "Letter Opener", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. AoE damage per skill played" },
-    { "id": "Lucky Fysh", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Minor fortune benefit" },
-    { "id": "Mercury Hourglass", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. Passive AoE damage each turn" },
-    { "id": "Miniature Cannon", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. Passive damage effect" },
-    { "id": "Nunchaku", "baseTier": "A", "synergies": ["energy", "damage"], "antiSynergies": [], "notes": "Uncommon. +1 energy every 10 attacks played" },
-    { "id": "Orichalcum", "baseTier": "A", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. 6 block if no block gained this turn" },
-    { "id": "Ornamental Fan", "baseTier": "A", "synergies": ["block", "damage"], "antiSynergies": [], "notes": "Uncommon. Gain block every 3 attacks played" },
-    { "id": "Pantograph", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Uncommon. Heal at start of boss fights" },
-    { "id": "Parrying Shield", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. Reactive block benefit" },
-    { "id": "Pear", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Uncommon. +10 max HP" },
-    { "id": "Pen Nib", "baseTier": "A", "synergies": ["damage", "strength"], "antiSynergies": [], "notes": "Uncommon. Double damage on every 10th attack" },
-    { "id": "Petrified Toad", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Random debuff on potion use, unreliable" },
-    { "id": "Planisphere", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Star map, navigation/pathing benefit" },
-    { "id": "Red Mask", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. Apply weak to all enemies turn 1" },
-    { "id": "Reptile Trinket", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Minor passive benefit" },
-    { "id": "Ripple Basin", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. AoE damage trigger effect" },
-    { "id": "Sparkling Rouge", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Minor benefit" },
-    { "id": "Stone Cracker", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Uncommon. Damage + vulnerability effect" },
-    { "id": "Tuning Fork", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Uncommon. Resonance-based benefit" },
-    { "id": "Vambrace", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Uncommon. Block benefit from arm armor" },
-
-    { "id": "Art Of War", "baseTier": "A", "synergies": ["energy"], "antiSynergies": ["damage"], "notes": "Rare. +1 energy next turn if no attacks played, great in skill-heavy decks" },
-    { "id": "Beating Remnant", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Rare. Passive healing effect" },
-    { "id": "Captains Wheel", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Rare. Block at turn start, solid defense" },
-    { "id": "Chandelier", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Passive benefit" },
-    { "id": "Cloak Clasp", "baseTier": "A", "synergies": ["block"], "antiSynergies": [], "notes": "Rare. Gain block per card in hand at end of turn" },
-    { "id": "Frozen Egg", "baseTier": "B", "synergies": ["scaling"], "antiSynergies": [], "notes": "Rare. Auto-upgrade power cards on pickup" },
-    { "id": "Gambling Chip", "baseTier": "S", "synergies": ["draw"], "antiSynergies": [], "notes": "Rare. Mulligan opening hand, dramatically improves consistency" },
-    { "id": "Game Piece", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Rare. Minor passive benefit" },
-    { "id": "Girya", "baseTier": "A", "synergies": ["strength", "scaling"], "antiSynergies": [], "notes": "Rare. Gain strength at rest sites, up to 3 uses" },
-    { "id": "Ice Cream", "baseTier": "S", "synergies": ["energy"], "antiSynergies": [], "notes": "Rare. Unspent energy carries between turns, universally powerful" },
-    { "id": "Intimidating Helmet", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Rare. Apply weak/debuff to enemies" },
-    { "id": "Kunai", "baseTier": "A", "synergies": ["dexterity", "block", "damage"], "antiSynergies": [], "notes": "Rare. +1 dexterity every 3 attacks played" },
-    { "id": "Lasting Candy", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Rare. Heal over time effect" },
-    { "id": "Lizard Tail", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Rare. Revive at 50% HP once per run, insurance relic" },
-    { "id": "Mango", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Rare. Max HP increase" },
-    { "id": "Meat On The Bone", "baseTier": "A", "synergies": ["healing"], "antiSynergies": [], "notes": "Rare. Heal if HP <= 50% at end of combat, strong sustain" },
-    { "id": "Molten Egg", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Rare. Auto-upgrade attack cards on pickup" },
-    { "id": "Mummified Hand", "baseTier": "S", "synergies": ["energy", "scaling"], "antiSynergies": [], "notes": "Rare. Play a power = reduce cost of random card in hand, insane in power decks" },
-    { "id": "Old Coin", "baseTier": "S", "synergies": ["gold"], "antiSynergies": [], "notes": "Rare. +300 gold, enables shop purchases and removal" },
-    { "id": "Pocketwatch", "baseTier": "A", "synergies": ["draw"], "antiSynergies": [], "notes": "Rare. Draw +3 cards if played <= 3 cards last turn" },
-    { "id": "Prayer Wheel", "baseTier": "A", "synergies": [], "antiSynergies": [], "notes": "Rare. Extra card choice in card rewards, improves deck quality" },
-    { "id": "Rainbow Ring", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Passive benefit" },
-    { "id": "Razor Tooth", "baseTier": "C", "synergies": ["damage"], "antiSynergies": [], "notes": "Rare. Damage on HP loss, too niche" },
-    { "id": "Shovel", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Dig at rest sites for relic rewards" },
-    { "id": "Shuriken", "baseTier": "A", "synergies": ["strength", "damage"], "antiSynergies": [], "notes": "Rare. +1 strength every 3 attacks played" },
-    { "id": "Stone Calendar", "baseTier": "C", "synergies": ["damage"], "antiSynergies": [], "notes": "Rare. AoE damage after 7 turns, too slow for most fights" },
-    { "id": "Sturdy Clamp", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Rare. Block benefit" },
-    { "id": "The Courier", "baseTier": "B", "synergies": ["gold"], "antiSynergies": [], "notes": "Rare. Shops get refresh + extra card, improves shopping" },
-    { "id": "Toxic Egg", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Auto-upgrade skill cards on pickup" },
-    { "id": "Tungsten Rod", "baseTier": "S", "synergies": [], "antiSynergies": [], "notes": "Rare. Reduce ALL HP loss by 1, universally powerful defensive relic" },
-    { "id": "Unceasing Top", "baseTier": "B", "synergies": ["draw", "energy"], "antiSynergies": [], "notes": "Rare. Draw when hand is empty, great with 0-cost cards" },
-    { "id": "Unsettling Lamp", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Passive benefit" },
-    { "id": "Vexing Puzzlebox", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Mysterious benefit" },
-    { "id": "White Beast Statue", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Potions drop in non-boss combats" },
-    { "id": "White Star", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Rare. Celestial benefit" },
-
-    { "id": "Belt Buckle", "baseTier": "C", "synergies": ["block"], "antiSynergies": [], "notes": "Shop. Minor block benefit" },
-    { "id": "Bread", "baseTier": "C", "synergies": ["healing"], "antiSynergies": [], "notes": "Shop. Small heal, weak for a shop purchase" },
-    { "id": "Burning Sticks", "baseTier": "B", "synergies": ["damage", "exhaust"], "antiSynergies": [], "notes": "Shop. Bonus damage on exhaust" },
-    { "id": "Cauldron", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Shop. Gain potions on pickup" },
-    { "id": "Chemical X", "baseTier": "S", "synergies": ["energy", "scaling"], "antiSynergies": [], "notes": "Shop. +2 to X-cost cards, game-changing with X attacks" },
-    { "id": "Dingy Rug", "baseTier": "C", "synergies": ["block"], "antiSynergies": [], "notes": "Shop. Minor block, poor value" },
-    { "id": "Dollys Mirror", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Shop. Duplicate a card on pickup, value depends on deck" },
-    { "id": "Dragon Fruit", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Shop. +25 max HP" },
-    { "id": "Ghost Seed", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Shop. Niche benefit" },
-    { "id": "Gnarled Hammer", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Shop. Damage boost" },
-    { "id": "Kifuda", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Shop. Attack enhancement" },
-    { "id": "Lava Lamp", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Shop. Passive ambient benefit" },
-    { "id": "Lees Waffle", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Shop. +7 max HP and full heal on pickup" },
-    { "id": "Membership Card", "baseTier": "B", "synergies": ["gold"], "antiSynergies": [], "notes": "Shop. 50% off all shop purchases, great if gotten early" },
-    { "id": "Miniature Tent", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Shop. Rest/heal benefit" },
-    { "id": "Mystic Lighter", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Shop. Minor utility" },
-    { "id": "Orrery", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Shop. Choose 5 cards to add to deck on pickup" },
-    { "id": "Punch Dagger", "baseTier": "B", "synergies": ["damage"], "antiSynergies": [], "notes": "Shop. Attack enhancement" },
-    { "id": "Ringing Triangle", "baseTier": "B", "synergies": ["draw", "energy"], "antiSynergies": [], "notes": "Shop. Draw/energy benefit" },
-    { "id": "Royal Stamp", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Shop. Minor benefit" },
-    { "id": "Screaming Flagon", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Shop. Combat start effect" },
-    { "id": "Sling Of Courage", "baseTier": "B", "synergies": ["strength", "damage"], "antiSynergies": [], "notes": "Shop. +2 strength in elite combats" },
-    { "id": "The Abacus", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Shop. Gain block on shuffle, scales with thin decks" },
-    { "id": "Toolbox", "baseTier": "B", "synergies": [], "antiSynergies": [], "notes": "Shop. Utility support" },
-    { "id": "Wing Charm", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Shop. Evasion benefit, niche" },
-
-    { "id": "Looming Fruit", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Ancient. Boss relic, max HP increase" },
-    { "id": "Very Hot Cocoa", "baseTier": "B", "synergies": ["healing"], "antiSynergies": [], "notes": "Ancient. Boss relic, rest site healing boost" },
-
-    { "id": "Fresnel Lens", "baseTier": "C", "synergies": [], "antiSynergies": [], "notes": "Event. Obtained from specific event only" }
+    {
+      "id": "Amethyst Aubergine",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Minor passive benefit"
+    },
+    {
+      "id": "Anchor",
+      "baseTier": "A",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +10 block first turn"
+    },
+    {
+      "id": "Bag Of Preparation",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Draw 2 extra cards turn 1"
+    },
+    {
+      "id": "Blood Vial",
+      "baseTier": "D",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Heal 2 at start of combat"
+    },
+    {
+      "id": "Book Of Five Rings",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Draw benefit from stance or skill use"
+    },
+    {
+      "id": "Bronze Scales",
+      "baseTier": "B",
+      "synergies": [
+        "damage",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. 3 thorns, strong in multi-hit fights"
+    },
+    {
+      "id": "Centennial Puzzle",
+      "baseTier": "A",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Draw 3 first time you lose HP each combat"
+    },
+    {
+      "id": "Festive Popper",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Random minor effect"
+    },
+    {
+      "id": "Gorget",
+      "baseTier": "D",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Minor block benefit"
+    },
+    {
+      "id": "Happy Flower",
+      "baseTier": "B",
+      "synergies": [
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +1 energy every 3 turns, reliable ramp"
+    },
+    {
+      "id": "Juzu Bracelet",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. No monster encounters in ? rooms"
+    },
+    {
+      "id": "Lantern",
+      "baseTier": "A",
+      "synergies": [
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +1 energy turn 1, strong opener"
+    },
+    {
+      "id": "Meal Ticket",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Heal 15 at shops"
+    },
+    {
+      "id": "Oddly Smooth Stone",
+      "baseTier": "B",
+      "synergies": [
+        "dexterity",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +1 dexterity permanently"
+    },
+    {
+      "id": "Pendulum",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Alternating energy/block benefit"
+    },
+    {
+      "id": "Permafrost",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Frost-related, niche"
+    },
+    {
+      "id": "Potion Belt",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. +2 potion slots"
+    },
+    {
+      "id": "Regal Pillow",
+      "baseTier": "D",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +15 HP at rest sites"
+    },
+    {
+      "id": "Strawberry",
+      "baseTier": "C",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +7 max HP"
+    },
+    {
+      "id": "Strike Dummy",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. Benefits from Strikes, weak in refined decks"
+    },
+    {
+      "id": "Tiny Mailbox",
+      "baseTier": "D",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Minor passive benefit"
+    },
+    {
+      "id": "Vajra",
+      "baseTier": "C",
+      "synergies": [
+        "strength",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +1 strength permanently"
+    },
+    {
+      "id": "Venerable Tea Set",
+      "baseTier": "C",
+      "synergies": [
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Common. +2 energy first combat after rest sites"
+    },
+    {
+      "id": "War Paint",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Upgrade 2 random skills on pickup"
+    },
+    {
+      "id": "Whetstone",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Common. Upgrade 2 random attacks on pickup"
+    },
+    {
+      "id": "Akabeko",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. +8 damage on first attack each combat"
+    },
+    {
+      "id": "Bag Of Marbles",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Apply vulnerable to all enemies turn 1"
+    },
+    {
+      "id": "Bellows",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Defensive buff at combat start"
+    },
+    {
+      "id": "Bowler Hat",
+      "baseTier": "B",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Minor block benefit"
+    },
+    {
+      "id": "Candelabra",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Draw benefit"
+    },
+    {
+      "id": "Eternal Feather",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Heal based on deck size, minimal impact"
+    },
+    {
+      "id": "Gremlin Horn",
+      "baseTier": "B",
+      "synergies": [
+        "energy",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Gain energy + draw on enemy kill"
+    },
+    {
+      "id": "Horn Cleat",
+      "baseTier": "A",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Block bonus on second turn"
+    },
+    {
+      "id": "Joss Paper",
+      "baseTier": "B",
+      "synergies": [
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Benefit on exhaust, niche"
+    },
+    {
+      "id": "Kusarigama",
+      "baseTier": "C",
+      "synergies": [
+        "damage",
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Chain weapon, draw and damage benefit"
+    },
+    {
+      "id": "Letter Opener",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. AoE damage per skill played"
+    },
+    {
+      "id": "Lucky Fysh",
+      "baseTier": "D",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Minor fortune benefit"
+    },
+    {
+      "id": "Mercury Hourglass",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Passive AoE damage each turn"
+    },
+    {
+      "id": "Miniature Cannon",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Passive damage effect"
+    },
+    {
+      "id": "Nunchaku",
+      "baseTier": "B",
+      "synergies": [
+        "energy",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. +1 energy every 10 attacks played"
+    },
+    {
+      "id": "Orichalcum",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. 6 block if no block gained this turn"
+    },
+    {
+      "id": "Ornamental Fan",
+      "baseTier": "A",
+      "synergies": [
+        "block",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Gain block every 3 attacks played"
+    },
+    {
+      "id": "Pantograph",
+      "baseTier": "A",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Heal at start of boss fights"
+    },
+    {
+      "id": "Parrying Shield",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Reactive block benefit"
+    },
+    {
+      "id": "Pear",
+      "baseTier": "C",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. +10 max HP"
+    },
+    {
+      "id": "Pen Nib",
+      "baseTier": "C",
+      "synergies": [
+        "damage",
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Double damage on every 10th attack"
+    },
+    {
+      "id": "Petrified Toad",
+      "baseTier": "D",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Random debuff on potion use, unreliable"
+    },
+    {
+      "id": "Planisphere",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Star map, navigation/pathing benefit"
+    },
+    {
+      "id": "Red Mask",
+      "baseTier": "B",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Apply weak to all enemies turn 1"
+    },
+    {
+      "id": "Reptile Trinket",
+      "baseTier": "D",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Minor passive benefit"
+    },
+    {
+      "id": "Ripple Basin",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. AoE damage trigger effect"
+    },
+    {
+      "id": "Sparkling Rouge",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Minor benefit"
+    },
+    {
+      "id": "Stone Cracker",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Damage + vulnerability effect"
+    },
+    {
+      "id": "Tuning Fork",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Uncommon. Resonance-based benefit"
+    },
+    {
+      "id": "Vambrace",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Uncommon. Block benefit from arm armor"
+    },
+    {
+      "id": "Art Of War",
+      "baseTier": "A",
+      "synergies": [
+        "energy"
+      ],
+      "antiSynergies": [
+        "damage"
+      ],
+      "notes": "Rare. +1 energy next turn if no attacks played, great in skill-heavy decks"
+    },
+    {
+      "id": "Beating Remnant",
+      "baseTier": "C",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Passive healing effect"
+    },
+    {
+      "id": "Captains Wheel",
+      "baseTier": "B",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Block at turn start, solid defense"
+    },
+    {
+      "id": "Chandelier",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Passive benefit"
+    },
+    {
+      "id": "Cloak Clasp",
+      "baseTier": "S",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Gain block per card in hand at end of turn"
+    },
+    {
+      "id": "Frozen Egg",
+      "baseTier": "C",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Auto-upgrade power cards on pickup"
+    },
+    {
+      "id": "Gambling Chip",
+      "baseTier": "A",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Mulligan opening hand, dramatically improves consistency"
+    },
+    {
+      "id": "Game Piece",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Minor passive benefit"
+    },
+    {
+      "id": "Girya",
+      "baseTier": "C",
+      "synergies": [
+        "strength",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Gain strength at rest sites, up to 3 uses"
+    },
+    {
+      "id": "Ice Cream",
+      "baseTier": "A",
+      "synergies": [
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Unspent energy carries between turns, universally powerful"
+    },
+    {
+      "id": "Intimidating Helmet",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Apply weak/debuff to enemies"
+    },
+    {
+      "id": "Kunai",
+      "baseTier": "B",
+      "synergies": [
+        "dexterity",
+        "block",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. +1 dexterity every 3 attacks played"
+    },
+    {
+      "id": "Lasting Candy",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Heal over time effect"
+    },
+    {
+      "id": "Lizard Tail",
+      "baseTier": "A",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Revive at 50% HP once per run, insurance relic"
+    },
+    {
+      "id": "Mango",
+      "baseTier": "C",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Max HP increase"
+    },
+    {
+      "id": "Meat On The Bone",
+      "baseTier": "A",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Heal if HP <= 50% at end of combat, strong sustain"
+    },
+    {
+      "id": "Molten Egg",
+      "baseTier": "C",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Auto-upgrade attack cards on pickup"
+    },
+    {
+      "id": "Mummified Hand",
+      "baseTier": "A",
+      "synergies": [
+        "energy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Play a power = reduce cost of random card in hand, insane in power decks"
+    },
+    {
+      "id": "Old Coin",
+      "baseTier": "B",
+      "synergies": [
+        "gold"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. +300 gold, enables shop purchases and removal"
+    },
+    {
+      "id": "Pocketwatch",
+      "baseTier": "B",
+      "synergies": [
+        "draw"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Draw +3 cards if played <= 3 cards last turn"
+    },
+    {
+      "id": "Prayer Wheel",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Extra card choice in card rewards, improves deck quality"
+    },
+    {
+      "id": "Rainbow Ring",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Passive benefit"
+    },
+    {
+      "id": "Razor Tooth",
+      "baseTier": "D",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Damage on HP loss, too niche"
+    },
+    {
+      "id": "Shovel",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Dig at rest sites for relic rewards"
+    },
+    {
+      "id": "Shuriken",
+      "baseTier": "C",
+      "synergies": [
+        "strength",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. +1 strength every 3 attacks played"
+    },
+    {
+      "id": "Stone Calendar",
+      "baseTier": "D",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. AoE damage after 7 turns, too slow for most fights"
+    },
+    {
+      "id": "Sturdy Clamp",
+      "baseTier": "A",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Block benefit"
+    },
+    {
+      "id": "The Courier",
+      "baseTier": "D",
+      "synergies": [
+        "gold"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Shops get refresh + extra card, improves shopping"
+    },
+    {
+      "id": "Toxic Egg",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Auto-upgrade skill cards on pickup"
+    },
+    {
+      "id": "Tungsten Rod",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Reduce ALL HP loss by 1, universally powerful defensive relic"
+    },
+    {
+      "id": "Unceasing Top",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Rare. Draw when hand is empty, great with 0-cost cards"
+    },
+    {
+      "id": "Unsettling Lamp",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Passive benefit"
+    },
+    {
+      "id": "Vexing Puzzlebox",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Mysterious benefit"
+    },
+    {
+      "id": "White Beast Statue",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Potions drop in non-boss combats"
+    },
+    {
+      "id": "White Star",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Rare. Celestial benefit"
+    },
+    {
+      "id": "Belt Buckle",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Minor block benefit"
+    },
+    {
+      "id": "Bread",
+      "baseTier": "D",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Small heal, weak for a shop purchase"
+    },
+    {
+      "id": "Burning Sticks",
+      "baseTier": "A",
+      "synergies": [
+        "damage",
+        "exhaust"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Bonus damage on exhaust"
+    },
+    {
+      "id": "Cauldron",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Gain potions on pickup"
+    },
+    {
+      "id": "Chemical X",
+      "baseTier": "A",
+      "synergies": [
+        "energy",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. +2 to X-cost cards, game-changing with X attacks"
+    },
+    {
+      "id": "Dingy Rug",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Minor block, poor value"
+    },
+    {
+      "id": "Dollys Mirror",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Duplicate a card on pickup, value depends on deck"
+    },
+    {
+      "id": "Dragon Fruit",
+      "baseTier": "C",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. +25 max HP"
+    },
+    {
+      "id": "Ghost Seed",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Niche benefit"
+    },
+    {
+      "id": "Gnarled Hammer",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Damage boost"
+    },
+    {
+      "id": "Kifuda",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Attack enhancement"
+    },
+    {
+      "id": "Lava Lamp",
+      "baseTier": "D",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Passive ambient benefit"
+    },
+    {
+      "id": "Lees Waffle",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. +7 max HP and full heal on pickup"
+    },
+    {
+      "id": "Membership Card",
+      "baseTier": "A",
+      "synergies": [
+        "gold"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. 50% off all shop purchases, great if gotten early"
+    },
+    {
+      "id": "Miniature Tent",
+      "baseTier": "A",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Rest/heal benefit"
+    },
+    {
+      "id": "Mystic Lighter",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Minor utility"
+    },
+    {
+      "id": "Orrery",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Choose 5 cards to add to deck on pickup"
+    },
+    {
+      "id": "Punch Dagger",
+      "baseTier": "A",
+      "synergies": [
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Attack enhancement"
+    },
+    {
+      "id": "Ringing Triangle",
+      "baseTier": "C",
+      "synergies": [
+        "draw",
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Draw/energy benefit"
+    },
+    {
+      "id": "Royal Stamp",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Minor benefit"
+    },
+    {
+      "id": "Screaming Flagon",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Combat start effect"
+    },
+    {
+      "id": "Sling Of Courage",
+      "baseTier": "B",
+      "synergies": [
+        "strength",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. +2 strength in elite combats"
+    },
+    {
+      "id": "The Abacus",
+      "baseTier": "C",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Shop. Gain block on shuffle, scales with thin decks"
+    },
+    {
+      "id": "Toolbox",
+      "baseTier": "A",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Utility support"
+    },
+    {
+      "id": "Wing Charm",
+      "baseTier": "B",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Shop. Evasion benefit, niche"
+    },
+    {
+      "id": "Looming Fruit",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Ancient. Boss relic, max HP increase"
+    },
+    {
+      "id": "Very Hot Cocoa",
+      "baseTier": "B",
+      "synergies": [
+        "healing"
+      ],
+      "antiSynergies": [],
+      "notes": "Ancient. Boss relic, rest site healing boost"
+    },
+    {
+      "id": "Fresnel Lens",
+      "baseTier": "C",
+      "synergies": [],
+      "antiSynergies": [],
+      "notes": "Event. Obtained from specific event only"
+    }
   ]
 }

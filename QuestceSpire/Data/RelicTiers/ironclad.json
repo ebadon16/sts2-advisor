@@ -1,13 +1,80 @@
 {
   "category": "ironclad",
   "relics": [
-    { "id": "Brimstone", "baseTier": "B", "synergies": ["strength"], "antiSynergies": [], "notes": "Fire/strength themed, shop relic" },
-    { "id": "Burning Blood", "baseTier": "B", "synergies": ["heal"], "antiSynergies": [], "notes": "Ironclad starter. Heal after combat" },
-    { "id": "Charons Ashes", "baseTier": "A", "synergies": ["exhaust", "damage"], "antiSynergies": [], "notes": "Deal damage on exhaust" },
-    { "id": "Demon Tongue", "baseTier": "B", "synergies": ["strength"], "antiSynergies": [], "notes": "Strength themed" },
-    { "id": "Paper Phrog", "baseTier": "A", "synergies": ["vulnerable"], "antiSynergies": [], "notes": "Vulnerable = 75% more damage (up from 50%)" },
-    { "id": "Red Skull", "baseTier": "B", "synergies": ["self_damage", "strength"], "antiSynergies": [], "notes": "+3 strength below 50% HP" },
-    { "id": "Ruined Helmet", "baseTier": "B", "synergies": ["block"], "antiSynergies": [], "notes": "Block themed" },
-    { "id": "Self Forming Clay", "baseTier": "A", "synergies": ["self_damage", "block"], "antiSynergies": [], "notes": "Gain block when taking damage" }
+    {
+      "id": "Brimstone",
+      "baseTier": "C",
+      "synergies": [
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "Fire/strength themed, shop relic"
+    },
+    {
+      "id": "Burning Blood",
+      "baseTier": "B",
+      "synergies": [
+        "heal"
+      ],
+      "antiSynergies": [],
+      "notes": "Ironclad starter. Heal after combat"
+    },
+    {
+      "id": "Charons Ashes",
+      "baseTier": "A",
+      "synergies": [
+        "exhaust",
+        "damage"
+      ],
+      "antiSynergies": [],
+      "notes": "Deal damage on exhaust"
+    },
+    {
+      "id": "Demon Tongue",
+      "baseTier": "A",
+      "synergies": [
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "Strength themed"
+    },
+    {
+      "id": "Paper Phrog",
+      "baseTier": "A",
+      "synergies": [
+        "vulnerable"
+      ],
+      "antiSynergies": [],
+      "notes": "Vulnerable = 75% more damage (up from 50%)"
+    },
+    {
+      "id": "Red Skull",
+      "baseTier": "B",
+      "synergies": [
+        "self_damage",
+        "strength"
+      ],
+      "antiSynergies": [],
+      "notes": "+3 strength below 50% HP"
+    },
+    {
+      "id": "Ruined Helmet",
+      "baseTier": "A",
+      "synergies": [
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Block themed"
+    },
+    {
+      "id": "Self Forming Clay",
+      "baseTier": "A",
+      "synergies": [
+        "self_damage",
+        "block"
+      ],
+      "antiSynergies": [],
+      "notes": "Gain block when taking damage"
+    }
   ]
 }

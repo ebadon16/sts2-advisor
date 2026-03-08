@@ -30,7 +30,7 @@
     },
     {
       "id": "Aggression",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "strength",
         "scaling"
@@ -71,7 +71,7 @@
     },
     {
       "id": "Barricade",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "block"
       ],
@@ -99,7 +99,7 @@
     },
     {
       "id": "Bloodletting",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "self_damage"
       ],
@@ -118,7 +118,7 @@
     },
     {
       "id": "Body Slam",
-      "baseTier": "C",
+      "baseTier": "A",
       "synergies": [
         "block"
       ],
@@ -127,7 +127,7 @@
     },
     {
       "id": "Brand",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "strength"
@@ -167,7 +167,7 @@
     },
     {
       "id": "Burning Pact",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "exhaust",
         "draw"
@@ -238,7 +238,7 @@
     },
     {
       "id": "Cruelty",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "strength",
         "damage"
@@ -248,7 +248,7 @@
     },
     {
       "id": "Dark Embrace",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "exhaust",
         "draw"
@@ -288,7 +288,7 @@
     },
     {
       "id": "Dominate",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "exhaust"
@@ -408,7 +408,7 @@
     },
     {
       "id": "Headbutt",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "damage"
       ],
@@ -498,7 +498,7 @@
     },
     {
       "id": "Juggernaut",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "block",
         "damage"
@@ -590,7 +590,7 @@
     },
     {
       "id": "Pommel Strike",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "draw",
         "strength",
@@ -611,7 +611,7 @@
     },
     {
       "id": "Pyre",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "exhaust",
         "damage"
@@ -641,7 +641,7 @@
     },
     {
       "id": "Rupture",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "self_damage",
         "strength",
@@ -652,7 +652,7 @@
     },
     {
       "id": "Second Wind",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "exhaust",
         "block"
@@ -671,7 +671,7 @@
     },
     {
       "id": "Shrug It Off",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "block",
         "draw"
@@ -700,7 +700,7 @@
     },
     {
       "id": "Stoke",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "strength",
         "scaling",

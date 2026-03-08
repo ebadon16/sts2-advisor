@@ -90,7 +90,7 @@
     },
     {
       "id": "Big Bang",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "exhaust",
         "cosmic",
@@ -193,7 +193,7 @@
     },
     {
       "id": "Comet",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "cosmic",
         "damage",
@@ -507,7 +507,7 @@
     },
     {
       "id": "Lunar Blast",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "multi_hit",
@@ -539,7 +539,7 @@
     },
     {
       "id": "Meteor Shower",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "aoe",
         "cosmic",

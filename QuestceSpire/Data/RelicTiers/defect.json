@@ -1,13 +1,83 @@
 {
   "category": "defect",
   "relics": [
-    { "id": "Cracked Core", "baseTier": "B", "synergies": ["lightning", "orb"], "antiSynergies": [], "notes": "Defect starter. Channel 1 lightning at combat start" },
-    { "id": "Data Disk", "baseTier": "A", "synergies": ["focus", "orb"], "antiSynergies": [], "notes": "+1 focus" },
-    { "id": "Emotion Chip", "baseTier": "A", "synergies": ["orb", "evoke"], "antiSynergies": [], "notes": "Trigger orb passives on HP loss" },
-    { "id": "Gold Plated Cables", "baseTier": "B", "synergies": ["orb"], "antiSynergies": [], "notes": "Rightmost orb triggers at end of turn" },
-    { "id": "Metronome", "baseTier": "B", "synergies": ["orb", "evoke"], "antiSynergies": [], "notes": "Orb/evoke themed" },
-    { "id": "Power Cell", "baseTier": "B", "synergies": ["orb", "energy"], "antiSynergies": [], "notes": "Energy/orb support" },
-    { "id": "Runic Capacitor", "baseTier": "A", "synergies": ["orb"], "antiSynergies": [], "notes": "+3 orb slots" },
-    { "id": "Symbiotic Virus", "baseTier": "B", "synergies": ["dark", "orb"], "antiSynergies": [], "notes": "Channel 1 dark at combat start" }
+    {
+      "id": "Cracked Core",
+      "baseTier": "B",
+      "synergies": [
+        "lightning",
+        "orb"
+      ],
+      "antiSynergies": [],
+      "notes": "Defect starter. Channel 1 lightning at combat start"
+    },
+    {
+      "id": "Data Disk",
+      "baseTier": "S",
+      "synergies": [
+        "focus",
+        "orb"
+      ],
+      "antiSynergies": [],
+      "notes": "+1 focus"
+    },
+    {
+      "id": "Emotion Chip",
+      "baseTier": "C",
+      "synergies": [
+        "orb",
+        "evoke"
+      ],
+      "antiSynergies": [],
+      "notes": "Trigger orb passives on HP loss"
+    },
+    {
+      "id": "Gold Plated Cables",
+      "baseTier": "B",
+      "synergies": [
+        "orb"
+      ],
+      "antiSynergies": [],
+      "notes": "Rightmost orb triggers at end of turn"
+    },
+    {
+      "id": "Metronome",
+      "baseTier": "A",
+      "synergies": [
+        "orb",
+        "evoke"
+      ],
+      "antiSynergies": [],
+      "notes": "Orb/evoke themed"
+    },
+    {
+      "id": "Power Cell",
+      "baseTier": "C",
+      "synergies": [
+        "orb",
+        "energy"
+      ],
+      "antiSynergies": [],
+      "notes": "Energy/orb support"
+    },
+    {
+      "id": "Runic Capacitor",
+      "baseTier": "S",
+      "synergies": [
+        "orb"
+      ],
+      "antiSynergies": [],
+      "notes": "+3 orb slots"
+    },
+    {
+      "id": "Symbiotic Virus",
+      "baseTier": "A",
+      "synergies": [
+        "dark",
+        "orb"
+      ],
+      "antiSynergies": [],
+      "notes": "Channel 1 dark at combat start"
+    }
   ]
 }

@@ -43,7 +43,7 @@
     },
     {
       "id": "Acrobatics",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "draw",
         "discard",
@@ -64,7 +64,7 @@
     },
     {
       "id": "Backflip",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "block",
         "draw"
@@ -170,7 +170,7 @@
     },
     {
       "id": "Piercing Wail",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "weak",
         "exhaust"
@@ -251,7 +251,7 @@
     },
     {
       "id": "Accuracy",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -301,7 +301,7 @@
     },
     {
       "id": "Calculated Gamble",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "discard",
         "discard_synergy",
@@ -487,7 +487,7 @@
     },
     {
       "id": "Phantom Blades",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -526,7 +526,7 @@
     },
     {
       "id": "Predator",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "draw"
@@ -615,7 +615,7 @@
     },
     {
       "id": "Accelerant",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "poison",
         "poison_scaling"
@@ -679,7 +679,7 @@
     },
     {
       "id": "Burst",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "poison",
         "block"
@@ -689,7 +689,7 @@
     },
     {
       "id": "Corrosive Wave",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "poison",
         "weak"
@@ -709,7 +709,7 @@
     },
     {
       "id": "Envenom",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "poison",
         "shiv",
@@ -764,7 +764,7 @@
     },
     {
       "id": "Master Planner",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "retain",
         "draw"
@@ -793,7 +793,7 @@
     },
     {
       "id": "Nightmare",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "poison",
         "scaling"
@@ -875,7 +875,7 @@
     },
     {
       "id": "Tracking",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "draw"
       ],
@@ -893,7 +893,7 @@
     },
     {
       "id": "Suppress",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "damage",
         "zero_cost"

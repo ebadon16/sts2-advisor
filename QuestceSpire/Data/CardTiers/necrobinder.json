@@ -142,7 +142,7 @@
     },
     {
       "id": "Countdown",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "doom",
         "scaling"
@@ -485,7 +485,7 @@
     },
     {
       "id": "Misery",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "debuff",
@@ -518,7 +518,7 @@
     },
     {
       "id": "Neurosurge",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "scaling",
         "draw",
@@ -529,7 +529,7 @@
     },
     {
       "id": "No Escape",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "doom",
         "damage"
@@ -699,7 +699,7 @@
     },
     {
       "id": "Scourge",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "debuff",
         "aoe"
