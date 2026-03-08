@@ -794,31 +794,38 @@ public class OverlayManager
 		if (ev is InputEventKey { Pressed: not false, Echo: false } inputEventKey)
 		{
 			bool ctrl = inputEventKey.CtrlPressed;
+			bool alt = inputEventKey.AltPressed;
+			bool shift = inputEventKey.ShiftPressed;
 			Key key = inputEventKey.Keycode;
-			// F-keys (standard keyboards) or Ctrl+7-0/- (mini/Fn keyboards)
-			if ((key == Key.F7 && inputEventKey.ShiftPressed) || (ctrl && key == Key.Key7 && inputEventKey.ShiftPressed))
+			// F-keys, Ctrl+number, or Alt+number — multiple combos for keyboard compatibility
+			if ((key == Key.F7 && shift) || (ctrl && key == Key.Key7 && shift) || (alt && key == Key.Key7 && shift))
 			{
 				CycleOpacity();
 			}
-			else if (key == Key.F7 || (ctrl && key == Key.Key7))
+			else if (key == Key.F7 || (ctrl && key == Key.Key7) || (alt && key == Key.Key7))
 			{
 				ToggleVisible();
 			}
-			else if (key == Key.F8 || (ctrl && key == Key.Key8))
+			else if (key == Key.F8 || (ctrl && key == Key.Key8) || (alt && key == Key.Key8))
 			{
 				ToggleTooltips();
 			}
-			else if (key == Key.F9 || (ctrl && key == Key.Key9))
+			else if (key == Key.F9 || (ctrl && key == Key.Key9) || (alt && key == Key.Key9))
 			{
 				ToggleInGameBadges();
 			}
-			else if (key == Key.F10 || (ctrl && key == Key.Key0))
+			else if (key == Key.F10 || (ctrl && key == Key.Key0) || (alt && key == Key.Key0))
 			{
 				ToggleHistory();
 			}
-			else if (key == Key.F11 || (ctrl && key == Key.Minus))
+			else if (key == Key.F11 || (ctrl && key == Key.Minus) || (alt && key == Key.Minus))
 			{
 				ToggleCollapsed();
+			}
+			// Debug: log unrecognized key presses with modifiers to help diagnose
+			else if ((ctrl || alt) && !shift)
+			{
+				Plugin.Log($"Key press: {key} ctrl={ctrl} alt={alt} shift={shift}");
 			}
 		}
 	}
@@ -1070,7 +1077,7 @@ public class OverlayManager
 			hkSep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
 			_content.AddChild(hkSep, forceReadableName: false, Node.InternalMode.Disabled);
 			Label hkLabel = new Label();
-			hkLabel.Text = "F7/Ctrl+7 Toggle  |  F8/Ctrl+8 Tooltips  |  F9/Ctrl+9 Badges\nF10/Ctrl+0 History  |  F11/Ctrl+- Minimize";
+			hkLabel.Text = "Alt+7 Toggle  |  Alt+8 Tooltips  |  Alt+9 Badges\nAlt+0 History  |  Alt+- Minimize  (or F7-F11)";
 			hkLabel.HorizontalAlignment = HorizontalAlignment.Center;
 			ApplyFont(hkLabel, _fontBody);
 			hkLabel.AddThemeColorOverride("font_color", new Color(ClrSub, 0.7f));
