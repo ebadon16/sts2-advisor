@@ -45,7 +45,8 @@
       "baseTier": "B",
       "synergies": [
         "orb",
-        "damage"
+        "damage",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Damage scales with orb count"
@@ -66,7 +67,8 @@
       "synergies": [
         "lightning",
         "channel",
-        "orb"
+        "orb",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "Damage + channel lightning"
@@ -76,7 +78,8 @@
       "baseTier": "A",
       "synergies": [
         "orb",
-        "multi_hit"
+        "multi_hit",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "Hit per channeled orb, 3 calculated hits"
@@ -125,7 +128,8 @@
       "id": "Buffer",
       "baseTier": "S",
       "synergies": [
-        "scaling"
+        "scaling",
+        "block"
       ],
       "antiSynergies": [],
       "notes": "Negate next damage instance — strong defensive power"
@@ -135,7 +139,8 @@
       "baseTier": "B",
       "synergies": [
         "block",
-        "scaling"
+        "scaling",
+        "orb"
       ],
       "antiSynergies": [],
       "notes": "Power that provides ongoing block/strength"
@@ -145,7 +150,8 @@
       "baseTier": "A",
       "synergies": [
         "orb",
-        "channel"
+        "channel",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "+2/+3 orb slots — enables orb strategies"
@@ -240,7 +246,8 @@
       "baseTier": "B",
       "synergies": [
         "frost",
-        "orb"
+        "orb",
+        "focus"
       ],
       "antiSynergies": [],
       "notes": "Frost support power"
@@ -261,7 +268,8 @@
       "id": "Creative Ai",
       "baseTier": "A",
       "synergies": [
-        "scaling"
+        "scaling",
+        "draw"
       ],
       "antiSynergies": [],
       "notes": "Generate random power each turn — value engine for long fights"
@@ -272,7 +280,8 @@
       "synergies": [
         "dark",
         "channel",
-        "orb"
+        "orb",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "Channel dark orb"
@@ -292,7 +301,8 @@
       "id": "Double Energy",
       "baseTier": "A",
       "synergies": [
-        "exhaust"
+        "exhaust",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Double current energy, exhausts. Strong burst turns"
@@ -310,7 +320,8 @@
       "id": "Energy Surge",
       "baseTier": "B",
       "synergies": [
-        "exhaust"
+        "exhaust",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Gain energy, exhaust. Burst enabler"
@@ -340,7 +351,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "multi_hit"
+        "multi_hit",
+        "aoe"
       ],
       "antiSynergies": [],
       "notes": "3 calculated random hits, decent AoE"
@@ -434,7 +446,8 @@
       "synergies": [
         "frost",
         "channel",
-        "orb"
+        "orb",
+        "aoe"
       ],
       "antiSynergies": [],
       "notes": "Channel frost whenever you play attack — ongoing value"
@@ -444,7 +457,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "multi_hit"
       ],
       "antiSynergies": [],
       "notes": "0-cost rare attack, solid damage"
@@ -869,7 +883,8 @@
       "id": "Turbo",
       "baseTier": "B",
       "synergies": [
-        "zero_cost"
+        "zero_cost",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "0-cost: gain 2 energy, add Void to discard"

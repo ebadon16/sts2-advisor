@@ -54,7 +54,7 @@
     },
     {
       "id": "Anticipate",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "block",
         "zero_cost"
@@ -242,7 +242,7 @@
     },
     {
       "id": "Untouchable",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "block"
       ],
@@ -255,7 +255,8 @@
       "synergies": [
         "shiv",
         "shiv_synergy",
-        "scaling"
+        "scaling",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "Power: shiv damage boost, needs shiv deck"
@@ -480,7 +481,8 @@
       "baseTier": "B",
       "synergies": [
         "poison",
-        "poison_scaling"
+        "poison_scaling",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Power: poison synergy, burst poison scaling"
@@ -596,19 +598,21 @@
     },
     {
       "id": "Well-Laid Plans",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "retain",
-        "draw"
+        "draw",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Retain a card each turn, top power"
     },
     {
       "id": "Abrasive",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
-        "scaling"
+        "scaling",
+        "shiv"
       ],
       "antiSynergies": [],
       "notes": "Power: 3-cost with Sly, abrasive scaling"
@@ -618,7 +622,8 @@
       "baseTier": "A",
       "synergies": [
         "poison",
-        "poison_scaling"
+        "poison_scaling",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Power: accelerate poison, burst scaling"
@@ -662,7 +667,8 @@
       "baseTier": "B",
       "synergies": [
         "shiv",
-        "shiv_synergy"
+        "shiv_synergy",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Shiv-themed ink blade"
@@ -672,7 +678,8 @@
       "baseTier": "A",
       "synergies": [
         "zero_cost",
-        "draw"
+        "draw",
+        "shiv"
       ],
       "antiSynergies": [],
       "notes": "3-cost, hand costs 0, can't draw more"
@@ -682,7 +689,8 @@
       "baseTier": "S",
       "synergies": [
         "poison",
-        "block"
+        "block",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Double next skill, incredible with Catalyst or block"
@@ -714,7 +722,8 @@
         "poison",
         "shiv",
         "multi_hit",
-        "poison_scaling"
+        "poison_scaling",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Power: poison on unblocked damage, great with shivs"
@@ -886,7 +895,9 @@
       "id": "Wraith Form",
       "baseTier": "S",
       "synergies": [
-        "scaling"
+        "scaling",
+        "dexterity",
+        "block"
       ],
       "antiSynergies": [],
       "notes": "Ancient. Intangible, best defensive card in the game"

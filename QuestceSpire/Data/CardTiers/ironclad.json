@@ -40,7 +40,7 @@
     },
     {
       "id": "Anger",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "strength",
         "damage"
@@ -52,7 +52,7 @@
     },
     {
       "id": "Armaments",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "block"
       ],
@@ -73,7 +73,8 @@
       "id": "Barricade",
       "baseTier": "S",
       "synergies": [
-        "block"
+        "block",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "3-cost power, block no longer decays. Build-defining, enables Body Slam"
@@ -101,7 +102,8 @@
       "id": "Bloodletting",
       "baseTier": "A",
       "synergies": [
-        "self_damage"
+        "self_damage",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "0-cost, lose HP gain energy. Enables Rupture and big turns"
@@ -120,7 +122,8 @@
       "id": "Body Slam",
       "baseTier": "A",
       "synergies": [
-        "block"
+        "block",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "1-cost, damage equal to block. S-tier with Barricade, mediocre otherwise"
@@ -220,7 +223,8 @@
       "id": "Corruption",
       "baseTier": "S",
       "synergies": [
-        "exhaust"
+        "exhaust",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Ancient 3-cost power. Skills cost 0 and exhaust. Game-warping with Feel No Pain and Dark Embrace"
@@ -340,7 +344,8 @@
       "baseTier": "S",
       "synergies": [
         "exhaust",
-        "block"
+        "block",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "1-cost power, gain 3 block whenever a card is exhausted. Best exhaust payoff"
@@ -868,6 +873,15 @@
       ],
       "antiSynergies": [],
       "notes": "X-cost AoE. Scales with strength and energy generation"
+    },
+    {
+      "id": "Expect Afight",
+      "baseTier": "B",
+      "synergies": [
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": ""
     }
   ]
 }

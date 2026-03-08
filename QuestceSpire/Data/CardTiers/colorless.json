@@ -5,7 +5,8 @@
       "id": "Alchemize",
       "baseTier": "B",
       "synergies": [
-        "exhaust"
+        "exhaust",
+        "energy"
       ],
       "antiSynergies": [],
       "notes": "1-cost generate a potion, exhaust. Consistent potion access is solid value"
@@ -24,7 +25,8 @@
       "id": "Automation",
       "baseTier": "A",
       "synergies": [
-        "scaling"
+        "scaling",
+        "draw"
       ],
       "antiSynergies": [],
       "notes": "1-cost power. Automates card plays for passive value"
@@ -62,14 +64,15 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "multi_hit"
       ],
       "antiSynergies": [],
       "notes": "0-cost rare attack. Free damage with utility, solid pick"
     },
     {
       "id": "Calamity",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "scaling"
       ],
@@ -120,7 +123,8 @@
       "synergies": [
         "aoe",
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "exhaust"
       ],
       "antiSynergies": [],
       "notes": "0-cost innate AoE attack, exhaust. Guaranteed turn-1 AoE clear, excellent in hallways"
@@ -218,7 +222,8 @@
       "id": "Hand Of Greed",
       "baseTier": "S",
       "synergies": [
-        "damage"
+        "damage",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "2-cost attack, gain 20 gold on kill. Gold reward is nice early but 2-cost is steep"
@@ -363,7 +368,8 @@
       "synergies": [
         "scaling",
         "zero_cost",
-        "multi_hit"
+        "multi_hit",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "0-cost power, 10 AoE damage every 5 cards played. Amazing with 0-cost and multi-play decks"
@@ -394,7 +400,8 @@
       "baseTier": "B",
       "synergies": [
         "exhaust",
-        "zero_cost"
+        "zero_cost",
+        "energy"
       ],
       "antiSynergies": [],
       "notes": "0-cost skill, exhaust. Free card generation or resource production"

@@ -24,7 +24,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "Starter 0-cost attack. Weak base damage but free"
@@ -34,7 +35,8 @@
       "baseTier": "C",
       "synergies": [
         "stars",
-        "block"
+        "block",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "Starter skill. Minor star/block utility, replace later"
@@ -44,7 +46,8 @@
       "baseTier": "B",
       "synergies": [
         "stars",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost uncommon skill. Star alignment for setup turns, decent enabler"
@@ -54,7 +57,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "Rare power. Stores forged weapons, strong in forge builds"
@@ -64,17 +68,20 @@
       "baseTier": "B",
       "synergies": [
         "aoe",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost common AoE attack. Free damage to all enemies, solid early"
     },
     {
       "id": "Beat Into Shape",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "forge",
-        "strength"
+        "strength",
+        "authority",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Rare attack, CalculatedForge=3. Forges cards while dealing damage"
@@ -94,7 +101,8 @@
       "synergies": [
         "exhaust",
         "cosmic",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost rare skill, Exhaust+Sly. Powerful one-shot cosmic effect"
@@ -104,7 +112,8 @@
       "baseTier": "A",
       "synergies": [
         "cosmic",
-        "scaling"
+        "scaling",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "Uncommon power. Persistent cosmic effect, good scaling engine"
@@ -125,7 +134,8 @@
       "baseTier": "A",
       "synergies": [
         "block",
-        "scaling"
+        "scaling",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "2-cost uncommon skill. Large block with scaling potential"
@@ -135,7 +145,8 @@
       "baseTier": "A",
       "synergies": [
         "minion",
-        "exhaust"
+        "exhaust",
+        "summon"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare skill, Exhaust+Sly. Creates a strong minion, key minion payoff"
@@ -145,7 +156,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "cosmic"
+        "cosmic",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost common attack. Solid cosmic-themed damage"
@@ -165,7 +177,9 @@
       "baseTier": "A",
       "synergies": [
         "stars",
-        "block"
+        "block",
+        "stellar",
+        "scaling"
       ],
       "antiSynergies": [],
       "notes": "Uncommon power, BlockForStars=2. Generates block from stars passively"
@@ -176,7 +190,8 @@
       "synergies": [
         "stars",
         "block",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost common skill. Free star-to-block conversion, good early pickup"
@@ -197,7 +212,8 @@
       "synergies": [
         "cosmic",
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost rare attack. Free damage with strong cosmic effect"
@@ -207,7 +223,8 @@
       "baseTier": "A",
       "synergies": [
         "scaling",
-        "damage"
+        "damage",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "Uncommon skill targeting single enemy. Authority scaling, strong sustained power"
@@ -217,7 +234,8 @@
       "baseTier": "B",
       "synergies": [
         "stars",
-        "draw"
+        "draw",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon skill. Star convergence enables combos"
@@ -227,7 +245,8 @@
       "baseTier": "C",
       "synergies": [
         "cosmic",
-        "block"
+        "block",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "1-cost common skill. Weak cosmic defense, low impact"
@@ -247,7 +266,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "forge"
+        "forge",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost common attack. Solid weapon for forge synergy"
@@ -289,7 +309,9 @@
       "synergies": [
         "cosmic",
         "aoe",
-        "strength"
+        "strength",
+        "stellar",
+        "damage"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare AoE, Ethereal+Sly, StrengthLoss=9. Massive strength reduction"
@@ -309,7 +331,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "Uncommon power. Core forge engine, upgrades weapons over time"
@@ -329,7 +352,8 @@
       "baseTier": "A",
       "synergies": [
         "stars",
-        "draw"
+        "draw",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost common skill. Star generation + draw, excellent early enabler"
@@ -339,7 +363,8 @@
       "baseTier": "S",
       "synergies": [
         "stars",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare power, StarsPerTurn=2. Build-defining star engine, enables all star synergies"
@@ -349,7 +374,8 @@
       "baseTier": "C",
       "synergies": [
         "stars",
-        "draw"
+        "draw",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon skill, PutBack=1. Minor star utility, low impact"
@@ -359,7 +385,8 @@
       "baseTier": "B",
       "synergies": [
         "block",
-        "stars"
+        "stars",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost common skill, BlockNextTurn=4. Block now and next turn, decent sustain"
@@ -369,7 +396,8 @@
       "baseTier": "B",
       "synergies": [
         "stars",
-        "block"
+        "block",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost common skill. Star generation with minor defense"
@@ -380,7 +408,8 @@
       "synergies": [
         "minion",
         "block",
-        "exhaust"
+        "exhaust",
+        "summon"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare skill, Exhaust+Sly. Summons guard minions for protection"
@@ -400,7 +429,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare power. Forge amplifier, strong in blade builds"
@@ -411,7 +441,8 @@
       "synergies": [
         "damage",
         "forge",
-        "zero_cost"
+        "zero_cost",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "0-cost rare attack. Free forge damage, piercing"
@@ -421,7 +452,8 @@
       "baseTier": "A",
       "synergies": [
         "damage",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "2-cost uncommon attack. Authority scaling, permanent power growth"
@@ -431,7 +463,8 @@
       "baseTier": "B",
       "synergies": [
         "forge",
-        "damage"
+        "damage",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare attack. Forge weapon, grows with forge support"
@@ -441,7 +474,8 @@
       "baseTier": "B",
       "synergies": [
         "draw",
-        "stars"
+        "stars",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost common skill. Resource discovery, solid utility card"
@@ -500,7 +534,8 @@
       "baseTier": "B",
       "synergies": [
         "draw",
-        "stars"
+        "stars",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost uncommon skill targeting special. Resource generation, wide utility"
@@ -532,7 +567,8 @@
       "baseTier": "A",
       "synergies": [
         "scaling",
-        "strength"
+        "strength",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon skill. Permanent authority scaling, excellent power card"
@@ -544,7 +580,8 @@
         "aoe",
         "cosmic",
         "multi_hit",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost Ancient AoE attack. Free massive multi-target damage, top-tier AoE"
@@ -554,7 +591,8 @@
       "baseTier": "A",
       "synergies": [
         "scaling",
-        "damage"
+        "damage",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "3-cost rare power. Expensive but powerful authority scaling engine"
@@ -575,7 +613,8 @@
       "synergies": [
         "block",
         "cosmic",
-        "scaling"
+        "scaling",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare power. Cosmic defense engine, excellent sustained block"
@@ -585,7 +624,8 @@
       "baseTier": "B",
       "synergies": [
         "cosmic",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost uncommon power. Builds over turns, slow but rewarding"
@@ -595,7 +635,8 @@
       "baseTier": "B",
       "synergies": [
         "cosmic",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon power, CardPlay=5. Triggers after 5 card plays, rewards engine decks"
@@ -616,7 +657,8 @@
       "synergies": [
         "block",
         "cosmic",
-        "zero_cost"
+        "zero_cost",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "0-cost uncommon skill. Free cosmic block, solid defensive option"
@@ -646,7 +688,8 @@
       "synergies": [
         "cosmic",
         "stars",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "Uncommon power. Cosmic star engine, strong persistent scaling"
@@ -657,7 +700,8 @@
       "synergies": [
         "draw",
         "stars",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost uncommon skill. Powerful scry/draw effect, great deck control"
@@ -668,7 +712,8 @@
       "synergies": [
         "cosmic",
         "damage",
-        "zero_cost"
+        "zero_cost",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "0-cost uncommon skill. Free cosmic burst, excellent value"
@@ -689,7 +734,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost common skill. Core forge card, permanently improves weapons"
@@ -710,7 +756,8 @@
       "synergies": [
         "stars",
         "cosmic",
-        "aoe"
+        "aoe",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon AoE skill. Star resonance amplifies cosmic effects"
@@ -730,7 +777,8 @@
       "baseTier": "B",
       "synergies": [
         "stars",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare power. Passive star income, slow but consistent"
@@ -740,7 +788,8 @@
       "baseTier": "B",
       "synergies": [
         "forge",
-        "draw"
+        "draw",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare power. Tutors forge cards, good in blade builds"
@@ -752,7 +801,8 @@
         "stars",
         "aoe",
         "cosmic",
-        "damage"
+        "damage",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare AoE attack. Massive star-powered burst, enables huge combo turns"
@@ -762,7 +812,8 @@
       "baseTier": "C",
       "synergies": [
         "damage",
-        "stars"
+        "stars",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon Strike variant. Basic star-enhanced damage, filler"
@@ -772,7 +823,8 @@
       "baseTier": "B",
       "synergies": [
         "damage",
-        "cosmic"
+        "cosmic",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost common Strike variant. Solar-powered attack, solid early game"
@@ -783,7 +835,8 @@
       "synergies": [
         "cosmic",
         "draw",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "2-cost uncommon power. Cosmic resource shifting, enables flexibility"
@@ -813,7 +866,8 @@
       "baseTier": "B",
       "synergies": [
         "minion",
-        "scaling"
+        "scaling",
+        "summon"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon skill. Core minion summoning, solid in minion builds"
@@ -824,7 +878,8 @@
       "synergies": [
         "damage",
         "cosmic",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon attack. Huge cosmic damage that scales well"
@@ -834,7 +889,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "2-cost rare power. Master forger, core of blade archetype"
@@ -845,7 +901,8 @@
       "synergies": [
         "cosmic",
         "block",
-        "scaling"
+        "scaling",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost uncommon skill. Cosmic reshaping, hybrid offense/defense utility"
@@ -856,7 +913,9 @@
       "synergies": [
         "scaling",
         "stars",
-        "cosmic"
+        "cosmic",
+        "authority",
+        "stellar"
       ],
       "antiSynergies": [],
       "notes": "1-cost Ancient power. Ultimate authority scaling, massive persistent payoff"
@@ -866,7 +925,8 @@
       "baseTier": "A",
       "synergies": [
         "forge",
-        "scaling"
+        "scaling",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare skill. Master forge effect, permanently enhances weapons"
@@ -876,7 +936,8 @@
       "baseTier": "A",
       "synergies": [
         "scaling",
-        "damage"
+        "damage",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost rare power. Oppressive authority scaling, strong in long fights"
@@ -887,7 +948,9 @@
       "synergies": [
         "cosmic",
         "scaling",
-        "stars"
+        "stars",
+        "stellar",
+        "cosmic_block"
       ],
       "antiSynergies": [],
       "notes": "3-cost rare power. Major cosmic scaling engine, warps the game around it"
@@ -897,10 +960,21 @@
       "baseTier": "B",
       "synergies": [
         "forge",
-        "damage"
+        "damage",
+        "authority"
       ],
       "antiSynergies": [],
       "notes": "1-cost common attack. Forge-enhanced war attack, decent with forge support"
+    },
+    {
+      "id": "Iam Invincible",
+      "baseTier": "B",
+      "synergies": [
+        "block",
+        "scaling"
+      ],
+      "antiSynergies": [],
+      "notes": ""
     }
   ]
 }
