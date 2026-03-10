@@ -681,7 +681,7 @@ public class OverlayManager
 				bool isShopAdvice = _currentScreen == "MERCHANT SHOP";
 				bool isRestAdvice = _currentScreen == "REST SITE";
 				bool isCombatAdvice = _currentScreen == "COMBAT";
-				bool isEventAdvice = _currentScreen == "EVENT";
+				bool isEventAdvice = _currentScreen == "EVENT" || _currentScreen == "EVENT CARD OFFER";
 
 				bool screenGone = false;
 				if (isCardAdvice && !hasCardScreen) screenGone = true;
@@ -712,6 +712,7 @@ public class OverlayManager
 			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 			List<ScoredCard> scored = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, da, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(scored, da, gameState.Character);
+			_currentScreen = "EVENT CARD OFFER";
 			// No in-game badges for events — can't distinguish reward from upgrade/transform
 			return;
 		}
@@ -729,6 +730,7 @@ public class OverlayManager
 			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 			List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(cards, deckAnalysis, gameState.Character);
+			_currentScreen = "EVENT CARD OFFER";
 		}
 		catch (Exception ex)
 		{
@@ -1450,6 +1452,7 @@ public class OverlayManager
 					"CARD UPGRADE" => "CARD UPGRADE — Pick wisely",
 					"CARD REMOVAL" => "CARD REMOVAL — Trim your deck",
 					"MERCHANT SHOP" => "SHOP — Browse carefully",
+					"EVENT CARD OFFER" => "EVENT — Card offering",
 					"COMBAT" => "COMBAT",
 					"EVENT" => "EVENT",
 					"IDLE" => "WAITING...  (drag to move)",
@@ -2957,20 +2960,21 @@ public class OverlayManager
 		}
 		if (upgradeable.Count == 0) return new List<(string, string, Color)>();
 
-		// Use full scoring engine — same as card reward/shop screens
-		var scored = Plugin.SynergyScorer.ScoreOfferings(upgradeable, deck, character,
+		// Score upgrade delta — how much value each card gains from upgrading
+		var scored = Plugin.SynergyScorer.ScoreForUpgrade(upgradeable, deck, character,
 			gs.ActNumber, gs.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 
-		// Build display from top 3 scored cards
+		// Build display from top 3 by upgrade delta
 		return scored
-			.OrderByDescending(c => c.FinalScore)
 			.Take(3)
 			.Select(c =>
 			{
 				string cardName = PrettifyId(c.Id);
 				string subGrade = TierEngine.ScoreToSubGrade(c.FinalScore);
 				string reason;
-				if (c.SynergyDelta > 0.4f)
+				if (c.UpgradeDelta >= 0.6f)
+					reason = $" — big upgrade (+{c.UpgradeDelta:F1})";
+				else if (c.SynergyDelta > 0.4f)
 					reason = " — core synergy";
 				else if (c.FinalGrade >= TierGrade.A)
 					reason = " — high impact";
@@ -3540,54 +3544,6 @@ public class OverlayManager
 		catch (Exception ex)
 		{
 			Plugin.Log($"InjectCardGradesDeferred error: {ex.Message}");
-		}
-	}
-
-	/// <summary>
-	/// Inject grade badges onto relic reward screen nodes.
-	/// </summary>
-	public void InjectRelicGrades(Node screenNode, List<ScoredRelic> scoredRelics)
-	{
-		if (!_showInGameBadges || screenNode == null || !GodotObject.IsInstanceValid(screenNode) || scoredRelics == null || scoredRelics.Count == 0)
-			return;
-		try
-		{
-			SceneTree tree = Engine.GetMainLoop() as SceneTree;
-			if (tree?.Root != null)
-				CleanupInjectedBadges(tree.Root);
-			int epoch = _badgeEpoch;
-			LogNodeTree(screenNode, "RelicReward", 0, 5);
-			Callable.From(() => InjectRelicGradesDeferred(screenNode, scoredRelics, epoch)).CallDeferred();
-		}
-		catch (Exception ex)
-		{
-			Plugin.Log($"InjectRelicGrades error: {ex.Message}");
-		}
-	}
-
-	private void InjectRelicGradesDeferred(Node screenNode, List<ScoredRelic> scoredRelics, int epoch)
-	{
-		if (screenNode == null || !GodotObject.IsInstanceValid(screenNode))
-			return;
-		if (epoch != _badgeEpoch)
-			return;
-		try
-		{
-			var relicHolders = FindCardHolderNodes(screenNode, scoredRelics.Count);
-			if (relicHolders == null || relicHolders.Count == 0)
-			{
-				Plugin.Log($"Could not find relic holder nodes in {screenNode.GetType().Name} (expected {scoredRelics.Count} relics)");
-				return;
-			}
-			Plugin.Log($"Found {relicHolders.Count} relic holders — injecting grade badges");
-			for (int i = 0; i < Math.Min(relicHolders.Count, scoredRelics.Count); i++)
-			{
-				AttachGradeBadge(relicHolders[i], scoredRelics[i].FinalGrade, scoredRelics[i].IsBestPick, scoredRelics[i].FinalScore);
-			}
-		}
-		catch (Exception ex)
-		{
-			Plugin.Log($"InjectRelicGradesDeferred error: {ex.Message}");
 		}
 	}
 

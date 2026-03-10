@@ -125,6 +125,55 @@ public class SynergyScorer
 		return list;
 	}
 
+	/// <summary>
+	/// Score cards for upgrade value by computing the delta between unupgraded and upgraded scores.
+	/// Returns list sorted by upgrade delta (best upgrade first).
+	/// </summary>
+	public List<ScoredCard> ScoreForUpgrade(List<CardInfo> candidates, DeckAnalysis deckAnalysis, string character, int actNumber, int floorNumber, TierEngine tierEngine, AdaptiveScorer adaptiveScorer = null)
+	{
+		var list = new List<ScoredCard>();
+		foreach (var card in candidates)
+		{
+			// Score the card as-is (unupgraded)
+			var currentCard = new CardInfo
+			{
+				Id = card.Id, Name = card.Name, Cost = card.Cost,
+				Type = card.Type, Rarity = card.Rarity, Upgraded = false, Tags = card.Tags
+			};
+			string baseId = card.Id.EndsWith("+") ? card.Id.Substring(0, card.Id.Length - 1) : card.Id;
+			currentCard.Id = baseId;
+
+			CardTierEntry currentTier = tierEngine.GetCardTier(character, baseId);
+			ScoredCard currentScored = ScoreCard(currentCard, currentTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
+
+			// Score the upgraded version
+			var upgradedCard = new CardInfo
+			{
+				Id = baseId + "+", Name = (card.Name ?? baseId) + "+", Cost = card.Cost,
+				Type = card.Type, Rarity = card.Rarity, Upgraded = true, Tags = card.Tags
+			};
+			CardTierEntry upgradedTier = tierEngine.GetCardTier(character, baseId + "+") ?? currentTier;
+			ScoredCard upgradedScored = ScoreCard(upgradedCard, upgradedTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
+
+			float delta = upgradedScored.FinalScore - currentScored.FinalScore;
+			// Use the upgraded score as the display score, but track the delta
+			upgradedScored.UpgradeDelta = delta;
+			upgradedScored.Id = baseId;
+			upgradedScored.Name = card.Name ?? baseId;
+			upgradedScored.Upgraded = card.Upgraded;
+			upgradedScored.SynergyReasons.Insert(0, $"+{delta:F1} upgrade value ({currentScored.FinalScore:F1} → {upgradedScored.FinalScore:F1})");
+			upgradedScored.ScoreSource = currentScored.ScoreSource;
+			// Use delta as the primary sort score for upgrade ranking
+			upgradedScored.FinalScore = delta + currentScored.FinalScore;
+			upgradedScored.FinalGrade = TierEngine.ScoreToGrade(upgradedScored.FinalScore);
+			list.Add(upgradedScored);
+		}
+		list.Sort((a, b) => b.UpgradeDelta.CompareTo(a.UpgradeDelta));
+		if (list.Count > 0)
+			list[0].IsBestPick = true;
+		return list;
+	}
+
 	public List<ScoredRelic> ScoreRelicOfferings(List<RelicInfo> offerings, DeckAnalysis deckAnalysis, string character, int actNumber, int floorNumber, TierEngine tierEngine, AdaptiveScorer adaptiveScorer = null)
 	{
 		List<ScoredRelic> list = new List<ScoredRelic>();

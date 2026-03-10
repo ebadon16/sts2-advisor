@@ -38,6 +38,9 @@ public class ScoredCard
 
 	public float UpgradeAdjust { get; set; }
 
+	/// <summary>Score delta from upgrading this card (upgraded score - current score). Only set on upgrade screens.</summary>
+	public float UpgradeDelta { get; set; }
+
 	public int Price { get; set; }
 
 	public string ScoreSource { get; set; } = "static";

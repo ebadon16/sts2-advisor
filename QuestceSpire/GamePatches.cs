@@ -335,7 +335,7 @@ public static class GamePatches
 			// Mark as upgrade screen BEFORE showing cards — prevents card reward patch from injecting badges
 			Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
 
-			// Convert offered CardModels to CardInfo and score them
+			// Convert offered CardModels to CardInfo and score for upgrade delta
 			if (cards != null && cards.Count > 0)
 			{
 				var offeredCards = new List<CardInfo>();
@@ -346,7 +346,7 @@ public static class GamePatches
 				}
 				if (offeredCards.Count > 0)
 				{
-					var scored = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, character,
+					var scored = Plugin.SynergyScorer.ScoreForUpgrade(offeredCards, deckAnalysis, character,
 						gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 					Plugin.Overlay?.ShowCardAdvice(scored, deckAnalysis, character);
 					Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
