@@ -502,7 +502,7 @@ public class RunDatabase
 		SaveCommunityRelicStats(merged);
 	}
 
-	public (float localWinRate, int localRuns, float communityWinRate, int communityRuns) GetStatsComparison(string character)
+	public (float localWinRate, int localRuns, float communityWinRate, int communitySamples) GetStatsComparison(string character)
 	{
 		if (!EnsureInitialized())
 			return (0f, 0, 0f, 0);

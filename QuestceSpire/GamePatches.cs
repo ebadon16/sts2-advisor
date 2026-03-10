@@ -29,6 +29,9 @@ public static class GamePatches
 	// don't inject badges on unrelated screens (discard pile, removal, etc.)
 	private static WeakReference<NCardRewardSelectionScreen> _activeCardRewardScreen;
 
+	// Dedup: track last recorded card reward to prevent ShowScreen+RefreshOptions double-recording
+	private static string _lastCardRewardFingerprint;
+
 	// Debug: track when each hook last fired
 	public static Dictionary<string, DateTime> HookLastFired { get; } = new();
 
@@ -195,7 +198,15 @@ public static class GamePatches
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		Plugin.Overlay?.ShowCardAdvice(cards, deckAnalysis, gameState.Character);
 		Plugin.Overlay?.InjectCardGrades(screen, cards);
-		Plugin.RunTracker?.RecordDecision(DecisionEventType.CardReward, gameState.OfferedCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+		// Dedup: only record if this is a new offering (prevents ShowScreen+RefreshOptions double-recording)
+		var offeredIds = gameState.OfferedCards.ConvertAll((CardInfo c) => c.Id);
+		offeredIds.Sort();
+		string fingerprint = $"{gameState.Floor}:{string.Join(",", offeredIds)}";
+		if (fingerprint != _lastCardRewardFingerprint)
+		{
+			_lastCardRewardFingerprint = fingerprint;
+			Plugin.RunTracker?.RecordDecision(DecisionEventType.CardReward, gameState.OfferedCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+		}
 		return true;
 	}
 

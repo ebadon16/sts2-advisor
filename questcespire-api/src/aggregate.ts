@@ -24,7 +24,7 @@ export async function handleAggregate(db: D1Database): Promise<Response> {
 			FROM decisions d
 			JOIN runs r ON d.run_id = r.run_id
 			JOIN json_each(d.offered_ids) j
-			WHERE d.event_type IN ('CardReward', 'Shop')
+			WHERE d.event_type = 'CardReward'
 			  AND r.outcome IS NOT NULL
 			GROUP BY j.value, r.character
 			HAVING COUNT(*) >= 3`
