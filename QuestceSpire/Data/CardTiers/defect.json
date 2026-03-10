@@ -266,7 +266,7 @@
     },
     {
       "id": "Creative Ai",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "scaling",
         "draw"

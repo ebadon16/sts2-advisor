@@ -54,7 +54,7 @@
     },
     {
       "id": "Arsenal",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "forge",
         "scaling",
@@ -120,7 +120,7 @@
     },
     {
       "id": "Bombardment",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "aoe",
         "exhaust",
@@ -142,7 +142,7 @@
     },
     {
       "id": "Bundle Of Joy",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "minion",
         "exhaust",
@@ -231,7 +231,7 @@
     },
     {
       "id": "Convergence",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "stars",
         "draw",
@@ -426,7 +426,7 @@
     },
     {
       "id": "Hammer Time",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "forge",
         "scaling",
@@ -575,7 +575,7 @@
     },
     {
       "id": "Meteor Shower",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "aoe",
         "cosmic",
@@ -742,7 +742,7 @@
     },
     {
       "id": "Reflect",
-      "baseTier": "B",
+      "baseTier": "S",
       "synergies": [
         "block",
         "damage"

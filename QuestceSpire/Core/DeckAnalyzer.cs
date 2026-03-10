@@ -16,7 +16,7 @@ public class DeckAnalyzer
 		foreach (CardInfo item3 in deck)
 		{
 			HashSet<string> hashSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			foreach (string tag in item3.Tags)
+			foreach (string tag in item3.Tags ?? new List<string>())
 			{
 				string item = tag.ToLowerInvariant();
 				hashSet.Add(item);
@@ -31,6 +31,15 @@ public class DeckAnalyzer
 						string item2 = synergy.ToLowerInvariant();
 						hashSet.Add(item2);
 					}
+				}
+			}
+			if (Plugin.CardPropertyScorer != null)
+			{
+				var computed = Plugin.CardPropertyScorer.ComputeScore(item3.Id);
+				if (computed.SynergyTags != null)
+				{
+					foreach (string synTag in computed.SynergyTags)
+						hashSet.Add(synTag.ToLowerInvariant());
 				}
 			}
 			foreach (string item4 in hashSet)
@@ -76,7 +85,7 @@ public class DeckAnalyzer
 			bool flag = num2 >= item5.SupportThreshold;
 			if (num3 || (num >= 2 && flag))
 			{
-				float num4 = (float)num / ((float)item5.CoreThreshold * 2f);
+				float num4 = item5.CoreThreshold > 0 ? (float)num / ((float)item5.CoreThreshold * 2f) : 0f;
 				if (flag)
 				{
 					num4 += 0.2f;

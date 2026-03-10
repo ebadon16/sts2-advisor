@@ -1,0 +1,584 @@
+Entry	ClassName	Character	Type	Rarity	EnergyCost	TargetType	Keywords	Tags
+Abrasive	Abrasive	silent	Power	Rare	3	1	Sly,Sly	
+Accelerant	Accelerant	silent	Power	Rare	1	1		
+Accuracy	Accuracy	silent	Power	Uncommon	1	1		
+Acrobatics	Acrobatics	silent	Skill	Common	1	1		
+AdaptiveStrike	AdaptiveStrike	defect	Attack	Rare	2	2		OstyAttack,Shiv,Strike
+Adrenaline	Adrenaline	silent	Skill	Rare	0	1	Exhaust,Sly	
+Afterimage	Afterimage	silent	Power	Rare	1	1		
+Afterlife	Afterlife	necrobinder	Skill	Common	1	1	Exhaust,Sly	
+Aggression	Aggression	ironclad	Power	Rare	1	1		
+Alchemize	Alchemize	colorless	Skill	Rare	1	1	Exhaust,Sly	
+Alignment	Alignment	regent	Skill	Uncommon	0	1		
+AllForOne	AllForOne	defect	Attack	Rare	2	2		
+Anger	Anger	ironclad	Attack	Common	0	2		
+Anointed	Anointed	colorless	Skill	Rare	1	1	Exhaust,Sly	
+Anticipate	Anticipate	silent	Skill	Common	0	1		
+Apotheosis	Apotheosis	event	Skill	Ancient	2	1	Exhaust,Innate	
+Apparition	Apparition	event	Skill	Ancient	1	1	Ethereal,Exhaust	
+Armaments	Armaments	ironclad	Skill	Common	1	1		
+Arsenal	Arsenal	regent	Power	Rare	1	1		
+AscendersBane	AscendersBane	curse	Curse	Curse	-1	0	Innate,Retain,Sly	
+AshenStrike	AshenStrike	ironclad	Attack	Uncommon	1	2		OstyAttack,Shiv,Strike
+Assassinate	Assassinate	silent	Attack	Rare	0	2	Innate,Exhaust	
+AstralPulse	AstralPulse	regent	Attack	Common	0	3		
+Automation	Automation	colorless	Power	Uncommon	1	1		
+Backflip	Backflip	silent	Skill	Common	1	1		
+Backstab	Backstab	silent	Attack	Uncommon	0	2	Exhaust,Innate	
+BadLuck	BadLuck	curse	Curse	Curse	-1	0	Eternal,Unplayable	
+BallLightning	BallLightning	defect	Attack	Common	1	2		
+BansheesCry	BansheesCry	necrobinder	Attack	Rare	6	3		
+Barrage	Barrage	defect	Attack	Common	1	2		
+Barricade	Barricade	ironclad	Power	Rare	3	1		
+Bash	Bash	ironclad	Attack	Basic	2	2		
+BattleTrance	BattleTrance	ironclad	Skill	Uncommon	0	1		
+BeaconOfHope	BeaconOfHope	colorless	Power	Rare	1	1		
+BeamCell	BeamCell	defect	Attack	Common	0	2		
+BeatDown	BeatDown	colorless	Skill	Rare	3	4		
+BeatIntoShape	BeatIntoShape	regent	Attack	Rare	1	2		
+Beckon	Beckon	status	Status	Status	1	0		
+Begone	Begone	regent	Attack	Common	1	2		
+BelieveInYou	BelieveInYou	colorless	Skill	Uncommon	0	6		
+BiasedCognition	BiasedCognition	defect	Power	Ancient	1	1		
+BigBang	BigBang	regent	Skill	Rare	0	1	Exhaust,Sly	
+BlackHole	BlackHole	regent	Power	Uncommon	1	1		
+BladeDance	BladeDance	silent	Skill	Common	1	1	Exhaust,Sly	
+BladeOfInk	BladeOfInk	silent	Skill	Rare	1	1		
+BlightStrike	BlightStrike	necrobinder	Attack	Common	1	2		OstyAttack,Shiv,Strike
+Bloodletting	Bloodletting	ironclad	Skill	Common	0	1		
+BloodWall	BloodWall	ironclad	Skill	Common	2	1		
+Bludgeon	Bludgeon	ironclad	Attack	Uncommon	3	2		
+Blur	Blur	silent	Skill	Uncommon	1	1		
+Bodyguard	Bodyguard	necrobinder	Skill	Basic	1	1		
+BodySlam	BodySlam	ironclad	Attack	Common	1	2		
+Bolas	Bolas	colorless	Attack	Rare	0	2		
+Bombardment	Bombardment	regent	Attack	Rare	3	2	Exhaust,Sly	
+BoneShards	BoneShards	necrobinder	Attack	Uncommon	1	3		OstyAttack,Shiv,OstyAttack
+BoostAway	BoostAway	defect	Skill	Common	0	1		
+BootSequence	BootSequence	defect	Skill	Uncommon	0	1	Innate,Exhaust	
+BorrowedTime	BorrowedTime	necrobinder	Skill	Uncommon	0	1		
+BouncingFlask	BouncingFlask	silent	Skill	Uncommon	2	4		
+Brand	Brand	ironclad	Skill	Rare	0	1		
+Break	Break	ironclad	Attack	Ancient	2	2		
+Breakthrough	Breakthrough	ironclad	Attack	Common	1	3		
+BrightestFlame	BrightestFlame	event	Skill	Ancient	0	1		
+BubbleBubble	BubbleBubble	silent	Skill	Uncommon	1	2		
+Buffer	Buffer	defect	Power	Rare	2	1		
+BulkUp	BulkUp	defect	Power	Uncommon	2	1		
+BulletTime	BulletTime	silent	Skill	Rare	3	1		
+Bully	Bully	ironclad	Attack	Uncommon	0	2		
+Bulwark	Bulwark	regent	Skill	Uncommon	2	1		
+BundleOfJoy	BundleOfJoy	regent	Skill	Rare	2	1	Exhaust,Sly	
+Burn	Burn	status	Status	Status	-1	0	Unplayable,Sly	
+BurningPact	BurningPact	ironclad	Skill	Uncommon	1	1		
+Burst	Burst	silent	Skill	Rare	1	1		
+Bury	Bury	necrobinder	Attack	Uncommon	4	2		
+ByrdonisEgg	ByrdonisEgg	quest	Quest	Quest	-1	0	Unplayable,Sly	
+ByrdSwoop	ByrdSwoop	event	Attack	Event	0	2		
+Calamity	Calamity	colorless	Power	Rare	3	1		
+Calcify	Calcify	necrobinder	Power	Uncommon	1	1		
+CalculatedGamble	CalculatedGamble	silent	Skill	Uncommon	0	1	Exhaust,Sly	
+CallOfTheVoid	CallOfTheVoid	necrobinder	Power	Rare	1	1		
+Caltrops	Caltrops	event	Power	Event	1	1		
+Capacitor	Capacitor	defect	Power	Uncommon	1	1		
+CaptureSpirit	CaptureSpirit	necrobinder	Skill	Uncommon	1	2		
+Cascade	Cascade	ironclad	Skill	Rare	-1	1		
+Catastrophe	Catastrophe	colorless	Skill	Uncommon	2	1		
+CelestialMight	CelestialMight	regent	Attack	Common	2	2		
+Chaos	Chaos	defect	Skill	Uncommon	1	1		
+Charge	Charge	regent	Skill	Uncommon	1	1		
+ChargeBattery	ChargeBattery	defect	Skill	Common	1	1		
+ChildOfTheStars	ChildOfTheStars	regent	Power	Uncommon	1	1		
+Chill	Chill	defect	Skill	Uncommon	0	1	Exhaust,Sly	
+Cinder	Cinder	ironclad	Attack	Common	2	2		
+Clash	Clash	event	Attack	Event	0	2		
+Claw	Claw	defect	Attack	Common	0	2		
+Cleanse	Cleanse	necrobinder	Skill	Uncommon	1	1		
+CloakAndDagger	CloakAndDagger	silent	Skill	Common	1	1		
+CloakOfStars	CloakOfStars	regent	Skill	Common	0	1		
+Clumsy	Clumsy	curse	Curse	Curse	-1	0	Unplayable,Ethereal	
+ColdSnap	ColdSnap	defect	Attack	Common	1	2		
+CollisionCourse	CollisionCourse	regent	Attack	Common	0	2		
+Colossus	Colossus	ironclad	Skill	Rare	1	1		
+Comet	Comet	regent	Attack	Rare	0	2		
+Compact	Compact	defect	Skill	Uncommon	1	1		
+CompileDriver	CompileDriver	defect	Attack	Common	1	2		
+Conflagration	Conflagration	ironclad	Attack	Rare	1	3		
+Conqueror	Conqueror	regent	Skill	Uncommon	1	2		
+ConsumingShadow	ConsumingShadow	defect	Power	Rare	2	1		
+Convergence	Convergence	regent	Skill	Uncommon	1	1		
+Coolant	Coolant	defect	Power	Rare	1	1		
+Coolheaded	Coolheaded	defect	Skill	Common	1	1		
+Coordinate	Coordinate	colorless	Skill	Uncommon	1	6		
+CorrosiveWave	CorrosiveWave	silent	Skill	Rare	1	1		
+Corruption	Corruption	ironclad	Power	Ancient	3	1		
+CosmicIndifference	CosmicIndifference	regent	Skill	Common	1	1		
+Countdown	Countdown	necrobinder	Power	Uncommon	1	1		
+CrashLanding	CrashLanding	regent	Attack	Rare	1	3		
+CreativeAi	CreativeAi	defect	Power	Rare	3	1		
+CrescentSpear	CrescentSpear	regent	Attack	Common	1	2		
+CrimsonMantle	CrimsonMantle	ironclad	Power	Rare	1	1		
+Cruelty	Cruelty	ironclad	Power	Rare	1	1		
+CrushUnder	CrushUnder	regent	Attack	Common	1	3		
+CurseOfTheBell	CurseOfTheBell	curse	Curse	Curse	-1	0	Eternal,Unplayable	
+DaggerSpray	DaggerSpray	silent	Attack	Common	1	3		
+DaggerThrow	DaggerThrow	silent	Attack	Common	1	2		
+DanseMacabre	DanseMacabre	necrobinder	Power	Uncommon	1	1		
+DarkEmbrace	DarkEmbrace	ironclad	Power	Rare	2	1		
+Darkness	Darkness	defect	Skill	Uncommon	1	1		
+DarkShackles	DarkShackles	colorless	Skill	Uncommon	0	2	Exhaust,Sly	
+Dash	Dash	silent	Attack	Uncommon	2	2		
+Dazed	Dazed	status	Status	Status	-1	0	Ethereal,Unplayable	
+DeadlyPoison	DeadlyPoison	silent	Skill	Common	1	2		
+Deathbringer	Deathbringer	necrobinder	Skill	Uncommon	2	3		
+DeathMarch	DeathMarch	necrobinder	Attack	Uncommon	1	2		
+DeathsDoor	DeathsDoor	necrobinder	Skill	Uncommon	1	1		
+Debilitate	Debilitate	necrobinder	Attack	Uncommon	1	2		
+Debris	Debris	status	Status	Status	1	0	Exhaust,Sly	
+Debt	Debt	curse	Curse	Curse	-1	0	Unplayable,Sly	
+Decay	Decay	curse	Curse	Curse	-1	0	Unplayable,Sly	
+DecisionsDecisions	DecisionsDecisions	regent	Skill	Rare	0	1	Exhaust,Sly	
+DefendDefect	DefendDefect	defect	Skill	Basic	1	1		OstyAttack,Shiv,Defend
+DefendIronclad	DefendIronclad	ironclad	Skill	Basic	1	1		OstyAttack,Shiv,Defend
+DefendNecrobinder	DefendNecrobinder	necrobinder	Skill	Basic	1	1		OstyAttack,Shiv,Defend
+DefendRegent	DefendRegent	regent	Skill	Basic	1	1		OstyAttack,Shiv,Defend
+DefendSilent	DefendSilent	silent	Skill	Basic	1	1		OstyAttack,Shiv,Defend
+Defile	Defile	necrobinder	Attack	Common	1	2	Ethereal,Sly	
+Deflect	Deflect	silent	Skill	Common	0	1		
+Defragment	Defragment	defect	Power	Rare	1	1		
+Defy	Defy	necrobinder	Skill	Common	1	2	Ethereal,Sly	
+Delay	Delay	necrobinder	Skill	Uncommon	2	1		
+Demesne	Demesne	necrobinder	Power	Rare	3	1	Ethereal,Sly	
+DemonForm	DemonForm	ironclad	Power	Rare	3	1		
+DemonicShield	DemonicShield	ironclad	Skill	Uncommon	0	6	Exhaust,Sly	
+DeprecatedCard	DeprecatedCard	unknown	Curse	Curse	-1	0	Unplayable,Sly	
+Devastate	Devastate	regent	Attack	Uncommon	1	2		
+DevourLife	DevourLife	necrobinder	Power	Rare	1	1		
+Dirge	Dirge	necrobinder	Skill	Uncommon	0	1		
+Discovery	Discovery	colorless	Skill	Uncommon	1	1	Exhaust,Sly	
+Disintegration	Disintegration	token	Status	Status	-1	0		
+Dismantle	Dismantle	ironclad	Attack	Uncommon	1	2		
+Distraction	Distraction	event	Skill	Event	1	1	Exhaust,Sly	
+DodgeAndRoll	DodgeAndRoll	silent	Skill	Common	1	1		
+Dominate	Dominate	ironclad	Skill	Uncommon	1	2	Exhaust,Sly	
+DoubleEnergy	DoubleEnergy	defect	Skill	Uncommon	1	1	Exhaust,Sly	
+Doubt	Doubt	curse	Curse	Curse	-1	0	Unplayable,Sly	
+DrainPower	DrainPower	necrobinder	Attack	Common	1	2		
+DramaticEntrance	DramaticEntrance	colorless	Attack	Uncommon	0	3	Exhaust,Innate	
+Dredge	Dredge	necrobinder	Skill	Uncommon	1	1	Exhaust,Sly	
+DrumOfBattle	DrumOfBattle	ironclad	Power	Uncommon	0	1		
+Dualcast	Dualcast	defect	Skill	Basic	1	1		
+DualWield	DualWield	event	Skill	Event	1	1		
+DyingStar	DyingStar	regent	Attack	Rare	1	3	Ethereal,Sly	
+EchoForm	EchoForm	defect	Power	Rare	3	1	Ethereal,Sly	
+EchoingSlash	EchoingSlash	silent	Attack	Rare	1	3		
+Eidolon	Eidolon	necrobinder	Skill	Rare	2	1		
+EndOfDays	EndOfDays	necrobinder	Skill	Rare	3	3		
+EnergySurge	EnergySurge	defect	Skill	Uncommon	1	7	Exhaust,Sly	
+EnfeeblingTouch	EnfeeblingTouch	necrobinder	Skill	Uncommon	1	2	Ethereal,Sly	
+Enlightenment	Enlightenment	event	Skill	Event	0	1	Exhaust,Sly	
+Enthralled	Enthralled	curse	Curse	Curse	2	0	Eternal,Sly	
+Entrench	Entrench	event	Skill	Event	2	1		
+Entropy	Entropy	colorless	Power	Rare	1	1		
+Envenom	Envenom	silent	Power	Rare	2	1		
+Equilibrium	Equilibrium	colorless	Skill	Uncommon	2	1		
+Eradicate	Eradicate	necrobinder	Attack	Rare	0	2	Retain,Sly	
+EscapePlan	EscapePlan	silent	Skill	Uncommon	0	1		
+EternalArmor	EternalArmor	colorless	Power	Rare	3	1		
+EvilEye	EvilEye	ironclad	Skill	Uncommon	1	1		
+ExpectAFight	ExpectAFight	ironclad	Skill	Uncommon	2	1		
+Expertise	Expertise	silent	Skill	Uncommon	1	1		
+Expose	Expose	silent	Skill	Uncommon	0	2	Exhaust,Sly	
+Exterminate	Exterminate	event	Attack	Event	1	3		
+FallingStar	FallingStar	regent	Attack	Basic	0	2		
+FanOfKnives	FanOfKnives	silent	Power	Rare	2	1		
+Fasten	Fasten	colorless	Power	Uncommon	1	1		
+Fear	Fear	necrobinder	Attack	Common	1	2	Ethereal,Sly	
+Feed	Feed	ironclad	Attack	Rare	1	2	Exhaust,Sly	
+FeedingFrenzy	FeedingFrenzy	event	Skill	Event	0	1		
+FeelNoPain	FeelNoPain	ironclad	Power	Uncommon	1	1		
+Feral	Feral	defect	Power	Uncommon	2	1		
+Fetch	Fetch	necrobinder	Attack	Uncommon	0	2		OstyAttack,Shiv,OstyAttack
+FiendFire	FiendFire	ironclad	Attack	Rare	2	2	Exhaust,Sly	
+FightMe	FightMe	ironclad	Attack	Uncommon	2	2		
+FightThrough	FightThrough	defect	Skill	Uncommon	1	1		
+Finesse	Finesse	colorless	Skill	Uncommon	0	1		
+Finisher	Finisher	silent	Attack	Uncommon	1	2		
+Fisticuffs	Fisticuffs	colorless	Attack	Uncommon	1	2		
+FlakCannon	FlakCannon	defect	Attack	Rare	2	4		
+FlameBarrier	FlameBarrier	ironclad	Skill	Uncommon	2	1		
+Flanking	Flanking	silent	Skill	Uncommon	2	2		
+FlashOfSteel	FlashOfSteel	colorless	Attack	Uncommon	0	2		
+Flatten	Flatten	necrobinder	Attack	Common	2	2		OstyAttack,Shiv,OstyAttack
+Flechettes	Flechettes	silent	Attack	Uncommon	1	2		
+FlickFlack	FlickFlack	silent	Attack	Common	1	3	Sly,Sly	
+FocusedStrike	FocusedStrike	defect	Attack	Common	1	2		OstyAttack,Shiv,Strike
+FollowThrough	FollowThrough	silent	Attack	Uncommon	1	3		
+Folly	Folly	curse	Curse	Curse	-1	0	Innate,Retain,Sly	
+Footwork	Footwork	silent	Power	Uncommon	1	1		
+ForbiddenGrimoire	ForbiddenGrimoire	necrobinder	Power	Ancient	2	1	Eternal,Sly	
+ForegoneConclusion	ForegoneConclusion	regent	Skill	Rare	1	1		
+ForgottenRitual	ForgottenRitual	ironclad	Skill	Uncommon	1	1		
+FranticEscape	FranticEscape	status	Status	Status	1	1		
+Friendship	Friendship	necrobinder	Power	Uncommon	1	1		
+Ftl	Ftl	defect	Attack	Uncommon	0	2		
+Fuel	Fuel	token	Skill	Token	0	1	Exhaust,Sly	
+Furnace	Furnace	regent	Power	Uncommon	1	1		
+Fusion	Fusion	defect	Skill	Uncommon	2	1		
+GammaBlast	GammaBlast	regent	Attack	Uncommon	0	2		
+GangUp	GangUp	colorless	Attack	Uncommon	1	2		
+GatherLight	GatherLight	regent	Skill	Common	1	1		
+Genesis	Genesis	regent	Power	Rare	2	1		
+GeneticAlgorithm	GeneticAlgorithm	defect	Skill	Rare	1	1	Exhaust,Sly	
+GiantRock	GiantRock	token	Attack	Token	1	2		
+Glacier	Glacier	defect	Skill	Uncommon	2	1		
+Glasswork	Glasswork	defect	Skill	Uncommon	1	1		
+Glimmer	Glimmer	regent	Skill	Uncommon	1	1		
+GlimpseBeyond	GlimpseBeyond	necrobinder	Skill	Rare	1	7	Exhaust,Sly	
+Glitterstream	Glitterstream	regent	Skill	Common	2	1		
+Glow	Glow	regent	Skill	Common	1	1		
+GoForTheEyes	GoForTheEyes	defect	Attack	Common	0	2		
+GoldAxe	GoldAxe	colorless	Attack	Rare	1	2		
+GrandFinale	GrandFinale	silent	Attack	Rare	0	3		
+Grapple	Grapple	ironclad	Attack	Uncommon	1	2		
+Graveblast	Graveblast	necrobinder	Attack	Common	1	2	Exhaust,Sly	
+GraveWarden	GraveWarden	necrobinder	Skill	Common	1	1		
+Greed	Greed	curse	Curse	Curse	-1	0	Eternal,Unplayable	
+Guards	Guards	regent	Skill	Rare	2	1	Exhaust,Sly	
+GuidingStar	GuidingStar	regent	Attack	Common	1	2		
+Guilty	Guilty	curse	Curse	Curse	-1	0	Unplayable,Sly	
+GunkUp	GunkUp	defect	Attack	Common	1	2		
+Hailstorm	Hailstorm	defect	Power	Uncommon	1	1		
+HammerTime	HammerTime	regent	Power	Rare	2	1		
+HandOfGreed	HandOfGreed	colorless	Attack	Rare	2	2		
+HandTrick	HandTrick	silent	Skill	Uncommon	1	1		
+Hang	Hang	necrobinder	Attack	Rare	1	2		
+Haunt	Haunt	necrobinder	Power	Uncommon	1	1		
+Havoc	Havoc	ironclad	Skill	Common	1	1		
+Haze	Haze	silent	Skill	Uncommon	3	3	Sly,Sly	
+Headbutt	Headbutt	ironclad	Attack	Common	1	2		
+HeavenlyDrill	HeavenlyDrill	regent	Attack	Rare	0	2		
+Hegemony	Hegemony	regent	Attack	Uncommon	2	2		
+HeirloomHammer	HeirloomHammer	regent	Attack	Rare	2	2		
+HelixDrill	HelixDrill	defect	Attack	Rare	0	2		
+HelloWorld	HelloWorld	event	Power	Event	1	1		
+Hellraiser	Hellraiser	ironclad	Power	Rare	2	1		
+Hemokinesis	Hemokinesis	ironclad	Attack	Uncommon	1	2		
+HiddenCache	HiddenCache	regent	Skill	Common	1	1		
+HiddenDaggers	HiddenDaggers	silent	Skill	Uncommon	0	1		
+HiddenGem	HiddenGem	colorless	Skill	Rare	1	1		
+HighFive	HighFive	necrobinder	Attack	Uncommon	2	3		OstyAttack,Shiv,OstyAttack
+Hologram	Hologram	defect	Skill	Common	1	1	Exhaust,Sly	
+Hotfix	Hotfix	defect	Skill	Common	0	1		
+HowlFromBeyond	HowlFromBeyond	ironclad	Attack	Uncommon	3	3		
+HuddleUp	HuddleUp	colorless	Skill	Uncommon	1	7		
+Hyperbeam	Hyperbeam	defect	Attack	Rare	2	3		
+IAmInvincible	IAmInvincible	regent	Skill	Rare	1	1		
+IceLance	IceLance	defect	Attack	Rare	3	2		
+Ignition	Ignition	defect	Skill	Rare	1	6	Exhaust,Sly	
+Impatience	Impatience	colorless	Skill	Uncommon	0	1		
+Impervious	Impervious	ironclad	Skill	Rare	2	1	Exhaust,Sly	
+Infection	Infection	status	Status	Status	-1	0	Unplayable,Sly	
+InfernalBlade	InfernalBlade	ironclad	Skill	Uncommon	1	1	Exhaust,Sly	
+Inferno	Inferno	ironclad	Power	Uncommon	1	1		
+InfiniteBlades	InfiniteBlades	silent	Power	Uncommon	1	1		
+Inflame	Inflame	ironclad	Power	Uncommon	1	1		
+Injury	Injury	curse	Curse	Curse	-1	0	Unplayable,Sly	
+Intercept	Intercept	colorless	Skill	Uncommon	1	6		
+Invoke	Invoke	necrobinder	Skill	Common	1	1		
+IronWave	IronWave	ironclad	Attack	Common	1	2		
+Iteration	Iteration	defect	Power	Uncommon	1	1		
+JackOfAllTrades	JackOfAllTrades	colorless	Skill	Uncommon	0	1	Exhaust,Sly	
+Jackpot	Jackpot	colorless	Attack	Rare	3	2		
+Juggernaut	Juggernaut	ironclad	Power	Rare	2	1		
+Juggling	Juggling	ironclad	Power	Uncommon	1	1		
+KinglyKick	KinglyKick	regent	Attack	Uncommon	4	2		
+KinglyPunch	KinglyPunch	regent	Attack	Uncommon	1	2		
+KnifeTrap	KnifeTrap	silent	Skill	Rare	2	2		
+Knockdown	Knockdown	colorless	Attack	Rare	3	2		
+KnockoutBlow	KnockoutBlow	regent	Attack	Uncommon	3	2		
+KnowThyPlace	KnowThyPlace	regent	Skill	Common	0	2	Exhaust,Sly	
+LanternKey	LanternKey	quest	Quest	Quest	-1	1	Unplayable,Sly	
+Largesse	Largesse	regent	Skill	Uncommon	0	6		
+LeadingStrike	LeadingStrike	silent	Attack	Common	1	2		OstyAttack,Shiv,Strike
+Leap	Leap	defect	Skill	Common	1	1		
+LegionOfBone	LegionOfBone	necrobinder	Skill	Uncommon	2	7	Exhaust,Sly	
+LegSweep	LegSweep	silent	Skill	Uncommon	2	2		
+Lethality	Lethality	necrobinder	Power	Uncommon	1	1	Ethereal,Sly	
+Lift	Lift	colorless	Skill	Uncommon	1	6		
+LightningRod	LightningRod	defect	Skill	Common	1	1		
+Loop	Loop	defect	Power	Uncommon	1	1		
+Luminesce	Luminesce	token	Skill	Token	0	1	Exhaust,Retain	
+LunarBlast	LunarBlast	regent	Attack	Uncommon	0	2		
+MachineLearning	MachineLearning	defect	Power	Rare	1	1		
+MadScience	MadScience	event	Attack	Event	1	2		
+MakeItSo	MakeItSo	regent	Attack	Rare	0	2		
+Malaise	Malaise	silent	Skill	Rare	0	2	Exhaust,Sly	
+Mangle	Mangle	ironclad	Attack	Rare	3	2		
+ManifestAuthority	ManifestAuthority	regent	Skill	Uncommon	1	1		
+MasterOfStrategy	MasterOfStrategy	colorless	Skill	Rare	0	1	Exhaust,Sly	
+MasterPlanner	MasterPlanner	silent	Power	Rare	2	1		
+Maul	Maul	event	Attack	Ancient	1	2		
+Mayhem	Mayhem	colorless	Power	Rare	2	1		
+Melancholy	Melancholy	necrobinder	Skill	Uncommon	3	1		
+MementoMori	MementoMori	silent	Attack	Uncommon	1	2		
+Metamorphosis	Metamorphosis	event	Skill	Event	2	1	Exhaust,Sly	
+MeteorShower	MeteorShower	regent	Attack	Ancient	0	3		
+MeteorStrike	MeteorStrike	defect	Attack	Rare	5	2		OstyAttack,Shiv,Strike
+Mimic	Mimic	colorless	Skill	Rare	1	6	Exhaust,Sly	
+MindBlast	MindBlast	colorless	Attack	Uncommon	1	2	Innate,Sly	
+MindRot	MindRot	token	Status	Status	-1	0		
+MinionDiveBomb	MinionDiveBomb	token	Attack	Token	1	2	Exhaust,Sly	OstyAttack,Shiv,Minion
+MinionSacrifice	MinionSacrifice	token	Skill	Token	0	1	Exhaust,Sly	OstyAttack,Shiv,Minion
+MinionStrike	MinionStrike	token	Attack	Token	0	2	Exhaust,Sly	OstyAttack,Shiv,Strike,Minion
+Mirage	Mirage	silent	Skill	Uncommon	1	1	Exhaust,Sly	
+Misery	Misery	necrobinder	Attack	Rare	0	2		
+MockAttackCard	MockAttackCard	unknown	?-1	?-1	-1	-1		
+MockCurseCard	MockCurseCard	unknown	?-1	?-1	-1	-1	Unplayable,Ethereal	
+MockPowerCard	MockPowerCard	unknown	?-1	?-1	-1	-1		
+MockQuestCard	MockQuestCard	unknown	?-1	?-1	-1	-1	Unplayable,Sly	
+MockSkillCard	MockSkillCard	unknown	?-1	?-1	-1	-1		
+MockStatusCard	MockStatusCard	unknown	?-1	?-1	-1	-1	Ethereal,Sly	
+Modded	Modded	defect	Skill	Rare	0	1		
+MoltenFist	MoltenFist	ironclad	Attack	Common	1	2	Exhaust,Sly	
+MomentumStrike	MomentumStrike	defect	Attack	Common	1	2		OstyAttack,Shiv,Strike
+MonarchsGaze	MonarchsGaze	regent	Power	Rare	3	1		
+Monologue	Monologue	regent	Skill	Uncommon	0	1		
+MultiCast	MultiCast	defect	Skill	Rare	0	1		
+Murder	Murder	silent	Attack	Rare	3	2		
+NecroMastery	NecroMastery	necrobinder	Power	Rare	2	1		
+NegativePulse	NegativePulse	necrobinder	Skill	Common	1	3		
+NeowsFury	NeowsFury	event	Attack	Ancient	1	2	Exhaust,Sly	
+Neurosurge	Neurosurge	necrobinder	Power	Rare	0	1		
+Neutralize	Neutralize	silent	Attack	Basic	0	2		
+NeutronAegis	NeutronAegis	regent	Power	Rare	1	1		
+Nightmare	Nightmare	silent	Skill	Rare	3	1	Exhaust,Sly	
+NoEscape	NoEscape	necrobinder	Skill	Uncommon	1	2		
+Normality	Normality	curse	Curse	Curse	-1	0	Unplayable,Sly	
+Nostalgia	Nostalgia	colorless	Power	Rare	1	1		
+NoxiousFumes	NoxiousFumes	silent	Power	Uncommon	1	1		
+Null	Null	defect	Attack	Uncommon	2	2		
+Oblivion	Oblivion	necrobinder	Skill	Rare	0	2		
+Offering	Offering	ironclad	Skill	Rare	0	1	Exhaust,Sly	
+Omnislice	Omnislice	colorless	Attack	Uncommon	0	2		
+OneTwoPunch	OneTwoPunch	ironclad	Skill	Rare	1	1		
+Orbit	Orbit	regent	Power	Uncommon	2	1		
+Outbreak	Outbreak	silent	Power	Uncommon	1	1		
+Outmaneuver	Outmaneuver	event	Skill	Event	1	1		
+Overclock	Overclock	defect	Skill	Uncommon	0	1		
+PactsEnd	PactsEnd	ironclad	Attack	Rare	0	3		
+Pagestorm	Pagestorm	necrobinder	Power	Uncommon	1	1		
+PaleBlueDot	PaleBlueDot	regent	Power	Uncommon	1	1		
+Panache	Panache	colorless	Power	Uncommon	0	1		
+PanicButton	PanicButton	colorless	Skill	Uncommon	0	1	Exhaust,Sly	
+Parry	Parry	regent	Power	Uncommon	1	1		
+Parse	Parse	necrobinder	Skill	Uncommon	1	1	Ethereal,Sly	
+ParticleWall	ParticleWall	regent	Skill	Uncommon	0	1		
+Patter	Patter	regent	Skill	Common	1	1		
+Peck	Peck	event	Attack	Event	1	2		
+PerfectedStrike	PerfectedStrike	ironclad	Attack	Common	2	2		OstyAttack,Shiv,Strike
+PhantomBlades	PhantomBlades	silent	Power	Uncommon	1	1		OstyAttack,Shiv
+PhotonCut	PhotonCut	regent	Attack	Common	1	2		
+PiercingWail	PiercingWail	silent	Skill	Common	1	3	Exhaust,Sly	
+Pillage	Pillage	ironclad	Attack	Uncommon	1	2		
+PillarOfCreation	PillarOfCreation	regent	Power	Uncommon	1	1		
+Pinpoint	Pinpoint	silent	Attack	Uncommon	3	2		
+PoisonedStab	PoisonedStab	silent	Attack	Common	1	2		
+Poke	Poke	necrobinder	Attack	Common	0	2		OstyAttack,Shiv,OstyAttack
+PommelStrike	PommelStrike	ironclad	Attack	Common	1	2		OstyAttack,Shiv,Strike
+PoorSleep	PoorSleep	curse	Curse	Curse	-1	0	Unplayable,Retain	
+Pounce	Pounce	silent	Attack	Uncommon	2	2		
+PreciseCut	PreciseCut	silent	Attack	Uncommon	0	2		
+Predator	Predator	silent	Attack	Uncommon	2	2		
+Prepared	Prepared	silent	Skill	Common	0	1		
+PrepTime	PrepTime	colorless	Power	Uncommon	1	1		
+PrimalForce	PrimalForce	ironclad	Skill	Rare	0	1		
+Production	Production	colorless	Skill	Uncommon	0	1	Exhaust,Sly	
+Prolong	Prolong	colorless	Skill	Uncommon	0	1	Exhaust,Sly	
+Prophesize	Prophesize	regent	Skill	Uncommon	2	1		
+Protector	Protector	necrobinder	Attack	Ancient	1	2		OstyAttack,Shiv,OstyAttack
+Prowess	Prowess	colorless	Power	Uncommon	1	1		
+PullAggro	PullAggro	necrobinder	Skill	Common	2	1		
+PullFromBelow	PullFromBelow	necrobinder	Attack	Uncommon	1	2		
+Purity	Purity	colorless	Skill	Uncommon	0	1	Retain,Exhaust	
+Putrefy	Putrefy	necrobinder	Skill	Uncommon	1	2	Exhaust,Sly	
+Pyre	Pyre	ironclad	Power	Rare	2	1		
+Quadcast	Quadcast	defect	Skill	Ancient	1	1		
+Quasar	Quasar	regent	Skill	Uncommon	0	1		
+Radiate	Radiate	regent	Attack	Uncommon	0	3		
+Rage	Rage	ironclad	Skill	Uncommon	0	1		
+Rainbow	Rainbow	defect	Skill	Rare	2	1	Exhaust,Sly	
+Rally	Rally	colorless	Skill	Rare	2	7		
+Rampage	Rampage	ironclad	Attack	Uncommon	1	2		
+Rattle	Rattle	necrobinder	Attack	Uncommon	1	2		OstyAttack,Shiv,OstyAttack
+Reanimate	Reanimate	necrobinder	Skill	Rare	3	1	Exhaust,Sly	
+Reap	Reap	necrobinder	Attack	Common	3	2	Retain,Sly	
+ReaperForm	ReaperForm	necrobinder	Power	Rare	3	1		
+Reave	Reave	necrobinder	Attack	Common	1	2		
+Reboot	Reboot	defect	Skill	Rare	0	1	Exhaust,Sly	
+Rebound	Rebound	event	Attack	Event	1	2		
+RefineBlade	RefineBlade	regent	Skill	Common	1	1		
+Reflect	Reflect	regent	Skill	Uncommon	1	1		
+Reflex	Reflex	silent	Skill	Uncommon	3	1	Sly,Sly	
+Refract	Refract	defect	Attack	Uncommon	3	2		
+Regret	Regret	curse	Curse	Curse	-1	0	Unplayable,Sly	
+Relax	Relax	event	Skill	Ancient	3	1	Exhaust,Sly	
+Rend	Rend	colorless	Attack	Rare	2	2		
+Resonance	Resonance	regent	Skill	Uncommon	1	3		
+Restlessness	Restlessness	colorless	Skill	Uncommon	0	1	Retain,Sly	
+Ricochet	Ricochet	silent	Attack	Common	2	4	Sly,Sly	
+RightHandHand	RightHandHand	necrobinder	Attack	Uncommon	0	2		OstyAttack,Shiv,OstyAttack
+RipAndTear	RipAndTear	event	Attack	Uncommon	1	4		
+RocketPunch	RocketPunch	defect	Attack	Uncommon	2	2		
+RollingBoulder	RollingBoulder	colorless	Power	Rare	3	1		
+RoyalGamble	RoyalGamble	regent	Skill	Uncommon	0	1	Exhaust,Sly	
+Royalties	Royalties	regent	Power	Rare	1	1		
+Rupture	Rupture	ironclad	Power	Uncommon	1	1		
+Sacrifice	Sacrifice	necrobinder	Skill	Rare	1	1	Retain,Sly	
+Salvo	Salvo	colorless	Attack	Rare	1	2		
+Scavenge	Scavenge	defect	Skill	Uncommon	1	1		
+Scourge	Scourge	necrobinder	Skill	Common	1	2		
+Scrape	Scrape	defect	Attack	Uncommon	1	2		
+Scrawl	Scrawl	colorless	Skill	Rare	1	1	Exhaust,Sly	
+SculptingStrike	SculptingStrike	necrobinder	Attack	Common	1	2		OstyAttack,Shiv,Strike
+Seance	Seance	necrobinder	Skill	Rare	0	1	Ethereal,Sly	
+SecondWind	SecondWind	ironclad	Skill	Uncommon	1	1		
+SecretTechnique	SecretTechnique	colorless	Skill	Rare	0	1	Exhaust,Sly	
+SecretWeapon	SecretWeapon	colorless	Skill	Rare	0	1	Exhaust,Sly	
+SeekerStrike	SeekerStrike	colorless	Attack	Uncommon	1	2		OstyAttack,Shiv,Strike
+SeekingEdge	SeekingEdge	regent	Power	Rare	1	1		
+SentryMode	SentryMode	necrobinder	Power	Rare	2	1		
+SerpentForm	SerpentForm	silent	Power	Rare	3	1		
+SetupStrike	SetupStrike	ironclad	Attack	Common	1	2		OstyAttack,Shiv,Strike
+SevenStars	SevenStars	regent	Attack	Rare	2	3		
+Severance	Severance	necrobinder	Attack	Uncommon	2	2		
+Shadowmeld	Shadowmeld	silent	Skill	Rare	1	1		
+ShadowShield	ShadowShield	defect	Skill	Uncommon	2	1		
+ShadowStep	ShadowStep	silent	Skill	Rare	1	1		
+Shame	Shame	curse	Curse	Curse	-1	0	Unplayable,Sly	
+SharedFate	SharedFate	necrobinder	Skill	Rare	0	2	Exhaust,Sly	
+Shatter	Shatter	defect	Attack	Rare	1	3		
+ShiningStrike	ShiningStrike	regent	Attack	Uncommon	1	2		OstyAttack,Shiv,Strike
+Shiv	Shiv	token	Attack	Token	0	2	Exhaust,Sly	OstyAttack,Shiv,Shiv
+Shockwave	Shockwave	colorless	Skill	Uncommon	2	3	Exhaust,Sly	
+Shroud	Shroud	necrobinder	Power	Uncommon	1	1		
+ShrugItOff	ShrugItOff	ironclad	Skill	Common	1	1		
+SicEm	SicEm	necrobinder	Attack	Uncommon	1	2		OstyAttack,Shiv,OstyAttack
+SignalBoost	SignalBoost	defect	Skill	Rare	1	1	Exhaust,Sly	
+Skewer	Skewer	silent	Attack	Uncommon	0	2		
+Skim	Skim	defect	Skill	Uncommon	1	1		
+SleightOfFlesh	SleightOfFlesh	necrobinder	Power	Uncommon	2	1		
+Slice	Slice	silent	Attack	Common	0	2		
+Slimed	Slimed	status	Status	Status	1	0	Exhaust,Sly	
+Sloth	Sloth	token	Status	Status	-1	0		
+Smokestack	Smokestack	defect	Power	Uncommon	1	1		
+Snakebite	Snakebite	silent	Skill	Common	2	2	Retain,Sly	
+Snap	Snap	necrobinder	Attack	Common	1	2		OstyAttack,Shiv,OstyAttack
+Sneaky	Sneaky	silent	Power	Rare	2	1	Sly,Sly	
+SolarStrike	SolarStrike	regent	Attack	Common	1	2		OstyAttack,Shiv,Strike
+Soot	Soot	status	Status	Status	-1	0	Unplayable,Sly	
+Soul	Soul	token	Skill	Token	0	1	Exhaust,Sly	
+SoulStorm	SoulStorm	necrobinder	Attack	Rare	1	2		
+SovereignBlade	SovereignBlade	token	Attack	Token	2	2	Retain,Sly	
+Sow	Sow	necrobinder	Attack	Common	1	3	Retain,Sly	
+SpectrumShift	SpectrumShift	regent	Power	Uncommon	2	1		
+Speedster	Speedster	silent	Power	Uncommon	2	1		
+Spinner	Spinner	defect	Power	Rare	1	1		
+SpiritOfAsh	SpiritOfAsh	necrobinder	Power	Rare	1	1		
+Spite	Spite	ironclad	Attack	Uncommon	0	2		
+Splash	Splash	colorless	Skill	Uncommon	1	1		
+SpoilsMap	SpoilsMap	quest	Quest	Quest	-1	1	Unplayable,Sly	
+SpoilsOfBattle	SpoilsOfBattle	regent	Skill	Common	1	1		
+SporeMind	SporeMind	curse	Curse	Curse	1	0	Exhaust,Sly	
+Spur	Spur	necrobinder	Skill	Uncommon	1	1	Retain,Sly	
+Squash	Squash	event	Attack	Event	1	2		
+Squeeze	Squeeze	necrobinder	Attack	Rare	3	2		OstyAttack,Shiv,OstyAttack
+Stack	Stack	event	Skill	Event	1	1		
+Stampede	Stampede	ironclad	Power	Uncommon	2	1		
+Stardust	Stardust	regent	Attack	Uncommon	0	4		
+Stoke	Stoke	ironclad	Skill	Rare	1	1	Exhaust,Sly	
+Stomp	Stomp	ironclad	Attack	Uncommon	3	3		
+StoneArmor	StoneArmor	ironclad	Power	Uncommon	1	1		
+Storm	Storm	defect	Power	Uncommon	1	1		
+StormOfSteel	StormOfSteel	silent	Skill	Rare	1	1		
+Strangle	Strangle	silent	Attack	Uncommon	1	2		
+Stratagem	Stratagem	colorless	Power	Uncommon	1	1		
+StrikeDefect	StrikeDefect	defect	Attack	Basic	1	2		OstyAttack,Shiv,Strike
+StrikeIronclad	StrikeIronclad	ironclad	Attack	Basic	1	2		OstyAttack,Shiv,Strike
+StrikeNecrobinder	StrikeNecrobinder	necrobinder	Attack	Basic	1	2		OstyAttack,Shiv,Strike
+StrikeRegent	StrikeRegent	regent	Attack	Basic	1	2		OstyAttack,Shiv,Strike
+StrikeSilent	StrikeSilent	silent	Attack	Basic	1	2		OstyAttack,Shiv,Strike
+Subroutine	Subroutine	defect	Power	Uncommon	1	1		
+SuckerPunch	SuckerPunch	silent	Attack	Common	1	2		
+SummonForth	SummonForth	regent	Skill	Uncommon	1	1		
+Sunder	Sunder	defect	Attack	Uncommon	3	2		
+Supercritical	Supercritical	defect	Skill	Rare	0	1	Exhaust,Sly	
+Supermassive	Supermassive	regent	Attack	Uncommon	1	2		
+Suppress	Suppress	silent	Attack	Ancient	0	2	Innate,Sly	
+Survivor	Survivor	silent	Skill	Basic	1	1		
+SweepingBeam	SweepingBeam	defect	Attack	Common	1	3		
+SweepingGaze	SweepingGaze	token	Attack	Token	0	4	Ethereal,Exhaust	OstyAttack,Shiv,OstyAttack
+SwordBoomerang	SwordBoomerang	ironclad	Attack	Common	1	4		
+SwordSage	SwordSage	regent	Power	Rare	2	1		
+Synchronize	Synchronize	defect	Skill	Uncommon	1	1	Exhaust,Sly	
+Synthesis	Synthesis	defect	Attack	Uncommon	2	2		
+Tactician	Tactician	silent	Skill	Uncommon	3	1	Sly,Sly	
+TagTeam	TagTeam	colorless	Attack	Uncommon	2	2		
+Tank	Tank	ironclad	Power	Rare	1	1		
+Taunt	Taunt	ironclad	Skill	Uncommon	1	2		
+TearAsunder	TearAsunder	ironclad	Attack	Rare	2	2		
+Tempest	Tempest	defect	Skill	Uncommon	0	1		
+Terraforming	Terraforming	regent	Skill	Uncommon	1	1		
+TeslaCoil	TeslaCoil	defect	Attack	Uncommon	0	2		
+TheBomb	TheBomb	colorless	Skill	Uncommon	2	1		
+TheGambit	TheGambit	colorless	Skill	Rare	0	1		
+TheHunt	TheHunt	silent	Attack	Rare	1	2	Exhaust,Sly	
+TheScythe	TheScythe	necrobinder	Attack	Rare	2	2	Exhaust,Sly	
+TheSealedThrone	TheSealedThrone	regent	Power	Ancient	1	1		
+TheSmith	TheSmith	regent	Skill	Rare	1	1		
+ThinkingAhead	ThinkingAhead	colorless	Skill	Uncommon	0	1	Exhaust,Sly	
+Thrash	Thrash	ironclad	Attack	Rare	1	2		
+ThrummingHatchet	ThrummingHatchet	colorless	Attack	Uncommon	1	2		
+Thunder	Thunder	defect	Power	Uncommon	1	1		
+Thunderclap	Thunderclap	ironclad	Attack	Common	1	3		
+TimesUp	TimesUp	necrobinder	Attack	Rare	2	2	Exhaust,Sly	
+ToolsOfTheTrade	ToolsOfTheTrade	silent	Power	Rare	1	1		
+ToricToughness	ToricToughness	event	Skill	Event	2	1		
+Toxic	Toxic	status	Status	Status	1	0	Exhaust,Sly	
+Tracking	Tracking	silent	Power	Rare	2	1		
+Transfigure	Transfigure	necrobinder	Skill	Rare	1	1	Exhaust,Sly	
+TrashToTreasure	TrashToTreasure	defect	Power	Rare	1	1		
+Tremble	Tremble	ironclad	Skill	Common	1	2		
+TrueGrit	TrueGrit	ironclad	Skill	Common	1	1		
+Turbo	Turbo	defect	Skill	Common	0	1		
+TwinStrike	TwinStrike	ironclad	Attack	Common	1	2		OstyAttack,Shiv,Strike
+Tyranny	Tyranny	regent	Power	Rare	1	1		
+UltimateDefend	UltimateDefend	colorless	Skill	Uncommon	1	1		OstyAttack,Shiv,Defend
+UltimateStrike	UltimateStrike	colorless	Attack	Uncommon	1	2		OstyAttack,Shiv,Strike
+Undeath	Undeath	necrobinder	Skill	Rare	0	1		
+Unleash	Unleash	necrobinder	Attack	Basic	1	2		OstyAttack,Shiv,OstyAttack
+Unmovable	Unmovable	ironclad	Power	Rare	2	1		
+Unrelenting	Unrelenting	ironclad	Attack	Uncommon	2	2		
+Untouchable	Untouchable	silent	Skill	Common	2	1	Sly,Sly	
+UpMySleeve	UpMySleeve	silent	Skill	Uncommon	2	1		
+Uppercut	Uppercut	ironclad	Attack	Uncommon	2	2		
+Uproar	Uproar	defect	Attack	Common	2	2		
+Veilpiercer	Veilpiercer	necrobinder	Attack	Uncommon	1	2		
+Venerate	Venerate	regent	Skill	Basic	1	1		
+Vicious	Vicious	ironclad	Power	Uncommon	1	1		
+Void	Void	status	Status	Status	-1	0	Unplayable,Ethereal	
+VoidForm	VoidForm	regent	Power	Rare	3	1		
+Volley	Volley	colorless	Attack	Uncommon	0	4		
+Voltaic	Voltaic	defect	Skill	Rare	2	1	Exhaust,Sly	
+WasteAway	WasteAway	token	Status	Status	-1	0		
+WellLaidPlans	WellLaidPlans	silent	Power	Uncommon	1	1		
+Whirlwind	Whirlwind	ironclad	Attack	Uncommon	0	3		
+Whistle	Whistle	event	Attack	Ancient	3	2	Exhaust,Sly	
+WhiteNoise	WhiteNoise	defect	Skill	Uncommon	1	1	Exhaust,Sly	
+Wish	Wish	event	Skill	Ancient	0	1	Exhaust,Sly	
+Wisp	Wisp	necrobinder	Skill	Common	0	1	Exhaust,Sly	
+Wound	Wound	status	Status	Status	-1	0	Unplayable,Sly	
+WraithForm	WraithForm	silent	Power	Ancient	3	1		
+Writhe	Writhe	curse	Curse	Curse	-1	0	Innate,Unplayable	
+WroughtInWar	WroughtInWar	regent	Attack	Common	1	2		
+Zap	Zap	defect	Skill	Basic	1	1		

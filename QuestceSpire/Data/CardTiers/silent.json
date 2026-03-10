@@ -43,7 +43,7 @@
     },
     {
       "id": "Acrobatics",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "draw",
         "discard",
@@ -54,7 +54,7 @@
     },
     {
       "id": "Anticipate",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "block",
         "zero_cost"
@@ -64,7 +64,7 @@
     },
     {
       "id": "Backflip",
-      "baseTier": "S",
+      "baseTier": "B",
       "synergies": [
         "block",
         "draw"
@@ -74,7 +74,7 @@
     },
     {
       "id": "Blade Dance",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -85,7 +85,7 @@
     },
     {
       "id": "Cloak And Dagger",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "block",
@@ -96,7 +96,7 @@
     },
     {
       "id": "Dagger Spray",
-      "baseTier": "D",
+      "baseTier": "C",
       "synergies": [
         "multi_hit",
         "damage"
@@ -106,7 +106,7 @@
     },
     {
       "id": "Dagger Throw",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "draw",
         "discard",
@@ -118,7 +118,7 @@
     },
     {
       "id": "Deadly Poison",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "poison"
       ],
@@ -137,7 +137,7 @@
     },
     {
       "id": "Dodge And Roll",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "block",
         "dexterity"
@@ -147,7 +147,7 @@
     },
     {
       "id": "Flick Flack",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "block",
         "shiv",
@@ -159,7 +159,7 @@
     },
     {
       "id": "Leading Strike",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "shiv",
@@ -170,7 +170,7 @@
     },
     {
       "id": "Piercing Wail",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "weak",
         "exhaust"
@@ -190,7 +190,7 @@
     },
     {
       "id": "Prepared",
-      "baseTier": "C",
+      "baseTier": "S",
       "synergies": [
         "draw",
         "discard",
@@ -211,7 +211,7 @@
     },
     {
       "id": "Slice",
-      "baseTier": "D",
+      "baseTier": "C",
       "synergies": [
         "zero_cost",
         "damage"
@@ -221,7 +221,7 @@
     },
     {
       "id": "Snakebite",
-      "baseTier": "B",
+      "baseTier": "F",
       "synergies": [
         "poison",
         "damage",
@@ -242,7 +242,7 @@
     },
     {
       "id": "Untouchable",
-      "baseTier": "C",
+      "baseTier": "S",
       "synergies": [
         "block"
       ],
@@ -251,7 +251,7 @@
     },
     {
       "id": "Accuracy",
-      "baseTier": "A",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -263,7 +263,7 @@
     },
     {
       "id": "Backstab",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "exhaust",
@@ -274,7 +274,7 @@
     },
     {
       "id": "Blur",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "block",
         "dexterity"
@@ -284,7 +284,7 @@
     },
     {
       "id": "Bouncing Flask",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "poison"
       ],
@@ -293,7 +293,7 @@
     },
     {
       "id": "Bubble Bubble",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "block"
       ],
@@ -302,7 +302,7 @@
     },
     {
       "id": "Calculated Gamble",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "discard",
         "discard_synergy",
@@ -313,7 +313,7 @@
     },
     {
       "id": "Dash",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "block",
         "damage",
@@ -324,7 +324,7 @@
     },
     {
       "id": "Escape Plan",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "draw",
         "block"
@@ -334,7 +334,7 @@
     },
     {
       "id": "Expertise",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "draw"
       ],
@@ -343,7 +343,7 @@
     },
     {
       "id": "Expose",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "vulnerable",
         "exhaust"
@@ -353,7 +353,7 @@
     },
     {
       "id": "Finisher",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -374,7 +374,7 @@
     },
     {
       "id": "Flechettes",
-      "baseTier": "C",
+      "baseTier": "B",
       "synergies": [
         "block",
         "damage"
@@ -384,7 +384,7 @@
     },
     {
       "id": "Follow Through",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "draw",
         "damage",
@@ -395,7 +395,7 @@
     },
     {
       "id": "Footwork",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "dexterity",
         "block",
@@ -406,7 +406,7 @@
     },
     {
       "id": "Hand Trick",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "draw",
         "discard",
@@ -417,7 +417,7 @@
     },
     {
       "id": "Haze",
-      "baseTier": "C",
+      "baseTier": "B",
       "synergies": [
         "block"
       ],
@@ -426,7 +426,7 @@
     },
     {
       "id": "Hidden Daggers",
-      "baseTier": "S",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -437,7 +437,7 @@
     },
     {
       "id": "Infinite Blades",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -458,7 +458,7 @@
     },
     {
       "id": "Memento Mori",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage"
       ],
@@ -467,7 +467,7 @@
     },
     {
       "id": "Noxious Fumes",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "poison",
         "poison_scaling",
@@ -478,7 +478,7 @@
     },
     {
       "id": "Outbreak",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "poison",
         "poison_scaling",
@@ -489,7 +489,7 @@
     },
     {
       "id": "Phantom Blades",
-      "baseTier": "A",
+      "baseTier": "D",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -500,7 +500,7 @@
     },
     {
       "id": "Pinpoint",
-      "baseTier": "C",
+      "baseTier": "S",
       "synergies": [
         "damage"
       ],
@@ -509,7 +509,7 @@
     },
     {
       "id": "Pounce",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage"
       ],
@@ -518,7 +518,7 @@
     },
     {
       "id": "Precise Cut",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "damage",
         "zero_cost"
@@ -528,7 +528,7 @@
     },
     {
       "id": "Predator",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "damage",
         "draw"
@@ -538,7 +538,7 @@
     },
     {
       "id": "Reflex",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "discard",
         "discard_synergy",
@@ -549,7 +549,7 @@
     },
     {
       "id": "Skewer",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "multi_hit",
@@ -560,7 +560,7 @@
     },
     {
       "id": "Speedster",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "scaling"
       ],
@@ -569,7 +569,7 @@
     },
     {
       "id": "Strangle",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage"
       ],
@@ -578,7 +578,7 @@
     },
     {
       "id": "Tactician",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "discard",
         "discard_synergy"
@@ -588,7 +588,7 @@
     },
     {
       "id": "Up My Sleeve",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "shiv_synergy"
@@ -597,8 +597,8 @@
       "notes": "2-cost shiv generation"
     },
     {
-      "id": "Well-Laid Plans",
-      "baseTier": "A",
+      "id": "Well Laid Plans",
+      "baseTier": "S",
       "synergies": [
         "retain",
         "draw",
@@ -609,7 +609,7 @@
     },
     {
       "id": "Abrasive",
-      "baseTier": "C",
+      "baseTier": "A",
       "synergies": [
         "scaling",
         "shiv"
@@ -619,7 +619,7 @@
     },
     {
       "id": "Accelerant",
-      "baseTier": "A",
+      "baseTier": "D",
       "synergies": [
         "poison",
         "poison_scaling",
@@ -641,7 +641,7 @@
     },
     {
       "id": "Afterimage",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "block",
         "shiv",
@@ -664,7 +664,7 @@
     },
     {
       "id": "Blade Of Ink",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -675,7 +675,7 @@
     },
     {
       "id": "Bullet Time",
-      "baseTier": "A",
+      "baseTier": "D",
       "synergies": [
         "zero_cost",
         "draw",
@@ -686,7 +686,7 @@
     },
     {
       "id": "Burst",
-      "baseTier": "S",
+      "baseTier": "C",
       "synergies": [
         "poison",
         "block",
@@ -707,7 +707,7 @@
     },
     {
       "id": "Echoing Slash",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "multi_hit"
@@ -717,7 +717,7 @@
     },
     {
       "id": "Envenom",
-      "baseTier": "A",
+      "baseTier": "D",
       "synergies": [
         "poison",
         "shiv",
@@ -730,7 +730,7 @@
     },
     {
       "id": "Fan Of Knives",
-      "baseTier": "A",
+      "baseTier": "C",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -752,7 +752,7 @@
     },
     {
       "id": "Knife Trap",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "shiv",
         "block",
@@ -763,7 +763,7 @@
     },
     {
       "id": "Malaise",
-      "baseTier": "S",
+      "baseTier": "A",
       "synergies": [
         "weak",
         "exhaust"
@@ -773,7 +773,7 @@
     },
     {
       "id": "Master Planner",
-      "baseTier": "A",
+      "baseTier": "B",
       "synergies": [
         "retain",
         "draw"
@@ -783,7 +783,7 @@
     },
     {
       "id": "Mirage",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "block",
         "exhaust"
@@ -793,7 +793,7 @@
     },
     {
       "id": "Murder",
-      "baseTier": "A",
+      "baseTier": "D",
       "synergies": [
         "damage"
       ],
@@ -802,7 +802,7 @@
     },
     {
       "id": "Nightmare",
-      "baseTier": "S",
+      "baseTier": "C",
       "synergies": [
         "poison",
         "scaling"
@@ -812,7 +812,7 @@
     },
     {
       "id": "Serpent Form",
-      "baseTier": "A",
+      "baseTier": "C",
       "synergies": [
         "scaling"
       ],
@@ -821,7 +821,7 @@
     },
     {
       "id": "Shadowmeld",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "block",
         "exhaust"
@@ -831,7 +831,7 @@
     },
     {
       "id": "Shadow Step",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "draw"
       ],
@@ -851,7 +851,7 @@
     },
     {
       "id": "Storm Of Steel",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "shiv",
         "shiv_synergy",
@@ -862,7 +862,7 @@
     },
     {
       "id": "The Hunt",
-      "baseTier": "B",
+      "baseTier": "S",
       "synergies": [
         "damage",
         "vulnerable",
@@ -873,7 +873,7 @@
     },
     {
       "id": "Tools Of The Trade",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "draw",
         "discard",

@@ -21,6 +21,8 @@ public static class Plugin
 
 	private static Harmony _harmony;
 
+	private static bool _initialized;
+
 	public static string PluginFolder { get; private set; }
 
 	public static string LogPath { get; private set; }
@@ -39,10 +41,14 @@ public static class Plugin
 
 	public static LocalStatsComputer LocalStats { get; private set; }
 
+	public static CardPropertyScorer CardPropertyScorer { get; private set; }
+
 	public static OverlayManager Overlay { get; set; }
 
 	public static void Init()
 	{
+		if (_initialized) return;
+		_initialized = true;
 		PluginFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		if (string.IsNullOrEmpty(PluginFolder))
 		{
@@ -61,6 +67,7 @@ public static class Plugin
 		};
 		Log($"{ModName} v{ModVersion} initializing...");
 		TierEngine = new TierEngine(Path.Combine(PluginFolder, "Data"));
+		CardPropertyScorer = new CardPropertyScorer(Path.Combine(PluginFolder, "Data", "CardProperties"));
 		DeckAnalyzer = new DeckAnalyzer();
 		SynergyScorer = new SynergyScorer();
 		RunDatabase = new RunDatabase(PluginFolder);
@@ -84,7 +91,7 @@ public static class Plugin
 		Log($"{ModName} initialized successfully. Waiting for scene tree...");
 	}
 
-	private static StreamWriter _logWriter;
+	private static volatile StreamWriter _logWriter;
 	private static readonly object _logLock = new object();
 
 	public static void Log(string message)

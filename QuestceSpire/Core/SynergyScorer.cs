@@ -151,17 +151,38 @@ public class SynergyScorer
 
 	private ScoredCard ScoreCard(CardInfo card, CardTierEntry tierEntry, DeckAnalysis deckAnalysis, int actNumber, int floorNumber, string character = null, AdaptiveScorer adaptiveScorer = null)
 	{
-		TierGrade tierGrade = ((tierEntry != null) ? TierEngine.ParseGrade(tierEntry.BaseTier) : TierGrade.C);
+		TierGrade tierGrade;
+		List<string> computedSynTags = null;
+		string scoreSource;
+		if (tierEntry != null)
+		{
+			tierGrade = TierEngine.ParseGrade(tierEntry.BaseTier);
+			scoreSource = "static";
+		}
+		else if (Plugin.CardPropertyScorer != null)
+		{
+			var computed = Plugin.CardPropertyScorer.ComputeScore(card.Id);
+			tierGrade = TierEngine.ScoreToGrade(computed.Score);
+			computedSynTags = computed.SynergyTags;
+			scoreSource = "computed";
+		}
+		else
+		{
+			tierGrade = TierGrade.C;
+			scoreSource = "default";
+		}
 		bool usedAdaptive = adaptiveScorer != null && character != null;
 		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveCardScore(character, card.Id, tierGrade, deckAnalysis) : (float)tierGrade;
-		string scoreSource = tierEntry == null ? "default" : usedAdaptive ? "adaptive" : "static";
+		if (usedAdaptive) scoreSource = "adaptive";
 		float num = baseScore;
 		float synergyDelta = 0f;
 		float floorAdjust = 0f;
 		float deckSizeAdjust = 0f;
 		List<string> list = new List<string>();
 		List<string> list2 = new List<string>();
-		List<string> list3 = tierEntry?.Synergies ?? (card.Tags != null ? card.Tags.ConvertAll((string t) => t.ToLowerInvariant()) : new List<string>());
+		List<string> list3 = tierEntry?.Synergies
+			?? computedSynTags
+			?? (card.Tags != null ? card.Tags.ConvertAll((string t) => t.ToLowerInvariant()) : new List<string>());
 		List<string> list4 = tierEntry?.AntiSynergies ?? new List<string>();
 		int num2 = 0;
 		foreach (ArchetypeMatch detectedArchetype in deckAnalysis.DetectedArchetypes)
@@ -275,7 +296,7 @@ public class SynergyScorer
 			upgradeAdjust += UpgradeBonus;
 			list.Add($"+{UpgradeBonus:F1} upgraded");
 		}
-		num = Math.Max(0f, Math.Min(5.5f, num));
+		num = Math.Max(0f, Math.Min(6.0f, num));
 		return new ScoredCard
 		{
 			Id = card.Id,
@@ -356,7 +377,7 @@ public class SynergyScorer
 			floorAdjust += LateFloorScalingBonus;
 			list.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
 		}
-		num = Math.Max(0f, Math.Min(5.5f, num));
+		num = Math.Max(0f, Math.Min(6.0f, num));
 		return new ScoredRelic
 		{
 			Id = relic.Id,

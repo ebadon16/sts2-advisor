@@ -32,7 +32,7 @@
     },
     {
       "id": "Unleash",
-      "baseTier": "C",
+      "baseTier": "B",
       "synergies": [
         "damage",
         "minion",
@@ -53,7 +53,7 @@
     },
     {
       "id": "Banshees Cry",
-      "baseTier": "C",
+      "baseTier": "A",
       "synergies": [
         "aoe",
         "damage"
@@ -72,7 +72,7 @@
     },
     {
       "id": "Bone Shards",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "aoe",
         "damage",
@@ -145,7 +145,7 @@
     },
     {
       "id": "Countdown",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "doom",
         "scaling",
@@ -274,7 +274,7 @@
     },
     {
       "id": "Drain Power",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "damage",
         "debuff"
@@ -339,7 +339,7 @@
     },
     {
       "id": "Fear",
-      "baseTier": "B",
+      "baseTier": "C",
       "synergies": [
         "debuff",
         "damage"
@@ -905,7 +905,7 @@
     },
     {
       "id": "Transfigure",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "exhaust",
         "draw"

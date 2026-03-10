@@ -120,7 +120,7 @@
     },
     {
       "id": "Body Slam",
-      "baseTier": "A",
+      "baseTier": "S",
       "synergies": [
         "block",
         "damage"
@@ -555,7 +555,7 @@
     },
     {
       "id": "One Two Punch",
-      "baseTier": "B",
+      "baseTier": "A",
       "synergies": [
         "strength",
         "damage"
