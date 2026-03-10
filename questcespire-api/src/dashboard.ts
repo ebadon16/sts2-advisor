@@ -127,6 +127,7 @@ export function getDashboardHtml(): string {
 
 <div class="footer">
   Powered by <a href="https://github.com/ebadon16/sts2-advisor">Qu'est-ce Spire?</a> — Install the mod to contribute your run data
+  <br><a href="https://ko-fi.com/redfred" style="color:#f0883e;">Buy me a coffee</a> if this helps your runs
 </div>
 
 <script>

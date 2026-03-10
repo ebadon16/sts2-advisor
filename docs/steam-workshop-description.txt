@@ -53,6 +53,10 @@ https://questcespire-api.questcespire.workers.dev
 Open source on GitHub:
 https://github.com/ebadon16/sts2-advisor
 
+[h1]Support[/h1]
+If this mod helps your runs, consider buying me a coffee:
+https://ko-fi.com/redfred
+
 [h1]Credits[/h1]
 Built with Harmony, Godot, and Cloudflare Workers.
 Tier data curated from high-ascension community knowledge.

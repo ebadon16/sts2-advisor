@@ -95,6 +95,12 @@ Requires: .NET 9.0 SDK, game DLLs in `lib/` (0Harmony.dll, GodotSharp.dll, sts2.
 - **API**: Cloudflare Worker (TypeScript) + D1 (SQLite), free tier
 - **Game**: Slay the Spire 2 (Godot 4.5.1)
 
+## Support
+
+If this mod helps your runs, consider buying me a coffee:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/redfred)
+
 ## Contributing
 
 PRs welcome. The tier data for Regent and Necrobinder is mostly educated guesses — if you have strong opinions backed by high-ascension experience, open an issue or PR against the JSON files in `Data/CardTiers/`.
