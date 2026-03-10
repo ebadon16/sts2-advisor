@@ -549,6 +549,7 @@ public static class GamePatches
 			Plugin.Overlay?.ShowRunSummary(runOutcome, num, num2);
 			Plugin.RunTracker?.EndRun(runOutcome, num, num2);
 			Plugin.LocalStats?.RecomputeAll();
+			Plugin.CloudSync?.RemergeIfNeeded();
 			if (Plugin.Overlay?.Settings?.CloudSyncEnabled ?? true)
 				Task.Run(() => Plugin.CloudSync?.UploadPendingRuns());
 			Plugin.Log($"Run ended: {runOutcome} on floor {num} (act {num2})");

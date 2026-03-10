@@ -3793,22 +3793,22 @@ public class OverlayManager
 		Color badgeColor = TierBadge.GetGodotColor(grade);
 		Color textColor = TierBadge.GetTextColor(grade);
 
-		// Create badge panel
+		// Create badge panel — matches overlay CreateBadge style
 		PanelContainer badge = new PanelContainer();
 		badge.AddToGroup(GradeBadgeGroup);
-		badge.CustomMinimumSize = new Vector2(subGrade.Length > 1 ? 52f : 44f, 28f);
+		badge.CustomMinimumSize = new Vector2(subGrade.Length > 1 ? 38f : 30f, 30f);
 
 		StyleBoxFlat badgeStyle = new StyleBoxFlat();
 		badgeStyle.BgColor = badgeColor;
-		badgeStyle.CornerRadiusTopLeft = 6;
-		badgeStyle.CornerRadiusTopRight = 6;
-		badgeStyle.CornerRadiusBottomLeft = 6;
-		badgeStyle.CornerRadiusBottomRight = 6;
-		badgeStyle.BorderWidthTop = isBestPick ? 3 : 2;
-		badgeStyle.BorderWidthBottom = isBestPick ? 3 : 2;
-		badgeStyle.BorderWidthLeft = isBestPick ? 3 : 2;
-		badgeStyle.BorderWidthRight = isBestPick ? 3 : 2;
-		badgeStyle.BorderColor = isBestPick ? ClrAccent : badgeColor.Darkened(0.4f);
+		badgeStyle.CornerRadiusTopLeft = 0;
+		badgeStyle.CornerRadiusTopRight = 10;
+		badgeStyle.CornerRadiusBottomLeft = 10;
+		badgeStyle.CornerRadiusBottomRight = 0;
+		badgeStyle.BorderWidthTop = isBestPick ? 2 : 1;
+		badgeStyle.BorderWidthBottom = isBestPick ? 2 : 1;
+		badgeStyle.BorderWidthLeft = isBestPick ? 2 : 1;
+		badgeStyle.BorderWidthRight = isBestPick ? 2 : 1;
+		badgeStyle.BorderColor = isBestPick ? ClrAccent : badgeColor.Darkened(0.3f);
 		badgeStyle.ShadowSize = isBestPick ? 12 : 4;
 		badgeStyle.ShadowColor = isBestPick ? new Color(ClrAccent, 0.7f) : new Color(0f, 0f, 0f, 0.6f);
 		badge.AddThemeStyleboxOverride("panel", badgeStyle);
@@ -3817,11 +3817,9 @@ public class OverlayManager
 		gradeLbl.Text = subGrade;
 		ApplyFont(gradeLbl, _fontHeader);
 		gradeLbl.AddThemeColorOverride("font_color", textColor);
-		gradeLbl.AddThemeFontSizeOverride("font_size", subGrade.Length > 1 ? 16 : 18);
+		gradeLbl.AddThemeFontSizeOverride("font_size", subGrade.Length > 1 ? 17 : 20);
 		gradeLbl.HorizontalAlignment = HorizontalAlignment.Center;
 		gradeLbl.VerticalAlignment = VerticalAlignment.Center;
-		gradeLbl.AddThemeConstantOverride("outline_size", 2);
-		gradeLbl.AddThemeColorOverride("font_outline_color", new Color(0f, 0f, 0f, 0.8f));
 		badge.AddChild(gradeLbl, forceReadableName: false, Node.InternalMode.Disabled);
 
 		// Position at bottom-center of the target node

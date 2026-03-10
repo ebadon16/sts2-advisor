@@ -20,6 +20,10 @@ public class CloudSync
 	private DateTime _lastDownload = DateTime.MinValue;
 	private static readonly TimeSpan DownloadInterval = TimeSpan.FromMinutes(30);
 
+	// Cache last downloaded community stats so they survive LocalStatsComputer.RecomputeAll()
+	private List<CommunityCardStats> _cachedCardStats;
+	private List<CommunityRelicStats> _cachedRelicStats;
+
 	public CloudSync(RunDatabase db, string playerId, string apiBase = null)
 	{
 		_db = db;
@@ -127,10 +131,16 @@ public class CloudSync
 			if (payload == null) return;
 
 			if (payload.CardStats != null && payload.CardStats.Count > 0)
+			{
+				_cachedCardStats = payload.CardStats;
 				_db.MergeCommunityCardStats(payload.CardStats);
+			}
 
 			if (payload.RelicStats != null && payload.RelicStats.Count > 0)
+			{
+				_cachedRelicStats = payload.RelicStats;
 				_db.MergeCommunityRelicStats(payload.RelicStats);
+			}
 
 			_lastDownload = DateTime.UtcNow;
 			Plugin.Log($"CloudSync: downloaded {payload.CardStats?.Count ?? 0} card stats, {payload.RelicStats?.Count ?? 0} relic stats from {payload.TotalRuns} community runs.");
@@ -138,6 +148,25 @@ public class CloudSync
 		catch (Exception ex)
 		{
 			Plugin.Log($"CloudSync download error: {ex.Message}");
+		}
+	}
+
+	/// <summary>
+	/// Re-merges cached community stats into the database.
+	/// Call after LocalStatsComputer.RecomputeAll() to restore community data it wiped.
+	/// </summary>
+	public void RemergeIfNeeded()
+	{
+		try
+		{
+			if (_cachedCardStats != null && _cachedCardStats.Count > 0)
+				_db.MergeCommunityCardStats(_cachedCardStats);
+			if (_cachedRelicStats != null && _cachedRelicStats.Count > 0)
+				_db.MergeCommunityRelicStats(_cachedRelicStats);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"CloudSync remerge error: {ex.Message}");
 		}
 	}
 

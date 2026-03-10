@@ -518,7 +518,7 @@ public class RunDatabase
 			using var conn = new SqliteConnection(_connectionString);
 			conn.Open();
 			using var cmd = conn.CreateCommand();
-			cmd.CommandText = "SELECT AVG(win_rate_when_picked) as avg_wr, SUM(sample_size) as total_samples FROM community_card_stats WHERE character=@char AND sample_size > 0";
+			cmd.CommandText = "SELECT CASE WHEN SUM(sample_size) > 0 THEN SUM(win_rate_when_picked * sample_size) / SUM(sample_size) ELSE 0.0 END as avg_wr, SUM(sample_size) as total_samples FROM community_card_stats WHERE character=@char AND sample_size > 0";
 			cmd.Parameters.AddWithValue("@char", character);
 			using var reader = cmd.ExecuteReader();
 			if (reader.Read() && !reader.IsDBNull(0))
