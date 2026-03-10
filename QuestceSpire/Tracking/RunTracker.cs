@@ -21,7 +21,11 @@ public class RunTracker
 
 	private readonly Dictionary<int, List<(string archetypeId, float strength)>> _archetypeHistory = new();
 
+	public string PlayerId => _playerId;
+
 	public bool IsRunActive => _currentRun != null;
+
+	public string CurrentCharacter => _currentRun?.Character;
 
 	public IReadOnlyList<DecisionEvent> GetCurrentRunEvents() => _currentEvents.AsReadOnly();
 
@@ -46,8 +50,9 @@ public class RunTracker
 			{
 				File.WriteAllText(path, _playerId);
 			}
-			catch
+			catch (Exception ex)
 			{
+				Plugin.Log($"RunTracker: failed to write player_id.txt: {ex.Message}");
 			}
 		}
 		_db.InitializeDatabase();
@@ -92,8 +97,9 @@ public class RunTracker
 					ascensionLevel = gameState.AscensionLevel;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
+				Plugin.Log($"RecordDecision: failed to infer game state for auto-start: {ex.Message}");
 			}
 			StartRun(character, "", ascensionLevel);
 		}

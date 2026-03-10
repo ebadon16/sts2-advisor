@@ -6,3 +6,15 @@ lib/
 .vs/
 .idea/
 *.DotSettings
+
+# Cloudflare Worker
+questcespire-api/node_modules/
+questcespire-api/.wrangler/
+
+# Local data
+*.db
+*.db-journal
+questcespire.log
+player_id.txt
+overlay_settings.json
+questcespire_stats_*.json

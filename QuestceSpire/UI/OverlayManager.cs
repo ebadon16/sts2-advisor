@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using QuestceSpire.Core;
 using QuestceSpire.GameBridge;
 using QuestceSpire.Tracking;
@@ -41,6 +42,8 @@ public class OverlayManager
 	private DeckAnalysis _currentDeckAnalysis;
 
 	private string _currentScreen = "IDLE";
+	public string CurrentScreen => _currentScreen;
+	private int _badgeEpoch = 0; // Incremented on every screen change; stale deferred calls check this
 
 	private List<(string icon, string text, Color color)> _mapAdvice;
 
@@ -204,17 +207,44 @@ public class OverlayManager
 		}
 	}
 
+	private static readonly string[] PortraitFallbackFolders = new[]
+	{
+		"colorless", "neutral", "shared", "common", ""
+	};
+
 	private Texture2D GetCardPortrait(string cardId, string character)
 	{
 		string key = $"{character}/{cardId}";
 		if (_cardPortraitCache.TryGetValue(key, out var cached)) return cached;
 		try
 		{
-			// Convert "Feel No Pain" -> "feel_no_pain", character "ironclad" stays lowercase
 			string fileName = cardId.Replace(" ", "_").Replace("'", "").Replace("-", "_").ToLowerInvariant();
 			string charFolder = character?.ToLowerInvariant() ?? "ironclad";
-			string path = $"res://images/packed/card_portraits/{charFolder}/{fileName}.png";
-			var tex = ResourceLoader.Load<Texture2D>(path);
+			// Primary: character folder under packed
+			string[] basePaths = new[]
+			{
+				"res://images/packed/card_portraits",
+				"res://images/card_portraits"
+			};
+			Texture2D tex = null;
+			foreach (string basePath in basePaths)
+			{
+				// Try character folder first
+				tex = ResourceLoader.Load<Texture2D>($"{basePath}/{charFolder}/{fileName}.png");
+				if (tex != null) break;
+				// Try fallback folders
+				foreach (string fallback in PortraitFallbackFolders)
+				{
+					string path = string.IsNullOrEmpty(fallback)
+						? $"{basePath}/{fileName}.png"
+						: $"{basePath}/{fallback}/{fileName}.png";
+					tex = ResourceLoader.Load<Texture2D>(path);
+					if (tex != null) break;
+				}
+				if (tex != null) break;
+			}
+			if (tex == null)
+				Plugin.Log($"No portrait found for card '{cardId}' (file: {fileName}, char: {charFolder})");
 			_cardPortraitCache[key] = tex;
 			return tex;
 		}
@@ -578,16 +608,42 @@ public class OverlayManager
 	public void CheckForStaleScreen()
 	{
 		if (_lastUpdateTick == 0) return;
-		// Fast badge cleanup: badges should only exist on CARD REWARD screens.
-		// If we've moved to any other screen, or badges are orphaned, remove them immediately.
+		// Fast badge cleanup: remove badges if not on card reward, or if orphaned/hidden
 		try
 		{
 			SceneTree btree = Engine.GetMainLoop() as SceneTree;
-			if (btree?.Root != null && btree.GetNodesInGroup(GradeBadgeGroup).Count > 0)
+			if (btree?.Root != null)
 			{
-				if (_currentScreen != "CARD REWARD")
+				var badges = btree.GetNodesInGroup(GradeBadgeGroup);
+				if (badges.Count > 0)
 				{
-					CleanupInjectedBadges(btree.Root);
+					if (_currentScreen != "CARD REWARD")
+					{
+						CleanupInjectedBadges(btree.Root);
+					}
+					else
+					{
+						// Even on CARD REWARD: remove badges if their parent is hidden or freed
+						// (happens when pile viewer opens over the reward screen)
+						bool anyOrphaned = false;
+						foreach (Node badge in badges)
+						{
+							if (badge == null || !GodotObject.IsInstanceValid(badge)) continue;
+							Node parent = badge.GetParent();
+							if (parent == null || !GodotObject.IsInstanceValid(parent))
+							{
+								anyOrphaned = true;
+								break;
+							}
+							if (parent is Control ctrl && !ctrl.IsVisibleInTree())
+							{
+								anyOrphaned = true;
+								break;
+							}
+						}
+						if (anyOrphaned)
+							CleanupInjectedBadges(btree.Root);
+					}
 				}
 			}
 		}
@@ -643,14 +699,76 @@ public class OverlayManager
 
 	private void CheckForEventCardOffering()
 	{
+		// First check if _lastCardOptions was already set (ShowScreen fired)
 		GameState gameState = GameStateReader.ReadCurrentState();
 		if (gameState == null) return;
-		if (gameState.OfferedCards == null || gameState.OfferedCards.Count == 0) return;
-		// Event is now offering cards — show advice
-		Plugin.Log($"Event card offering detected: {gameState.OfferedCards.Count} cards");
-		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
-		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-		ShowCardAdvice(cards, deckAnalysis, gameState.Character);
+		if (gameState.OfferedCards != null && gameState.OfferedCards.Count > 0)
+		{
+			Plugin.Log($"Event card offering detected (from state): {gameState.OfferedCards.Count} cards");
+			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+			List<ScoredCard> scored = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, da, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+			ShowCardAdvice(scored, da, gameState.Character);
+			// No in-game badges for events — can't distinguish reward from upgrade/transform
+			return;
+		}
+		// ShowScreen may not have fired — try to find card screen node and extract cards via reflection
+		SceneTree sceneTree = Engine.GetMainLoop() as SceneTree;
+		if (sceneTree?.Root == null) return;
+		Node cardScreen = FindNodeOfType(sceneTree.Root, "NCardRewardSelectionScreen", 4);
+		if (cardScreen == null) return;
+		// Try to extract cards from the screen
+		try
+		{
+			var offeredCards = ExtractCardsFromScreen(cardScreen);
+			if (offeredCards == null || offeredCards.Count == 0) return;
+			Plugin.Log($"Event card offering detected (from screen node): {offeredCards.Count} cards");
+			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+			List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+			ShowCardAdvice(cards, deckAnalysis, gameState.Character);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"CheckForEventCardOffering reflection error: {ex.Message}");
+		}
+	}
+
+	private static List<CardInfo> ExtractCardsFromScreen(Node screen)
+	{
+		var cardsField = screen.GetType().GetField("_cards",
+			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+		var cardsProp = screen.GetType().GetProperty("Cards",
+			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+		object cardsObj = cardsField?.GetValue(screen) ?? cardsProp?.GetValue(screen);
+		if (cardsObj is IReadOnlyList<CardCreationResult> screenCards && screenCards.Count > 0)
+		{
+			var result = new List<CardInfo>();
+			foreach (var cr in screenCards)
+			{
+				if (cr.Card != null)
+					result.Add(GameStateReader.CardModelToInfo(cr.Card));
+			}
+			return result;
+		}
+		// Try card holders
+		var holdersField = screen.GetType().GetField("_cardHolders",
+			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+		if (holdersField != null)
+		{
+			var holders = holdersField.GetValue(screen);
+			if (holders is System.Collections.IList holderList && holderList.Count > 0 && holderList.Count <= 5)
+			{
+				var result = new List<CardInfo>();
+				foreach (var holder in holderList)
+				{
+					var crProp = holder.GetType().GetProperty("CreationResult",
+						System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+					if (crProp?.GetValue(holder) is CardCreationResult cr && cr.Card != null)
+						result.Add(GameStateReader.CardModelToInfo(cr.Card));
+				}
+				return result;
+			}
+		}
+		return null;
 	}
 
 	private void RefreshShopIfChanged()
@@ -1220,13 +1338,16 @@ public class OverlayManager
 			return;
 		}
 		bool screenChanged = _currentScreen != _previousScreen;
-		// Clean up any stale in-game badges when switching screens
+		// Invalidate any pending deferred badge calls on screen change
 		if (screenChanged)
+			_badgeEpoch++;
+		// Clean up in-game badges whenever we're not on a card reward screen
+		if (_currentScreen != "CARD REWARD")
 		{
 			try
 			{
 				SceneTree tree = Engine.GetMainLoop() as SceneTree;
-				if (tree?.Root != null)
+				if (tree?.Root != null && tree.GetNodesInGroup(GradeBadgeGroup).Count > 0)
 					CleanupInjectedBadges(tree.Root);
 			}
 			catch { }
@@ -1437,8 +1558,10 @@ public class OverlayManager
 	{
 		if (_panel == null || !GodotObject.IsInstanceValid(_panel))
 			return;
-		float height = _panel.Size.Y;
-		if (height < 40f) height = _panel.GetCombinedMinimumSize().Y;
+		// Use the tighter of actual size vs combined minimum to avoid excess space
+		float sizeY = _panel.Size.Y;
+		float minY = _panel.GetCombinedMinimumSize().Y;
+		float height = (minY > 40f) ? Math.Min(sizeY, minY) : sizeY;
 		height = Math.Max(height, 40f);
 		var viewport = _panel.GetViewportRect().Size;
 		if (viewport.Y > 0) height = Math.Min(height, viewport.Y - _panel.OffsetTop - 10f);
@@ -1638,11 +1761,11 @@ public class OverlayManager
 		vBoxContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		vBoxContainer.AddThemeConstantOverride("separation", 0);
 		hBoxContainer.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		// Card name
+		// Card name + sub-grade inline
 		Label label = new Label();
 		string text = PrettifyId(card.Id);
 		string upgradeTag = card.Upgraded ? " +" : "";
-		label.Text = (card.IsBestPick ? "\u2605 " : "") + text + upgradeTag;
+		label.Text = $"{text}{upgradeTag}";
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", card.IsBestPick ? ClrAccent : ClrCream);
 		label.AddThemeFontSizeOverride("font_size", 17);
@@ -1650,7 +1773,7 @@ public class OverlayManager
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		label.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
 		vBoxContainer.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
-		// Compact summary: "Attack \u2022 2 energy" + optional price + one-liner
+		// Line 2: type • cost • one-line reason
 		string typeLower = card.Type?.ToLowerInvariant() ?? "";
 		string costStr = card.Cost == 0 ? "0 cost" : card.Cost == 1 ? "1 energy" : $"{card.Cost} energy";
 		string priceStr = "";
@@ -1658,27 +1781,18 @@ public class OverlayManager
 		{
 			priceStr = _goldIcon != null ? "" : $" \u2022 {card.Price}g";
 		}
-		// Build a one-line reason summary
 		string oneLiner = BuildOneLiner(card.SynergyReasons, card.AntiSynergyReasons, card.BaseTier, card.FinalGrade);
-		Label metaLbl = new Label();
-		metaLbl.Text = $"{typeLower} \u2022 {costStr}{priceStr}";
-		ApplyFont(metaLbl, _fontBody);
-		metaLbl.AddThemeColorOverride("font_color", card.Cost >= 3 ? ClrExpensive : ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 15);
-		metaLbl.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
-		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
-		// One-liner on its own line so it never gets cut off
+		string metaText = $"{typeLower} \u2022 {costStr}{priceStr}";
 		if (oneLiner.Length > 0)
-		{
-			Label reasonLbl = new Label();
-			reasonLbl.Text = oneLiner;
-			ApplyFont(reasonLbl, _fontBody);
-			bool isNegative = card.AntiSynergyReasons != null && card.AntiSynergyReasons.Count > 0;
-			reasonLbl.AddThemeColorOverride("font_color", isNegative ? ClrNegative : ClrPositive);
-			reasonLbl.AddThemeFontSizeOverride("font_size", 15);
-			reasonLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			vBoxContainer.AddChild(reasonLbl, forceReadableName: false, Node.InternalMode.Disabled);
-		}
+			metaText += $" \u2022 {oneLiner}";
+		Label metaLbl = new Label();
+		metaLbl.Text = metaText;
+		ApplyFont(metaLbl, _fontBody);
+		bool hasAnti = card.AntiSynergyReasons != null && card.AntiSynergyReasons.Count > 0;
+		metaLbl.AddThemeColorOverride("font_color", hasAnti ? ClrNegative : card.Cost >= 3 ? ClrExpensive : ClrSub);
+		metaLbl.AddThemeFontSizeOverride("font_size", 14);
+		metaLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		// Shop price with gold icon (inline after meta)
 		if (card.Price > 0 && _goldIcon != null)
 		{
@@ -1778,10 +1892,10 @@ public class OverlayManager
 		vBoxContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 		vBoxContainer.AddThemeConstantOverride("separation", 0);
 		hBoxContainer.AddChild(vBoxContainer, forceReadableName: false, Node.InternalMode.Disabled);
-		// Relic name (always prettify from ID — game Title can be a localization key)
+		// Relic name + sub-grade inline
 		Label label = new Label();
 		string text = PrettifyId(relic.Id);
-		label.Text = (relic.IsBestPick ? "\u2605 " : "") + text;
+		label.Text = text;
 		ApplyFont(label, _fontBold);
 		label.AddThemeColorOverride("font_color", relic.IsBestPick ? ClrAccent : ClrCream);
 		label.AddThemeFontSizeOverride("font_size", 17);
@@ -1789,7 +1903,7 @@ public class OverlayManager
 		label.AddThemeColorOverride("font_outline_color", ClrOutline);
 		label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		vBoxContainer.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
-		// Compact summary with relic tenure
+		// Meta: rarity • tenure • one-liner
 		string rarityLower = relic.Rarity?.ToLowerInvariant() ?? "";
 		string oneLiner = BuildOneLiner(relic.SynergyReasons, relic.AntiSynergyReasons, relic.BaseTier, relic.FinalGrade);
 		string tenureStr = "";
@@ -1798,25 +1912,17 @@ public class OverlayManager
 			int tenure = Plugin.RunTracker.GetRelicTenure(relic.Id, _currentFloor);
 			if (tenure > 0) tenureStr = $" \u2022 held {tenure} floors";
 		}
+		string metaText = rarityLower + tenureStr;
+		if (oneLiner.Length > 0)
+			metaText += $" \u2022 {oneLiner}";
 		Label metaLbl = new Label();
-		metaLbl.Text = rarityLower + tenureStr;
+		metaLbl.Text = metaText;
 		ApplyFont(metaLbl, _fontBody);
-		metaLbl.AddThemeColorOverride("font_color", ClrSub);
-		metaLbl.AddThemeFontSizeOverride("font_size", 15);
+		bool hasAnti = relic.AntiSynergyReasons != null && relic.AntiSynergyReasons.Count > 0;
+		metaLbl.AddThemeColorOverride("font_color", hasAnti ? ClrNegative : ClrSub);
+		metaLbl.AddThemeFontSizeOverride("font_size", 14);
 		metaLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		vBoxContainer.AddChild(metaLbl, forceReadableName: false, Node.InternalMode.Disabled);
-		// One-liner on its own line (prevents cutoff)
-		if (oneLiner.Length > 0)
-		{
-			Label oneLinerLbl = new Label();
-			oneLinerLbl.Text = oneLiner;
-			ApplyFont(oneLinerLbl, _fontBody);
-			bool isNegative = oneLiner.Contains("doesn't") || oneLiner.Contains("conflict") || oneLiner.Contains("weaker") || oneLiner.Contains("costly") || oneLiner.Contains("redundant");
-			oneLinerLbl.AddThemeColorOverride("font_color", isNegative ? ClrNegative : ClrPositive);
-			oneLinerLbl.AddThemeFontSizeOverride("font_size", 14);
-			oneLinerLbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			vBoxContainer.AddChild(oneLinerLbl, forceReadableName: false, Node.InternalMode.Disabled);
-		}
 		// Archetype synergy tags
 		var archTags = ExtractArchetypeTags(relic.SynergyReasons);
 		if (archTags.Count > 0)
@@ -1947,30 +2053,31 @@ public class OverlayManager
 	{
 		bool hasContent = false;
 
-		// Score source hint — only show if learned from play data
-		if (scoreSource == "adaptive")
+		// Card description / notes first — what does this card do?
+		if (!string.IsNullOrEmpty(notes) && !IsFillerNote(notes))
 		{
-			Label srcLbl = new Label();
-			srcLbl.Text = "\u2139 rating based on your play data";
-			ApplyFont(srcLbl, _fontBody);
-			srcLbl.AddThemeColorOverride("font_color", ClrAqua);
-			srcLbl.AddThemeFontSizeOverride("font_size", 13);
-			parent.AddChild(srcLbl, forceReadableName: false, Node.InternalMode.Disabled);
+			Label lbl = new Label();
+			lbl.Text = notes;
+			ApplyFont(lbl, _fontBody);
+			lbl.AddThemeColorOverride("font_color", ClrNotes);
+			lbl.AddThemeFontSizeOverride("font_size", 14);
+			lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 			hasContent = true;
 		}
 
+		// Synergy / anti-synergy reasons — why is it rated this way?
 		if (synergies != null && synergies.Count > 0)
 		{
 			foreach (string reason in synergies.Take(3))
 			{
-				// Clean up numeric jargon from synergy reasons
 				string clean = CleanSynergyText(reason);
 				if (string.IsNullOrEmpty(clean)) continue;
 				Label lbl = new Label();
 				lbl.Text = "\u2714 " + clean;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrPositive);
-				lbl.AddThemeFontSizeOverride("font_size", 15);
+				lbl.AddThemeFontSizeOverride("font_size", 14);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
@@ -1987,23 +2094,22 @@ public class OverlayManager
 				lbl.Text = "\u2718 " + clean;
 				ApplyFont(lbl, _fontBody);
 				lbl.AddThemeColorOverride("font_color", ClrNegative);
-				lbl.AddThemeFontSizeOverride("font_size", 15);
+				lbl.AddThemeFontSizeOverride("font_size", 14);
 				lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 				parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
 				hasContent = true;
 			}
 		}
 
-		// Skip notes that are just filler descriptions (type/rarity/cost info already shown)
-		if (!string.IsNullOrEmpty(notes) && !IsFillerNote(notes))
+		// Score source hint — only show if learned from play data
+		if (scoreSource == "adaptive")
 		{
-			Label lbl = new Label();
-			lbl.Text = (hasContent ? "" : "") + notes;
-			ApplyFont(lbl, _fontBody);
-			lbl.AddThemeColorOverride("font_color", ClrNotes);
-			lbl.AddThemeFontSizeOverride("font_size", 15);
-			lbl.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			parent.AddChild(lbl, forceReadableName: false, Node.InternalMode.Disabled);
+			Label srcLbl = new Label();
+			srcLbl.Text = "\u2139 rated from your play data";
+			ApplyFont(srcLbl, _fontBody);
+			srcLbl.AddThemeColorOverride("font_color", ClrAqua);
+			srcLbl.AddThemeFontSizeOverride("font_size", 12);
+			parent.AddChild(srcLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 	}
 
@@ -2100,12 +2206,12 @@ public class OverlayManager
 		if (_currentCards != null && _currentCards.Count > 0)
 		{
 			var best = _currentCards.FirstOrDefault(c => c.IsBestPick) ?? _currentCards[0];
-			gradeStr = $"\u2605{best.FinalGrade}";
+			gradeStr = TierEngine.ScoreToSubGrade(best.FinalScore);
 		}
 		else if (_currentRelics != null && _currentRelics.Count > 0)
 		{
 			var best = _currentRelics.FirstOrDefault(r => r.IsBestPick) ?? _currentRelics[0];
-			gradeStr = $"\u2605{best.FinalGrade}";
+			gradeStr = TierEngine.ScoreToSubGrade(best.FinalScore);
 		}
 		string screen = _currentScreen ?? "IDLE";
 		return gradeStr.Length > 0 ? $"{gradeStr}  {screen}" : screen;
@@ -3060,7 +3166,7 @@ public class OverlayManager
 				Clear();
 				return;
 			}
-			string character = _currentCharacter ?? "unknown";
+			string character = Plugin.RunTracker?.CurrentCharacter ?? _currentCharacter ?? "unknown";
 			_currentCards = null;
 			_currentRelics = null;
 			_currentDeckAnalysis = null;
@@ -3092,6 +3198,9 @@ public class OverlayManager
 			AddSectionHeader($"RUN SUMMARY \u2014 {outcome.ToString().ToUpper()} (Floor {finalFloor})");
 			// Find controversial picks
 			var controversial = new List<(DecisionEvent evt, TierGrade chosenGrade, TierGrade bestGrade)>();
+			// Check if choice tracking is working (if most choices are null, ID extraction failed)
+			int nullChoices = events.Count(e => e.ChosenId == null && e.OfferedIds?.Count > 0);
+			bool choiceTrackingBroken = nullChoices > events.Count * 0.7f;
 			foreach (var evt in events)
 			{
 				if (evt.OfferedIds == null || evt.OfferedIds.Count == 0) continue;
@@ -3104,8 +3213,8 @@ public class OverlayManager
 				}
 				if (evt.ChosenId == null)
 				{
-					// Skipped — controversial if S or A was available
-					if (bestGrade >= TierGrade.A)
+					// Only flag skips if choice tracking is working
+					if (!choiceTrackingBroken && bestGrade >= TierGrade.A)
 						controversial.Add((evt, TierGrade.F, bestGrade));
 				}
 				else
@@ -3202,16 +3311,29 @@ public class OverlayManager
 		// Card rewards have 3-4 cards; draw/discard pile viewers have many more
 		if (scoredCards.Count > 5)
 			return;
+		// Skip badge injection on enchant/transform/upgrade/event screens that reuse card selection
+		SceneTree badgeTree = Engine.GetMainLoop() as SceneTree;
+		if (badgeTree?.Root != null)
+		{
+			if (HasNodeOfType(badgeTree.Root, "NDeckEnchantSelectScreen", 4) ||
+			    HasNodeOfType(badgeTree.Root, "NDeckTransformSelectScreen", 4) ||
+			    HasNodeOfType(badgeTree.Root, "NDeckUpgradeSelectScreen", 4) ||
+			    HasNodeOfType(badgeTree.Root, "NEventRoom", 4))
+			{
+				Plugin.Log("Skipping badge injection — enchant/transform/upgrade/event screen detected");
+				return;
+			}
+		}
 		try
 		{
 			// Clean up ALL previous badges globally (prevents stale badges from other screens)
 			SceneTree tree = Engine.GetMainLoop() as SceneTree;
 			if (tree?.Root != null)
 				CleanupInjectedBadges(tree.Root);
-			// Always log tree structure for card reward debugging
+			// Capture epoch so deferred call can detect stale invocations
+			int epoch = _badgeEpoch;
 			LogNodeTree(screenNode, "CardReward", 0, 5);
-			// Defer to next frame so the game's UI is fully laid out
-			Callable.From(() => InjectCardGradesDeferred(screenNode, scoredCards)).CallDeferred();
+			Callable.From(() => InjectCardGradesDeferred(screenNode, scoredCards, epoch)).CallDeferred();
 		}
 		catch (Exception ex)
 		{
@@ -3219,12 +3341,22 @@ public class OverlayManager
 		}
 	}
 
-	private void InjectCardGradesDeferred(Node screenNode, List<ScoredCard> scoredCards)
+	private void InjectCardGradesDeferred(Node screenNode, List<ScoredCard> scoredCards, int epoch)
 	{
 		if (screenNode == null || !GodotObject.IsInstanceValid(screenNode))
 			return;
-		// Re-check in deferred call (screen may have changed)
+		// Stale deferred call — screen changed since injection was queued
+		if (epoch != _badgeEpoch)
+			return;
 		if (!_showInGameBadges || _currentScreen != "CARD REWARD")
+			return;
+		// Double-check: skip if enchant/transform/upgrade/event screen appeared between queue and deferred execution
+		SceneTree deferTree = Engine.GetMainLoop() as SceneTree;
+		if (deferTree?.Root != null &&
+		    (HasNodeOfType(deferTree.Root, "NDeckEnchantSelectScreen", 4) ||
+		     HasNodeOfType(deferTree.Root, "NDeckTransformSelectScreen", 4) ||
+		     HasNodeOfType(deferTree.Root, "NDeckUpgradeSelectScreen", 4) ||
+		     HasNodeOfType(deferTree.Root, "NEventRoom", 4)))
 			return;
 		try
 		{
@@ -3262,8 +3394,9 @@ public class OverlayManager
 			SceneTree tree = Engine.GetMainLoop() as SceneTree;
 			if (tree?.Root != null)
 				CleanupInjectedBadges(tree.Root);
+			int epoch = _badgeEpoch;
 			LogNodeTree(screenNode, "RelicReward", 0, 5);
-			Callable.From(() => InjectRelicGradesDeferred(screenNode, scoredRelics)).CallDeferred();
+			Callable.From(() => InjectRelicGradesDeferred(screenNode, scoredRelics, epoch)).CallDeferred();
 		}
 		catch (Exception ex)
 		{
@@ -3271,9 +3404,11 @@ public class OverlayManager
 		}
 	}
 
-	private void InjectRelicGradesDeferred(Node screenNode, List<ScoredRelic> scoredRelics)
+	private void InjectRelicGradesDeferred(Node screenNode, List<ScoredRelic> scoredRelics, int epoch)
 	{
 		if (screenNode == null || !GodotObject.IsInstanceValid(screenNode))
+			return;
+		if (epoch != _badgeEpoch)
 			return;
 		try
 		{
@@ -3548,6 +3683,13 @@ public class OverlayManager
 		float badgeW = badge.GetCombinedMinimumSize().X;
 		float badgeH = badge.GetCombinedMinimumSize().Y;
 		badge.Position = new Vector2((parentW - badgeW) / 2f, parentH - badgeH - 4f);
+	}
+
+	public void CleanupAllBadges()
+	{
+		SceneTree tree = Engine.GetMainLoop() as SceneTree;
+		if (tree?.Root != null)
+			CleanupInjectedBadges(tree.Root);
 	}
 
 	private static void CleanupInjectedBadges(Node root)

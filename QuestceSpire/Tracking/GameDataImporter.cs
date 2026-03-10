@@ -83,8 +83,9 @@ public class GameDataImporter
 							var cardChoices = ps["card_choices"] as JArray;
 							if (cardChoices != null && cardChoices.Count > 0)
 							{
-								foreach (JObject cc in cardChoices)
+								foreach (JToken ccToken in cardChoices)
 								{
+									if (ccToken is not JObject cc) continue;
 									string cardId = NormalizeCardId((string)cc["card"]?["id"]);
 									if (cardId == null) continue;
 									bool picked = (bool)(cc["was_picked"] ?? false);
@@ -96,8 +97,9 @@ public class GameDataImporter
 							var relicChoices = ps["relic_choices"] as JArray;
 							if (relicChoices != null && relicChoices.Count > 0)
 							{
-								foreach (JObject rc in relicChoices)
+								foreach (JToken rcToken in relicChoices)
 								{
+									if (rcToken is not JObject rc) continue;
 									string relicId = NormalizeRelicId((string)rc["choice"]);
 									if (relicId == null) continue;
 									bool picked = (bool)(rc["was_picked"] ?? false);
@@ -211,7 +213,7 @@ public class GameDataImporter
 	{
 		if (string.IsNullOrEmpty(gameId)) return null;
 		// Strip "CARD." prefix
-		string id = gameId.StartsWith("CARD.", StringComparison.OrdinalIgnoreCase)
+		string id = gameId.StartsWith("CARD.", StringComparison.OrdinalIgnoreCase) && gameId.Length > 5
 			? gameId.Substring(5)
 			: gameId;
 		// Convert UPPER_SNAKE to Title Case: FEEL_NO_PAIN → Feel No Pain
@@ -232,7 +234,7 @@ public class GameDataImporter
 	private static string NormalizeRelicId(string gameId)
 	{
 		if (string.IsNullOrEmpty(gameId)) return null;
-		string id = gameId.StartsWith("RELIC.", StringComparison.OrdinalIgnoreCase)
+		string id = gameId.StartsWith("RELIC.", StringComparison.OrdinalIgnoreCase) && gameId.Length > 6
 			? gameId.Substring(6)
 			: gameId;
 		string[] parts = id.Split('_');
@@ -252,7 +254,7 @@ public class GameDataImporter
 	private static string NormalizeCharacter(string gameChar)
 	{
 		if (string.IsNullOrEmpty(gameChar)) return null;
-		string id = gameChar.StartsWith("CHARACTER.", StringComparison.OrdinalIgnoreCase)
+		string id = gameChar.StartsWith("CHARACTER.", StringComparison.OrdinalIgnoreCase) && gameChar.Length > 10
 			? gameChar.Substring(10)
 			: gameChar;
 		return id.ToLowerInvariant();

@@ -1,0 +1,11 @@
+name = "questcespire-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "questcespire-db"
+database_id = "a3b819e8-4cd1-4161-8874-7e6a69be8cb8"
+
+[triggers]
+crons = ["0 */6 * * *"]

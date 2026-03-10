@@ -347,6 +347,191 @@ public class RunDatabase
 		return (0, 0);
 	}
 
+	public int GetTotalRunCount()
+	{
+		if (!EnsureInitialized())
+			return 0;
+		try
+		{
+			using var conn = new SqliteConnection(_connectionString);
+			conn.Open();
+			using var cmd = conn.CreateCommand();
+			cmd.CommandText = "SELECT COUNT(*) FROM runs";
+			return Convert.ToInt32(cmd.ExecuteScalar());
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"GetTotalRunCount error: {ex.Message}");
+			return 0;
+		}
+	}
+
+	public List<CommunityCardStats> GetAllCommunityCardStats()
+	{
+		var list = new List<CommunityCardStats>();
+		if (!EnsureInitialized())
+			return list;
+		try
+		{
+			using var conn = new SqliteConnection(_connectionString);
+			conn.Open();
+			using var cmd = conn.CreateCommand();
+			cmd.CommandText = "SELECT * FROM community_card_stats";
+			using var reader = cmd.ExecuteReader();
+			while (reader.Read())
+			{
+				list.Add(new CommunityCardStats
+				{
+					CardId = reader.GetString(reader.GetOrdinal("card_id")),
+					Character = reader.GetString(reader.GetOrdinal("character")),
+					PickRate = reader.GetFloat(reader.GetOrdinal("pick_rate")),
+					WinRateWhenPicked = reader.GetFloat(reader.GetOrdinal("win_rate_when_picked")),
+					WinRateWhenSkipped = reader.GetFloat(reader.GetOrdinal("win_rate_when_skipped")),
+					SampleSize = reader.GetInt32(reader.GetOrdinal("sample_size")),
+					AvgFloorPicked = reader.GetFloat(reader.GetOrdinal("avg_floor_picked")),
+					ArchetypeContext = DeserializeDict(reader, "archetype_context")
+				});
+			}
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"GetAllCommunityCardStats error: {ex.Message}");
+		}
+		return list;
+	}
+
+	public List<CommunityRelicStats> GetAllCommunityRelicStats()
+	{
+		var list = new List<CommunityRelicStats>();
+		if (!EnsureInitialized())
+			return list;
+		try
+		{
+			using var conn = new SqliteConnection(_connectionString);
+			conn.Open();
+			using var cmd = conn.CreateCommand();
+			cmd.CommandText = "SELECT * FROM community_relic_stats";
+			using var reader = cmd.ExecuteReader();
+			while (reader.Read())
+			{
+				list.Add(new CommunityRelicStats
+				{
+					RelicId = reader.GetString(reader.GetOrdinal("relic_id")),
+					Character = reader.GetString(reader.GetOrdinal("character")),
+					PickRate = reader.GetFloat(reader.GetOrdinal("pick_rate")),
+					WinRateWhenPicked = reader.GetFloat(reader.GetOrdinal("win_rate_when_picked")),
+					WinRateWhenSkipped = reader.GetFloat(reader.GetOrdinal("win_rate_when_skipped")),
+					SampleSize = reader.GetInt32(reader.GetOrdinal("sample_size")),
+					AvgFloorPicked = reader.GetFloat(reader.GetOrdinal("avg_floor_picked")),
+					ArchetypeContext = DeserializeDict(reader, "archetype_context")
+				});
+			}
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"GetAllCommunityRelicStats error: {ex.Message}");
+		}
+		return list;
+	}
+
+	public void MergeCommunityCardStats(List<CommunityCardStats> imported)
+	{
+		if (!EnsureInitialized() || imported == null)
+			return;
+		var merged = new List<CommunityCardStats>();
+		foreach (var imp in imported)
+		{
+			var local = GetCommunityCardStats(imp.Character, imp.CardId);
+			if (local != null)
+			{
+				int totalSamples = local.SampleSize + imp.SampleSize;
+				if (totalSamples == 0) continue;
+				float lw = (float)local.SampleSize / totalSamples;
+				float iw = (float)imp.SampleSize / totalSamples;
+				merged.Add(new CommunityCardStats
+				{
+					CardId = imp.CardId,
+					Character = imp.Character,
+					PickRate = local.PickRate * lw + imp.PickRate * iw,
+					WinRateWhenPicked = local.WinRateWhenPicked * lw + imp.WinRateWhenPicked * iw,
+					WinRateWhenSkipped = local.WinRateWhenSkipped * lw + imp.WinRateWhenSkipped * iw,
+					SampleSize = totalSamples,
+					AvgFloorPicked = local.AvgFloorPicked * lw + imp.AvgFloorPicked * iw,
+					ArchetypeContext = MergeArchetypes(local.ArchetypeContext, local.SampleSize, imp.ArchetypeContext, imp.SampleSize)
+				});
+			}
+			else
+			{
+				merged.Add(imp);
+			}
+		}
+		SaveCommunityCardStats(merged);
+	}
+
+	public void MergeCommunityRelicStats(List<CommunityRelicStats> imported)
+	{
+		if (!EnsureInitialized() || imported == null)
+			return;
+		var merged = new List<CommunityRelicStats>();
+		foreach (var imp in imported)
+		{
+			var local = GetCommunityRelicStats(imp.Character, imp.RelicId);
+			if (local != null)
+			{
+				int totalSamples = local.SampleSize + imp.SampleSize;
+				if (totalSamples == 0) continue;
+				float lw = (float)local.SampleSize / totalSamples;
+				float iw = (float)imp.SampleSize / totalSamples;
+				merged.Add(new CommunityRelicStats
+				{
+					RelicId = imp.RelicId,
+					Character = imp.Character,
+					PickRate = local.PickRate * lw + imp.PickRate * iw,
+					WinRateWhenPicked = local.WinRateWhenPicked * lw + imp.WinRateWhenPicked * iw,
+					WinRateWhenSkipped = local.WinRateWhenSkipped * lw + imp.WinRateWhenSkipped * iw,
+					SampleSize = totalSamples,
+					AvgFloorPicked = local.AvgFloorPicked * lw + imp.AvgFloorPicked * iw,
+					ArchetypeContext = MergeArchetypes(local.ArchetypeContext, local.SampleSize, imp.ArchetypeContext, imp.SampleSize)
+				});
+			}
+			else
+			{
+				merged.Add(imp);
+			}
+		}
+		SaveCommunityRelicStats(merged);
+	}
+
+	private static Dictionary<string, float> MergeArchetypes(
+		Dictionary<string, float> a, int aSamples,
+		Dictionary<string, float> b, int bSamples)
+	{
+		var result = new Dictionary<string, float>();
+		int total = aSamples + bSamples;
+		if (total == 0) return result;
+		float aw = (float)aSamples / total;
+		float bw = (float)bSamples / total;
+
+		var allKeys = new HashSet<string>();
+		if (a != null) foreach (var k in a.Keys) allKeys.Add(k);
+		if (b != null) foreach (var k in b.Keys) allKeys.Add(k);
+
+		foreach (var key in allKeys)
+		{
+			float va = a != null && a.TryGetValue(key, out var av) ? av : 0f;
+			float vb = b != null && b.TryGetValue(key, out var bv) ? bv : 0f;
+			bool inA = a != null && a.ContainsKey(key);
+			bool inB = b != null && b.ContainsKey(key);
+			if (inA && inB)
+				result[key] = va * aw + vb * bw;
+			else if (inA)
+				result[key] = va;
+			else
+				result[key] = vb;
+		}
+		return result;
+	}
+
 	private static Dictionary<string, float> DeserializeDict(SqliteDataReader reader, string column)
 	{
 		if (reader.IsDBNull(reader.GetOrdinal(column)))

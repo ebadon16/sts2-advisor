@@ -185,15 +185,19 @@ public class TierEngine
 	/// </summary>
 	public static string ScoreToSubGrade(float score)
 	{
-		if (score >= 4.5f) return "S";
+		if (score >= 5.2f) return "S+";
+		if (score >= 4.8f) return "S";
+		if (score >= 4.5f) return "S-";
 		if (score >= 4.17f) return "A+";
 		if (score >= 3.83f) return "A";
 		if (score >= 3.5f) return "A-";
 		if (score >= 3.17f) return "B+";
 		if (score >= 2.83f) return "B";
 		if (score >= 2.5f) return "B-";
-		if (score >= 2.0f) return "C+";
-		if (score >= 1.5f) return "C";
+		if (score >= 2.17f) return "C+";
+		if (score >= 1.83f) return "C";
+		if (score >= 1.5f) return "C-";
+		if (score >= 1.0f) return "D+";
 		if (score >= 0.5f) return "D";
 		return "F";
 	}

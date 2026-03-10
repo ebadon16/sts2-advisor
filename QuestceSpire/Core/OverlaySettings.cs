@@ -18,6 +18,11 @@ public class OverlaySettings
 	public bool ShowDeckBreakdown { get; set; } = true;
 	public bool ShowDecisionHistory { get; set; } = false;
 	public bool ShowDrawProbability { get; set; } = true;
+	public bool CloudSyncEnabled { get; set; } = true;
+
+	// Bump this when defaults change to force migration on old saved files
+	public int SettingsVersion { get; set; } = 0;
+	private const int CurrentVersion = 3;
 
 	private static string GetSettingsPath()
 	{
@@ -35,6 +40,16 @@ public class OverlaySettings
 				var settings = JsonConvert.DeserializeObject<OverlaySettings>(json);
 				if (settings != null)
 				{
+					if (settings.SettingsVersion < CurrentVersion)
+					{
+						Plugin.Log($"Migrating settings from v{settings.SettingsVersion} to v{CurrentVersion}");
+						// v0-1 → v2: ShowDecisionHistory forced off
+						if (settings.SettingsVersion < 2)
+							settings.ShowDecisionHistory = false;
+						// v2 → v3: CloudSyncEnabled defaults to true (no action needed)
+						settings.SettingsVersion = CurrentVersion;
+						settings.Save();
+					}
 					Plugin.Log("Overlay settings loaded.");
 					return settings;
 				}

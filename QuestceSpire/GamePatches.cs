@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -23,6 +25,10 @@ namespace QuestceSpire;
 
 public static class GamePatches
 {
+	// Track the screen instance that ShowScreen was called on, so _Ready/retry
+	// don't inject badges on unrelated screens (discard pile, removal, etc.)
+	private static WeakReference<NCardRewardSelectionScreen> _activeCardRewardScreen;
+
 	private static void EnsureOverlay()
 	{
 		if (Plugin.Overlay == null)
@@ -42,32 +48,174 @@ public static class GamePatches
 	public static void OnCardRewardScreenReady(NCardRewardSelectionScreen __instance)
 	{
 		EnsureOverlay();
+		// Only retry for screens that ShowScreen was called on (not discard pile, etc.)
+		if (_activeCardRewardScreen == null || !_activeCardRewardScreen.TryGetTarget(out var active) || active != __instance)
+			return;
+		ScheduleRetry(() => TryShowCardRewardFromScreen(__instance), 5, 0.3);
 	}
 
 	public static void OnCardRewardOpened(NCardRewardSelectionScreen __result, IReadOnlyList<CardCreationResult> options, IReadOnlyList<CardRewardAlternative> extraOptions)
 	{
 		try
 		{
+			// Always clean up existing badges first — prevents stale badges on pile viewers, etc.
+			Plugin.Overlay?.CleanupAllBadges();
+			// Draw/discard pile viewers also use ShowScreen but with many cards — skip those
+			if (options != null && options.Count > 5)
+			{
+				Plugin.Log($"ShowScreen with {options.Count} cards — likely pile viewer, skipping.");
+				return;
+			}
+			// Screens that reuse NCardRewardSelectionScreen for non-reward purposes
+			string curScreen = Plugin.Overlay?.CurrentScreen;
+			if (curScreen == "CARD REMOVAL" || curScreen == "CARD UPGRADE" ||
+			    curScreen == "MERCHANT SHOP")
+			{
+				Plugin.Log($"ShowScreen fired during {curScreen} — skipping card reward logic.");
+				return;
+			}
 			EnsureOverlay();
+			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__result);
 			Plugin.Log("Card reward screen detected — analyzing...");
-			GameStateReader._lastCardOptions = options;
+			if (options != null)
+				GameStateReader._lastCardOptions = options;
 			GameStateReader._lastRelicOptions = null;
 			GameStateReader._lastMerchantInventory = null;
-			GameState gameState = GameStateReader.ReadCurrentState();
-			if (gameState != null)
+			if (!TryShowCardRewardFromScreen(__result))
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
-				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
-				List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-				Plugin.Overlay?.ShowCardAdvice(cards, deckAnalysis, gameState.Character);
-				// Inject grade badges directly onto game card nodes (STS1 mod style)
-				Plugin.Overlay?.InjectCardGrades(__result, cards);
-				Plugin.RunTracker?.RecordDecision(DecisionEventType.CardReward, gameState.OfferedCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				Plugin.Log("Game state not ready for card reward, scheduling retry...");
+				ScheduleRetry(() => TryShowCardRewardFromScreen(__result));
 			}
 		}
 		catch (Exception value)
 		{
 			Plugin.Log($"OnCardRewardOpened error: {value}");
+		}
+	}
+
+	public static void OnCardRewardRefreshed(NCardRewardSelectionScreen __instance, IReadOnlyList<CardCreationResult> options, IReadOnlyList<CardRewardAlternative> extraOptions)
+	{
+		try
+		{
+			if (options != null && options.Count > 5)
+				return;
+			string curScreen2 = Plugin.Overlay?.CurrentScreen;
+			if (curScreen2 == "CARD REMOVAL" || curScreen2 == "CARD UPGRADE" ||
+			    curScreen2 == "MERCHANT SHOP")
+				return;
+			EnsureOverlay();
+			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__instance);
+			Plugin.Log("Card reward RefreshOptions detected — re-analyzing...");
+			if (options != null)
+				GameStateReader._lastCardOptions = options;
+			GameStateReader._lastRelicOptions = null;
+			GameStateReader._lastMerchantInventory = null;
+			if (!TryShowCardRewardFromScreen(__instance))
+			{
+				Plugin.Log("Game state not ready for card refresh, scheduling retry...");
+				ScheduleRetry(() => TryShowCardRewardFromScreen(__instance));
+			}
+		}
+		catch (Exception value)
+		{
+			Plugin.Log($"OnCardRewardRefreshed error: {value}");
+		}
+	}
+
+	private static bool TryShowCardRewardFromScreen(NCardRewardSelectionScreen screen)
+	{
+		// Try reading card options from the screen instance via reflection
+		// This works even when Harmony parameter injection fails
+		if (GameStateReader._lastCardOptions == null || GameStateReader._lastCardOptions.Count == 0)
+		{
+			try
+			{
+				var cardsField = screen.GetType().GetField("_cards",
+					BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				var cardsProp = screen.GetType().GetProperty("Cards",
+					BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				object cardsObj = cardsField?.GetValue(screen) ?? cardsProp?.GetValue(screen);
+				if (cardsObj is IReadOnlyList<CardCreationResult> screenCards && screenCards.Count > 0)
+				{
+					Plugin.Log($"Read {screenCards.Count} cards from screen instance");
+					GameStateReader._lastCardOptions = screenCards;
+				}
+				else
+				{
+					// Try getting card holders and extracting cards from children
+					var holdersField = screen.GetType().GetField("_cardHolders",
+						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+					if (holdersField != null)
+					{
+						var holders = holdersField.GetValue(screen);
+						if (holders is System.Collections.IList holderList && holderList.Count > 0)
+						{
+							var results = new List<CardCreationResult>();
+							foreach (var holder in holderList)
+							{
+								var crProp = holder.GetType().GetProperty("CreationResult",
+									BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+								if (crProp?.GetValue(holder) is CardCreationResult cr)
+									results.Add(cr);
+							}
+							if (results.Count > 0)
+							{
+								Plugin.Log($"Read {results.Count} cards from card holders");
+								GameStateReader._lastCardOptions = results;
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"Failed to read cards from screen: {ex.Message}");
+			}
+		}
+
+		GameState gameState = GameStateReader.ReadCurrentState();
+		if (gameState == null) return false;
+		if (gameState.OfferedCards == null || gameState.OfferedCards.Count == 0)
+		{
+			Plugin.Log("Card reward: no offered cards in game state");
+			return false;
+		}
+
+		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+		Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
+		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+		Plugin.Overlay?.ShowCardAdvice(cards, deckAnalysis, gameState.Character);
+		Plugin.Overlay?.InjectCardGrades(screen, cards);
+		Plugin.RunTracker?.RecordDecision(DecisionEventType.CardReward, gameState.OfferedCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+		return true;
+	}
+
+	private static void ScheduleRetry(Func<bool> action, int retriesLeft = 3, double delay = 0.2)
+	{
+		try
+		{
+			var tree = (SceneTree)Engine.GetMainLoop();
+			if (tree == null) return;
+			var timer = tree.CreateTimer(delay);
+			timer.Timeout += () =>
+			{
+				try
+				{
+					if (!action() && retriesLeft > 1)
+					{
+						Plugin.Log($"Retry failed, {retriesLeft - 1} attempts remaining...");
+						ScheduleRetry(action, retriesLeft - 1, delay);
+					}
+				}
+				catch (Exception ex)
+				{
+					Plugin.Log($"Retry error: {ex.Message}");
+				}
+			};
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"ScheduleRetry error: {ex.Message}");
 		}
 	}
 
@@ -88,7 +236,7 @@ public static class GamePatches
 				List<ScoredRelic> relics2 = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.OfferedRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				Plugin.Overlay?.ShowRelicAdvice(relics2, deckAnalysis, gameState.Character);
 				// Inject grade badges directly onto game relic nodes
-				Plugin.Overlay?.InjectRelicGrades(__result, relics2);
+				// Relic badge injection removed — overlay panel handles relic screens
 				bool isBossRelic = gameState.OfferedRelics.Count > 0 && gameState.OfferedRelics.TrueForAll(r => string.Equals(r.Rarity, "Boss", StringComparison.OrdinalIgnoreCase));
 				DecisionEventType relicEventType = isBossRelic ? DecisionEventType.BossRelic : DecisionEventType.RelicReward;
 				Plugin.RunTracker?.RecordDecision(relicEventType, gameState.OfferedRelics.ConvertAll((RelicInfo r) => r.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
@@ -119,7 +267,7 @@ public static class GamePatches
 				List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				Plugin.Overlay?.ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);
 				// Inject grade badges onto shop items
-				Plugin.Overlay?.InjectShopGrades(__instance, cards, relics);
+				// Shop badge injection removed — overlay panel handles shop screen
 				// Record shop cards as a decision for adaptive scoring
 				List<string> shopOfferedIds = gameState.ShopCards.ConvertAll((CardInfo c) => c.Id);
 				shopOfferedIds.AddRange(gameState.ShopRelics.ConvertAll((RelicInfo r) => r.Id));
@@ -152,19 +300,43 @@ public static class GamePatches
 		}
 	}
 
-	public static void OnUpgradeScreenOpened(object __instance)
+	public static void OnUpgradeScreenOpened(object __result, IReadOnlyList<CardModel> cards)
 	{
 		try
 		{
 			EnsureOverlay();
-			Plugin.Log("Upgrade card selection detected — showing upgrade priorities...");
+			Plugin.Log($"Upgrade card selection detected — {cards?.Count ?? 0} cards offered...");
 			GameState gameState = GameStateReader.ReadCurrentState();
-			if (gameState != null)
+			if (gameState == null) return;
+
+			string character = gameState.Character ?? "unknown";
+			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine);
+
+			// Mark as upgrade screen BEFORE showing cards — prevents card reward patch from injecting badges
+			Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
+
+			// Convert offered CardModels to CardInfo and score them
+			if (cards != null && cards.Count > 0)
 			{
-				string character = gameState.Character ?? "unknown";
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine);
-				Plugin.Overlay?.ShowUpgradeAdvice(deckAnalysis, gameState, character);
+				var offeredCards = new List<CardInfo>();
+				foreach (var card in cards)
+				{
+					if (card != null)
+						offeredCards.Add(GameStateReader.CardModelToInfo(card));
+				}
+				if (offeredCards.Count > 0)
+				{
+					var scored = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, character,
+						gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
+					Plugin.Overlay?.ShowCardAdvice(scored, deckAnalysis, character);
+					Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
+					Plugin.Overlay?.CleanupAllBadges();
+					return;
+				}
 			}
+
+			// Fallback: just show deck analysis
+			Plugin.Overlay?.ShowUpgradeAdvice(deckAnalysis, gameState, character);
 		}
 		catch (Exception value)
 		{
@@ -298,6 +470,7 @@ public static class GamePatches
 			Plugin.Overlay?.ShowRunSummary(runOutcome, num, num2);
 			Plugin.RunTracker?.EndRun(runOutcome, num, num2);
 			Plugin.LocalStats?.RecomputeAll();
+			Task.Run(() => Plugin.CloudSync?.UploadPendingRuns());
 			Plugin.Log($"Run ended: {runOutcome} on floor {num} (act {num2})");
 		}
 		catch (Exception value)
@@ -312,9 +485,11 @@ public static class GamePatches
 		PatchMethod(harmony, typeof(NChooseARelicSelection), "SelectHolder", nameof(OnRelicSelected));
 		PatchMethod(harmony, typeof(NCardRewardSelectionScreen), "_Ready", nameof(OnCardRewardScreenReady));
 		PatchMethod(harmony, typeof(NCardRewardSelectionScreen), "ShowScreen", nameof(OnCardRewardOpened));
+		PatchMethod(harmony, typeof(NCardRewardSelectionScreen), "RefreshOptions", nameof(OnCardRewardRefreshed));
 		PatchMethod(harmony, typeof(NChooseARelicSelection), "ShowScreen", nameof(OnRelicRewardOpened));
 		PatchMethod(harmony, typeof(NMerchantInventory), "Open", nameof(OnShopOpened));
-		PatchMethod(harmony, typeof(NMerchantCardRemoval), "FillSlot", nameof(OnCardRemovalOpened));
+		// NMerchantCardRemoval.FillSlot fires on shop load, not user click — skip it
+		// Card removal advice shown as part of shop screen instead
 		PatchMethod(harmony, typeof(NMapScreen), "Open", nameof(OnMapScreenEntered));
 		PatchMethod(harmony, typeof(NEventRoom), "Create", nameof(OnEventShowChoices));
 		PatchMethod(harmony, typeof(NCombatRoom), "Create", nameof(OnCombatSetup));

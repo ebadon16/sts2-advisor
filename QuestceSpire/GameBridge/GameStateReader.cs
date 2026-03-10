@@ -16,11 +16,29 @@ public static class GameStateReader
 
 	private static bool _keywordsFieldWarned;
 
-	internal static IReadOnlyList<CardCreationResult> _lastCardOptions;
+	private static readonly object _stateLock = new object();
 
-	internal static IReadOnlyList<RelicModel> _lastRelicOptions;
+	private static IReadOnlyList<CardCreationResult> _lastCardOptionsField;
+	private static IReadOnlyList<RelicModel> _lastRelicOptionsField;
+	private static MerchantInventory _lastMerchantInventoryField;
 
-	internal static MerchantInventory _lastMerchantInventory;
+	internal static IReadOnlyList<CardCreationResult> _lastCardOptions
+	{
+		get { lock (_stateLock) return _lastCardOptionsField; }
+		set { lock (_stateLock) _lastCardOptionsField = value; }
+	}
+
+	internal static IReadOnlyList<RelicModel> _lastRelicOptions
+	{
+		get { lock (_stateLock) return _lastRelicOptionsField; }
+		set { lock (_stateLock) _lastRelicOptionsField = value; }
+	}
+
+	internal static MerchantInventory _lastMerchantInventory
+	{
+		get { lock (_stateLock) return _lastMerchantInventoryField; }
+		set { lock (_stateLock) _lastMerchantInventoryField = value; }
+	}
 
 	public static GameState ReadCurrentState()
 	{
@@ -67,7 +85,10 @@ public static class GameStateReader
 				state.DiscardPile = ReadPile(player, "DiscardPile");
 				state.HandCards = ReadPile(player, "Hand");
 			}
-			catch { }
+			catch (Exception pileEx)
+			{
+				Plugin.Log($"ReadPiles error (non-fatal): {pileEx.Message}");
+			}
 			return state;
 		}
 		catch (Exception ex)
@@ -310,7 +331,10 @@ public static class GameStateReader
 				}
 			}
 		}
-		catch { }
+		catch (Exception ex)
+		{
+			Plugin.Log($"ReadPile({propertyName}) error (non-fatal): {ex.Message}");
+		}
 		return list;
 	}
 
@@ -319,7 +343,7 @@ public static class GameStateReader
 		return _stateProperty?.GetValue(runManager) as RunState;
 	}
 
-	private static CardInfo CardModelToInfo(CardModel card)
+	internal static CardInfo CardModelToInfo(CardModel card)
 	{
 		CardInfo obj = new CardInfo
 		{
@@ -385,7 +409,10 @@ public static class GameStateReader
 				if (result is int price) return price;
 			}
 		}
-		catch { }
+		catch (Exception ex)
+		{
+			Plugin.Log($"ReadMerchantPrice error (non-fatal): {ex.Message}");
+		}
 		return 0;
 	}
 

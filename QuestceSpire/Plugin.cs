@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Saves;
@@ -43,6 +44,8 @@ public static class Plugin
 
 	public static CardPropertyScorer CardPropertyScorer { get; private set; }
 
+	public static CloudSync CloudSync { get; private set; }
+
 	public static OverlayManager Overlay { get; set; }
 
 	public static void Init()
@@ -77,6 +80,8 @@ public static class Plugin
 		LocalStats.RecomputeAll();
 		new GameDataImporter(RunDatabase).ImportAll();
 		AdaptiveScorer = new AdaptiveScorer(RunDatabase);
+		CloudSync = new CloudSync(RunDatabase, RunTracker.PlayerId);
+		Task.Run(() => CloudSync.DownloadCommunityStats());
 		_harmony = new Harmony(HarmonyId);
 		_harmony.PatchAll(typeof(GamePatches).Assembly);
 		GamePatches.ApplyManualPatches(_harmony);

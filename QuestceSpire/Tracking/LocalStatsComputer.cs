@@ -40,6 +40,7 @@ public class LocalStatsComputer
 		string connectionString = _db.ConnectionString;
 		if (connectionString == null)
 		{
+			Plugin.Log("RecomputeCardStats: database not initialized — skipping.");
 			return;
 		}
 		using SqliteConnection sqliteConnection = new SqliteConnection(connectionString);
@@ -87,6 +88,7 @@ public class LocalStatsComputer
 		string connectionString = _db.ConnectionString;
 		if (connectionString == null)
 		{
+			Plugin.Log("RecomputeRelicStats: database not initialized — skipping.");
 			return;
 		}
 		using SqliteConnection sqliteConnection = new SqliteConnection(connectionString);
@@ -137,7 +139,11 @@ public class LocalStatsComputer
 	private void ComputeArchetypeContext()
 	{
 		string connectionString = _db.ConnectionString;
-		if (connectionString == null) return;
+		if (connectionString == null)
+		{
+			Plugin.Log("ComputeArchetypeContext: database not initialized — skipping.");
+			return;
+		}
 
 		try
 		{
@@ -190,6 +196,7 @@ public class LocalStatsComputer
 
 					foreach (var arch in archetypes)
 					{
+						if (arch.CoreTags == null || arch.CoreTags.Count == 0) continue;
 						int coreCount = 0;
 						foreach (string coreTag in arch.CoreTags)
 						{
