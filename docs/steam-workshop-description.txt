@@ -1,0 +1,59 @@
+TITLE: Qu'est-ce Spire? — AI Card & Relic Advisor
+
+SHORT DESCRIPTION: Real-time overlay that grades every card and relic, powered by community win-rate data. Like SpireLogs meets an in-game coach.
+
+---
+
+FULL DESCRIPTION:
+
+[h1]What Is This?[/h1]
+An overlay that appears on every card reward, relic selection, and shop screen — instantly showing tier grades (S/A/B/C/D/F), win-delta scores, and synergy analysis based on your current deck.
+
+The advice gets smarter the more people use it. Every run uploads anonymized pick/skip data to a shared server, and the community-wide win rates feed back into everyone's recommendations.
+
+[h1]Features[/h1]
+[list]
+[*] [b]Tier grades[/b] for all 400+ cards and 150+ relics across all 5 characters
+[*] [b]Win-delta scoring[/b] — see how much picking a card improves your win chance
+[*] [b]Deck-aware synergy analysis[/b] — grades shift based on your archetype (poison, strength, frost, etc.)
+[*] [b]Community stats[/b] — aggregated pick rates and win rates from all players
+[*] [b]Self-learning[/b] — your local play data blends with community data for personalized advice
+[*] [b]Best pick recommendation[/b] with explanation
+[*] [b]Deck breakdown[/b] — see your deck's archetype composition and balance
+[*] [b]Draw probability[/b] — know your odds of seeing key cards
+[/list]
+
+[h1]Supported Characters[/h1]
+[list]
+[*] Ironclad (87 cards)
+[*] Silent (88 cards)
+[*] Defect (88 cards)
+[*] Regent (88 cards)
+[*] Necrobinder (88 cards)
+[*] Colorless (64 cards)
+[/list]
+
+[h1]Controls[/h1]
+[list]
+[*] F7 — Toggle overlay visibility
+[*] F8 — Toggle in-game grade badges
+[*] F9 — Cycle panel position (left/right)
+[*] F10 — Toggle deck breakdown
+[*] F11 — Toggle draw probability
+[/list]
+
+[h1]Privacy[/h1]
+Run data is uploaded anonymously (random player ID, no account info). You can opt out by setting CloudSyncEnabled to false in the settings file. The mod works fully offline — community stats just make it better.
+
+[h1]Community Stats Dashboard[/h1]
+Browse all card/relic win rates at:
+https://questcespire-api.questcespire.workers.dev
+
+[h1]Source Code[/h1]
+Open source on GitHub:
+https://github.com/ebadon16/sts2-advisor
+
+[h1]Credits[/h1]
+Built with Harmony, Godot, and Cloudflare Workers.
+Tier data curated from high-ascension community knowledge.
+Regent and Necrobinder tiers are educated guesses — the adaptive system auto-corrects with play data.

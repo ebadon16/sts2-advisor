@@ -1,0 +1,14 @@
+CHANNEL: #modding (Slay the Spire Discord)
+
+---
+
+**Qu'est-ce Spire?** — Real-time card/relic advisor overlay for STS2
+
+Grades every card and relic offering with S-F tiers based on community win-rate data. Detects your deck archetype and adjusts for synergy. Gets smarter as more people use it.
+
+All 5 characters supported. Open source.
+
+Dashboard: https://questcespire-api.questcespire.workers.dev
+GitHub: https://github.com/ebadon16/sts2-advisor
+
+Looking for tier data feedback, especially for Regent and Necrobinder.

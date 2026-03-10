@@ -1,0 +1,32 @@
+SUBREDDIT: r/slaythespire
+
+TITLE: I built a community-powered card advisor for STS2 — grades every card/relic in real-time using aggregated win-rate data
+
+---
+
+BODY:
+
+I've been working on **Qu'est-ce Spire?**, an overlay mod for Slay the Spire 2 that grades every card and relic offering in real-time.
+
+**What it does:**
+
+- Shows S/A/B/C/D/F tier grades on card reward, shop, and relic screens
+- Grades are based on **win-delta** — how much picking a card improves your win rate vs. skipping it
+- Analyzes your current deck and adjusts grades for synergy (e.g., Catalyst jumps from B to S in a poison deck)
+- Shows a "best pick" recommendation with reasoning
+
+**The SpireLogs part:**
+
+The mod anonymously uploads every pick/skip decision and run outcome to a shared server. All that data gets aggregated into community-wide pick rates and win deltas — think SpireLogs but for STS2, built directly into an advisor overlay.
+
+As more people use it, the recommendations get better. Right now the tier data is hand-curated, but the system is designed to self-correct as community data accumulates.
+
+**Browse the community stats:** https://questcespire-api.questcespire.workers.dev
+
+**All 5 characters supported** — Ironclad, Silent, Defect, Regent, and Necrobinder (Regent/Necrobinder tiers are educated guesses that auto-correct with data).
+
+**Controls:** F7 toggles visibility, F8 toggles grade badges, F9 moves the panel.
+
+**Open source:** https://github.com/ebadon16/sts2-advisor
+
+You can opt out of cloud sync in settings if you just want the local advisor. Looking for feedback, tier data corrections (especially for Regent/Necrobinder), and more players to grow the dataset.
