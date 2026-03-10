@@ -1,5 +1,3 @@
-import type { Env } from './index';
-
 interface UploadRun {
 	run_id: string;
 	character: string;
@@ -85,13 +83,14 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 
 	let accepted = 0;
 	let duplicates = 0;
+	const acceptedRunIds = new Set<string>();
 
 	// Insert runs (dedup by run_id)
 	for (const run of body.runs) {
 		if (!run.run_id || !run.character) continue;
 
 		try {
-			await db
+			const result = await db
 				.prepare(
 					`INSERT OR IGNORE INTO runs
 					 (run_id, player_id, character, seed, start_time, end_time, outcome, final_floor, final_act, ascension_level, mod_version)
@@ -112,14 +111,9 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 				)
 				.run();
 
-			// Check if the row was actually inserted
-			const exists = await db
-				.prepare('SELECT player_id FROM runs WHERE run_id = ? AND player_id = ?')
-				.bind(run.run_id, body.player_id)
-				.first();
-
-			if (exists) {
+			if (result.meta.changes > 0) {
 				accepted++;
+				acceptedRunIds.add(run.run_id);
 			} else {
 				duplicates++;
 			}
@@ -132,7 +126,7 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 	let decisionsInserted = 0;
 	if (body.decisions && Array.isArray(body.decisions)) {
 		for (const d of body.decisions) {
-			if (!d.run_id) continue;
+			if (!d.run_id || !acceptedRunIds.has(d.run_id)) continue;
 
 			try {
 				await db

@@ -5,6 +5,7 @@ import { getDashboardHtml } from './dashboard';
 
 export interface Env {
 	DB: D1Database;
+	ADMIN_KEY?: string;
 }
 
 function corsHeaders(): HeadersInit {
@@ -48,6 +49,9 @@ export default {
 			}
 
 			if (path === '/api/aggregate' && request.method === 'POST') {
+				if (env.ADMIN_KEY && request.headers.get('X-Admin-Key') !== env.ADMIN_KEY) {
+					return errorResponse('Unauthorized', 401);
+				}
 				return await handleAggregate(env.DB);
 			}
 
