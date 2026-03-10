@@ -79,6 +79,9 @@ public class OverlayManager
 	// Feature 6: Relic tenure
 	private int _currentFloor;
 
+	// Debug overlay (F10)
+	private bool _showDebug;
+
 	// V1: Color-coded title separator
 	private HSeparator _titleSep;
 
@@ -152,6 +155,7 @@ public class OverlayManager
 	private StyleBoxFlat _sbChip;
 
 	private OverlaySettings _settings;
+	public OverlaySettings Settings => _settings;
 
 	private StyleBoxFlat _sbHover;
 
@@ -901,7 +905,7 @@ public class OverlayManager
 		Rebuild();
 	}
 
-	public void ShowCombatAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int actNumber, int floor, GameState gameState = null)
+	public void ShowCombatAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int actNumber, int floor, GameState gameState = null, List<string> enemyIds = null)
 	{
 		_currentCards = null;
 		_currentRelics = null;
@@ -909,12 +913,49 @@ public class OverlayManager
 		_currentScreen = "COMBAT";
 		_currentFloor = floor;
 		_currentGameState = gameState;
-		_mapAdvice = GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor);
+		_mapAdvice = new List<(string, string, Color)>();
+
+		// Enemy-specific tips (prepended before generic)
+		if (enemyIds != null && Plugin.EnemyAdvisor != null)
+		{
+			var tips = Plugin.EnemyAdvisor.GetTips(enemyIds);
+			if (tips != null)
+			{
+				foreach (var enemy in tips)
+				{
+					Color dangerColor = enemy.DangerLevel switch
+					{
+						"extreme" => ClrNegative,
+						"high" => ClrExpensive,
+						"medium" => ClrAccent,
+						_ => ClrSub
+					};
+					string dangerIcon = enemy.DangerLevel switch
+					{
+						"extreme" => "\u2620",
+						"high" => "\u26a0",
+						"medium" => "\u25c6",
+						_ => "\u25cb"
+					};
+					_mapAdvice.Add((dangerIcon, $"{enemy.EnemyName} [{enemy.DangerLevel?.ToUpperInvariant()}]", dangerColor));
+					if (enemy.Tips != null)
+					{
+						foreach (var tip in enemy.Tips)
+						{
+							_mapAdvice.Add(("\u2022", tip, ClrCream));
+						}
+					}
+				}
+			}
+		}
+
+		// Generic combat advice (appended)
+		_mapAdvice.AddRange(GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor));
 		MarkUpdated();
 		Rebuild();
 	}
 
-	public void ShowEventAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int gold, int actNumber, int floor)
+	public void ShowEventAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int gold, int actNumber, int floor, string eventId = null)
 	{
 		_currentCards = null;
 		_currentRelics = null;
@@ -922,7 +963,42 @@ public class OverlayManager
 		_currentScreen = "EVENT";
 		_currentFloor = floor;
 		_currentGameState = null;
-		_mapAdvice = GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
+		_mapAdvice = new List<(string, string, Color)>();
+
+		// Event-specific advice (prepended before generic)
+		if (eventId != null && Plugin.EventAdvisor != null)
+		{
+			var entry = Plugin.EventAdvisor.GetAdvice(eventId);
+			if (entry != null)
+			{
+				int deckSize = deckAnalysis?.TotalCards ?? 0;
+				var choices = Plugin.EventAdvisor.EvaluateChoices(entry, currentHP, maxHP, gold, deckSize, actNumber);
+				if (choices != null && choices.Count > 0)
+				{
+					_mapAdvice.Add(("\u2139", $"Event: {entry.EventName}", ClrHeader));
+					foreach (var (label, rating, notes) in choices)
+					{
+						string icon = rating switch
+						{
+							"good" => "\u2714",
+							"bad" => "\u2716",
+							_ => "\u25c6"
+						};
+						Color color = rating switch
+						{
+							"good" => ClrPositive,
+							"bad" => ClrNegative,
+							_ => ClrExpensive
+						};
+						string text = string.IsNullOrEmpty(notes) ? label : $"{label} — {notes}";
+						_mapAdvice.Add((icon, text, color));
+					}
+				}
+			}
+		}
+
+		// Generic event advice (appended)
+		_mapAdvice.AddRange(GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor));
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1025,6 +1101,7 @@ public class OverlayManager
 		AddSettingsToggle(menuVBox, "In-Game Badges", _showInGameBadges, () => { ToggleInGameBadges(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Decision Log", _showHistory, () => { ToggleHistory(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Deck Breakdown", _showDeckBreakdown, () => { _showDeckBreakdown = !_showDeckBreakdown; _settings.ShowDeckBreakdown = _showDeckBreakdown; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Cloud Sync", _settings.CloudSyncEnabled, () => { _settings.CloudSyncEnabled = !_settings.CloudSyncEnabled; _settings.Save(); RefreshSettingsMenu(); });
 
 		// Opacity section
 		HSeparator sep2 = new HSeparator();
@@ -1331,6 +1408,13 @@ public class OverlayManager
 		}
 	}
 
+	public void ToggleDebugOverlay()
+	{
+		_showDebug = !_showDebug;
+		Plugin.Log($"Debug overlay: {(_showDebug ? "ON" : "OFF")}");
+		Rebuild();
+	}
+
 	private void Rebuild()
 	{
 		if (!EnsureOverlay())
@@ -1396,6 +1480,16 @@ public class OverlayManager
 				_content.RemoveChild(child);
 				child.QueueFree();
 			}
+		}
+		// Update notification banner
+		if (Plugin.LatestVersion != null)
+		{
+			Label updateLbl = new Label();
+			updateLbl.Text = $"\u26a0 Update Available: v{Plugin.LatestVersion}";
+			ApplyFont(updateLbl, _fontBold);
+			updateLbl.AddThemeFontSizeOverride("font_size", 14);
+			updateLbl.AddThemeColorOverride("font_color", ClrExpensive);
+			_content.AddChild(updateLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		bool hasCards = _currentCards != null && _currentCards.Count > 0;
 		bool hasRelics = _currentRelics != null && _currentRelics.Count > 0;
@@ -1499,6 +1593,44 @@ public class OverlayManager
 			}
 		}
 		// (no placeholder when no cards/relics — deck breakdown below is sufficient)
+		// YOUR STATS — show on MAP/IDLE screens when enough local data exists
+		string statsCharacter = _currentCharacter ?? Plugin.RunTracker?.CurrentCharacter;
+		if ((_currentScreen == "MAP" || _currentScreen == "IDLE" || _currentScreen == "MAP / COMBAT") && statsCharacter != null)
+		{
+			try
+			{
+				var stats = Plugin.RunDatabase?.GetStatsComparison(statsCharacter);
+				if (stats.HasValue && stats.Value.localRuns >= 3)
+				{
+					var (localWR, localN, commWR, commN) = stats.Value;
+					AddSectionHeader("YOUR STATS");
+					float delta = localWR - commWR;
+					Color deltaColor = delta >= 0 ? ClrPositive : ClrNegative;
+					string deltaStr = delta >= 0 ? $"+{delta:F1}%" : $"{delta:F1}%";
+
+					Label statsLbl = new Label();
+					statsLbl.Text = $"Win rate: {localWR:F1}% ({localN} runs)";
+					ApplyFont(statsLbl, _fontBody);
+					statsLbl.AddThemeFontSizeOverride("font_size", 15);
+					statsLbl.AddThemeColorOverride("font_color", ClrCream);
+					_content.AddChild(statsLbl, forceReadableName: false, Node.InternalMode.Disabled);
+
+					if (commN > 0)
+					{
+						Label commLbl = new Label();
+						commLbl.Text = $"Community: {commWR:F1}%  (delta: {deltaStr})";
+						ApplyFont(commLbl, _fontBody);
+						commLbl.AddThemeFontSizeOverride("font_size", 14);
+						commLbl.AddThemeColorOverride("font_color", deltaColor);
+						_content.AddChild(commLbl, forceReadableName: false, Node.InternalMode.Disabled);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"Stats comparison error: {ex.Message}");
+			}
+		}
 		// Deck breakdown — only shown when enabled in settings
 		if (_showDeckBreakdown && _currentDeckAnalysis != null)
 		{
@@ -1509,6 +1641,35 @@ public class OverlayManager
 		if (_showHistory)
 		{
 			AddDecisionHistory();
+		}
+		// Debug overlay (F10)
+		if (_showDebug)
+		{
+			AddSectionHeader("DEBUG (F10)");
+			// Hook status
+			string[] hookNames = { "OnCardRewardOpened", "OnRelicRewardOpened", "OnShopOpened",
+				"OnMapScreenEntered", "OnEventShowChoices", "OnCombatSetup", "OnRestSiteOpened",
+				"OnRunLaunched", "OnRunEnded" };
+			foreach (var hookName in hookNames)
+			{
+				string timeStr = GamePatches.HookLastFired.TryGetValue(hookName, out var dt)
+					? dt.ToString("HH:mm:ss")
+					: "never";
+				Label hookLbl = new Label();
+				hookLbl.Text = $"  {hookName}: {timeStr}";
+				ApplyFont(hookLbl, _fontBody);
+				hookLbl.AddThemeFontSizeOverride("font_size", 12);
+				hookLbl.AddThemeColorOverride("font_color", timeStr == "never" ? ClrSub : ClrCream);
+				_content.AddChild(hookLbl, forceReadableName: false, Node.InternalMode.Disabled);
+			}
+			// State info
+			Label stateLbl = new Label();
+			int deckSize = _currentDeckAnalysis?.TotalCards ?? 0;
+			stateLbl.Text = $"  Screen: {_currentScreen}  Char: {_currentCharacter ?? "?"}  Floor: {_currentFloor}  Deck: {deckSize}  v{Plugin.ModVersion}";
+			ApplyFont(stateLbl, _fontBody);
+			stateLbl.AddThemeFontSizeOverride("font_size", 12);
+			stateLbl.AddThemeColorOverride("font_color", ClrAqua);
+			_content.AddChild(stateLbl, forceReadableName: false, Node.InternalMode.Disabled);
 		}
 		// Settings button at bottom
 		{
@@ -2255,7 +2416,7 @@ public class OverlayManager
 	{
 		var events = Plugin.RunTracker?.GetCurrentRunEvents();
 		if (events == null || events.Count == 0) return;
-		AddSectionHeader("DECISION LOG (F10)");
+		AddSectionHeader("DECISION LOG");
 
 		// Wrap in a scroll container so long logs don't stretch the panel
 		ScrollContainer scroll = new ScrollContainer();

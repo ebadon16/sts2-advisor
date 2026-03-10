@@ -48,6 +48,14 @@ export default {
 				return await handleStats(url, env.DB);
 			}
 
+			if (path === '/api/version' && request.method === 'GET') {
+				return jsonResponse({
+					latest: '0.7.0',
+					release_url: 'https://github.com/questcespire/questcespire/releases/latest',
+					message: 'Event advice, enemy tips, stats comparison, debug overlay',
+				});
+			}
+
 			if (path === '/api/aggregate' && request.method === 'POST') {
 				if (env.ADMIN_KEY && request.headers.get('X-Admin-Key') !== env.ADMIN_KEY) {
 					return errorResponse('Unauthorized', 401);

@@ -136,20 +136,29 @@ public static class ArchetypeDefinitions
 		{
 			new Archetype
 			{
-				Id = "stars",
-				DisplayName = "Stars / Energy",
-				CoreTags = new List<string> { "stars" },
-				SupportTags = new List<string> { "scaling", "draw" },
+				Id = "stellar",
+				DisplayName = "Stellar / Stars",
+				CoreTags = new List<string> { "stellar", "stars" },
+				SupportTags = new List<string> { "draw", "scaling", "zero_cost" },
 				CoreThreshold = 3,
 				SupportThreshold = 2
 			},
 			new Archetype
 			{
-				Id = "forge",
-				DisplayName = "Sovereign Blade / Forge",
-				CoreTags = new List<string> { "forge" },
-				SupportTags = new List<string> { "stars", "damage" },
+				Id = "authority",
+				DisplayName = "Authority / Forge",
+				CoreTags = new List<string> { "authority", "forge" },
+				SupportTags = new List<string> { "scaling", "damage" },
 				CoreThreshold = 3,
+				SupportThreshold = 2
+			},
+			new Archetype
+			{
+				Id = "minion",
+				DisplayName = "Minion / Summoner",
+				CoreTags = new List<string> { "minion" },
+				SupportTags = new List<string> { "damage", "scaling", "block" },
+				CoreThreshold = 2,
 				SupportThreshold = 2
 			},
 			new Archetype
@@ -157,16 +166,7 @@ public static class ArchetypeDefinitions
 				Id = "cosmic",
 				DisplayName = "Cosmic Damage",
 				CoreTags = new List<string> { "cosmic", "aoe" },
-				SupportTags = new List<string> { "stars", "scaling" },
-				CoreThreshold = 3,
-				SupportThreshold = 2
-			},
-			new Archetype
-			{
-				Id = "star_block",
-				DisplayName = "Star Defense",
-				CoreTags = new List<string> { "block", "stars" },
-				SupportTags = new List<string> { "forge", "scaling" },
+				SupportTags = new List<string> { "stellar", "stars", "scaling" },
 				CoreThreshold = 3,
 				SupportThreshold = 2
 			}

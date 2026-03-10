@@ -29,6 +29,14 @@ public static class GamePatches
 	// don't inject badges on unrelated screens (discard pile, removal, etc.)
 	private static WeakReference<NCardRewardSelectionScreen> _activeCardRewardScreen;
 
+	// Debug: track when each hook last fired
+	public static Dictionary<string, DateTime> HookLastFired { get; } = new();
+
+	private static void RecordHook(string hookName)
+	{
+		HookLastFired[hookName] = DateTime.Now;
+	}
+
 	private static void EnsureOverlay()
 	{
 		if (Plugin.Overlay == null)
@@ -77,6 +85,7 @@ public static class GamePatches
 			EnsureOverlay();
 			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__result);
 			Plugin.Log("Card reward screen detected — analyzing...");
+			RecordHook("OnCardRewardOpened");
 			if (options != null)
 				GameStateReader._lastCardOptions = options;
 			GameStateReader._lastRelicOptions = null;
@@ -225,6 +234,7 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Relic reward screen detected — analyzing...");
+			RecordHook("OnRelicRewardOpened");
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = relics;
 			GameStateReader._lastMerchantInventory = null;
@@ -254,6 +264,7 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Shop screen detected — analyzing...");
+			RecordHook("OnShopOpened");
 			MerchantInventory? inventory = __instance.Inventory;
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = null;
@@ -286,6 +297,7 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Rest site detected — showing upgrade advice...");
+			RecordHook("OnRestSiteOpened");
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
@@ -350,12 +362,49 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Combat room detected — showing deck status...");
+			RecordHook("OnCombatSetup");
+			List<string> enemyIds = null;
+			try
+			{
+				// Try extracting enemy IDs via reflection on NCombatRoom
+				var enemiesProp = __result.GetType().GetProperty("Enemies",
+					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				var combatProp = __result.GetType().GetProperty("CombatState",
+					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				object source = enemiesProp?.GetValue(__result) ?? combatProp?.GetValue(__result);
+				if (source is System.Collections.IEnumerable enemyList && source is not string)
+				{
+					enemyIds = new List<string>();
+					foreach (var enemy in enemyList)
+					{
+						var idProp = enemy.GetType().GetProperty("Id",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						var idObj = idProp?.GetValue(enemy);
+						if (idObj != null)
+						{
+							var entryProp = idObj.GetType().GetProperty("Entry",
+								BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+							var entry = entryProp?.GetValue(idObj)?.ToString();
+							if (entry != null)
+								enemyIds.Add(entry);
+						}
+					}
+					if (enemyIds.Count > 0)
+						Plugin.Log($"Enemy IDs extracted: {string.Join(", ", enemyIds)}");
+					else
+						enemyIds = null;
+				}
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"Enemy ID extraction failed: {ex.Message}");
+			}
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
 				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
-				Plugin.Overlay?.ShowCombatAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.ActNumber, gameState.Floor, gameState);
+				Plugin.Overlay?.ShowCombatAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.ActNumber, gameState.Floor, gameState, enemyIds);
 			}
 		}
 		catch (Exception value)
@@ -370,12 +419,39 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Event screen detected — showing context...");
+			RecordHook("OnEventShowChoices");
+			string eventId = null;
+			try
+			{
+				// Try extracting event ID via reflection: NEventRoom → Event → Id → Entry
+				var eventProp = __result.GetType().GetProperty("Event",
+					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				var eventObj = eventProp?.GetValue(__result);
+				if (eventObj != null)
+				{
+					var idProp = eventObj.GetType().GetProperty("Id",
+						BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					var idObj = idProp?.GetValue(eventObj);
+					if (idObj != null)
+					{
+						var entryProp = idObj.GetType().GetProperty("Entry",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						eventId = entryProp?.GetValue(idObj)?.ToString();
+					}
+				}
+				if (eventId != null)
+					Plugin.Log($"Event ID extracted: {eventId}");
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"Event ID extraction failed: {ex.Message}");
+			}
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
 				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
-				Plugin.Overlay?.ShowEventAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				Plugin.Overlay?.ShowEventAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor, eventId);
 			}
 		}
 		catch (Exception value)
@@ -390,6 +466,7 @@ public static class GamePatches
 		{
 			EnsureOverlay();
 			Plugin.Log("Map screen detected — generating path advice...");
+			RecordHook("OnMapScreenEntered");
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = null;
 			GameStateReader._lastMerchantInventory = null;
@@ -437,6 +514,7 @@ public static class GamePatches
 		try
 		{
 			EnsureOverlay();
+			RecordHook("OnRunLaunched");
 			if (__result != null)
 			{
 				Player player = __result.Players?.FirstOrDefault();
@@ -460,6 +538,7 @@ public static class GamePatches
 	{
 		try
 		{
+			RecordHook("OnRunEnded");
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = null;
 			GameStateReader._lastMerchantInventory = null;
@@ -470,7 +549,8 @@ public static class GamePatches
 			Plugin.Overlay?.ShowRunSummary(runOutcome, num, num2);
 			Plugin.RunTracker?.EndRun(runOutcome, num, num2);
 			Plugin.LocalStats?.RecomputeAll();
-			Task.Run(() => Plugin.CloudSync?.UploadPendingRuns());
+			if (Plugin.Overlay?.Settings?.CloudSyncEnabled ?? true)
+				Task.Run(() => Plugin.CloudSync?.UploadPendingRuns());
 			Plugin.Log($"Run ended: {runOutcome} on floor {num} (act {num2})");
 		}
 		catch (Exception value)

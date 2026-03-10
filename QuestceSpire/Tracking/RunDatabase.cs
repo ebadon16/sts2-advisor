@@ -502,6 +502,40 @@ public class RunDatabase
 		SaveCommunityRelicStats(merged);
 	}
 
+	public (float localWinRate, int localRuns, float communityWinRate, int communityRuns) GetStatsComparison(string character)
+	{
+		if (!EnsureInitialized())
+			return (0f, 0, 0f, 0);
+		try
+		{
+			// Local stats
+			var (wins, total) = GetCharacterWinRate(character);
+			float localWinRate = total > 0 ? (float)wins / total * 100f : 0f;
+
+			// Community average: mean of all card win_rate_when_picked for this character
+			float communityWinRate = 0f;
+			int communityRuns = 0;
+			using var conn = new SqliteConnection(_connectionString);
+			conn.Open();
+			using var cmd = conn.CreateCommand();
+			cmd.CommandText = "SELECT AVG(win_rate_when_picked) as avg_wr, SUM(sample_size) as total_samples FROM community_card_stats WHERE character=@char AND sample_size > 0";
+			cmd.Parameters.AddWithValue("@char", character);
+			using var reader = cmd.ExecuteReader();
+			if (reader.Read() && !reader.IsDBNull(0))
+			{
+				communityWinRate = reader.GetFloat(0) * 100f;
+				communityRuns = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+			}
+
+			return (localWinRate, total, communityWinRate, communityRuns);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"GetStatsComparison error: {ex.Message}");
+			return (0f, 0, 0f, 0);
+		}
+	}
+
 	private static Dictionary<string, float> MergeArchetypes(
 		Dictionary<string, float> a, int aSamples,
 		Dictionary<string, float> b, int bSamples)

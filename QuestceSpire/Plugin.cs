@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ public static class Plugin
 {
 	public const string ModName = "Qu'est-ce Spire?";
 
-	public const string ModVersion = "0.6.1";
+	public const string ModVersion = "0.7.0";
 
 	public const string HarmonyId = "com.questcespire.mod";
 
@@ -45,6 +46,14 @@ public static class Plugin
 	public static CardPropertyScorer CardPropertyScorer { get; private set; }
 
 	public static CloudSync CloudSync { get; private set; }
+
+	public static EventAdvisor EventAdvisor { get; private set; }
+
+	public static EnemyAdvisor EnemyAdvisor { get; private set; }
+
+	public static string LatestVersion { get; set; }
+
+	public static string UpdateUrl { get; set; }
 
 	public static OverlayManager Overlay { get; set; }
 
@@ -80,8 +89,12 @@ public static class Plugin
 		LocalStats.RecomputeAll();
 		new GameDataImporter(RunDatabase).ImportAll();
 		AdaptiveScorer = new AdaptiveScorer(RunDatabase);
+		EventAdvisor = new EventAdvisor(Path.Combine(PluginFolder, "Data"));
+		EnemyAdvisor = new EnemyAdvisor(Path.Combine(PluginFolder, "Data"));
 		CloudSync = new CloudSync(RunDatabase, RunTracker.PlayerId);
-		Task.Run(() => CloudSync.DownloadCommunityStats());
+		var overlaySettings = OverlaySettings.Load();
+		if (overlaySettings.CloudSyncEnabled)
+			Task.Run(() => CloudSync.DownloadCommunityStats());
 		_harmony = new Harmony(HarmonyId);
 		_harmony.PatchAll(typeof(GamePatches).Assembly);
 		GamePatches.ApplyManualPatches(_harmony);
@@ -93,7 +106,49 @@ public static class Plugin
 			Log("Patched IsRunningModded to false — using main profile.");
 		}
 		Log("Harmony patches applied.");
+		// Fire-and-forget version check
+		Task.Run(async () =>
+		{
+			try
+			{
+				using var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+				var resp = await http.GetStringAsync("https://questcespire-api.questcespire.workers.dev/api/version");
+				var ver = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(resp);
+				if (ver != null && ver.TryGetValue("latest", out var latest))
+				{
+					if (CompareVersions(ModVersion, latest) < 0)
+					{
+						LatestVersion = latest;
+						ver.TryGetValue("release_url", out var url);
+						UpdateUrl = url;
+						Log($"Update available: v{latest} (current: v{ModVersion})");
+					}
+					else
+					{
+						Log($"Version check: up to date (v{ModVersion})");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Log($"Version check failed: {ex.Message}");
+			}
+		});
 		Log($"{ModName} initialized successfully. Waiting for scene tree...");
+	}
+
+	internal static int CompareVersions(string a, string b)
+	{
+		var pa = a.Split('.');
+		var pb = b.Split('.');
+		int len = Math.Max(pa.Length, pb.Length);
+		for (int i = 0; i < len; i++)
+		{
+			int va = i < pa.Length && int.TryParse(pa[i], out var x) ? x : 0;
+			int vb = i < pb.Length && int.TryParse(pb[i], out var y) ? y : 0;
+			if (va != vb) return va.CompareTo(vb);
+		}
+		return 0;
 	}
 
 	private static volatile StreamWriter _logWriter;

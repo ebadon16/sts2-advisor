@@ -86,7 +86,7 @@ dotnet build -c Release
 - **Ironclad**: strength, exhaust, block, self_damage archetypes (87 cards)
 - **Silent**: poison, shiv, discard, dexterity archetypes (88 cards)
 - **Defect**: lightning, frost, dark, all_orbs, zero_cost archetypes (88 cards)
-- **Regent**: stellar, authority, minion, cosmic_block archetypes (88 cards)
+- **Regent**: stellar, authority, minion, cosmic archetypes (88 cards)
 - **Necrobinder**: soul, summon, death, debuff archetypes (88 cards)
 - **Colorless**: 64 cards (shared pool)
 
@@ -94,5 +94,5 @@ dotnet build -c Release
 - All card/relic IDs extracted from game DLL via IL bytecode scanning
 - Tier assignments for Regent/Necrobinder are educated guesses — adaptive system auto-corrects with play data
 - No external server/API — everything is local
-- Mod version: 0.6.2
+- Mod version: 0.7.0
 - Game references: `lib/0Harmony.dll`, `lib/GodotSharp.dll`, `lib/sts2.dll` (copied from game's data folder)

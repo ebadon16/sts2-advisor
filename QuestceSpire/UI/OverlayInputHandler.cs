@@ -17,6 +17,14 @@ internal class OverlayInputHandler : Node
 
 	public override void _UnhandledKeyInput(InputEvent ev)
 	{
+		if (ev is InputEventKey { Pressed: not false, Echo: false } key)
+		{
+			if (key.Keycode == Key.F10 || key.PhysicalKeycode == Key.F10)
+			{
+				_owner.ToggleDebugOverlay();
+				return;
+			}
+		}
 		_owner.HandleInput(ev);
 	}
 

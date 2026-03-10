@@ -1,0 +1,228 @@
+{
+  "enemies": [
+    {
+      "enemyId": "JAW_WORM",
+      "enemyName": "Jaw Worm",
+      "tips": ["Cycles between attack and block+strength", "Kill quickly before strength stacks"],
+      "dangerLevel": "low",
+      "priority": 1
+    },
+    {
+      "enemyId": "CULTIST",
+      "enemyName": "Cultist",
+      "tips": ["Gains ritual (strength each turn)", "Race it down before damage escalates"],
+      "dangerLevel": "low",
+      "priority": 1
+    },
+    {
+      "enemyId": "BLUE_SLAVER",
+      "enemyName": "Blue Slaver",
+      "tips": ["Applies weak on hit", "Moderate damage, kill before debuffs stack"],
+      "dangerLevel": "low",
+      "priority": 1
+    },
+    {
+      "enemyId": "RED_SLAVER",
+      "enemyName": "Red Slaver",
+      "tips": ["Applies vulnerable and entangle", "More dangerous than Blue Slaver"],
+      "dangerLevel": "medium",
+      "priority": 2
+    },
+    {
+      "enemyId": "GREMLIN_NOB",
+      "enemyName": "Gremlin Nob",
+      "tips": ["Enrages when you play skills (+strength)", "Prioritize attacks over skills", "Front-load damage, minimize skill use"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "LAGAVULIN",
+      "enemyName": "Lagavulin",
+      "tips": ["Sleeps for 3 turns, debuffs strength/dex when awake", "Either burst down while sleeping or prepare for long fight", "Applies -2 strength and -2 dexterity each turn"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "SENTRIES",
+      "enemyName": "Sentries",
+      "tips": ["Alternate between attack and daze (status cards)", "Kill one to simplify the fight", "AOE is very strong here"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "HEXAGHOST",
+      "enemyName": "Hexaghost",
+      "tips": ["Turn 2 is a massive multiattack — block heavily", "Burns clog your deck", "Damage scales with your unblocked HP loss"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "THE_GUARDIAN",
+      "enemyName": "The Guardian",
+      "tips": ["Switches between offensive and defensive mode", "Don't over-damage in defense mode (triggers sharp hide)", "Use big attacks in offensive mode"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "SLIME_BOSS",
+      "enemyName": "Slime Boss",
+      "tips": ["Splits into two slimes at 50% HP", "Try to kill in one big hit to avoid split penalty", "AOE handles the split well"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "BOOK_OF_STABBING",
+      "enemyName": "Book of Stabbing",
+      "tips": ["Multi-attack that increases each turn", "Race it down — gets very dangerous late", "Block is less effective than killing fast"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "GREMLIN_LEADER",
+      "enemyName": "Gremlin Leader",
+      "tips": ["Summons gremlins and buffs them", "Kill gremlins to prevent rally buff", "AOE clears minions efficiently"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "TASKMASTER",
+      "enemyName": "Taskmaster",
+      "tips": ["Shuffles status cards into your deck", "Exhaust effects are valuable here"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "AUTOMATON",
+      "enemyName": "Bronze Automaton",
+      "tips": ["Hyper beam hits very hard every few turns", "Block heavily on hyper beam turns", "Minions add pressure — consider clearing them"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "THE_CHAMP",
+      "enemyName": "The Champ",
+      "tips": ["Enters rage at 50% HP — removes all debuffs, gains strength", "Save burst for after threshold", "Execute quickly once enraged"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "THE_COLLECTOR",
+      "enemyName": "The Collector",
+      "tips": ["Summons torch heads for extra damage", "Kill summons or ignore and race boss", "AOE handles summons well"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "AWAKENED_ONE",
+      "enemyName": "Awakened One",
+      "tips": ["Phase 1: gains strength when you play powers", "Phase 2: much more aggressive, full heal", "Delay powers until phase 2 if possible"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "TIME_EATER",
+      "enemyName": "Time Eater",
+      "tips": ["Punishes playing 12+ cards per turn (heals, clears debuffs)", "Play exactly 11 cards or less per turn", "Count your cards carefully"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "DONU_AND_DECA",
+      "enemyName": "Donu and Deca",
+      "tips": ["Donu buffs strength, Deca blocks", "Kill Donu first to prevent strength scaling", "AOE hits both — very efficient"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "NEMESIS",
+      "enemyName": "Nemesis",
+      "tips": ["Burns — adds burn cards to deck", "Goes intangible (only takes 1 damage per hit)", "Multi-hit attacks bypass intangible"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "REPTOMANCER",
+      "enemyName": "Reptomancer",
+      "tips": ["Summons daggers that hit very hard", "Kill daggers immediately — they deal massive damage", "AOE keeps daggers under control"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "GIANT_HEAD",
+      "enemyName": "Giant Head",
+      "tips": ["Slow debuff — if fight goes 5+ turns, massive damage", "Must kill quickly", "Front-load all your damage"],
+      "dangerLevel": "high",
+      "priority": 5
+    },
+    {
+      "enemyId": "TRANSIENT",
+      "enemyName": "Transient",
+      "tips": ["Hits harder each turn then disappears", "Kill fast or just survive until it leaves", "Don't waste too many resources"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "WRITHING_MASS",
+      "enemyName": "Writhing Mass",
+      "tips": ["Reacts to your last card type", "Alternating attacks and skills works well"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "SNAKE_PLANT",
+      "enemyName": "Snake Plant",
+      "tips": ["Debuffs with weakness", "Hits moderately hard"],
+      "dangerLevel": "medium",
+      "priority": 2
+    },
+    {
+      "enemyId": "SNECKO",
+      "enemyName": "Snecko",
+      "tips": ["Confuses card costs each turn", "Randomized costs can help or hurt", "Low-cost deck is less disrupted"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "HEART",
+      "enemyName": "Corrupt Heart",
+      "tips": ["Beat of Death — takes damage when you play cards", "Invincible after taking X damage per turn", "Status cards flood your deck each turn", "Multi-hit attacks are key"],
+      "dangerLevel": "extreme",
+      "priority": 10
+    },
+    {
+      "enemyId": "SPIRE_SHIELD",
+      "enemyName": "Spire Shield",
+      "tips": ["Part of spire bosses — blocks and supports", "Kill alongside Spire Spear"],
+      "dangerLevel": "high",
+      "priority": 4
+    },
+    {
+      "enemyId": "SPIRE_SPEAR",
+      "enemyName": "Spire Spear",
+      "tips": ["Burns and high damage", "Targets with multi-attacks"],
+      "dangerLevel": "high",
+      "priority": 4
+    },
+    {
+      "enemyId": "BYRDS",
+      "enemyName": "Byrds",
+      "tips": ["Flying — reduce damage taken until grounded", "Multi-hit attacks ground them quickly"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "CHOSEN",
+      "enemyName": "Chosen",
+      "tips": ["Applies vulnerable and hex", "Hex adds dazed when you play non-attack cards", "Prioritize attacks while hexed"],
+      "dangerLevel": "medium",
+      "priority": 3
+    },
+    {
+      "enemyId": "SPHERIC_GUARDIAN",
+      "enemyName": "Spheric Guardian",
+      "tips": ["Starts with lots of block", "Need big attacks to break through armor", "Multi-hit helps chip away block"],
+      "dangerLevel": "medium",
+      "priority": 3
+    }
+  ]
+}
