@@ -36,7 +36,7 @@ public class StatsEngine
         var decisions = await _db.Decisions
             .AsNoTracking()
             .Where(d => d.Run!.Character == character
-                && (d.EventType == "CardReward" || d.EventType == "Shop" || d.EventType == "CardTransform")
+                && (d.EventType == "CardReward" || d.EventType == "CardTransform")
                 && (d.Run.Outcome == "win" || d.Run.Outcome == "loss"))
             .Select(d => new
             {

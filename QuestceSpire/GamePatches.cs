@@ -288,12 +288,9 @@ public static class GamePatches
 				List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				Plugin.Overlay?.ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);
-				// Inject grade badges onto shop items
-				// Shop badge injection removed — overlay panel handles shop screen
-				// Record shop cards as a decision for adaptive scoring
-				List<string> shopOfferedIds = gameState.ShopCards.ConvertAll((CardInfo c) => c.Id);
-				shopOfferedIds.AddRange(gameState.ShopRelics.ConvertAll((RelicInfo r) => r.Id));
-				Plugin.RunTracker?.RecordDecision(DecisionEventType.Shop, shopOfferedIds, null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				// Shop decisions not recorded — no purchase hook means chosenId is always null,
+				// and mixed card+relic offered IDs corrupt card stats. Shop tracking deferred
+				// until proper purchase event hooking is implemented.
 			}
 		}
 		catch (Exception value)
