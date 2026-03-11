@@ -153,6 +153,7 @@ public static class Plugin
 
 	private static volatile StreamWriter _logWriter;
 	private static readonly object _logLock = new object();
+	private static bool _exitHandlerRegistered;
 
 	public static void Log(string message)
 	{
@@ -164,6 +165,14 @@ public static class Plugin
 				if (_logWriter == null)
 				{
 					_logWriter = new StreamWriter(LogPath, append: true) { AutoFlush = true };
+					if (!_exitHandlerRegistered)
+					{
+						_exitHandlerRegistered = true;
+						AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+						{
+							lock (_logLock) { _logWriter?.Dispose(); _logWriter = null; }
+						};
+					}
 				}
 				_logWriter.WriteLine(text);
 			}

@@ -64,7 +64,15 @@ async function checkRateLimit(db: D1Database, playerId: string): Promise<boolean
 }
 
 export async function handleUpload(request: Request, db: D1Database): Promise<Response> {
-	const body = (await request.json()) as UploadPayload;
+	let body: UploadPayload;
+	try {
+		body = (await request.json()) as UploadPayload;
+	} catch {
+		return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+		});
+	}
 
 	if (!body.player_id || !body.runs || !Array.isArray(body.runs)) {
 		return new Response(JSON.stringify({ error: 'Invalid payload: player_id and runs required' }), {
@@ -116,6 +124,9 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 				acceptedRunIds.add(run.run_id);
 			} else {
 				duplicates++;
+				// Still allow decisions for existing runs that may have been
+				// uploaded without decisions previously
+				acceptedRunIds.add(run.run_id);
 			}
 		} catch {
 			duplicates++;

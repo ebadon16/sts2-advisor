@@ -136,8 +136,12 @@ let currentTab = 'cards';
 let sortCol = 'win_delta';
 let sortDir = 'desc';
 
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function formatId(id) {
-  return id.replace(/_/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase());
+  return escapeHtml(id.replace(/_/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase()));
 }
 
 function formatPct(v) {

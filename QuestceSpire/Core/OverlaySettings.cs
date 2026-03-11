@@ -59,7 +59,9 @@ public class OverlaySettings
 		{
 			Plugin.Log("Failed to load overlay settings: " + ex.Message);
 		}
-		return new OverlaySettings();
+		var defaults = new OverlaySettings { SettingsVersion = CurrentVersion };
+		defaults.Save();
+		return defaults;
 	}
 
 	public void Save()

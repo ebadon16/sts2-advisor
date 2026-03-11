@@ -57,7 +57,11 @@ export default {
 			}
 
 			if (path === '/api/aggregate' && request.method === 'POST') {
-				if (env.ADMIN_KEY && request.headers.get('X-Admin-Key') !== env.ADMIN_KEY) {
+				if (!env.ADMIN_KEY) {
+					console.warn('ADMIN_KEY not configured — aggregate endpoint requires authentication');
+					return errorResponse('ADMIN_KEY not configured', 500);
+				}
+				if (request.headers.get('X-Admin-Key') !== env.ADMIN_KEY) {
 					return errorResponse('Unauthorized', 401);
 				}
 				return await handleAggregate(env.DB);

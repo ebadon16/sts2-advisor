@@ -46,7 +46,7 @@ public class AdaptiveScorer
 		num2 = Math.Max(0f, Math.Min(5f, num2));
 		float confidence = GetConfidence(communityCardStats.SampleSize);
 		float val2 = num * (1f - confidence) + num2 * confidence;
-		return Math.Max(0f, Math.Min(5.5f, val2));
+		return Math.Max(0f, Math.Min(5f, val2));
 	}
 
 	public float GetAdaptiveRelicScore(string character, string relicId, TierGrade staticTier, DeckAnalysis deckAnalysis)
@@ -69,7 +69,7 @@ public class AdaptiveScorer
 		num2 = Math.Max(0f, Math.Min(5f, num2));
 		float confidence = GetConfidence(communityRelicStats.SampleSize);
 		float val2 = num * (1f - confidence) + num2 * confidence;
-		return Math.Max(0f, Math.Min(5.5f, val2));
+		return Math.Max(0f, Math.Min(5f, val2));
 	}
 
 	private float GetConfidence(int sampleSize)
@@ -87,7 +87,7 @@ public class AdaptiveScorer
 
 	private float WinRateToScore(float winRate)
 	{
-		float num = (winRate - 0.35f) / 0.22999999f;
+		float num = (winRate - WinRateForF) / (WinRateForS - WinRateForF);
 		return Math.Max(0f, Math.Min(5f, num * 5f));
 	}
 

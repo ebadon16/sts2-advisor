@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace QuestceSpire.Core;
 
@@ -144,57 +145,57 @@ public class CardPropertyScorer
 
 	private List<string> GenerateSynergyTags(CardPropertyData card)
 	{
-		var tags = new List<string>();
+		var tagSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 		foreach (string kw in card.Keywords)
 		{
-			if (kw == "Exhaust") tags.Add("exhaust");
-			if (kw == "Sly" && card.Character == "silent") tags.Add("discard");
+			if (kw == "Exhaust") tagSet.Add("exhaust");
+			if (kw == "Sly" && card.Character == "silent") tagSet.Add("discard");
 		}
 
 		foreach (string tag in card.Tags)
 		{
 			string lower = tag.ToLowerInvariant();
-			if (lower == "shiv") tags.Add("shiv");
-			if (lower == "strike") tags.Add("strike");
+			if (lower == "shiv") tagSet.Add("shiv");
+			if (lower == "strike") tagSet.Add("strike");
 		}
 
-		if (card.EnergyCost == 0) tags.Add("zero_cost");
-		if (card.TargetType == 3) tags.Add("aoe");
-		if (card.Type == "Power") tags.Add("scaling");
+		if (card.EnergyCost == 0) tagSet.Add("zero_cost");
+		if (card.TargetType == 3) tagSet.Add("aoe");
+		if (card.Type == "Power") tagSet.Add("scaling");
 
 		foreach (var kv in card.DynamicVars)
 		{
 			string name = kv.Key;
 			if (name == "Shivs" || name == "CalculatedShivs")
 			{
-				if (!tags.Contains("shiv")) tags.Add("shiv");
-				tags.Add("shiv_synergy");
+				tagSet.Add("shiv");
+				tagSet.Add("shiv_synergy");
 			}
 			else if (name == "PoisonPerTurn" || name == "Poison")
 			{
-				tags.Add("poison");
+				tagSet.Add("poison");
 			}
 			else if (name == "CalculatedHits")
 			{
-				tags.Add("multi_hit");
+				tagSet.Add("multi_hit");
 			}
 			else if (name == "StrengthLoss")
 			{
-				tags.Add("debuff");
-				tags.Add("weak");
+				tagSet.Add("debuff");
+				tagSet.Add("weak");
 			}
 			else if (name == "OrbSlots" || name == "CalculatedChannels" || name == "CalculatedFocus")
 			{
-				tags.Add("orb");
+				tagSet.Add("orb");
 			}
 			else if (name == "BlockForStars" || name == "StarsPerTurn")
 			{
-				tags.Add("stellar");
+				tagSet.Add("stellar");
 			}
 		}
 
-		return tags.Count > 0 ? tags : null;
+		return tagSet.Count > 0 ? tagSet.ToList() : null;
 	}
 
 	private static List<string> ParseList(string csv)
@@ -213,6 +214,8 @@ public class CardPropertyScorer
 	private static string NormalizeId(string id)
 	{
 		if (string.IsNullOrEmpty(id)) return "";
+		// Strip upgrade suffix before normalizing
+		if (id.EndsWith("+")) id = id.Substring(0, id.Length - 1);
 		return id.Replace(" ", "_").Replace("-", "_").Replace("'", "");
 	}
 }

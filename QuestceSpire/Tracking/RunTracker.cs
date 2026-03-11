@@ -64,7 +64,22 @@ public class RunTracker
 		if (_currentRun != null)
 		{
 			Plugin.Log("StartRun called while a run is already active. Ending previous run as loss.");
-			EndRun(RunOutcome.Loss, _currentRun.FinalFloor.GetValueOrDefault(), _currentRun.FinalAct.GetValueOrDefault());
+			int prevFloor = _currentRun.FinalFloor.GetValueOrDefault();
+			int prevAct = _currentRun.FinalAct.GetValueOrDefault();
+			try
+			{
+				GameState gs = GameStateReader.ReadCurrentState();
+				if (gs != null)
+				{
+					if (gs.Floor > 0) prevFloor = gs.Floor;
+					if (gs.ActNumber > 0) prevAct = gs.ActNumber;
+				}
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"StartRun: failed to read game state for auto-end: {ex.Message}");
+			}
+			EndRun(RunOutcome.Loss, prevFloor, prevAct);
 		}
 		_currentRun = new RunLog
 		{

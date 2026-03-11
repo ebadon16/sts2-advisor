@@ -31,7 +31,7 @@ public class OverlayManager
 
 	private bool _visible = true;
 
-	private readonly bool _showTooltips = true;
+	private bool _showTooltips = true;
 
 	private bool _showInGameBadges = true;
 
@@ -169,6 +169,7 @@ public class OverlayManager
 	{
 		_settings = OverlaySettings.Load();
 		_visible = true; // Always start visible — hide is session-only
+		_showTooltips = _settings.ShowTooltips;
 		_showInGameBadges = _settings.ShowInGameBadges;
 		_panelOpacity = _settings.PanelOpacity;
 		_opacityIndex = Array.IndexOf(OpacitySteps, _panelOpacity);
@@ -886,6 +887,7 @@ public class OverlayManager
 		_currentCards = null;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
+		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "REST SITE";
 		_currentFloor = floor;
 		_currentGameState = gameState;
@@ -912,6 +914,7 @@ public class OverlayManager
 		_currentCards = null;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
+		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "COMBAT";
 		_currentFloor = floor;
 		_currentGameState = gameState;
@@ -962,6 +965,7 @@ public class OverlayManager
 		_currentCards = null;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
+		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "EVENT";
 		_currentFloor = floor;
 		_currentGameState = null;
@@ -1012,6 +1016,7 @@ public class OverlayManager
 		_currentCards = null;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
+		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "MAP";
 		_mapAdvice = GenerateMapAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
 		MarkUpdated();

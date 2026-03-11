@@ -12,7 +12,13 @@ namespace QuestceSpire.GameBridge;
 
 public static class GameStateReader
 {
-	private static readonly PropertyInfo _stateProperty = typeof(RunManager).GetProperty("State", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+	private static readonly PropertyInfo _stateProperty;
+	static GameStateReader()
+	{
+		_stateProperty = typeof(RunManager).GetProperty("State", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		if (_stateProperty == null)
+			Plugin.Log("WARN: RunManager.State property not found via reflection — game state reading will fail.");
+	}
 
 	private static bool _keywordsFieldWarned;
 

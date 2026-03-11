@@ -80,7 +80,7 @@ public static class GamePatches
 			// Screens that reuse NCardRewardSelectionScreen for non-reward purposes
 			string curScreen = Plugin.Overlay?.CurrentScreen;
 			if (curScreen == "CARD REMOVAL" || curScreen == "CARD UPGRADE" ||
-			    curScreen == "MERCHANT SHOP")
+			    curScreen == "MERCHANT SHOP" || curScreen == "EVENT CARD OFFER")
 			{
 				Plugin.Log($"ShowScreen fired during {curScreen} — skipping card reward logic.");
 				return;
@@ -113,9 +113,10 @@ public static class GamePatches
 				return;
 			string curScreen2 = Plugin.Overlay?.CurrentScreen;
 			if (curScreen2 == "CARD REMOVAL" || curScreen2 == "CARD UPGRADE" ||
-			    curScreen2 == "MERCHANT SHOP")
+			    curScreen2 == "MERCHANT SHOP" || curScreen2 == "EVENT CARD OFFER")
 				return;
 			EnsureOverlay();
+			RecordHook("OnCardRewardRefreshed");
 			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__instance);
 			Plugin.Log("Card reward RefreshOptions detected — re-analyzing...");
 			if (options != null)
@@ -332,9 +333,6 @@ public static class GamePatches
 			string character = gameState.Character ?? "unknown";
 			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine);
 
-			// Mark as upgrade screen BEFORE showing cards — prevents card reward patch from injecting badges
-			Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
-
 			// Convert offered CardModels to CardInfo and score for upgrade delta
 			if (cards != null && cards.Count > 0)
 			{
@@ -349,6 +347,7 @@ public static class GamePatches
 					var scored = Plugin.SynergyScorer.ScoreForUpgrade(offeredCards, deckAnalysis, character,
 						gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 					Plugin.Overlay?.ShowCardAdvice(scored, deckAnalysis, character);
+					// Re-set after ShowCardAdvice which resets to "CARD REWARD"
 					Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
 					Plugin.Overlay?.CleanupAllBadges();
 					return;
@@ -558,7 +557,7 @@ public static class GamePatches
 			Plugin.RunTracker?.EndRun(runOutcome, num, num2);
 			Plugin.LocalStats?.RecomputeAll();
 			Plugin.CloudSync?.RemergeIfNeeded();
-			if (Plugin.Overlay?.Settings?.CloudSyncEnabled ?? true)
+			if (Plugin.Overlay?.Settings?.CloudSyncEnabled ?? false)
 				Task.Run(() => Plugin.CloudSync?.UploadPendingRuns());
 			Plugin.Log($"Run ended: {runOutcome} on floor {num} (act {num2})");
 		}

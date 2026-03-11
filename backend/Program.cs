@@ -141,7 +141,8 @@ app.MapPost("/api/runs/bulk", async (HttpContext httpContext, AppDbContext db) =
     {
         var runDto = sub.Run;
 
-        if (string.IsNullOrWhiteSpace(runDto.RunId) || string.IsNullOrWhiteSpace(runDto.PlayerId))
+        if (string.IsNullOrWhiteSpace(runDto.RunId) || string.IsNullOrWhiteSpace(runDto.PlayerId)
+            || string.IsNullOrWhiteSpace(runDto.Character))
             continue;
 
         // Deduplicate by RunId

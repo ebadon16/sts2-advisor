@@ -15,7 +15,8 @@ public class StatsEngine
     {
         "poison", "shiv", "strength", "exhaust", "block", "draw", "discard",
         "focus", "frost", "lightning", "dark", "orb", "zero_cost",
-        "command", "summon", "decree", "undead", "curse", "sacrifice"
+        "stellar", "cosmic", "authority", "minion",
+        "summon", "undead", "curse", "sacrifice", "soul", "death"
     };
 
     private const int ContextThreshold = 3;

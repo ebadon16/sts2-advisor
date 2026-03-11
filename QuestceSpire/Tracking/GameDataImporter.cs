@@ -170,13 +170,13 @@ public class GameDataImporter
 
 		if (cardStatsList.Count > 0)
 		{
-			_db.SaveCommunityCardStats(cardStatsList);
-			Plugin.Log($"GameDataImporter: imported {cardStatsList.Count} card stat entries from game history.");
+			_db.MergeCommunityCardStats(cardStatsList);
+			Plugin.Log($"GameDataImporter: merged {cardStatsList.Count} card stat entries from game history.");
 		}
 		if (relicStatsList.Count > 0)
 		{
-			_db.SaveCommunityRelicStats(relicStatsList);
-			Plugin.Log($"GameDataImporter: imported {relicStatsList.Count} relic stat entries from game history.");
+			_db.MergeCommunityRelicStats(relicStatsList);
+			Plugin.Log($"GameDataImporter: merged {relicStatsList.Count} relic stat entries from game history.");
 		}
 	}
 

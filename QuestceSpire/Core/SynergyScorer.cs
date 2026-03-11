@@ -272,7 +272,7 @@ public class SynergyScorer
 		{
 			float excess = AntiSynergyCap - antiTotal;
 			num += excess;
-			synergyDelta += excess;
+			// Don't add excess to synergyDelta — it's a cap correction, not a synergy
 		}
 		// Floor-aware scoring (replaces act-based logic)
 		if (floorNumber <= 6 && deckAnalysis.IsUndefined)
@@ -417,7 +417,7 @@ public class SynergyScorer
 		{
 			float excess = AntiSynergyCap - antiTotal;
 			num += excess;
-			synergyDelta += excess;
+			// Don't add excess to synergyDelta — it's a cap correction, not a synergy
 		}
 		// Floor-aware: late-game scaling bonus for relics too
 		if (floorNumber >= 19 && list3.Any((string s) => ScalingTags.Contains(s)))

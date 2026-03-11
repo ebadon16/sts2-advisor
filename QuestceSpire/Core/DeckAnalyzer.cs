@@ -21,19 +21,16 @@ public class DeckAnalyzer
 				string item = tag.ToLowerInvariant();
 				hashSet.Add(item);
 			}
-			if (tierEngine != null)
+			CardTierEntry cardTier = tierEngine?.GetCardTier(character, item3.Id);
+			if (cardTier?.Synergies != null)
 			{
-				CardTierEntry cardTier = tierEngine.GetCardTier(character, item3.Id);
-				if (cardTier?.Synergies != null)
+				foreach (string synergy in cardTier.Synergies)
 				{
-					foreach (string synergy in cardTier.Synergies)
-					{
-						string item2 = synergy.ToLowerInvariant();
-						hashSet.Add(item2);
-					}
+					string item2 = synergy.ToLowerInvariant();
+					hashSet.Add(item2);
 				}
 			}
-			if (Plugin.CardPropertyScorer != null)
+			if (Plugin.CardPropertyScorer != null && (cardTier?.Synergies == null || cardTier.Synergies.Count == 0))
 			{
 				var computed = Plugin.CardPropertyScorer.ComputeScore(item3.Id);
 				if (computed.SynergyTags != null)
@@ -47,7 +44,7 @@ public class DeckAnalyzer
 				IncrementTag(deckAnalysis.TagCounts, item4);
 			}
 			// Energy curve bucketing (0-5+)
-			int costBucket = Math.Min(item3.Cost, 5);
+			int costBucket = Math.Max(0, Math.Min(item3.Cost, 5));
 			if (deckAnalysis.EnergyCurve.ContainsKey(costBucket))
 				deckAnalysis.EnergyCurve[costBucket]++;
 			else

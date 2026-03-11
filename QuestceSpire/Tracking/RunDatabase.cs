@@ -512,9 +512,9 @@ public class RunDatabase
 			var (wins, total) = GetCharacterWinRate(character);
 			float localWinRate = total > 0 ? (float)wins / total * 100f : 0f;
 
-			// Community average: mean of all card win_rate_when_picked for this character
+			// Community average: sample-weighted mean of card win_rate_when_picked for this character
 			float communityWinRate = 0f;
-			int communityRuns = 0;
+			int communitySamples = 0;
 			using var conn = new SqliteConnection(_connectionString);
 			conn.Open();
 			using var cmd = conn.CreateCommand();
@@ -524,10 +524,10 @@ public class RunDatabase
 			if (reader.Read() && !reader.IsDBNull(0))
 			{
 				communityWinRate = reader.GetFloat(0) * 100f;
-				communityRuns = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+				communitySamples = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
 			}
 
-			return (localWinRate, total, communityWinRate, communityRuns);
+			return (localWinRate, total, communityWinRate, communitySamples);
 		}
 		catch (Exception ex)
 		{
