@@ -25,6 +25,10 @@ public static class Plugin
 
 	private static bool _initialized;
 
+	private static volatile bool _backgroundInitDone;
+
+	public static bool IsBackgroundInitDone => _backgroundInitDone;
+
 	public static string PluginFolder { get; private set; }
 
 	public static string LogPath { get; private set; }
@@ -100,10 +104,25 @@ public static class Plugin
 			// then merges cloud — this preserves correct totals.
 			Task.Run(async () =>
 			{
-				await CloudSync.DownloadCommunityStats();
-				// Re-apply game history import after cloud merge
-				new GameDataImporter(RunDatabase).ImportAll();
+				try
+				{
+					await CloudSync.DownloadCommunityStats();
+					// Re-apply game history import after cloud merge
+					new GameDataImporter(RunDatabase).ImportAll();
+				}
+				catch (Exception ex)
+				{
+					Log("Background cloud sync error: " + ex.Message);
+				}
+				finally
+				{
+					_backgroundInitDone = true;
+				}
 			});
+		}
+		else
+		{
+			_backgroundInitDone = true;
 		}
 		_harmony = new Harmony(HarmonyId);
 		_harmony.PatchAll(typeof(GamePatches).Assembly);

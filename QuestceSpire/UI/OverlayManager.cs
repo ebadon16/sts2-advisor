@@ -2355,7 +2355,7 @@ public class OverlayManager
 		if (_titleSep != null && GodotObject.IsInstanceValid(_titleSep))
 			_titleSep.Visible = !_collapsed;
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
-			_screenLabel.Visible = !_collapsed;
+			_screenLabel.Visible = true; // Always visible — shows collapsed summary when collapsed
 		if (_winRateLabel != null && GodotObject.IsInstanceValid(_winRateLabel))
 			_winRateLabel.Visible = !_collapsed;
 		// Update compact toggle arrow
@@ -2365,7 +2365,12 @@ public class OverlayManager
 		if (!_collapsed)
 			Rebuild();
 		else
+		{
+			// Update the screen label to show collapsed summary
+			if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
+				_screenLabel.Text = GetCollapsedSummary();
 			ResizePanelToContent();
+		}
 		Plugin.Log("Overlay " + (_collapsed ? "collapsed" : "expanded"));
 	}
 
@@ -3267,7 +3272,8 @@ public class OverlayManager
 	{
 		return screen switch
 		{
-			"CARD REWARD" or "CARD REMOVAL" => ClrAccent,
+			"CARD REWARD" or "CARD REMOVAL" or "CARD UPGRADE" => ClrAccent,
+			"EVENT CARD OFFER" => ClrSkip,
 			"RELIC REWARD" => ClrPositive,
 			"MERCHANT SHOP" => ClrExpensive,
 			"COMBAT" => ClrNegative,

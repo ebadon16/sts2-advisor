@@ -103,14 +103,28 @@ public class AdaptiveScorer
 		{
 			foreach (string coreTag in detectedArchetype.Archetype.CoreTags)
 			{
-				// Match any context key that starts with this core tag (e.g., "poison_3+", "poison_5+")
+				// Match the context key with the highest count for this core tag
+				// e.g., if deck has 7 poison cards, prefer "poison_7+" over "poison_3+"
+				float bestWinRate = -1f;
+				int bestCount = 0;
 				foreach (var kvp in contextStats)
 				{
-					if (kvp.Key.StartsWith(coreTag + "_", StringComparison.OrdinalIgnoreCase) && detectedArchetype.Strength > bestStrength)
+					if (!kvp.Key.StartsWith(coreTag + "_", StringComparison.OrdinalIgnoreCase))
+						continue;
+					// Parse count from key like "poison_5+"
+					int count = 0;
+					string suffix = kvp.Key.Substring(coreTag.Length + 1).TrimEnd('+');
+					int.TryParse(suffix, out count);
+					if (count > bestCount)
 					{
-						result = WinRateToScore(kvp.Value);
-						bestStrength = detectedArchetype.Strength;
+						bestCount = count;
+						bestWinRate = kvp.Value;
 					}
+				}
+				if (bestWinRate >= 0f && detectedArchetype.Strength > bestStrength)
+				{
+					result = WinRateToScore(bestWinRate);
+					bestStrength = detectedArchetype.Strength;
 				}
 			}
 		}

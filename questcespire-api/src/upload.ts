@@ -33,6 +33,10 @@ interface UploadPayload {
 }
 
 const MAX_UPLOADS_PER_MINUTE = 10;
+const MAX_PAYLOAD_BYTES = 2 * 1024 * 1024; // 2 MB
+const MAX_RUNS_PER_UPLOAD = 50;
+const MAX_DECISIONS_PER_UPLOAD = 5000;
+const ID_PATTERN = /^[a-zA-Z0-9_\- ]{1,128}$/;
 
 async function checkRateLimit(db: D1Database, playerId: string): Promise<boolean> {
 	const windowStart = new Date();
@@ -64,6 +68,15 @@ async function checkRateLimit(db: D1Database, playerId: string): Promise<boolean
 }
 
 export async function handleUpload(request: Request, db: D1Database): Promise<Response> {
+	// Enforce payload size limit
+	const contentLength = parseInt(request.headers.get('content-length') ?? '0', 10);
+	if (contentLength > MAX_PAYLOAD_BYTES) {
+		return new Response(JSON.stringify({ error: `Payload too large (max ${MAX_PAYLOAD_BYTES / 1024 / 1024} MB)` }), {
+			status: 413,
+			headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+		});
+	}
+
 	let body: UploadPayload;
 	try {
 		body = (await request.json()) as UploadPayload;
@@ -76,6 +89,19 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 
 	if (!body.player_id || !body.runs || !Array.isArray(body.runs)) {
 		return new Response(JSON.stringify({ error: 'Invalid payload: player_id and runs required' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+		});
+	}
+
+	if (body.runs.length > MAX_RUNS_PER_UPLOAD) {
+		return new Response(JSON.stringify({ error: `Too many runs (max ${MAX_RUNS_PER_UPLOAD})` }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+		});
+	}
+	if (body.decisions && body.decisions.length > MAX_DECISIONS_PER_UPLOAD) {
+		return new Response(JSON.stringify({ error: `Too many decisions (max ${MAX_DECISIONS_PER_UPLOAD})` }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
 		});
@@ -96,6 +122,8 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 	// Insert runs (dedup by run_id)
 	for (const run of body.runs) {
 		if (!run.run_id || !run.character) continue;
+		// Validate IDs to prevent poisoning aggregate key splitting
+		if (!ID_PATTERN.test(run.run_id) || !ID_PATTERN.test(run.character)) continue;
 
 		try {
 			const result = await db
