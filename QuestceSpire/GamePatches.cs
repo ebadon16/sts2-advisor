@@ -77,10 +77,10 @@ public static class GamePatches
 				Plugin.Log($"ShowScreen with {options.Count} cards — likely pile viewer, skipping.");
 				return;
 			}
-			// Screens that reuse NCardRewardSelectionScreen for non-reward purposes
+			// Only proceed if overlay is idle or already on card reward — any other active screen
+			// means this ShowScreen call is reused for a non-reward purpose (removal, upgrade, shop, event, etc.)
 			string curScreen = Plugin.Overlay?.CurrentScreen;
-			if (curScreen == "CARD REMOVAL" || curScreen == "CARD UPGRADE" ||
-			    curScreen == "MERCHANT SHOP" || curScreen == "EVENT CARD OFFER")
+			if (curScreen != null && curScreen != "IDLE" && curScreen != "CARD REWARD")
 			{
 				Plugin.Log($"ShowScreen fired during {curScreen} — skipping card reward logic.");
 				return;
@@ -112,8 +112,7 @@ public static class GamePatches
 			if (options != null && options.Count > 5)
 				return;
 			string curScreen2 = Plugin.Overlay?.CurrentScreen;
-			if (curScreen2 == "CARD REMOVAL" || curScreen2 == "CARD UPGRADE" ||
-			    curScreen2 == "MERCHANT SHOP" || curScreen2 == "EVENT CARD OFFER")
+			if (curScreen2 != null && curScreen2 != "IDLE" && curScreen2 != "CARD REWARD")
 				return;
 			EnsureOverlay();
 			RecordHook("OnCardRewardRefreshed");
@@ -137,6 +136,19 @@ public static class GamePatches
 
 	private static bool TryShowCardRewardFromScreen(NCardRewardSelectionScreen screen)
 	{
+		// Guard: only proceed if we're still on a card reward screen (retries may fire after screen changed)
+		string curScreen = Plugin.Overlay?.CurrentScreen;
+		if (curScreen != null && curScreen != "CARD REWARD" && curScreen != "IDLE")
+		{
+			Plugin.Log($"TryShowCardRewardFromScreen skipped — screen is now {curScreen}");
+			return true; // return true to stop retries
+		}
+		// Guard: verify the screen node is still valid and visible
+		if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsVisibleInTree())
+		{
+			Plugin.Log("TryShowCardRewardFromScreen skipped — screen no longer valid/visible");
+			return true;
+		}
 		// Try reading card options from the screen instance via reflection
 		// This works even when Harmony parameter injection fails
 		if (GameStateReader._lastCardOptions == null || GameStateReader._lastCardOptions.Count == 0)
