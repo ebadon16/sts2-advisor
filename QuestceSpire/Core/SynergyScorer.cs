@@ -100,7 +100,7 @@ public class SynergyScorer
 				float cardScore = (float)cardGrade;
 				if (adaptiveScorer != null && character != null)
 				{
-					cardScore = adaptiveScorer.GetAdaptiveCardScore(character, card.Id, cardGrade, deckAnalysis);
+					cardScore = adaptiveScorer.GetAdaptiveCardScore(character, card.Id, cardScore, deckAnalysis);
 				}
 				// Invert: bad cards get high removal score (5 - score, so F=5→S removal, S=0→F removal)
 				score = Math.Max(0f, 5.0f - cardScore);
@@ -234,7 +234,7 @@ public class SynergyScorer
 			scoreSource = "default";
 		}
 		bool usedAdaptive = adaptiveScorer != null && character != null;
-		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveCardScore(character, card.Id, tierGrade, deckAnalysis) : rawScore;
+		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveCardScore(character, card.Id, rawScore, deckAnalysis) : rawScore;
 		if (usedAdaptive) scoreSource = "adaptive";
 		float num = baseScore;
 		float synergyDelta = 0f;
@@ -387,7 +387,7 @@ public class SynergyScorer
 	{
 		TierGrade tierGrade = ((tierEntry != null) ? TierEngine.ParseGrade(tierEntry.BaseTier) : TierGrade.C);
 		bool usedAdaptive = adaptiveScorer != null && character != null;
-		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveRelicScore(character, relic.Id, tierGrade, deckAnalysis) : (float)tierGrade;
+		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveRelicScore(character, relic.Id, (float)tierGrade, deckAnalysis) : (float)tierGrade;
 		string scoreSource = tierEntry == null ? "default" : usedAdaptive ? "adaptive" : "static";
 		float num = baseScore;
 		float synergyDelta = 0f;

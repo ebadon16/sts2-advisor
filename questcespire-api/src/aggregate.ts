@@ -24,7 +24,7 @@ export async function handleAggregate(db: D1Database): Promise<Response> {
 			FROM decisions d
 			JOIN runs r ON d.run_id = r.run_id
 			JOIN json_each(d.offered_ids) j
-			WHERE d.event_type IN ('CardReward', 'CardTransform')
+			WHERE d.event_type IN ('CardReward', 'CardTransform', 'ShopCard')
 			  AND r.outcome IS NOT NULL
 			GROUP BY j.value, r.character
 			HAVING COUNT(*) >= 3`
@@ -55,7 +55,7 @@ export async function handleAggregate(db: D1Database): Promise<Response> {
 			FROM decisions d
 			JOIN runs r ON d.run_id = r.run_id
 			JOIN json_each(d.offered_ids) j
-			WHERE d.event_type IN ('RelicReward', 'BossRelic')
+			WHERE d.event_type IN ('RelicReward', 'BossRelic', 'ShopRelic')
 			  AND r.outcome IS NOT NULL
 			GROUP BY j.value, r.character
 			HAVING COUNT(*) >= 3`
@@ -109,7 +109,7 @@ export async function handleAggregate(db: D1Database): Promise<Response> {
 		`SELECT d.chosen_id, d.deck_snapshot, r.outcome, r.character
 		 FROM decisions d
 		 JOIN runs r ON d.run_id = r.run_id
-		 WHERE d.event_type IN ('CardReward', 'CardTransform')
+		 WHERE d.event_type IN ('CardReward', 'CardTransform', 'ShopCard')
 		   AND r.outcome IS NOT NULL
 		   AND d.chosen_id IS NOT NULL`
 	).all<{ chosen_id: string; deck_snapshot: string | null; outcome: string; character: string }>();
@@ -138,7 +138,7 @@ export async function handleAggregate(db: D1Database): Promise<Response> {
 		`SELECT d.chosen_id, d.deck_snapshot, r.outcome, r.character
 		 FROM decisions d
 		 JOIN runs r ON d.run_id = r.run_id
-		 WHERE d.event_type IN ('RelicReward', 'BossRelic')
+		 WHERE d.event_type IN ('RelicReward', 'BossRelic', 'ShopRelic')
 		   AND r.outcome IS NOT NULL
 		   AND d.chosen_id IS NOT NULL`
 	).all<{ chosen_id: string; deck_snapshot: string | null; outcome: string; character: string }>();

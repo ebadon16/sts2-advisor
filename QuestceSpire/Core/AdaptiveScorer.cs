@@ -21,9 +21,9 @@ public class AdaptiveScorer
 		_db = db;
 	}
 
-	public float GetAdaptiveCardScore(string character, string cardId, TierGrade staticTier, DeckAnalysis deckAnalysis)
+	public float GetAdaptiveCardScore(string character, string cardId, float staticScore, DeckAnalysis deckAnalysis)
 	{
-		float num = (float)staticTier;
+		float num = staticScore;
 		CommunityCardStats communityCardStats = _db?.GetCommunityCardStats(character, cardId);
 		if (communityCardStats == null || communityCardStats.SampleSize < 5)
 		{
@@ -49,9 +49,9 @@ public class AdaptiveScorer
 		return Math.Max(0f, Math.Min(5f, val2));
 	}
 
-	public float GetAdaptiveRelicScore(string character, string relicId, TierGrade staticTier, DeckAnalysis deckAnalysis)
+	public float GetAdaptiveRelicScore(string character, string relicId, float staticScore, DeckAnalysis deckAnalysis)
 	{
-		float num = (float)staticTier;
+		float num = staticScore;
 		CommunityRelicStats communityRelicStats = _db?.GetCommunityRelicStats(character, relicId);
 		if (communityRelicStats == null || communityRelicStats.SampleSize < 5)
 		{

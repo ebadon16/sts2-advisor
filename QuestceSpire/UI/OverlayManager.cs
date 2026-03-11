@@ -100,8 +100,10 @@ public class OverlayManager
 	// Layout stabilization counter (re-runs FitPanelHeight for first N process ticks)
 	private int _layoutTicksRemaining;
 
-	// Shop refresh: track item count to detect purchases
+	// Shop refresh: track item count and IDs to detect purchases
 	private int _shopItemCount;
+	private HashSet<string> _shopCardIds = new HashSet<string>();
+	private HashSet<string> _shopRelicIds = new HashSet<string>();
 
 	// _archChipVBox removed — deck info lives in DECK BREAKDOWN section
 
@@ -785,6 +787,40 @@ public class OverlayManager
 		if (currentCount == _shopItemCount) return;
 		// Item count changed — a purchase happened
 		Plugin.Log($"Shop inventory changed ({_shopItemCount} → {currentCount}), refreshing...");
+
+		// Detect what was purchased by diffing current vs previous item IDs
+		var currentCardIds = new HashSet<string>(gameState.ShopCards?.Select(c => c.Id) ?? Enumerable.Empty<string>());
+		var currentRelicIds = new HashSet<string>(gameState.ShopRelics?.Select(r => r.Id) ?? Enumerable.Empty<string>());
+		var purchasedCards = _shopCardIds.Except(currentCardIds).ToList();
+		var purchasedRelics = _shopRelicIds.Except(currentRelicIds).ToList();
+
+		// Record shop purchases as decisions
+		if (Plugin.RunTracker != null && (purchasedCards.Count > 0 || purchasedRelics.Count > 0))
+		{
+			var deckIds = gameState.DeckCards?.ConvertAll(c => c.Id) ?? new List<string>();
+			var relicIds = gameState.CurrentRelics?.ConvertAll(r => r.Id) ?? new List<string>();
+			foreach (string cardId in purchasedCards)
+			{
+				var offeredIds = _shopCardIds.ToList();
+				Plugin.RunTracker.RecordDecision(
+					DecisionEventType.ShopCard, offeredIds, cardId,
+					deckIds, relicIds,
+					gameState.CurrentHP, gameState.MaxHP, gameState.Gold,
+					gameState.ActNumber, gameState.Floor);
+				Plugin.Log($"Shop card purchase tracked: {cardId}");
+			}
+			foreach (string relicId in purchasedRelics)
+			{
+				var offeredIds = _shopRelicIds.ToList();
+				Plugin.RunTracker.RecordDecision(
+					DecisionEventType.ShopRelic, offeredIds, relicId,
+					deckIds, relicIds,
+					gameState.CurrentHP, gameState.MaxHP, gameState.Gold,
+					gameState.ActNumber, gameState.Floor);
+				Plugin.Log($"Shop relic purchase tracked: {relicId}");
+			}
+		}
+
 		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
@@ -1029,6 +1065,8 @@ public class OverlayManager
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_shopItemCount = (cards?.Count ?? 0) + (relics?.Count ?? 0);
+		_shopCardIds = new HashSet<string>(cards?.Select(c => c.Id) ?? Enumerable.Empty<string>());
+		_shopRelicIds = new HashSet<string>(relics?.Select(r => r.Id) ?? Enumerable.Empty<string>());
 		_currentScreen = "MERCHANT SHOP";
 		_mapAdvice = null;
 		MarkUpdated();

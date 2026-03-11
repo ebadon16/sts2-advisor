@@ -7,5 +7,7 @@ public enum DecisionEventType
 	BossRelic,
 	Shop,
 	CardRemove,
-	CardTransform
+	CardTransform,
+	ShopCard,
+	ShopRelic
 }

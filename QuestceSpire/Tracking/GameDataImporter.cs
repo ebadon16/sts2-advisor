@@ -271,12 +271,19 @@ public class GameDataImporter
 		string[] steamDirs = Directory.GetDirectories(sts2Dir);
 		if (steamDirs.Length == 0) return null;
 
-		// Try profile1 first (main profile), fallback to any profile
+		// Try profile1 first (main profile), then fallback to any profile
 		foreach (string steamDir in steamDirs)
 		{
 			string profile1 = Path.Combine(steamDir, "profile1");
 			if (Directory.Exists(profile1))
 				return profile1;
+		}
+		// Fallback: try any profile directory (profile2, profile3, etc.)
+		foreach (string steamDir in steamDirs)
+		{
+			string[] profileDirs = Directory.GetDirectories(steamDir, "profile*");
+			if (profileDirs.Length > 0)
+				return profileDirs[0];
 		}
 		return null;
 	}

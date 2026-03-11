@@ -72,7 +72,7 @@ public class LocalStatsComputer
                         FROM decisions d
                         JOIN runs r ON d.run_id = r.run_id
                         JOIN json_each(d.offered_ids) j
-                        WHERE d.event_type IN ('CardReward', 'CardTransform')
+                        WHERE d.event_type IN ('CardReward', 'CardTransform', 'ShopCard')
                         AND r.outcome IS NOT NULL
                         GROUP BY j.value, r.character
                         HAVING COUNT(*) >= 3;
@@ -120,7 +120,7 @@ public class LocalStatsComputer
                         FROM decisions d
                         JOIN runs r ON d.run_id = r.run_id
                         JOIN json_each(d.offered_ids) j
-                        WHERE d.event_type IN ('RelicReward', 'BossRelic')
+                        WHERE d.event_type IN ('RelicReward', 'BossRelic', 'ShopRelic')
                         AND r.outcome IS NOT NULL
                         GROUP BY j.value, r.character
                         HAVING COUNT(*) >= 3;
@@ -158,7 +158,7 @@ public class LocalStatsComputer
 					SELECT d.chosen_id, d.deck_snapshot, r.character, r.outcome
 					FROM decisions d
 					JOIN runs r ON d.run_id = r.run_id
-					WHERE d.event_type IN ('CardReward', 'CardTransform')
+					WHERE d.event_type IN ('CardReward', 'CardTransform', 'ShopCard')
 					AND d.chosen_id IS NOT NULL
 					AND r.outcome IS NOT NULL";
 
@@ -270,7 +270,7 @@ public class LocalStatsComputer
 					SELECT d.chosen_id, d.deck_snapshot, r.character, r.outcome
 					FROM decisions d
 					JOIN runs r ON d.run_id = r.run_id
-					WHERE d.event_type IN ('RelicReward', 'BossRelic')
+					WHERE d.event_type IN ('RelicReward', 'BossRelic', 'ShopRelic')
 					AND d.chosen_id IS NOT NULL
 					AND r.outcome IS NOT NULL";
 
