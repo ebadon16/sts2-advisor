@@ -1,28 +1,6 @@
 {
   "events": [
     {
-      "eventId": "BIG_FISH",
-      "eventName": "Big Fish",
-      "choices": [
-        { "label": "Eat (heal)", "defaultRating": "good", "notes": "Free healing is always nice", "conditions": [
-          { "when": "high_hp", "rating": "situational", "notes": "Less value at high HP" }
-        ]},
-        { "label": "Banana (relic)", "defaultRating": "good", "notes": "Fairy in a Bottle effect — great safety net" },
-        { "label": "Donut (max HP)", "defaultRating": "situational", "notes": "Max HP not as impactful as healing or relic" }
-      ]
-    },
-    {
-      "eventId": "GOLDEN_IDOL",
-      "eventName": "Golden Idol",
-      "choices": [
-        { "label": "Take the idol", "defaultRating": "good", "notes": "Gold is valuable, curse is manageable", "conditions": [
-          { "when": "large_deck", "rating": "good", "notes": "Curse diluted in large deck" },
-          { "when": "small_deck", "rating": "situational", "notes": "Curse hurts more in small decks" }
-        ]},
-        { "label": "Leave it", "defaultRating": "situational", "notes": "Safe but you miss out on gold" }
-      ]
-    },
-    {
       "eventId": "NEOW_GIFT",
       "eventName": "Neow's Gift",
       "choices": [
@@ -33,12 +11,31 @@
       ]
     },
     {
+      "eventId": "BIG_FISH",
+      "eventName": "Big Fish",
+      "choices": [
+        { "label": "Eat (heal)", "defaultRating": "good", "notes": "Free healing is always nice", "conditions": [
+          { "when": "high_hp", "rating": "situational", "notes": "Less value at high HP" }
+        ]},
+        { "label": "Banana (relic)", "defaultRating": "good", "notes": "Safety net relic — great insurance" },
+        { "label": "Donut (max HP)", "defaultRating": "situational", "notes": "Max HP not as impactful as healing or relic" }
+      ]
+    },
+    {
+      "eventId": "GOLDEN_IDOL",
+      "eventName": "Golden Idol",
+      "choices": [
+        { "label": "Take the idol", "defaultRating": "good", "notes": "Gold is valuable, curse is manageable", "conditions": [
+          { "when": "small_deck", "rating": "situational", "notes": "Curse hurts more in small decks" }
+        ]},
+        { "label": "Leave it", "defaultRating": "situational", "notes": "Safe but you miss out on gold" }
+      ]
+    },
+    {
       "eventId": "ANCIENT_WRITING",
       "eventName": "Ancient Writing",
       "choices": [
-        { "label": "Remove a card", "defaultRating": "good", "notes": "Card removal is premium", "conditions": [
-          { "when": "small_deck", "rating": "good", "notes": "Even better in thin decks — every card matters" }
-        ]},
+        { "label": "Remove a card", "defaultRating": "good", "notes": "Card removal is premium" },
         { "label": "Upgrade a card", "defaultRating": "situational", "notes": "Usually worse than removal" }
       ]
     },
@@ -56,11 +53,11 @@
       "eventId": "VAMPIRES",
       "eventName": "Vampires",
       "choices": [
-        { "label": "Accept (Bites)", "defaultRating": "situational", "notes": "Replaces all Strikes with Bites — strong if deck is small", "conditions": [
-          { "when": "small_deck", "rating": "good", "notes": "Bites are solid in thin decks" },
-          { "when": "large_deck", "rating": "bad", "notes": "Too many non-Bite cards, Bites won't carry" }
+        { "label": "Accept (Bites)", "defaultRating": "situational", "notes": "Replaces Strikes with Bites — strong in thin decks", "conditions": [
+          { "when": "small_deck", "rating": "good", "notes": "Bites carry in thin decks" },
+          { "when": "large_deck", "rating": "bad", "notes": "Too diluted in large decks" }
         ]},
-        { "label": "Refuse", "defaultRating": "situational", "notes": "Safe choice, keep your Strikes" }
+        { "label": "Refuse", "defaultRating": "situational", "notes": "Safe, keep your Strikes" }
       ]
     },
     {
@@ -71,54 +68,439 @@
       ]
     },
     {
-      "eventId": "THE_COLOSSEUM",
-      "eventName": "The Colosseum",
-      "choices": [
-        { "label": "Fight", "defaultRating": "good", "notes": "Double fight but good rewards", "conditions": [
-          { "when": "low_hp", "rating": "bad", "notes": "Too risky at low HP" }
-        ]},
-        { "label": "Cowardice", "defaultRating": "situational", "notes": "Safe but no rewards", "conditions": [
-          { "when": "low_hp", "rating": "good", "notes": "Living is more important than rewards" }
-        ]}
-      ]
-    },
-    {
       "eventId": "CURSED_TOME",
       "eventName": "Cursed Tome",
       "choices": [
         { "label": "Read", "defaultRating": "good", "notes": "Random rare relic for a curse — usually worth it", "conditions": [
-          { "when": "small_deck", "rating": "situational", "notes": "Curse is more painful in small decks" }
+          { "when": "small_deck", "rating": "situational", "notes": "Curse more painful in small decks" }
         ]},
         { "label": "Leave", "defaultRating": "situational", "notes": "Safe but misses free relic" }
-      ]
-    },
-    {
-      "eventId": "DEAD_ADVENTURER",
-      "eventName": "Dead Adventurer",
-      "choices": [
-        { "label": "Search the body", "defaultRating": "good", "notes": "Risk a fight for loot — usually worthwhile", "conditions": [
-          { "when": "low_hp", "rating": "bad", "notes": "Not worth the risk at low HP" }
-        ]},
-        { "label": "Leave", "defaultRating": "situational", "notes": "Safe, no reward" }
-      ]
-    },
-    {
-      "eventId": "DRUG_DEALER",
-      "eventName": "Drug Dealer",
-      "choices": [
-        { "label": "J.A.X. (strength)", "defaultRating": "situational", "notes": "Strength at cost of max HP", "conditions": [
-          { "when": "act1", "rating": "good", "notes": "Early strength is powerful" }
-        ]},
-        { "label": "Mutagenic Strength", "defaultRating": "situational", "notes": "Temporary strength isn't great long-term" }
       ]
     },
     {
       "eventId": "FACE_TRADER",
       "eventName": "Face Trader",
       "choices": [
-        { "label": "Trade", "defaultRating": "good", "notes": "Relic swap — high variance but usually positive", "conditions": [
-          { "when": "low_hp", "rating": "situational", "notes": "Losing HP for trade is risky when low" }
+        { "label": "Trade", "defaultRating": "good", "notes": "Relic swap — usually positive", "conditions": [
+          { "when": "low_hp", "rating": "situational", "notes": "HP cost is risky when low" }
         ]}
+      ]
+    },
+    {
+      "eventId": "UPGRADE_SHRINE",
+      "eventName": "Upgrade Shrine",
+      "choices": [
+        { "label": "Upgrade a card", "defaultRating": "good", "notes": "Free upgrade — always take it" }
+      ]
+    },
+    {
+      "eventId": "WE_MEET_AGAIN",
+      "eventName": "We Meet Again",
+      "choices": [
+        { "label": "Give gold", "defaultRating": "situational", "notes": "Lose gold for a card" },
+        { "label": "Give card", "defaultRating": "good", "notes": "Card removal is premium" },
+        { "label": "Give potion", "defaultRating": "good", "notes": "Potion for gold is a good trade" }
+      ]
+    },
+    {
+      "eventId": "BRAIN_LEECH",
+      "eventName": "Brain Leech",
+      "choices": [
+        { "label": "Accept the leech", "defaultRating": "situational", "notes": "Lose max HP for a random relic — high variance", "conditions": [
+          { "when": "high_hp", "rating": "good", "notes": "Can afford the max HP loss" },
+          { "when": "low_hp", "rating": "bad", "notes": "Max HP loss too risky when already low" }
+        ]},
+        { "label": "Refuse", "defaultRating": "situational", "notes": "Safe — keep your max HP" }
+      ]
+    },
+    {
+      "eventId": "CRYSTAL_SPHERE",
+      "eventName": "Crystal Sphere",
+      "choices": [
+        { "label": "Touch (gold)", "defaultRating": "good", "notes": "Free gold is always useful" },
+        { "label": "Peer inside (healing)", "defaultRating": "good", "notes": "Free healing is valuable", "conditions": [
+          { "when": "high_hp", "rating": "situational", "notes": "Less value at full HP" }
+        ]}
+      ]
+    },
+    {
+      "eventId": "POTION_COURIER",
+      "eventName": "Potion Courier",
+      "choices": [
+        { "label": "Buy potions", "defaultRating": "good", "notes": "Discounted potions — great deal", "conditions": [
+          { "when": "low_gold", "rating": "situational", "notes": "Save gold if you're broke" }
+        ]},
+        { "label": "Pass", "defaultRating": "situational", "notes": "Save your gold" }
+      ]
+    },
+    {
+      "eventId": "SELF_HELP_BOOK",
+      "eventName": "Self Help Book",
+      "choices": [
+        { "label": "Read (upgrade)", "defaultRating": "good", "notes": "Free card upgrade — always take it" }
+      ]
+    },
+    {
+      "eventId": "SLIPPERY_BRIDGE",
+      "eventName": "Slippery Bridge",
+      "choices": [
+        { "label": "Risk crossing", "defaultRating": "situational", "notes": "Risk for gold or relic reward", "conditions": [
+          { "when": "high_hp", "rating": "good", "notes": "Can afford the fall damage" },
+          { "when": "low_hp", "rating": "bad", "notes": "Fall could be lethal" }
+        ]},
+        { "label": "Go around", "defaultRating": "situational", "notes": "Safe but no reward" }
+      ]
+    },
+    {
+      "eventId": "SYMBIOTE",
+      "eventName": "Symbiote",
+      "choices": [
+        { "label": "Accept symbiote", "defaultRating": "situational", "notes": "Relic with buff + downside — evaluate the tradeoff" },
+        { "label": "Reject", "defaultRating": "situational", "notes": "Safe, no risk" }
+      ]
+    },
+    {
+      "eventId": "THE_FUTURE_OF_POTIONS",
+      "eventName": "The Future of Potions",
+      "choices": [
+        { "label": "Invest in potions", "defaultRating": "good", "notes": "Potion-related benefits are strong" },
+        { "label": "Pass", "defaultRating": "situational", "notes": "Skip if you don't use potions much" }
+      ]
+    },
+    {
+      "eventId": "THE_LEGENDS_WERE_TRUE",
+      "eventName": "The Legends Were True",
+      "choices": [
+        { "label": "Explore the treasure", "defaultRating": "good", "notes": "Treasure is usually worth the risk" },
+        { "label": "Leave", "defaultRating": "situational", "notes": "Safe but you miss potential rewards" }
+      ]
+    },
+    {
+      "eventId": "THIS_OR_THAT",
+      "eventName": "This or That",
+      "choices": [
+        { "label": "This", "defaultRating": "situational", "notes": "Evaluate both options — pick the one that fits your deck" },
+        { "label": "That", "defaultRating": "situational", "notes": "Compare with the other option" }
+      ]
+    },
+    {
+      "eventId": "AROMA_OF_CHAOS",
+      "eventName": "Aroma of Chaos",
+      "choices": [
+        { "label": "Inhale", "defaultRating": "situational", "notes": "Random effects — could be great or terrible" },
+        { "label": "Hold your breath", "defaultRating": "situational", "notes": "Safe — avoid the gamble" }
+      ]
+    },
+    {
+      "eventId": "BYRDONIS_NEST",
+      "eventName": "Byrdonis Nest",
+      "choices": [
+        { "label": "Disturb the nest", "defaultRating": "situational", "notes": "Risk a fight for rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Not worth the risk at low HP" }
+        ]},
+        { "label": "Leave quietly", "defaultRating": "situational", "notes": "Safe, no reward" }
+      ]
+    },
+    {
+      "eventId": "DENSE_VEGETATION",
+      "eventName": "Dense Vegetation",
+      "choices": [
+        { "label": "Fight through", "defaultRating": "good", "notes": "Event combat — usually manageable with decent rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Combat too risky at low HP" }
+        ]},
+        { "label": "Go around", "defaultRating": "situational", "notes": "Safe path, no combat reward" }
+      ]
+    },
+    {
+      "eventId": "JUNGLE_MAZE_ADVENTURE",
+      "eventName": "Jungle Maze Adventure",
+      "choices": [
+        { "label": "Enter the maze", "defaultRating": "good", "notes": "Navigate for rewards — usually worth it" },
+        { "label": "Skip", "defaultRating": "situational", "notes": "Miss out on maze rewards" }
+      ]
+    },
+    {
+      "eventId": "MORPHIC_GROVE",
+      "eventName": "Morphic Grove",
+      "choices": [
+        { "label": "Transform a card", "defaultRating": "situational", "notes": "High variance — could improve or ruin a card", "conditions": [
+          { "when": "large_deck", "rating": "good", "notes": "Lower risk when you have many cards" },
+          { "when": "small_deck", "rating": "bad", "notes": "Risky in thin decks — every card matters" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Keep your deck as-is" }
+      ]
+    },
+    {
+      "eventId": "ROOM_FULL_OF_CHEESE",
+      "eventName": "Room Full of Cheese",
+      "choices": [
+        { "label": "Eat cheese (heal)", "defaultRating": "good", "notes": "Free healing", "conditions": [
+          { "when": "high_hp", "rating": "situational", "notes": "Less value at full HP" }
+        ]},
+        { "label": "Be suspicious", "defaultRating": "situational", "notes": "Skip if you don't need healing" }
+      ]
+    },
+    {
+      "eventId": "SAPPHIRE_SEED",
+      "eventName": "Sapphire Seed",
+      "choices": [
+        { "label": "Plant the seed", "defaultRating": "good", "notes": "Delayed reward — pays off later in the run" },
+        { "label": "Take it", "defaultRating": "situational", "notes": "Immediate but smaller benefit" }
+      ]
+    },
+    {
+      "eventId": "TABLET_OF_TRUTH",
+      "eventName": "Tablet of Truth",
+      "choices": [
+        { "label": "Study the tablet", "defaultRating": "good", "notes": "Knowledge/upgrade reward" },
+        { "label": "Smash for gold", "defaultRating": "situational", "notes": "Gold now vs knowledge later" }
+      ]
+    },
+    {
+      "eventId": "THE_SUNKEN_STATUE",
+      "eventName": "The Sunken Statue",
+      "choices": [
+        { "label": "Offer gold", "defaultRating": "situational", "notes": "Gold for relic — depends on how much gold", "conditions": [
+          { "when": "low_gold", "rating": "good", "notes": "Cheap relic when low on gold" },
+          { "when": "high_gold", "rating": "situational", "notes": "Evaluate the gold cost" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Keep your gold" }
+      ]
+    },
+    {
+      "eventId": "WELLSPRING",
+      "eventName": "Wellspring",
+      "choices": [
+        { "label": "Drink (heal)", "defaultRating": "good", "notes": "Free healing", "conditions": [
+          { "when": "low_hp", "rating": "good", "notes": "Critical healing when low" },
+          { "when": "high_hp", "rating": "situational", "notes": "Less value at high HP" }
+        ]},
+        { "label": "Upgrade a card", "defaultRating": "good", "notes": "Free upgrade is always strong" }
+      ]
+    },
+    {
+      "eventId": "WHISPERING_HOLLOW",
+      "eventName": "Whispering Hollow",
+      "choices": [
+        { "label": "Listen to whispers", "defaultRating": "situational", "notes": "Mysterious — could buff or debuff" },
+        { "label": "Cover your ears", "defaultRating": "situational", "notes": "Safe, avoid the unknown" }
+      ]
+    },
+    {
+      "eventId": "WOOD_CARVINGS",
+      "eventName": "Wood Carvings",
+      "choices": [
+        { "label": "Study (card/upgrade)", "defaultRating": "good", "notes": "Card or upgrade reward" },
+        { "label": "Ignore", "defaultRating": "bad", "notes": "No reason to skip free rewards" }
+      ]
+    },
+    {
+      "eventId": "ABYSSAL_BATHS",
+      "eventName": "Abyssal Baths",
+      "choices": [
+        { "label": "Bathe (heal at cost)", "defaultRating": "situational", "notes": "Healing with a downside", "conditions": [
+          { "when": "low_hp", "rating": "good", "notes": "Healing is critical when low" }
+        ]},
+        { "label": "Skip", "defaultRating": "situational", "notes": "Avoid the cost" }
+      ]
+    },
+    {
+      "eventId": "DOORS_OF_LIGHT_AND_DARK",
+      "eventName": "Doors of Light and Dark",
+      "choices": [
+        { "label": "Light door", "defaultRating": "situational", "notes": "Safer option — usually healing or upgrade" },
+        { "label": "Dark door", "defaultRating": "situational", "notes": "Riskier — higher reward but possible curse" }
+      ]
+    },
+    {
+      "eventId": "SUNKEN_TREASURY",
+      "eventName": "Sunken Treasury",
+      "choices": [
+        { "label": "Dive for treasure", "defaultRating": "good", "notes": "Risk combat for gold/relic", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Combat too risky at low HP" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Safe, no reward" }
+      ]
+    },
+    {
+      "eventId": "COLOSSAL_FLOWER",
+      "eventName": "Colossal Flower",
+      "choices": [
+        { "label": "Pick the flower", "defaultRating": "good", "notes": "Heal or relic reward" },
+        { "label": "Leave it", "defaultRating": "situational", "notes": "Safe but miss rewards" }
+      ]
+    },
+    {
+      "eventId": "DOLL_ROOM",
+      "eventName": "Doll Room",
+      "choices": [
+        { "label": "Trade with dolls", "defaultRating": "situational", "notes": "Evaluate what they offer vs what they want" },
+        { "label": "Leave", "defaultRating": "situational", "notes": "Skip if trade isn't favorable" }
+      ]
+    },
+    {
+      "eventId": "FIELD_OF_MAN_SIZED_HOLES",
+      "eventName": "Field of Man-Sized Holes",
+      "choices": [
+        { "label": "Explore a hole", "defaultRating": "situational", "notes": "Random rewards from holes", "conditions": [
+          { "when": "high_hp", "rating": "good", "notes": "Can afford any traps" }
+        ]},
+        { "label": "Walk past", "defaultRating": "situational", "notes": "Safe, no risk" }
+      ]
+    },
+    {
+      "eventId": "INFESTED_AUTOMATON",
+      "eventName": "Infested Automaton",
+      "choices": [
+        { "label": "Fight it", "defaultRating": "good", "notes": "Combat for rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Too risky at low HP" }
+        ]},
+        { "label": "Salvage parts", "defaultRating": "situational", "notes": "Small reward without combat" }
+      ]
+    },
+    {
+      "eventId": "MYSTERIOUS_KNIGHT",
+      "eventName": "Mysterious Knight",
+      "choices": [
+        { "label": "Fight the knight", "defaultRating": "good", "notes": "Event combat — solid rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Knight hits hard — not safe at low HP" }
+        ]},
+        { "label": "Talk", "defaultRating": "situational", "notes": "Peaceful resolution — smaller reward" }
+      ]
+    },
+    {
+      "eventId": "STONE_OF_ALL_TIME",
+      "eventName": "Stone of All Time",
+      "choices": [
+        { "label": "Touch the stone", "defaultRating": "good", "notes": "Time manipulation — powerful effect" },
+        { "label": "Leave", "defaultRating": "situational", "notes": "Safe but miss unique opportunity" }
+      ]
+    },
+    {
+      "eventId": "TEA_MASTER",
+      "eventName": "Tea Master",
+      "choices": [
+        { "label": "Drink tea (heal)", "defaultRating": "good", "notes": "Healing is always welcome", "conditions": [
+          { "when": "high_hp", "rating": "situational", "notes": "Less value at high HP" }
+        ]},
+        { "label": "Special brew", "defaultRating": "good", "notes": "Unique potion or buff" }
+      ]
+    },
+    {
+      "eventId": "THE_LOST_WISP",
+      "eventName": "The Lost Wisp",
+      "choices": [
+        { "label": "Follow the wisp", "defaultRating": "good", "notes": "Leads to rewards — usually worth it" },
+        { "label": "Ignore", "defaultRating": "situational", "notes": "Safe but miss rewards" }
+      ]
+    },
+    {
+      "eventId": "WELCOME_TO_WONGOS",
+      "eventName": "Welcome to Wongo's",
+      "choices": [
+        { "label": "Gamble", "defaultRating": "situational", "notes": "Random rewards — could win big or lose", "conditions": [
+          { "when": "high_gold", "rating": "good", "notes": "Can afford to gamble" },
+          { "when": "low_gold", "rating": "bad", "notes": "Can't afford losses" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Keep your gold" }
+      ]
+    },
+    {
+      "eventId": "ZEN_WEAVER",
+      "eventName": "Zen Weaver",
+      "choices": [
+        { "label": "Weave (card manipulation)", "defaultRating": "good", "notes": "Deck manipulation is powerful" },
+        { "label": "Meditate (upgrade)", "defaultRating": "good", "notes": "Free upgrade" }
+      ]
+    },
+    {
+      "eventId": "FAKE_MERCHANT",
+      "eventName": "Fake Merchant",
+      "choices": [
+        { "label": "Browse (triggers combat)", "defaultRating": "situational", "notes": "It's a trap — prepares for surprise combat", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Surprise combat at low HP is very dangerous" }
+        ]}
+      ]
+    },
+    {
+      "eventId": "GRAVE_OF_THE_FORGOTTEN",
+      "eventName": "Grave of the Forgotten",
+      "choices": [
+        { "label": "Pay respects", "defaultRating": "situational", "notes": "Small peaceful reward" },
+        { "label": "Rob the grave", "defaultRating": "good", "notes": "Better reward with curse risk", "conditions": [
+          { "when": "small_deck", "rating": "situational", "notes": "Curse hurts more in thin decks" }
+        ]}
+      ]
+    },
+    {
+      "eventId": "HUNGRY_FOR_MUSHROOMS",
+      "eventName": "Hungry for Mushrooms",
+      "choices": [
+        { "label": "Eat mushrooms", "defaultRating": "situational", "notes": "Random effect — heal, buff, or debuff", "conditions": [
+          { "when": "low_hp", "rating": "good", "notes": "Worth the risk for potential healing" }
+        ]},
+        { "label": "Pass", "defaultRating": "situational", "notes": "Safe, no risk" }
+      ]
+    },
+    {
+      "eventId": "RANWID_THE_ELDER",
+      "eventName": "Ranwid the Elder",
+      "choices": [
+        { "label": "Seek wisdom", "defaultRating": "good", "notes": "Card reward or upgrade" },
+        { "label": "Ask for help", "defaultRating": "good", "notes": "Healing or relic assistance" }
+      ]
+    },
+    {
+      "eventId": "RELIC_TRADER",
+      "eventName": "Relic Trader",
+      "choices": [
+        { "label": "Trade a relic", "defaultRating": "situational", "notes": "Swap relics — evaluate your worst vs potential gain" },
+        { "label": "Keep your relics", "defaultRating": "situational", "notes": "Safe if your relics are all good" }
+      ]
+    },
+    {
+      "eventId": "THE_ROUND_TEA_PARTY",
+      "eventName": "The Round Tea Party",
+      "choices": [
+        { "label": "Join the party", "defaultRating": "good", "notes": "Social rewards — usually positive" },
+        { "label": "Decline", "defaultRating": "situational", "notes": "Safe but antisocial" }
+      ]
+    },
+    {
+      "eventId": "THE_TRIAL",
+      "eventName": "The Trial",
+      "choices": [
+        { "label": "Accept the trial", "defaultRating": "good", "notes": "Combat trial with good rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Trial combat is risky at low HP" }
+        ]},
+        { "label": "Decline", "defaultRating": "situational", "notes": "Safe, no combat" }
+      ]
+    },
+    {
+      "eventId": "TINKER_TIME",
+      "eventName": "Tinker Time",
+      "choices": [
+        { "label": "Modify cards", "defaultRating": "good", "notes": "Card manipulation — transform or upgrade" },
+        { "label": "Modify relics", "defaultRating": "situational", "notes": "Relic modification is risky but can be powerful" }
+      ]
+    },
+    {
+      "eventId": "WAR_HISTORIAN",
+      "eventName": "War Historian",
+      "choices": [
+        { "label": "Learn from history", "defaultRating": "good", "notes": "Knowledge buffs for upcoming fights" },
+        { "label": "Trade knowledge for card", "defaultRating": "situational", "notes": "Card reward option" }
+      ]
+    },
+    {
+      "eventId": "MINDBLOOM",
+      "eventName": "Mind Bloom",
+      "choices": [
+        { "label": "I am War (fight for relic)", "defaultRating": "good", "notes": "Boss fight for boss relic — usually worth it", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Too risky at low HP" }
+        ]},
+        { "label": "I am Awake (upgrade all)", "defaultRating": "good", "notes": "Mass upgrade is incredible in late game" },
+        { "label": "I am Rich (999 gold)", "defaultRating": "situational", "notes": "Only if you have shop access and need it" }
       ]
     },
     {
@@ -128,15 +510,6 @@
         { "label": "Lose a skill", "defaultRating": "situational", "notes": "Lose your worst skill card" },
         { "label": "Lose an attack", "defaultRating": "situational", "notes": "Lose your worst attack card" },
         { "label": "Lose a power", "defaultRating": "bad", "notes": "Powers are usually your best cards" }
-      ]
-    },
-    {
-      "eventId": "FORGOTTEN_ALTAR",
-      "eventName": "Forgotten Altar",
-      "choices": [
-        { "label": "Pray (relic for curse)", "defaultRating": "good", "notes": "Golden Idol relic for a curse is great value" },
-        { "label": "Desecrate (gold)", "defaultRating": "situational", "notes": "Small gold reward" },
-        { "label": "Leave", "defaultRating": "bad", "notes": "No benefit" }
       ]
     },
     {
@@ -166,17 +539,6 @@
       ]
     },
     {
-      "eventId": "MINDBLOOM",
-      "eventName": "Mind Bloom",
-      "choices": [
-        { "label": "I am War (fight for relic)", "defaultRating": "good", "notes": "Boss fight for boss relic — usually worth it", "conditions": [
-          { "when": "low_hp", "rating": "bad", "notes": "Too risky at low HP" }
-        ]},
-        { "label": "I am Awake (upgrade all)", "defaultRating": "good", "notes": "Mass upgrade is incredible in act 3" },
-        { "label": "I am Rich (999 gold)", "defaultRating": "situational", "notes": "Only if you have shop access and need it" }
-      ]
-    },
-    {
       "eventId": "MYSTERIOUS_SPHERE",
       "eventName": "Mysterious Sphere",
       "choices": [
@@ -187,10 +549,23 @@
       ]
     },
     {
-      "eventId": "NOTE_FOR_YOURSELF",
-      "eventName": "Note For Yourself",
+      "eventId": "FORGOTTEN_ALTAR",
+      "eventName": "Forgotten Altar",
       "choices": [
-        { "label": "Send/Receive card", "defaultRating": "good", "notes": "Card exchange between acts — can be very strong" }
+        { "label": "Pray (relic for curse)", "defaultRating": "good", "notes": "Relic for a curse is great value" },
+        { "label": "Desecrate (gold)", "defaultRating": "situational", "notes": "Small gold reward" },
+        { "label": "Leave", "defaultRating": "bad", "notes": "No benefit" }
+      ]
+    },
+    {
+      "eventId": "TOMB_OF_LORD_RED_MASK",
+      "eventName": "Tomb of Lord Red Mask",
+      "choices": [
+        { "label": "Offer gold", "defaultRating": "situational", "notes": "Lose all gold for a relic", "conditions": [
+          { "when": "low_gold", "rating": "good", "notes": "Cheap relic when low on gold" },
+          { "when": "high_gold", "rating": "bad", "notes": "Losing lots of gold not worth it" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Keep your gold" }
       ]
     },
     {
@@ -198,7 +573,7 @@
       "eventName": "Scrap Ooze",
       "choices": [
         { "label": "Reach inside", "defaultRating": "situational", "notes": "RNG for relic — costs HP each attempt", "conditions": [
-          { "when": "high_hp", "rating": "good", "notes": "Can afford to try multiple times" },
+          { "when": "high_hp", "rating": "good", "notes": "Can afford multiple attempts" },
           { "when": "low_hp", "rating": "bad", "notes": "Too expensive at low HP" }
         ]}
       ]
@@ -207,37 +582,49 @@
       "eventId": "THE_WOMAN_IN_BLUE",
       "eventName": "The Woman in Blue",
       "choices": [
-        { "label": "Buy potions", "defaultRating": "situational", "notes": "Potions for gold — only if you have spare gold", "conditions": [
+        { "label": "Buy potions", "defaultRating": "situational", "notes": "Potions for gold", "conditions": [
           { "when": "high_gold", "rating": "good", "notes": "Potions are cheap with lots of gold" },
           { "when": "low_gold", "rating": "bad", "notes": "Save your gold" }
         ]}
       ]
     },
     {
-      "eventId": "TOMB_OF_LORD_RED_MASK",
-      "eventName": "Tomb of Lord Red Mask",
+      "eventId": "NOTE_FOR_YOURSELF",
+      "eventName": "Note For Yourself",
       "choices": [
-        { "label": "Offer gold", "defaultRating": "situational", "notes": "Lose all gold for a relic", "conditions": [
-          { "when": "low_gold", "rating": "good", "notes": "Giving up little gold for a relic is great" },
-          { "when": "high_gold", "rating": "bad", "notes": "Losing lots of gold not worth it" }
+        { "label": "Send/Receive card", "defaultRating": "good", "notes": "Card exchange between acts — can be strong" }
+      ]
+    },
+    {
+      "eventId": "THE_COLOSSEUM",
+      "eventName": "The Colosseum",
+      "choices": [
+        { "label": "Fight", "defaultRating": "good", "notes": "Double fight but good rewards", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Too risky at low HP" }
         ]},
-        { "label": "Leave", "defaultRating": "situational", "notes": "Keep your gold" }
+        { "label": "Cowardice", "defaultRating": "situational", "notes": "Safe but no rewards", "conditions": [
+          { "when": "low_hp", "rating": "good", "notes": "Living is more important than rewards" }
+        ]}
       ]
     },
     {
-      "eventId": "UPGRADE_SHRINE",
-      "eventName": "Upgrade Shrine",
+      "eventId": "DEAD_ADVENTURER",
+      "eventName": "Dead Adventurer",
       "choices": [
-        { "label": "Upgrade a card", "defaultRating": "good", "notes": "Free upgrade — always take it" }
+        { "label": "Search the body", "defaultRating": "good", "notes": "Risk a fight for loot", "conditions": [
+          { "when": "low_hp", "rating": "bad", "notes": "Not worth the risk at low HP" }
+        ]},
+        { "label": "Leave", "defaultRating": "situational", "notes": "Safe, no reward" }
       ]
     },
     {
-      "eventId": "WE_MEET_AGAIN",
-      "eventName": "We Meet Again",
+      "eventId": "DRUG_DEALER",
+      "eventName": "Drug Dealer",
       "choices": [
-        { "label": "Give gold", "defaultRating": "situational", "notes": "Lose gold for a card — depends on options" },
-        { "label": "Give card", "defaultRating": "good", "notes": "Card removal is premium" },
-        { "label": "Give potion", "defaultRating": "good", "notes": "Potion for gold is a good trade" }
+        { "label": "J.A.X. (strength)", "defaultRating": "situational", "notes": "Strength at cost of max HP", "conditions": [
+          { "when": "act1", "rating": "good", "notes": "Early strength is powerful" }
+        ]},
+        { "label": "Mutagenic Strength", "defaultRating": "situational", "notes": "Temporary strength isn't great long-term" }
       ]
     }
   ]

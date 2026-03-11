@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace QuestceSpire.Core;
@@ -43,8 +45,21 @@ public class EventAdvisor
 	{
 		if (string.IsNullOrEmpty(eventId))
 			return null;
-		_adviceByEventId.TryGetValue(eventId, out var entry);
-		return entry;
+		if (_adviceByEventId.TryGetValue(eventId, out var entry))
+			return entry;
+		// Try PascalCase → UPPER_SNAKE_CASE conversion
+		string snake = Regex.Replace(eventId, @"(?<!^)([A-Z])", "_$1").ToUpperInvariant();
+		if (snake != eventId && _adviceByEventId.TryGetValue(snake, out entry))
+			return entry;
+		// Try UPPER_SNAKE_CASE → PascalCase conversion
+		if (eventId.Contains('_'))
+		{
+			string pascal = string.Join("", eventId.Split('_').Select(p =>
+				p.Length > 0 ? char.ToUpper(p[0]) + p.Substring(1).ToLower() : ""));
+			if (_adviceByEventId.TryGetValue(pascal, out entry))
+				return entry;
+		}
+		return null;
 	}
 
 	/// <summary>

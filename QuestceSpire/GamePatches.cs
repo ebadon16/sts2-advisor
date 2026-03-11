@@ -379,33 +379,91 @@ public static class GamePatches
 			List<string> enemyIds = null;
 			try
 			{
-				// Try extracting enemy IDs via reflection on NCombatRoom
-				var enemiesProp = __result.GetType().GetProperty("Enemies",
-					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-				var combatProp = __result.GetType().GetProperty("CombatState",
-					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-				object source = enemiesProp?.GetValue(__result) ?? combatProp?.GetValue(__result);
-				if (source is System.Collections.IEnumerable enemyList && source is not string)
+				// Strategy 1: Try encounter ID from NCombatRoom fields/properties
+				// Game logs show "Creating NCombatRoom with encounter=SHRINKER_BEETLE_WEAK"
+				string encounterId = null;
+				foreach (var name in new[] { "Encounter", "_encounter", "EncounterId", "_encounterId", "encounter" })
 				{
-					enemyIds = new List<string>();
-					foreach (var enemy in enemyList)
+					var field = __result.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					if (field != null)
 					{
-						var idProp = enemy.GetType().GetProperty("Id",
-							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-						var idObj = idProp?.GetValue(enemy);
-						if (idObj != null)
+						var val = field.GetValue(__result);
+						if (val != null)
 						{
-							var entryProp = idObj.GetType().GetProperty("Entry",
-								BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-							var entry = entryProp?.GetValue(idObj)?.ToString();
-							if (entry != null)
-								enemyIds.Add(entry);
+							// Could be an enum, Id type, or string
+							var entryProp = val.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
+							encounterId = entryProp?.GetValue(val)?.ToString() ?? val.ToString();
+							Plugin.Log($"Encounter field '{name}': {encounterId} (type={val.GetType().Name})");
+							break;
 						}
 					}
-					if (enemyIds.Count > 0)
-						Plugin.Log($"Enemy IDs extracted: {string.Join(", ", enemyIds)}");
-					else
-						enemyIds = null;
+					var prop = __result.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					if (prop != null)
+					{
+						var val = prop.GetValue(__result);
+						if (val != null)
+						{
+							var entryProp = val.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
+							encounterId = entryProp?.GetValue(val)?.ToString() ?? val.ToString();
+							Plugin.Log($"Encounter prop '{name}': {encounterId} (type={val.GetType().Name})");
+							break;
+						}
+					}
+				}
+				if (encounterId != null)
+				{
+					enemyIds = new List<string> { encounterId };
+					// Also try splitting compound encounter IDs (e.g., "SLAVER_RED_AND_BLUE")
+					// and stripping variant suffixes like _WEAK, _ELITE
+					string baseId = System.Text.RegularExpressions.Regex.Replace(encounterId, @"_(WEAK|ELITE|STRONG|BOSS|HARD|EASY)$", "");
+					if (baseId != encounterId)
+						enemyIds.Add(baseId);
+				}
+				// Strategy 2: Scan all fields for IEnumerable of enemy-like objects
+				if (enemyIds == null)
+				{
+					foreach (var field in __result.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+					{
+						try
+						{
+							var val = field.GetValue(__result);
+							if (val is System.Collections.IEnumerable list && val is not string && val is not byte[])
+							{
+								var tempIds = new List<string>();
+								foreach (var item in list)
+								{
+									if (item == null) continue;
+									var idProp = item.GetType().GetProperty("Id", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+									var entryProp = idProp?.GetValue(item)?.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
+									var entry = entryProp?.GetValue(idProp.GetValue(item))?.ToString();
+									if (entry != null) tempIds.Add(entry);
+									else
+									{
+										var nameProp = item.GetType().GetProperty("Name", BindingFlags.Instance | BindingFlags.Public);
+										var nameVal = nameProp?.GetValue(item)?.ToString();
+										if (nameVal != null) tempIds.Add(nameVal);
+									}
+								}
+								if (tempIds.Count > 0)
+								{
+									enemyIds = tempIds;
+									Plugin.Log($"Enemy IDs from field '{field.Name}': {string.Join(", ", tempIds)}");
+									break;
+								}
+							}
+						}
+						catch { }
+					}
+				}
+				if (enemyIds != null && enemyIds.Count > 0)
+					Plugin.Log($"Enemy IDs extracted: {string.Join(", ", enemyIds)}");
+				else
+				{
+					// Log all available members for debugging
+					var members = __result.GetType().GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+						.Select(m => $"{m.MemberType}:{m.Name}").Take(30);
+					Plugin.Log($"No enemy IDs found. NCombatRoom members: {string.Join(", ", members)}");
+					enemyIds = null;
 				}
 			}
 			catch (Exception ex)

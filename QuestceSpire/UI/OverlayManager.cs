@@ -2602,6 +2602,8 @@ public class OverlayManager
 			_deckVizContainer.RemoveChild(child);
 			child.QueueFree();
 		}
+		_deckVizContainer.Visible = false;
+		_deckVizContainer.CustomMinimumSize = Vector2.Zero;
 	}
 
 	private void AddInlineDeckViz(DeckAnalysis analysis)
