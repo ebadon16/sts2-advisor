@@ -94,7 +94,17 @@ public static class Plugin
 		CloudSync = new CloudSync(RunDatabase, RunTracker.PlayerId);
 		var overlaySettings = OverlaySettings.Load();
 		if (overlaySettings.CloudSyncEnabled)
-			Task.Run(() => CloudSync.DownloadCommunityStats());
+		{
+			// Download community stats and merge on top of local+imported data.
+			// DownloadCommunityStats calls ApplyCachedStats which recomputes local
+			// then merges cloud — this preserves correct totals.
+			Task.Run(async () =>
+			{
+				await CloudSync.DownloadCommunityStats();
+				// Re-apply game history import after cloud merge
+				new GameDataImporter(RunDatabase).ImportAll();
+			});
+		}
 		_harmony = new Harmony(HarmonyId);
 		_harmony.PatchAll(typeof(GamePatches).Assembly);
 		GamePatches.ApplyManualPatches(_harmony);

@@ -20,9 +20,23 @@ public class CloudSync
 	private DateTime _lastDownload = DateTime.MinValue;
 	private static readonly TimeSpan DownloadInterval = TimeSpan.FromMinutes(30);
 
-	// Cache last downloaded community stats so they survive LocalStatsComputer.RecomputeAll()
+	// Cache last downloaded/imported community stats for safe re-application after local recompute
 	private List<CommunityCardStats> _cachedCardStats;
 	private List<CommunityRelicStats> _cachedRelicStats;
+
+	/// <summary>Cached community card stats — set by download or import.</summary>
+	public List<CommunityCardStats> CachedCardStats
+	{
+		get => _cachedCardStats;
+		set => _cachedCardStats = value;
+	}
+
+	/// <summary>Cached community relic stats — set by download or import.</summary>
+	public List<CommunityRelicStats> CachedRelicStats
+	{
+		get => _cachedRelicStats;
+		set => _cachedRelicStats = value;
+	}
 
 	public CloudSync(RunDatabase db, string playerId, string apiBase = null)
 	{
@@ -88,11 +102,24 @@ public class CloudSync
 			var response = await _http.PostAsync($"{_apiBase}/upload", content);
 			if (response.IsSuccessStatusCode)
 			{
+				// Parse response to find which runs were actually accepted
+				var respBody = await response.Content.ReadAsStringAsync();
+				var respData = JsonConvert.DeserializeObject<UploadResponse>(respBody);
+				var acceptedIds = respData?.AcceptedRunIds != null
+					? new HashSet<string>(respData.AcceptedRunIds)
+					: null;
+
+				int marked = 0;
 				foreach (var (run, _) in unsynced)
 				{
-					_db.MarkSynced(run.RunId);
+					// If server returned accepted IDs, only mark those; otherwise fall back to marking all
+					if (acceptedIds == null || acceptedIds.Contains(run.RunId))
+					{
+						_db.MarkSynced(run.RunId);
+						marked++;
+					}
 				}
-				Plugin.Log($"CloudSync: uploaded {unsynced.Count} run(s).");
+				Plugin.Log($"CloudSync: uploaded {unsynced.Count} run(s), {marked} marked synced.");
 			}
 			else
 			{
@@ -131,16 +158,13 @@ public class CloudSync
 			if (payload == null) return;
 
 			if (payload.CardStats != null && payload.CardStats.Count > 0)
-			{
 				_cachedCardStats = payload.CardStats;
-				_db.MergeCommunityCardStats(payload.CardStats);
-			}
 
 			if (payload.RelicStats != null && payload.RelicStats.Count > 0)
-			{
 				_cachedRelicStats = payload.RelicStats;
-				_db.MergeCommunityRelicStats(payload.RelicStats);
-			}
+
+			// Reset to local-only stats, then merge cloud once to avoid double-counting
+			ApplyCachedStats();
 
 			_lastDownload = DateTime.UtcNow;
 			Plugin.Log($"CloudSync: downloaded {payload.CardStats?.Count ?? 0} card stats, {payload.RelicStats?.Count ?? 0} relic stats from {payload.TotalRuns} community runs.");
@@ -152,13 +176,19 @@ public class CloudSync
 	}
 
 	/// <summary>
-	/// Re-merges cached community stats into the database.
-	/// Call after LocalStatsComputer.RecomputeAll() to restore community data it wiped.
+	/// Recomputes local-only stats and then merges cached community data once.
+	/// This avoids double-counting: local stats are computed fresh from decisions,
+	/// then cloud data is merged in exactly once.
+	/// Call after run ends or on download to ensure correct totals.
 	/// </summary>
-	public void RemergeIfNeeded()
+	public void ApplyCachedStats()
 	{
 		try
 		{
+			// Step 1: Reset to local-only (deletes community_* and reinserts from decisions)
+			Plugin.LocalStats?.RecomputeAll();
+
+			// Step 2: Merge cloud data exactly once on top of local-only data
 			if (_cachedCardStats != null && _cachedCardStats.Count > 0)
 				_db.MergeCommunityCardStats(_cachedCardStats);
 			if (_cachedRelicStats != null && _cachedRelicStats.Count > 0)
@@ -166,7 +196,7 @@ public class CloudSync
 		}
 		catch (Exception ex)
 		{
-			Plugin.Log($"CloudSync remerge error: {ex.Message}");
+			Plugin.Log($"CloudSync ApplyCachedStats error: {ex.Message}");
 		}
 	}
 
@@ -186,5 +216,17 @@ public class CloudSync
 
 		[JsonProperty("last_updated")]
 		public string LastUpdated { get; set; }
+	}
+
+	private class UploadResponse
+	{
+		[JsonProperty("accepted")]
+		public int Accepted { get; set; }
+
+		[JsonProperty("duplicates")]
+		public int Duplicates { get; set; }
+
+		[JsonProperty("accepted_run_ids")]
+		public List<string> AcceptedRunIds { get; set; }
 	}
 }

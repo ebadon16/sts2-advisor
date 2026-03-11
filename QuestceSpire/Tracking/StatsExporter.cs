@@ -60,11 +60,23 @@ public static class StatsExporter
 		int cards = payload.CardStats?.Count ?? 0;
 		int relics = payload.RelicStats?.Count ?? 0;
 
+		// Reset to local-only stats first to avoid double-counting on repeated imports
+		Plugin.LocalStats?.RecomputeAll();
+
 		if (payload.CardStats != null && payload.CardStats.Count > 0)
 			db.MergeCommunityCardStats(payload.CardStats);
 
 		if (payload.RelicStats != null && payload.RelicStats.Count > 0)
 			db.MergeCommunityRelicStats(payload.RelicStats);
+
+		// Update CloudSync cache so run-end remerge uses the imported data
+		if (Plugin.CloudSync != null)
+		{
+			if (payload.CardStats != null && payload.CardStats.Count > 0)
+				Plugin.CloudSync.CachedCardStats = payload.CardStats;
+			if (payload.RelicStats != null && payload.RelicStats.Count > 0)
+				Plugin.CloudSync.CachedRelicStats = payload.RelicStats;
+		}
 
 		return (cards, relics);
 	}

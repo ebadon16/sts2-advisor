@@ -85,6 +85,97 @@ public class DecisionEventDto
     public DateTime Timestamp { get; set; }
 }
 
+/// <summary>
+/// Flat format sent by the mod's CloudSync: { player_id, runs[], decisions[] }
+/// with snake_case property names and pre-serialized JSON string arrays.
+/// </summary>
+public class FlatUploadPayload
+{
+    [JsonPropertyName("player_id")]
+    public string PlayerId { get; set; } = "";
+
+    [JsonPropertyName("runs")]
+    public List<FlatRunDto> Runs { get; set; } = new();
+
+    [JsonPropertyName("decisions")]
+    public List<FlatDecisionDto> Decisions { get; set; } = new();
+}
+
+public class FlatRunDto
+{
+    [JsonPropertyName("run_id")]
+    public string RunId { get; set; } = "";
+
+    [JsonPropertyName("character")]
+    public string Character { get; set; } = "";
+
+    [JsonPropertyName("seed")]
+    public string? Seed { get; set; }
+
+    [JsonPropertyName("start_time")]
+    public string? StartTime { get; set; }
+
+    [JsonPropertyName("end_time")]
+    public string? EndTime { get; set; }
+
+    [JsonPropertyName("outcome")]
+    public string? Outcome { get; set; }
+
+    [JsonPropertyName("final_floor")]
+    public int? FinalFloor { get; set; }
+
+    [JsonPropertyName("final_act")]
+    public int? FinalAct { get; set; }
+
+    [JsonPropertyName("ascension_level")]
+    public int AscensionLevel { get; set; }
+
+    [JsonPropertyName("mod_version")]
+    public string? ModVersion { get; set; }
+}
+
+public class FlatDecisionDto
+{
+    [JsonPropertyName("run_id")]
+    public string RunId { get; set; } = "";
+
+    [JsonPropertyName("floor")]
+    public int Floor { get; set; }
+
+    [JsonPropertyName("act")]
+    public int Act { get; set; }
+
+    [JsonPropertyName("event_type")]
+    public string EventType { get; set; } = "";
+
+    /// <summary>Pre-serialized JSON string (e.g. "[\"CARD_A\",\"CARD_B\"]")</summary>
+    [JsonPropertyName("offered_ids")]
+    public string? OfferedIds { get; set; }
+
+    [JsonPropertyName("chosen_id")]
+    public string? ChosenId { get; set; }
+
+    /// <summary>Pre-serialized JSON string</summary>
+    [JsonPropertyName("deck_snapshot")]
+    public string? DeckSnapshot { get; set; }
+
+    /// <summary>Pre-serialized JSON string</summary>
+    [JsonPropertyName("relic_snapshot")]
+    public string? RelicSnapshot { get; set; }
+
+    [JsonPropertyName("current_hp")]
+    public int CurrentHP { get; set; }
+
+    [JsonPropertyName("max_hp")]
+    public int MaxHP { get; set; }
+
+    [JsonPropertyName("gold")]
+    public int Gold { get; set; }
+
+    [JsonPropertyName("timestamp")]
+    public string? Timestamp { get; set; }
+}
+
 // ─── API Response Models ───
 
 public class CardStatsResponse

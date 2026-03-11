@@ -156,15 +156,17 @@ public class SynergyScorer
 			ScoredCard upgradedScored = ScoreCard(upgradedCard, upgradedTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
 
 			float delta = upgradedScored.FinalScore - currentScored.FinalScore;
-			// Use the upgraded score as the display score, but track the delta
 			upgradedScored.UpgradeDelta = delta;
 			upgradedScored.Id = baseId;
 			upgradedScored.Name = card.Name ?? baseId;
 			upgradedScored.Upgraded = card.Upgraded;
 			upgradedScored.SynergyReasons.Insert(0, $"+{delta:F1} upgrade value ({currentScored.FinalScore:F1} → {upgradedScored.FinalScore:F1})");
 			upgradedScored.ScoreSource = currentScored.ScoreSource;
-			// Use delta as the primary sort score for upgrade ranking
-			upgradedScored.FinalScore = delta + currentScored.FinalScore;
+			// Grade reflects upgrade VALUE, not absolute card strength.
+			// Scale delta (typically 0-2) to grade range (0-5) so grades are meaningful:
+			// delta >= 1.0 → S, 0.7 → A, 0.4 → B, 0.2 → C, 0.1 → D, <0.1 → F
+			float upgradeGradeScore = Math.Min(5f, delta * 5f);
+			upgradedScored.FinalScore = Math.Max(0f, upgradeGradeScore);
 			upgradedScored.FinalGrade = TierEngine.ScoreToGrade(upgradedScored.FinalScore);
 			list.Add(upgradedScored);
 		}

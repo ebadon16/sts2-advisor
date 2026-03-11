@@ -99,27 +99,88 @@ app.MapGet("/api/health", async (AppDbContext db) =>
 // Bulk run submission
 app.MapPost("/api/runs/bulk", async (HttpContext httpContext, AppDbContext db) =>
 {
-    // The mod sends a raw JSON array of { run, decisions } objects.
-    // We accept both that format and a { runs: [...] } wrapper.
-    List<RunSubmission>? submissions;
+    // Accept three formats:
+    // 1. Flat format from mod's CloudSync: { player_id, runs[], decisions[] } with snake_case
+    // 2. Array format: [{ run: {...}, decisions: [...] }]
+    // 3. Wrapper format: { runs: [{ run: {...}, decisions: [...] }] }
+    List<RunSubmission>? submissions = null;
 
     try
     {
         var body = await new StreamReader(httpContext.Request.Body).ReadToEndAsync();
+        var jsonOpts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        // Try array format first (what the mod actually sends)
-        submissions = JsonSerializer.Deserialize<List<RunSubmission>>(body, new JsonSerializerOptions
+        // Try flat format first (what the mod actually sends via CloudSync)
+        var flat = JsonSerializer.Deserialize<FlatUploadPayload>(body, jsonOpts);
+        if (flat != null && !string.IsNullOrEmpty(flat.PlayerId) && flat.Runs?.Count > 0)
         {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (submissions == null)
-        {
-            // Try wrapper format
-            var wrapper = JsonSerializer.Deserialize<BulkRunSubmission>(body, new JsonSerializerOptions
+            // Convert flat format to nested RunSubmission list
+            var decisionsByRun = new Dictionary<string, List<FlatDecisionDto>>();
+            foreach (var d in flat.Decisions ?? new())
             {
-                PropertyNameCaseInsensitive = true
-            });
+                if (string.IsNullOrEmpty(d.RunId)) continue;
+                if (!decisionsByRun.ContainsKey(d.RunId))
+                    decisionsByRun[d.RunId] = new();
+                decisionsByRun[d.RunId].Add(d);
+            }
+
+            submissions = new List<RunSubmission>();
+            foreach (var r in flat.Runs)
+            {
+                var sub = new RunSubmission
+                {
+                    Run = new RunLogDto
+                    {
+                        RunId = r.RunId,
+                        PlayerId = flat.PlayerId,
+                        Character = r.Character,
+                        Seed = r.Seed ?? "",
+                        StartTime = DateTime.TryParse(r.StartTime, out var st) ? st : DateTime.UtcNow,
+                        EndTime = DateTime.TryParse(r.EndTime, out var et) ? et : null,
+                        Outcome = r.Outcome,
+                        FinalFloor = r.FinalFloor,
+                        FinalAct = r.FinalAct,
+                        AscensionLevel = r.AscensionLevel,
+                    },
+                    Decisions = new()
+                };
+
+                if (decisionsByRun.TryGetValue(r.RunId, out var decs))
+                {
+                    foreach (var fd in decs)
+                    {
+                        sub.Decisions.Add(new DecisionEventDto
+                        {
+                            RunId = fd.RunId,
+                            Floor = fd.Floor,
+                            Act = fd.Act,
+                            EventType = fd.EventType,
+                            OfferedIds = ParseJsonStringArray(fd.OfferedIds),
+                            ChosenId = fd.ChosenId,
+                            DeckSnapshot = ParseJsonStringArray(fd.DeckSnapshot),
+                            RelicSnapshot = ParseJsonStringArray(fd.RelicSnapshot),
+                            CurrentHP = fd.CurrentHP,
+                            MaxHP = fd.MaxHP,
+                            Gold = fd.Gold,
+                            Timestamp = DateTime.TryParse(fd.Timestamp, out var ts) ? ts : DateTime.UtcNow,
+                        });
+                    }
+                }
+
+                submissions.Add(sub);
+            }
+        }
+
+        if (submissions == null || submissions.Count == 0)
+        {
+            // Try array format: [{ run, decisions }]
+            submissions = JsonSerializer.Deserialize<List<RunSubmission>>(body, jsonOpts);
+        }
+
+        if (submissions == null || submissions.Count == 0)
+        {
+            // Try wrapper format: { runs: [{ run, decisions }] }
+            var wrapper = JsonSerializer.Deserialize<BulkRunSubmission>(body, jsonOpts);
             submissions = wrapper?.Runs;
         }
     }
@@ -251,3 +312,20 @@ app.MapGet("/api/stats/relics/{character}", async (
 });
 
 app.Run();
+
+/// <summary>
+/// Parses a pre-serialized JSON string array (e.g. "[\"A\",\"B\"]") into List&lt;string&gt;.
+/// The mod's CloudSync double-serializes arrays before sending.
+/// </summary>
+static List<string> ParseJsonStringArray(string? jsonString)
+{
+    if (string.IsNullOrEmpty(jsonString)) return new();
+    try
+    {
+        return JsonSerializer.Deserialize<List<string>>(jsonString) ?? new();
+    }
+    catch
+    {
+        return new();
+    }
+}

@@ -58,7 +58,10 @@ export async function handleStats(url: URL, db: D1Database): Promise<Response> {
 			WinRateWhenSkipped: r.win_rate_when_skipped,
 			SampleSize: r.sample_size,
 			AvgFloorPicked: r.avg_floor_picked,
-			ArchetypeContext: {},
+			// Archetype context not computed server-side; client computes locally
+			ArchetypeContext: (r as Record<string, unknown>).archetype_context
+				? JSON.parse((r as Record<string, unknown>).archetype_context as string)
+				: {},
 		})),
 		relic_stats: (relicResults.results ?? []).map((r) => ({
 			RelicId: r.relic_id,
@@ -68,7 +71,9 @@ export async function handleStats(url: URL, db: D1Database): Promise<Response> {
 			WinRateWhenSkipped: r.win_rate_when_skipped,
 			SampleSize: r.sample_size,
 			AvgFloorPicked: r.avg_floor_picked,
-			ArchetypeContext: {},
+			ArchetypeContext: (r as Record<string, unknown>).archetype_context
+				? JSON.parse((r as Record<string, unknown>).archetype_context as string)
+				: {},
 		})),
 		total_runs: countResult?.total ?? 0,
 		last_updated: lastComputed?.computed_at ?? null,

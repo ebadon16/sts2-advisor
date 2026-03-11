@@ -173,6 +173,7 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 			accepted,
 			duplicates,
 			decisions_inserted: decisionsInserted,
+			accepted_run_ids: Array.from(acceptedRunIds),
 		}),
 		{
 			status: 200,
