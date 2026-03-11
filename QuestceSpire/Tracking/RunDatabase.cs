@@ -448,15 +448,28 @@ public class RunDatabase
 				if (totalSamples == 0) continue;
 				float lw = (float)local.SampleSize / totalSamples;
 				float iw = (float)imp.SampleSize / totalSamples;
+				// Weight win rates by pick/skip counts, not total offers
+				float localPicks = local.SampleSize * local.PickRate;
+				float impPicks = imp.SampleSize * imp.PickRate;
+				float totalPicks = localPicks + impPicks;
+				float localSkips = local.SampleSize * (1f - local.PickRate);
+				float impSkips = imp.SampleSize * (1f - imp.PickRate);
+				float totalSkips = localSkips + impSkips;
 				merged.Add(new CommunityCardStats
 				{
 					CardId = imp.CardId,
 					Character = imp.Character,
 					PickRate = local.PickRate * lw + imp.PickRate * iw,
-					WinRateWhenPicked = local.WinRateWhenPicked * lw + imp.WinRateWhenPicked * iw,
-					WinRateWhenSkipped = local.WinRateWhenSkipped * lw + imp.WinRateWhenSkipped * iw,
+					WinRateWhenPicked = totalPicks > 0
+						? (local.WinRateWhenPicked * localPicks + imp.WinRateWhenPicked * impPicks) / totalPicks
+						: 0f,
+					WinRateWhenSkipped = totalSkips > 0
+						? (local.WinRateWhenSkipped * localSkips + imp.WinRateWhenSkipped * impSkips) / totalSkips
+						: 0f,
 					SampleSize = totalSamples,
-					AvgFloorPicked = local.AvgFloorPicked * lw + imp.AvgFloorPicked * iw,
+					AvgFloorPicked = totalPicks > 0
+						? (local.AvgFloorPicked * localPicks + imp.AvgFloorPicked * impPicks) / totalPicks
+						: 0f,
 					ArchetypeContext = MergeArchetypes(local.ArchetypeContext, local.SampleSize, imp.ArchetypeContext, imp.SampleSize)
 				});
 			}
@@ -482,15 +495,27 @@ public class RunDatabase
 				if (totalSamples == 0) continue;
 				float lw = (float)local.SampleSize / totalSamples;
 				float iw = (float)imp.SampleSize / totalSamples;
+				float localPicks = local.SampleSize * local.PickRate;
+				float impPicks = imp.SampleSize * imp.PickRate;
+				float totalPicks = localPicks + impPicks;
+				float localSkips = local.SampleSize * (1f - local.PickRate);
+				float impSkips = imp.SampleSize * (1f - imp.PickRate);
+				float totalSkips = localSkips + impSkips;
 				merged.Add(new CommunityRelicStats
 				{
 					RelicId = imp.RelicId,
 					Character = imp.Character,
 					PickRate = local.PickRate * lw + imp.PickRate * iw,
-					WinRateWhenPicked = local.WinRateWhenPicked * lw + imp.WinRateWhenPicked * iw,
-					WinRateWhenSkipped = local.WinRateWhenSkipped * lw + imp.WinRateWhenSkipped * iw,
+					WinRateWhenPicked = totalPicks > 0
+						? (local.WinRateWhenPicked * localPicks + imp.WinRateWhenPicked * impPicks) / totalPicks
+						: 0f,
+					WinRateWhenSkipped = totalSkips > 0
+						? (local.WinRateWhenSkipped * localSkips + imp.WinRateWhenSkipped * impSkips) / totalSkips
+						: 0f,
 					SampleSize = totalSamples,
-					AvgFloorPicked = local.AvgFloorPicked * lw + imp.AvgFloorPicked * iw,
+					AvgFloorPicked = totalPicks > 0
+						? (local.AvgFloorPicked * localPicks + imp.AvgFloorPicked * impPicks) / totalPicks
+						: 0f,
 					ArchetypeContext = MergeArchetypes(local.ArchetypeContext, local.SampleSize, imp.ArchetypeContext, imp.SampleSize)
 				});
 			}

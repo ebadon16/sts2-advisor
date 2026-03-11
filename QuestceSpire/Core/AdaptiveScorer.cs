@@ -74,15 +74,15 @@ public class AdaptiveScorer
 
 	private float GetConfidence(int sampleSize)
 	{
-		if (sampleSize <= 5)
+		if (sampleSize < MinSampleSize)
 		{
 			return 0f;
 		}
-		if (sampleSize >= 50)
+		if (sampleSize >= FullConfidenceSampleSize)
 		{
 			return 1f;
 		}
-		return (float)(sampleSize - 5) / 45f;
+		return (float)(sampleSize - MinSampleSize) / (float)(FullConfidenceSampleSize - MinSampleSize);
 	}
 
 	private float WinRateToScore(float winRate)
@@ -98,16 +98,19 @@ public class AdaptiveScorer
 			return -1f;
 		}
 		float result = -1f;
-		float num = 0f;
+		float bestStrength = 0f;
 		foreach (ArchetypeMatch detectedArchetype in deckAnalysis.DetectedArchetypes)
 		{
 			foreach (string coreTag in detectedArchetype.Archetype.CoreTags)
 			{
-				string key = coreTag + "_3+";
-				if (contextStats.TryGetValue(key, out var value) && detectedArchetype.Strength > num)
+				// Match any context key that starts with this core tag (e.g., "poison_3+", "poison_5+")
+				foreach (var kvp in contextStats)
 				{
-					result = WinRateToScore(value);
-					num = detectedArchetype.Strength;
+					if (kvp.Key.StartsWith(coreTag + "_", StringComparison.OrdinalIgnoreCase) && detectedArchetype.Strength > bestStrength)
+					{
+						result = WinRateToScore(kvp.Value);
+						bestStrength = detectedArchetype.Strength;
+					}
 				}
 			}
 		}

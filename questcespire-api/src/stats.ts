@@ -20,6 +20,12 @@ interface RelicStat {
 	archetype_context: string | null;
 }
 
+function safeParseJson(value: string | null): Record<string, number> {
+	if (!value) return {};
+	try { return JSON.parse(value); }
+	catch { return {}; }
+}
+
 export async function handleStats(url: URL, db: D1Database): Promise<Response> {
 	const character = url.searchParams.get('character');
 	const minSamples = parseInt(url.searchParams.get('min_samples') ?? '3', 10);
@@ -60,7 +66,7 @@ export async function handleStats(url: URL, db: D1Database): Promise<Response> {
 			WinRateWhenSkipped: r.win_rate_when_skipped,
 			SampleSize: r.sample_size,
 			AvgFloorPicked: r.avg_floor_picked,
-			ArchetypeContext: r.archetype_context ? JSON.parse(r.archetype_context) : {},
+			ArchetypeContext: safeParseJson(r.archetype_context),
 		})),
 		relic_stats: (relicResults.results ?? []).map((r) => ({
 			RelicId: r.relic_id,
@@ -70,7 +76,7 @@ export async function handleStats(url: URL, db: D1Database): Promise<Response> {
 			WinRateWhenSkipped: r.win_rate_when_skipped,
 			SampleSize: r.sample_size,
 			AvgFloorPicked: r.avg_floor_picked,
-			ArchetypeContext: r.archetype_context ? JSON.parse(r.archetype_context) : {},
+			ArchetypeContext: safeParseJson(r.archetype_context),
 		})),
 		total_runs: countResult?.total ?? 0,
 		last_updated: lastComputed?.computed_at ?? null,

@@ -124,9 +124,7 @@ export async function handleUpload(request: Request, db: D1Database): Promise<Re
 				acceptedRunIds.add(run.run_id);
 			} else {
 				duplicates++;
-				// Still allow decisions for existing runs that may have been
-				// uploaded without decisions previously
-				acceptedRunIds.add(run.run_id);
+				// Do NOT add to acceptedRunIds — decisions for this run already exist
 			}
 		} catch {
 			duplicates++;

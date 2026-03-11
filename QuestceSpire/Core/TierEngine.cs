@@ -103,7 +103,7 @@ public class TierEngine
 		{
 			return "";
 		}
-		return id.Replace(' ', '_').Replace('-', '_').Replace("'", "");
+		return id.Replace(' ', '_').Replace('-', '_').Replace("'", "").TrimEnd('+');
 	}
 
 	public CardTierEntry GetCardTier(string character, string cardId)

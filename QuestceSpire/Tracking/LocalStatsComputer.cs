@@ -72,10 +72,10 @@ public class LocalStatsComputer
                         FROM decisions d
                         JOIN runs r ON d.run_id = r.run_id
                         JOIN json_each(d.offered_ids) j
-                        WHERE d.event_type = 'CardReward'
+                        WHERE d.event_type IN ('CardReward', 'CardTransform')
                         AND r.outcome IS NOT NULL
                         GROUP BY j.value, r.character
-                        HAVING COUNT(*) >= 2;
+                        HAVING COUNT(*) >= 3;
                     ";
 			sqliteCommand.ExecuteNonQuery();
 			Plugin.Log("Local card stats recomputed.");
@@ -123,7 +123,7 @@ public class LocalStatsComputer
                         WHERE d.event_type IN ('RelicReward', 'BossRelic')
                         AND r.outcome IS NOT NULL
                         GROUP BY j.value, r.character
-                        HAVING COUNT(*) >= 2;
+                        HAVING COUNT(*) >= 3;
                     ";
 			sqliteCommand.ExecuteNonQuery();
 			Plugin.Log("Local relic stats recomputed.");
@@ -158,7 +158,7 @@ public class LocalStatsComputer
 					SELECT d.chosen_id, d.deck_snapshot, r.character, r.outcome
 					FROM decisions d
 					JOIN runs r ON d.run_id = r.run_id
-					WHERE d.event_type = 'CardReward'
+					WHERE d.event_type IN ('CardReward', 'CardTransform')
 					AND d.chosen_id IS NOT NULL
 					AND r.outcome IS NOT NULL";
 
@@ -205,8 +205,8 @@ public class LocalStatsComputer
 						}
 						if (coreCount < 3) continue;
 
-						// This deck qualifies for this archetype context
-						string contextKey = arch.CoreTags[0] + "_3+";
+						// This deck qualifies for this archetype context — use actual count in key
+						string contextKey = arch.CoreTags[0] + "_" + coreCount + "+";
 						var key = (chosenId, character);
 						if (!context.TryGetValue(key, out var archDict))
 						{
@@ -256,6 +256,112 @@ public class LocalStatsComputer
 				if (updated > 0)
 				{
 					Plugin.Log($"Archetype context computed for {updated} card stats.");
+				}
+			}
+
+			// Relic archetype context — same logic for relic decisions
+			var relicContext = new Dictionary<(string relicId, string character), Dictionary<string, (int wins, int total)>>();
+
+			using (var conn2 = new SqliteConnection(connectionString))
+			{
+				conn2.Open();
+				using var cmd2 = conn2.CreateCommand();
+				cmd2.CommandText = @"
+					SELECT d.chosen_id, d.deck_snapshot, r.character, r.outcome
+					FROM decisions d
+					JOIN runs r ON d.run_id = r.run_id
+					WHERE d.event_type IN ('RelicReward', 'BossRelic')
+					AND d.chosen_id IS NOT NULL
+					AND r.outcome IS NOT NULL";
+
+				using var reader2 = cmd2.ExecuteReader();
+				while (reader2.Read())
+				{
+					string chosenId = reader2.GetString(0);
+					string deckJson = reader2.GetString(1);
+					string character = reader2.GetString(2);
+					string outcome = reader2.GetString(3);
+					bool isWin = outcome == "Win";
+
+					List<string> deckIds;
+					try { deckIds = JsonConvert.DeserializeObject<List<string>>(deckJson); }
+					catch { continue; }
+					if (deckIds == null || deckIds.Count == 0) continue;
+
+					var tagCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+					foreach (string cardId in deckIds)
+					{
+						var tier = _tierEngine.GetCardTier(character, cardId);
+						if (tier?.Synergies == null) continue;
+						foreach (string syn in tier.Synergies)
+						{
+							string tag = syn.ToLowerInvariant();
+							tagCounts[tag] = tagCounts.TryGetValue(tag, out int c) ? c + 1 : 1;
+						}
+					}
+
+					string charKey = character?.ToLowerInvariant() ?? "";
+					if (!ArchetypeDefinitions.ByCharacter.TryGetValue(charKey, out var archetypes))
+						continue;
+
+					foreach (var arch in archetypes)
+					{
+						if (arch.CoreTags == null || arch.CoreTags.Count == 0) continue;
+						int coreCount = 0;
+						foreach (string coreTag in arch.CoreTags)
+						{
+							if (tagCounts.TryGetValue(coreTag, out int v))
+								coreCount += v;
+						}
+						if (coreCount < 3) continue;
+
+						string contextKey = arch.CoreTags[0] + "_" + coreCount + "+";
+						var key = (chosenId, character);
+						if (!relicContext.TryGetValue(key, out var archDict))
+						{
+							archDict = new Dictionary<string, (int, int)>();
+							relicContext[key] = archDict;
+						}
+						(int w, int t) prev = archDict.TryGetValue(contextKey, out var v2) ? v2 : (0, 0);
+						archDict[contextKey] = (prev.w + (isWin ? 1 : 0), prev.t + 1);
+					}
+				}
+			}
+
+			if (relicContext.Count > 0)
+			{
+				using var conn3 = new SqliteConnection(connectionString);
+				conn3.Open();
+				using var tx2 = conn3.BeginTransaction();
+				using var updateCmd2 = conn3.CreateCommand();
+				updateCmd2.CommandText = "UPDATE community_relic_stats SET archetype_context = @ctx WHERE relic_id = @relicId AND character = @character";
+				var pCtx2 = updateCmd2.Parameters.Add("@ctx", SqliteType.Text);
+				var pRelic = updateCmd2.Parameters.Add("@relicId", SqliteType.Text);
+				var pChar2 = updateCmd2.Parameters.Add("@character", SqliteType.Text);
+
+				int relicUpdated = 0;
+				foreach (var kvp in relicContext)
+				{
+					var winRates = new Dictionary<string, float>();
+					foreach (var arch in kvp.Value)
+					{
+						if (arch.Value.Item2 >= 2)
+						{
+							winRates[arch.Key] = (float)arch.Value.Item1 / arch.Value.Item2;
+						}
+					}
+					if (winRates.Count == 0) continue;
+
+					pCtx2.Value = JsonConvert.SerializeObject(winRates);
+					pRelic.Value = kvp.Key.relicId;
+					pChar2.Value = kvp.Key.character;
+					updateCmd2.ExecuteNonQuery();
+					relicUpdated++;
+				}
+				tx2.Commit();
+				if (relicUpdated > 0)
+				{
+					Plugin.Log($"Archetype context computed for {relicUpdated} relic stats.");
 				}
 			}
 		}

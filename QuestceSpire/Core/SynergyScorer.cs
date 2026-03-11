@@ -94,13 +94,20 @@ public class SynergyScorer
 			}
 			else
 			{
-				// Non-basic: use tier data to find genuinely bad cards
+				// Non-basic: use adaptive data if available, else static tier
 				CardTierEntry cardTier = tierEngine.GetCardTier(character, card.Id);
 				TierGrade cardGrade = cardTier != null ? TierEngine.ParseGrade(cardTier.BaseTier) : TierGrade.C;
-				// Invert: bad cards get high removal score
-				score = Math.Max(0f, 3.0f - (float)cardGrade);
+				float cardScore = (float)cardGrade;
+				if (adaptiveScorer != null && character != null)
+				{
+					cardScore = adaptiveScorer.GetAdaptiveCardScore(character, card.Id, cardGrade, deckAnalysis);
+				}
+				// Invert: bad cards get high removal score (5 - score, so F=5→S removal, S=0→F removal)
+				score = Math.Max(0f, 5.0f - cardScore);
 				grade = TierEngine.ScoreToGrade(score);
-				reason = cardGrade <= TierGrade.D ? "Low-tier card — consider removing" : "Decent card — probably keep";
+				reason = cardScore < 2.0f ? "Weak card — strong removal candidate"
+					: cardScore < 3.0f ? "Below average — consider removing"
+					: "Decent card — probably keep";
 			}
 
 			list.Add(new ScoredCard
@@ -203,27 +210,31 @@ public class SynergyScorer
 	private ScoredCard ScoreCard(CardInfo card, CardTierEntry tierEntry, DeckAnalysis deckAnalysis, int actNumber, int floorNumber, string character = null, AdaptiveScorer adaptiveScorer = null)
 	{
 		TierGrade tierGrade;
+		float rawScore;
 		List<string> computedSynTags = null;
 		string scoreSource;
 		if (tierEntry != null)
 		{
 			tierGrade = TierEngine.ParseGrade(tierEntry.BaseTier);
+			rawScore = (float)tierGrade;
 			scoreSource = "static";
 		}
 		else if (Plugin.CardPropertyScorer != null)
 		{
 			var computed = Plugin.CardPropertyScorer.ComputeScore(card.Id);
-			tierGrade = TierEngine.ScoreToGrade(computed.Score);
+			rawScore = computed.Score;
+			tierGrade = TierEngine.ScoreToGrade(rawScore);
 			computedSynTags = computed.SynergyTags;
 			scoreSource = "computed";
 		}
 		else
 		{
 			tierGrade = TierGrade.C;
+			rawScore = (float)tierGrade;
 			scoreSource = "default";
 		}
 		bool usedAdaptive = adaptiveScorer != null && character != null;
-		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveCardScore(character, card.Id, tierGrade, deckAnalysis) : (float)tierGrade;
+		float baseScore = usedAdaptive ? adaptiveScorer.GetAdaptiveCardScore(character, card.Id, tierGrade, deckAnalysis) : rawScore;
 		if (usedAdaptive) scoreSource = "adaptive";
 		float num = baseScore;
 		float synergyDelta = 0f;
@@ -231,8 +242,9 @@ public class SynergyScorer
 		float deckSizeAdjust = 0f;
 		List<string> list = new List<string>();
 		List<string> list2 = new List<string>();
-		List<string> list3 = tierEntry?.Synergies
-			?? computedSynTags
+		List<string> list3 = (tierEntry?.Synergies != null && tierEntry.Synergies.Count > 0)
+			? tierEntry.Synergies
+			: computedSynTags
 			?? (card.Tags != null ? card.Tags.ConvertAll((string t) => t.ToLowerInvariant()) : new List<string>());
 		List<string> list4 = tierEntry?.AntiSynergies ?? new List<string>();
 		int num2 = 0;
@@ -269,14 +281,15 @@ public class SynergyScorer
 			}
 		}
 		// Cap anti-synergy penalty to prevent excessive stacking
-		float antiTotal = list2.Count * -AntiSynergyPenalty;
-		if (antiTotal < AntiSynergyCap)
+		if (synergyDelta < AntiSynergyCap)
 		{
-			float excess = AntiSynergyCap - antiTotal;
+			float excess = AntiSynergyCap - synergyDelta;
 			num += excess;
-			// Don't add excess to synergyDelta — it's a cap correction, not a synergy
+			synergyDelta = AntiSynergyCap;
 		}
 		// Floor-aware scoring (replaces act-based logic)
+		bool hasScaling = list3.Any((string s) => ScalingTags.Contains(s));
+		bool hasDefense = list3.Any((string s) => s == "block" || s == "dexterity" || s == "weak");
 		if (floorNumber <= 6 && deckAnalysis.IsUndefined)
 		{
 			if (list3.Count >= 2)
@@ -286,13 +299,13 @@ public class SynergyScorer
 				list.Add($"+{EarlyFloorDamageBonus:F1} flexible (early floors)");
 			}
 		}
-		else if (floorNumber >= 19 && list3.Any((string s) => ScalingTags.Contains(s)))
+		else if (floorNumber >= 19 && hasScaling)
 		{
 			num += LateFloorScalingBonus;
 			floorAdjust += LateFloorScalingBonus;
 			list.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
 		}
-		else if (floorNumber >= 7 && list3.Any((string s) => s == "block" || s == "dexterity" || s == "weak"))
+		if (floorNumber >= 7 && !deckAnalysis.IsUndefined && hasDefense && !(floorNumber >= 19 && hasScaling))
 		{
 			num += MidFloorBlockBonus;
 			floorAdjust += MidFloorBlockBonus;
@@ -325,15 +338,15 @@ public class SynergyScorer
 				}
 			}
 		}
-		// Deck size awareness
+		// Deck size awareness — use score-in-progress, not static tier
 		int deckSize = deckAnalysis.TotalCards;
-		if (deckSize <= ThinDeckThreshold && tierGrade <= TierGrade.C)
+		if (deckSize <= ThinDeckThreshold && num < 2.5f)
 		{
 			num += ThinDeckPenalty;
 			deckSizeAdjust += ThinDeckPenalty;
 			list2.Add($"{ThinDeckPenalty:F1} be selective (thin deck)");
 		}
-		else if (deckSize >= BloatedDeckThreshold && tierGrade <= TierGrade.B)
+		else if (deckSize >= BloatedDeckThreshold && num < 3.5f)
 		{
 			num += BloatedDeckPenalty;
 			deckSizeAdjust += BloatedDeckPenalty;
@@ -414,12 +427,11 @@ public class SynergyScorer
 			}
 		}
 		// Cap anti-synergy penalty to prevent excessive stacking
-		float antiTotal = list2.Count * -AntiSynergyPenalty;
-		if (antiTotal < AntiSynergyCap)
+		if (synergyDelta < AntiSynergyCap)
 		{
-			float excess = AntiSynergyCap - antiTotal;
+			float excess = AntiSynergyCap - synergyDelta;
 			num += excess;
-			// Don't add excess to synergyDelta — it's a cap correction, not a synergy
+			synergyDelta = AntiSynergyCap;
 		}
 		// Floor-aware: late-game scaling bonus for relics too
 		if (floorNumber >= 19 && list3.Any((string s) => ScalingTags.Contains(s)))
