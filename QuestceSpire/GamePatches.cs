@@ -77,11 +77,11 @@ public static class GamePatches
 				Plugin.Log($"ShowScreen with {options.Count} cards — likely pile viewer, skipping.");
 				return;
 			}
-			// Only proceed if overlay is on a screen that naturally transitions to card rewards.
-			// Block screens that reuse NCardRewardSelectionScreen for non-reward purposes.
+			// Skip screens that have their own handlers and reuse NCardRewardSelectionScreen
 			string curScreen = Plugin.Overlay?.CurrentScreen;
-			if (curScreen != null && curScreen != "IDLE" && curScreen != "CARD REWARD" &&
-			    curScreen != "COMBAT" && curScreen != "MAP / COMBAT" && curScreen != "MAP")
+			if (curScreen == "CARD REMOVAL" || curScreen == "CARD UPGRADE" ||
+			    curScreen == "MERCHANT SHOP" || curScreen == "EVENT CARD OFFER" ||
+			    curScreen == "EVENT" || curScreen == "REST SITE")
 			{
 				Plugin.Log($"ShowScreen fired during {curScreen} — skipping card reward logic.");
 				return;
@@ -113,8 +113,9 @@ public static class GamePatches
 			if (options != null && options.Count > 5)
 				return;
 			string curScreen2 = Plugin.Overlay?.CurrentScreen;
-			if (curScreen2 != null && curScreen2 != "IDLE" && curScreen2 != "CARD REWARD" &&
-			    curScreen2 != "COMBAT" && curScreen2 != "MAP / COMBAT" && curScreen2 != "MAP")
+			if (curScreen2 == "CARD REMOVAL" || curScreen2 == "CARD UPGRADE" ||
+			    curScreen2 == "MERCHANT SHOP" || curScreen2 == "EVENT CARD OFFER" ||
+			    curScreen2 == "EVENT" || curScreen2 == "REST SITE")
 				return;
 			EnsureOverlay();
 			RecordHook("OnCardRewardRefreshed");
@@ -138,15 +139,7 @@ public static class GamePatches
 
 	private static bool TryShowCardRewardFromScreen(NCardRewardSelectionScreen screen)
 	{
-		// Guard: only proceed if we're still on a card reward screen (retries may fire after screen changed)
-		string curScreen = Plugin.Overlay?.CurrentScreen;
-		if (curScreen != null && curScreen != "CARD REWARD" && curScreen != "IDLE" &&
-		    curScreen != "COMBAT" && curScreen != "MAP / COMBAT" && curScreen != "MAP")
-		{
-			Plugin.Log($"TryShowCardRewardFromScreen skipped — screen is now {curScreen}");
-			return true; // return true to stop retries
-		}
-		// Guard: verify the screen node is still valid and visible
+		// Guard: verify the screen node is still valid and visible (retries may fire after screen changed)
 		if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsVisibleInTree())
 		{
 			Plugin.Log("TryShowCardRewardFromScreen skipped — screen no longer valid/visible");
