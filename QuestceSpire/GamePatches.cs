@@ -77,10 +77,11 @@ public static class GamePatches
 				Plugin.Log($"ShowScreen with {options.Count} cards — likely pile viewer, skipping.");
 				return;
 			}
-			// Only proceed if overlay is idle or already on card reward — any other active screen
-			// means this ShowScreen call is reused for a non-reward purpose (removal, upgrade, shop, event, etc.)
+			// Only proceed if overlay is on a screen that naturally transitions to card rewards.
+			// Block screens that reuse NCardRewardSelectionScreen for non-reward purposes.
 			string curScreen = Plugin.Overlay?.CurrentScreen;
-			if (curScreen != null && curScreen != "IDLE" && curScreen != "CARD REWARD")
+			if (curScreen != null && curScreen != "IDLE" && curScreen != "CARD REWARD" &&
+			    curScreen != "COMBAT" && curScreen != "MAP / COMBAT" && curScreen != "MAP")
 			{
 				Plugin.Log($"ShowScreen fired during {curScreen} — skipping card reward logic.");
 				return;
@@ -112,7 +113,8 @@ public static class GamePatches
 			if (options != null && options.Count > 5)
 				return;
 			string curScreen2 = Plugin.Overlay?.CurrentScreen;
-			if (curScreen2 != null && curScreen2 != "IDLE" && curScreen2 != "CARD REWARD")
+			if (curScreen2 != null && curScreen2 != "IDLE" && curScreen2 != "CARD REWARD" &&
+			    curScreen2 != "COMBAT" && curScreen2 != "MAP / COMBAT" && curScreen2 != "MAP")
 				return;
 			EnsureOverlay();
 			RecordHook("OnCardRewardRefreshed");
@@ -138,7 +140,8 @@ public static class GamePatches
 	{
 		// Guard: only proceed if we're still on a card reward screen (retries may fire after screen changed)
 		string curScreen = Plugin.Overlay?.CurrentScreen;
-		if (curScreen != null && curScreen != "CARD REWARD" && curScreen != "IDLE")
+		if (curScreen != null && curScreen != "CARD REWARD" && curScreen != "IDLE" &&
+		    curScreen != "COMBAT" && curScreen != "MAP / COMBAT" && curScreen != "MAP")
 		{
 			Plugin.Log($"TryShowCardRewardFromScreen skipped — screen is now {curScreen}");
 			return true; // return true to stop retries
