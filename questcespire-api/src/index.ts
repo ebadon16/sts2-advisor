@@ -48,6 +48,17 @@ export default {
 				return await handleStats(url, env.DB);
 			}
 
+			if (path === '/api/health' && request.method === 'GET') {
+				const players = await env.DB.prepare('SELECT COUNT(DISTINCT player_id) as c FROM runs').first<{ c: number }>();
+				const runs = await env.DB.prepare('SELECT COUNT(*) as c FROM runs').first<{ c: number }>();
+				return jsonResponse({
+					status: 'ok',
+					player_count: players?.c ?? 0,
+					run_count: runs?.c ?? 0,
+					timestamp: new Date().toISOString(),
+				});
+			}
+
 			if (path === '/api/version' && request.method === 'GET') {
 				return jsonResponse({
 					latest: '0.7.0',
@@ -81,7 +92,7 @@ export default {
 		}
 	},
 
-	async scheduled(_event: ScheduledEvent, env: Env): Promise<void> {
+	async scheduled(_event: ScheduledController, env: Env): Promise<void> {
 		console.log('Cron triggered: recomputing community stats...');
 		await handleAggregate(env.DB);
 		console.log('Cron aggregation complete.');

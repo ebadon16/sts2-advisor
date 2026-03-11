@@ -346,9 +346,7 @@ public static class GamePatches
 				{
 					var scored = Plugin.SynergyScorer.ScoreForUpgrade(offeredCards, deckAnalysis, character,
 						gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-					Plugin.Overlay?.ShowCardAdvice(scored, deckAnalysis, character);
-					// Re-set after ShowCardAdvice which resets to "CARD REWARD"
-					Plugin.Overlay?.SetScreenLabel("CARD UPGRADE");
+					Plugin.Overlay?.ShowCardAdvice(scored, deckAnalysis, character, "CARD UPGRADE");
 					Plugin.Overlay?.CleanupAllBadges();
 					return;
 				}

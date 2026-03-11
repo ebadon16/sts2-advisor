@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS community_card_stats (
     sample_size INTEGER,
     avg_floor_picked REAL,
     computed_at TEXT,
+    archetype_context TEXT,
     PRIMARY KEY (card_id, character)
 );
 
@@ -56,6 +57,7 @@ CREATE TABLE IF NOT EXISTS community_relic_stats (
     sample_size INTEGER,
     avg_floor_picked REAL,
     computed_at TEXT,
+    archetype_context TEXT,
     PRIMARY KEY (relic_id, character)
 );
 

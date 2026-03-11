@@ -712,8 +712,7 @@ public class OverlayManager
 			Plugin.Log($"Event card offering detected (from state): {gameState.OfferedCards.Count} cards");
 			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 			List<ScoredCard> scored = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, da, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-			ShowCardAdvice(scored, da, gameState.Character);
-			_currentScreen = "EVENT CARD OFFER";
+			ShowCardAdvice(scored, da, gameState.Character, "EVENT CARD OFFER");
 			// No in-game badges for events — can't distinguish reward from upgrade/transform
 			return;
 		}
@@ -730,8 +729,7 @@ public class OverlayManager
 			Plugin.Log($"Event card offering detected (from screen node): {offeredCards.Count} cards");
 			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
 			List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-			ShowCardAdvice(cards, deckAnalysis, gameState.Character);
-			_currentScreen = "EVENT CARD OFFER";
+			ShowCardAdvice(cards, deckAnalysis, gameState.Character, "EVENT CARD OFFER");
 		}
 		catch (Exception ex)
 		{
@@ -828,13 +826,13 @@ public class OverlayManager
 		return false;
 	}
 
-	public void ShowCardAdvice(List<ScoredCard> cards, DeckAnalysis deckAnalysis = null, string character = null)
+	public void ShowCardAdvice(List<ScoredCard> cards, DeckAnalysis deckAnalysis = null, string character = null, string screenLabel = "CARD REWARD")
 	{
 		_currentCards = cards;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
-		_currentScreen = "CARD REWARD";
+		_currentScreen = screenLabel;
 		_mapAdvice = null;
 		MarkUpdated();
 		Rebuild();
