@@ -677,12 +677,13 @@ public class OverlayManager
 				bool hasRestSite = HasNodeOfType(tree.Root, "NRestSiteRoom", 4);
 				bool hasCombat = HasNodeOfType(tree.Root, "NCombatRoom", 4);
 				bool hasEvent = HasNodeOfType(tree.Root, "NEventRoom", 4);
-				bool isCardAdvice = _currentScreen == "CARD REWARD" || _currentScreen == "CARD REMOVAL" || _currentScreen == "CARD UPGRADE";
+				bool isEventCardOffer = _currentScreen == "EVENT CARD OFFER";
+				bool isCardAdvice = _currentScreen == "CARD REWARD" || _currentScreen == "CARD REMOVAL" || _currentScreen == "CARD UPGRADE" || isEventCardOffer;
 				bool isRelicAdvice = _currentScreen == "RELIC REWARD";
 				bool isShopAdvice = _currentScreen == "MERCHANT SHOP";
 				bool isRestAdvice = _currentScreen == "REST SITE";
 				bool isCombatAdvice = _currentScreen == "COMBAT";
-				bool isEventAdvice = _currentScreen == "EVENT" || _currentScreen == "EVENT CARD OFFER";
+				bool isEventAdvice = _currentScreen == "EVENT";
 
 				bool screenGone = false;
 				if (isCardAdvice && !hasCardScreen) screenGone = true;
@@ -1501,10 +1502,11 @@ public class OverlayManager
 		bool hasRelics = _currentRelics != null && _currentRelics.Count > 0;
 		bool isRemoval = _currentScreen == "CARD REMOVAL";
 		bool isUpgrade = _currentScreen == "CARD UPGRADE";
+		bool isEventOffer = _currentScreen == "EVENT CARD OFFER";
 		if (hasCards)
 		{
 			bool isShop = _currentScreen == "MERCHANT SHOP";
-			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : isUpgrade ? "BEST UPGRADE TARGETS" : "CARD ANALYSIS");
+			AddSectionHeader(isRemoval ? "BEST CARDS TO REMOVE" : isShop ? "BEST CARDS IN SHOP" : isUpgrade ? "BEST UPGRADE TARGETS" : isEventOffer ? "EVENT CARD OFFER" : "CARD ANALYSIS");
 			// Shop: show top 3 by score to keep panel compact
 			// Upgrade: show top 3 upgrade targets
 			// Non-shop: preserve game order so overlay matches on-screen badge positions
@@ -1526,7 +1528,7 @@ public class OverlayManager
 				_content.AddChild(skipLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
 			// Skip recommendation — consider deck size, card quality, and archetype fit
-			if (!isRemoval && !isShop && !isUpgrade)
+			if (!isRemoval && !isShop && !isUpgrade && !isEventOffer)
 			{
 				int deckSize = _currentDeckAnalysis?.TotalCards ?? 20;
 				bool hasFocusedDeck = _currentDeckAnalysis?.DetectedArchetypes?.Count > 0 &&
