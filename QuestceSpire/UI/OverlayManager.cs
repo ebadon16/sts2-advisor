@@ -48,6 +48,10 @@ public class OverlayManager
 	// In-game badges: rendered on our own CanvasLayer to avoid polluting the game's scene tree.
 	// Each badge tracks the game node it should overlay so we can update position.
 	private readonly List<(PanelContainer badge, WeakReference<Control> target)> _inGameBadges = new();
+	// The screen node that was active when badges were injected — used to detect screen changes
+	private WeakReference<Node> _badgeScreenNode;
+	// The expected NGridCardHolder count when badges were injected
+	private int _badgeExpectedHolderCount;
 
 	private List<(string icon, string text, Color color)> _mapAdvice;
 
@@ -3554,6 +3558,9 @@ public class OverlayManager
 				return;
 			}
 			Plugin.Log($"Found {cardHolders.Count} card holders — injecting grade badges");
+			// Store context for later validation
+			_badgeScreenNode = new WeakReference<Node>(screenNode);
+			_badgeExpectedHolderCount = cardHolders.Count;
 			// Match holders to scored cards by index (same order as ShowScreen receives them)
 			for (int i = 0; i < Math.Min(cardHolders.Count, scoredCards.Count); i++)
 			{
@@ -3850,16 +3857,41 @@ public class OverlayManager
 			catch { }
 		}
 		_inGameBadges.Clear();
+		_badgeScreenNode = null;
+		_badgeExpectedHolderCount = 0;
 	}
 
 	/// <summary>
 	/// Update badge positions to track their target game nodes.
-	/// Also removes badges whose targets are no longer valid/visible.
+	/// Also removes badges whose targets are no longer valid/visible,
+	/// or if the screen context has changed (pile viewer opened, etc.).
 	/// Called from CheckForStaleScreen on each tick.
 	/// </summary>
 	private void UpdateInGameBadgePositions()
 	{
 		if (_inGameBadges.Count == 0) return;
+
+		// Context check: if the card reward screen node is gone/hidden, clear all badges
+		if (_badgeScreenNode != null)
+		{
+			if (!_badgeScreenNode.TryGetTarget(out var screenNode) ||
+			    !GodotObject.IsInstanceValid(screenNode) ||
+			    (screenNode is Control screenCtrl && !screenCtrl.IsVisibleInTree()))
+			{
+				ClearInGameBadges();
+				return;
+			}
+			// Context check: if more NGridCardHolder nodes appeared, a pile/overlay opened
+			var allHolders = new List<Control>();
+			FindNodesByTypeName(screenNode.GetTree()?.Root ?? screenNode, "NGridCardHolder", allHolders, 8);
+			if (allHolders.Count > _badgeExpectedHolderCount + 1)
+			{
+				Plugin.Log($"Badge context changed: {allHolders.Count} NGridCardHolder nodes vs expected {_badgeExpectedHolderCount} — clearing badges");
+				ClearInGameBadges();
+				return;
+			}
+		}
+
 		bool anyInvalid = false;
 		foreach (var (badge, targetRef) in _inGameBadges)
 		{
