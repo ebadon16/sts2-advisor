@@ -45,6 +45,10 @@ public class OverlayManager
 	public string CurrentScreen => _currentScreen;
 	private int _badgeEpoch = 0; // Incremented on every screen change; stale deferred calls check this
 
+	// In-game badges: rendered on our own CanvasLayer to avoid polluting the game's scene tree.
+	// Each badge tracks the game node it should overlay so we can update position.
+	private readonly List<(PanelContainer badge, WeakReference<Control> target)> _inGameBadges = new();
+
 	private List<(string icon, string text, Color color)> _mapAdvice;
 
 	private string _currentCharacter;
@@ -615,66 +619,21 @@ public class OverlayManager
 	public void CheckForStaleScreen()
 	{
 		if (_lastUpdateTick == 0) return;
-		// Fast badge cleanup: remove badges if not on card reward, or if orphaned/hidden
+		// Badge lifecycle: badges live on our CanvasLayer, not in the game tree.
+		// Clear them when screen changes away from card reward.
+		// Update positions when still on card reward (targets may have moved).
 		try
 		{
-			SceneTree btree = Engine.GetMainLoop() as SceneTree;
-			if (btree?.Root != null)
+			if (_inGameBadges.Count > 0)
 			{
-				var badges = btree.GetNodesInGroup(GradeBadgeGroup);
-				if (badges.Count > 0)
+				if (_currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 				{
-					if (_currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
-					{
-						CleanupInjectedBadges(btree.Root);
-					}
-					else
-					{
-						// Even on CARD REWARD: remove badges if their parent is hidden/freed,
-						// or if a pile viewer / overlay screen opened on top
-						bool shouldClean = false;
-						foreach (Node badge in badges)
-						{
-							if (badge == null || !GodotObject.IsInstanceValid(badge)) continue;
-							Node parent = badge.GetParent();
-							if (parent == null || !GodotObject.IsInstanceValid(parent))
-							{
-								shouldClean = true;
-								break;
-							}
-							if (parent is Control ctrl && !ctrl.IsVisibleInTree())
-							{
-								shouldClean = true;
-								break;
-							}
-						}
-						// Detect pile/deck/browse viewers: count NGridCardHolder nodes in tree.
-						// Card reward has 3-4; if more exist, a pile viewer is overlaying.
-						if (!shouldClean)
-						{
-							var allHolders = new List<Control>();
-							FindNodesByTypeName(btree.Root, "NGridCardHolder", allHolders, 8);
-							if (allHolders.Count > badges.Count + 2)
-							{
-								Plugin.Log($"Pile viewer detected: {allHolders.Count} NGridCardHolder nodes vs {badges.Count} badges — cleaning up");
-								shouldClean = true;
-							}
-						}
-						// Also scan for any overlay screen node covering the card reward
-						if (!shouldClean && IsOverlayScreenPresent(btree.Root))
-						{
-							Plugin.Log("Overlay screen detected over card reward — cleaning up badges");
-							shouldClean = true;
-						}
-						if (shouldClean)
-							CleanupInjectedBadges(btree.Root);
-						else
-						{
-							// Diagnostic: dump top-level node types when badges persist
-							// so we can identify new overlay types to block
-							LogVisibleScreenNodes(btree.Root);
-						}
-					}
+					ClearInGameBadges();
+				}
+				else
+				{
+					// Still on card reward — update positions and prune dead targets
+					UpdateInGameBadgePositions();
 				}
 			}
 		}
@@ -876,75 +835,7 @@ public class OverlayManager
 		return null;
 	}
 
-	private ulong _lastScreenNodeDump = 0;
 
-	/// <summary>
-	/// Diagnostic: log visible screen-like node types at shallow depth (rate-limited to once per 10s).
-	/// Helps identify pile viewer node types we haven't blocked yet.
-	/// </summary>
-	private void LogVisibleScreenNodes(Node root)
-	{
-		ulong now = Time.GetTicksMsec();
-		if (now - _lastScreenNodeDump < 10000) return;
-		_lastScreenNodeDump = now;
-		var screenNodes = new List<string>();
-		CollectScreenNodeTypes(root, 0, 4, screenNodes);
-		if (screenNodes.Count > 0)
-			Plugin.Log($"Visible screen nodes while badges active: {string.Join(", ", screenNodes)}");
-	}
-
-	private static void CollectScreenNodeTypes(Node node, int depth, int maxDepth, List<string> results)
-	{
-		if (node == null || depth > maxDepth) return;
-		if (node is CanvasLayer) return; // skip our overlay
-		string typeName = node.GetType().Name;
-		if (depth >= 1 && node is Control ctrl && ctrl.IsVisibleInTree() &&
-		    (typeName.StartsWith("N") && typeName.Length > 2 && char.IsUpper(typeName[1])))
-		{
-			results.Add(typeName);
-		}
-		foreach (Node child in node.GetChildren())
-			CollectScreenNodeTypes(child, depth + 1, maxDepth, results);
-	}
-
-	/// <summary>
-	/// Detects if any overlay screen (pile viewer, deck browser, etc.) is present on top of the card reward.
-	/// Scans shallow tree depth for visible Screen/Selection/Pile/Browse nodes that aren't the card reward.
-	/// </summary>
-	private static bool IsOverlayScreenPresent(Node root)
-	{
-		if (root == null) return false;
-		// Scan depth 2-4 for screen-like nodes that could overlay the card reward
-		return ScanForOverlayScreen(root, 0, 5);
-	}
-
-	private static bool ScanForOverlayScreen(Node node, int depth, int maxDepth)
-	{
-		if (node == null || depth > maxDepth) return false;
-		string typeName = node.GetType().Name;
-		// Skip our own overlay and the card reward screen itself
-		if (typeName == "CanvasLayer" || typeName == "NCardRewardSelectionScreen")
-		{
-			// Don't recurse into our own overlay
-			if (node is CanvasLayer) return false;
-		}
-		// Detect pile/deck/browse viewers by node type name patterns
-		if (depth >= 2 && node is Control ctrl && ctrl.IsVisibleInTree())
-		{
-			if (typeName.Contains("Pile") || typeName.Contains("DeckView") ||
-			    typeName.Contains("Browse") || typeName.Contains("CardCollection") ||
-			    typeName.Contains("CardList"))
-			{
-				return true;
-			}
-		}
-		foreach (Node child in node.GetChildren())
-		{
-			if (ScanForOverlayScreen(child, depth + 1, maxDepth))
-				return true;
-		}
-		return false;
-	}
 
 	private static bool HasNodeOfType(Node root, string typeName, int maxDepth)
 	{
@@ -1487,24 +1378,21 @@ public class OverlayManager
 		_showInGameBadges = !_showInGameBadges;
 		_settings.ShowInGameBadges = _showInGameBadges;
 		_settings.Save();
-		SceneTree tree = Engine.GetMainLoop() as SceneTree;
-		if (tree?.Root != null)
+		// Always clean up existing badges first
+		ClearInGameBadges();
+		// Re-inject if turning on and a badge-supporting screen is active
+		if (_showInGameBadges && _currentScreen == "CARD REWARD" && _currentCards != null)
 		{
-			// Always clean up existing badges first
-			CleanupInjectedBadges(tree.Root);
-			// Re-inject if turning on and a badge-supporting screen is active
-			if (_showInGameBadges && _currentScreen == "CARD REWARD" && _currentCards != null)
+			try
 			{
-				try
-				{
-					Node screenNode = FindNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4);
-					if (screenNode != null)
-						InjectCardGrades(screenNode, _currentCards);
-				}
-				catch (Exception ex)
-				{
-					Plugin.Log($"ToggleInGameBadges reinject error: {ex.Message}");
-				}
+				SceneTree tree = Engine.GetMainLoop() as SceneTree;
+				Node screenNode = tree?.Root != null ? FindNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4) : null;
+				if (screenNode != null)
+					InjectCardGrades(screenNode, _currentCards);
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"ToggleInGameBadges reinject error: {ex.Message}");
 			}
 		}
 		Rebuild();
@@ -1574,13 +1462,7 @@ public class OverlayManager
 		// Clean up in-game badges whenever we're not on a genuine card reward screen
 		if (_currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 		{
-			try
-			{
-				SceneTree tree = Engine.GetMainLoop() as SceneTree;
-				if (tree?.Root != null && tree.GetNodesInGroup(GradeBadgeGroup).Count > 0)
-					CleanupInjectedBadges(tree.Root);
-			}
-			catch { }
+			ClearInGameBadges();
 		}
 		if (_screenLabel != null && GodotObject.IsInstanceValid(_screenLabel))
 		{
@@ -3613,7 +3495,7 @@ public class OverlayManager
 
 	// === In-game grade badge injection (STS1 mod inspired) ===
 
-	private const string GradeBadgeGroup = "qcs_grade_badge";
+	// Badge group no longer needed — badges live on our CanvasLayer, not in the game tree
 
 	/// <summary>
 	/// Inject grade badges directly onto the game's card reward screen nodes.
@@ -3634,26 +3516,10 @@ public class OverlayManager
 		// Card rewards have 3-4 cards; draw/discard pile viewers have many more
 		if (scoredCards.Count > 5)
 			return;
-		// Skip badge injection on enchant/transform/upgrade/event screens that reuse card selection
-		SceneTree badgeTree = Engine.GetMainLoop() as SceneTree;
-		if (badgeTree?.Root != null)
-		{
-			if (HasNodeOfType(badgeTree.Root, "NDeckEnchantSelectScreen", 4) ||
-			    HasNodeOfType(badgeTree.Root, "NDeckTransformSelectScreen", 4) ||
-			    HasNodeOfType(badgeTree.Root, "NDeckUpgradeSelectScreen", 4) ||
-			    HasNodeOfType(badgeTree.Root, "NEventRoom", 4) ||
-			    IsOverlayScreenPresent(badgeTree.Root))
-			{
-				Plugin.Log("Skipping badge injection — overlay/enchant/transform/upgrade/event screen detected");
-				return;
-			}
-		}
 		try
 		{
-			// Clean up ALL previous badges globally (prevents stale badges from other screens)
-			SceneTree tree = Engine.GetMainLoop() as SceneTree;
-			if (tree?.Root != null)
-				CleanupInjectedBadges(tree.Root);
+			// Clean up ALL previous badges (they live on our layer, so this is clean)
+			ClearInGameBadges();
 			// Capture epoch so deferred call can detect stale invocations
 			int epoch = _badgeEpoch;
 			LogNodeTree(screenNode, "CardReward", 0, 5);
@@ -3674,15 +3540,8 @@ public class OverlayManager
 			return;
 		if (!_showInGameBadges || _currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 			return;
-		// Double-check: skip if enchant/transform/upgrade/event screen appeared between queue and deferred execution
-		SceneTree deferTree = Engine.GetMainLoop() as SceneTree;
-		if (deferTree?.Root != null &&
-		    (HasNodeOfType(deferTree.Root, "NDeckEnchantSelectScreen", 4) ||
-		     HasNodeOfType(deferTree.Root, "NDeckTransformSelectScreen", 4) ||
-		     HasNodeOfType(deferTree.Root, "NDeckUpgradeSelectScreen", 4) ||
-		     HasNodeOfType(deferTree.Root, "NEventRoom", 4) ||
-		     IsOverlayScreenPresent(deferTree.Root)))
-			return;
+		// No need to scan game tree for overlay screens — badges are on our layer
+		// and will be cleaned up by ClearInGameBadges when screen changes.
 		try
 		{
 			// Strategy: Find all Control children that look like card holders
@@ -3897,12 +3756,14 @@ public class OverlayManager
 	}
 
 	/// <summary>
-	/// Attaches a floating grade badge to a game UI node (card or relic holder).
-	/// Badge is positioned at the bottom-center of the node.
+	/// Creates a floating grade badge on our own CanvasLayer, positioned to overlay the target game node.
+	/// Badges live on our layer (not as children of game nodes) so they never leak into other screens.
 	/// </summary>
 	private void AttachGradeBadge(Control targetNode, TierGrade grade, bool isBestPick, float score = -1f)
 	{
 		if (targetNode == null || !GodotObject.IsInstanceValid(targetNode))
+			return;
+		if (_layer == null || !GodotObject.IsInstanceValid(_layer))
 			return;
 
 		string subGrade = score >= 0f ? TierEngine.ScoreToSubGrade(score) : grade.ToString();
@@ -3911,7 +3772,6 @@ public class OverlayManager
 
 		// Create badge panel — matches overlay CreateBadge style
 		PanelContainer badge = new PanelContainer();
-		badge.AddToGroup(GradeBadgeGroup);
 		badge.CustomMinimumSize = new Vector2(subGrade.Length > 1 ? 38f : 30f, 30f);
 
 		StyleBoxFlat badgeStyle = new StyleBoxFlat();
@@ -3938,43 +3798,48 @@ public class OverlayManager
 		gradeLbl.VerticalAlignment = VerticalAlignment.Center;
 		badge.AddChild(gradeLbl, forceReadableName: false, Node.InternalMode.Disabled);
 
-		// Position at bottom-center of the target node
-		badge.ZIndex = 10; // Above game UI
 		badge.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-		// Add as child of target and position at bottom-center
-		targetNode.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
-		// Position after adding (deferred so size is known)
-		Callable.From(() => PositionBadge(badge, targetNode)).CallDeferred();
+		// Add to our CanvasLayer (not the game tree) — prevents any leaking
+		_layer.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
+		_inGameBadges.Add((badge, new WeakReference<Control>(targetNode)));
+		// Position after adding (deferred so layout is resolved)
+		Callable.From(() => PositionBadgeOverTarget(badge, targetNode)).CallDeferred();
 	}
 
-	private static void PositionBadge(PanelContainer badge, Control parent)
+	/// <summary>
+	/// Position a badge on our CanvasLayer to overlay the bottom-center of the target game node.
+	/// Converts the target's global position to our CanvasLayer coordinate space.
+	/// </summary>
+	private static void PositionBadgeOverTarget(PanelContainer badge, Control target)
 	{
-		if (badge == null || !GodotObject.IsInstanceValid(badge) || parent == null || !GodotObject.IsInstanceValid(parent))
+		if (badge == null || !GodotObject.IsInstanceValid(badge) ||
+		    target == null || !GodotObject.IsInstanceValid(target))
 			return;
-		// Place at bottom-center of parent
-		float parentW = parent.Size.X;
-		float parentH = parent.Size.Y;
+		// Target's global rect gives us the screen-space position
+		Rect2 targetRect = target.GetGlobalRect();
 		float badgeW = badge.GetCombinedMinimumSize().X;
 		float badgeH = badge.GetCombinedMinimumSize().Y;
-		badge.Position = new Vector2((parentW - badgeW) / 2f, parentH - badgeH - 4f);
+		// Place at bottom-center of the target
+		badge.Position = new Vector2(
+			targetRect.Position.X + (targetRect.Size.X - badgeW) / 2f,
+			targetRect.Position.Y + targetRect.Size.Y - badgeH - 4f);
 	}
 
 	public void CleanupAllBadges()
 	{
-		SceneTree tree = Engine.GetMainLoop() as SceneTree;
-		if (tree?.Root != null)
-			CleanupInjectedBadges(tree.Root);
+		ClearInGameBadges();
 	}
 
-	private static void CleanupInjectedBadges(Node root)
+	/// <summary>
+	/// Remove all in-game badges from our CanvasLayer.
+	/// Since badges live on our layer, this is simple and complete — no game tree scanning needed.
+	/// </summary>
+	private void ClearInGameBadges()
 	{
-		try
+		foreach (var (badge, _) in _inGameBadges)
 		{
-			SceneTree tree = root.GetTree();
-			if (tree == null) return;
-			var badges = tree.GetNodesInGroup(GradeBadgeGroup);
-			foreach (Node badge in badges)
+			try
 			{
 				if (badge != null && GodotObject.IsInstanceValid(badge))
 				{
@@ -3982,10 +3847,57 @@ public class OverlayManager
 					badge.QueueFree();
 				}
 			}
+			catch { }
 		}
-		catch (Exception ex)
+		_inGameBadges.Clear();
+	}
+
+	/// <summary>
+	/// Update badge positions to track their target game nodes.
+	/// Also removes badges whose targets are no longer valid/visible.
+	/// Called from CheckForStaleScreen on each tick.
+	/// </summary>
+	private void UpdateInGameBadgePositions()
+	{
+		if (_inGameBadges.Count == 0) return;
+		bool anyInvalid = false;
+		foreach (var (badge, targetRef) in _inGameBadges)
 		{
-			Plugin.Log($"CleanupInjectedBadges error: {ex.Message}");
+			if (badge == null || !GodotObject.IsInstanceValid(badge))
+			{
+				anyInvalid = true;
+				continue;
+			}
+			if (!targetRef.TryGetTarget(out var target) ||
+			    !GodotObject.IsInstanceValid(target) ||
+			    !target.IsVisibleInTree())
+			{
+				// Target gone or hidden — remove this badge
+				badge.Visible = false;
+				anyInvalid = true;
+				continue;
+			}
+			// Update position to follow target
+			PositionBadgeOverTarget(badge, target);
+		}
+		// Clean up invalid entries
+		if (anyInvalid)
+		{
+			for (int i = _inGameBadges.Count - 1; i >= 0; i--)
+			{
+				var (badge, targetRef) = _inGameBadges[i];
+				bool badgeGone = badge == null || !GodotObject.IsInstanceValid(badge);
+				bool targetGone = !targetRef.TryGetTarget(out var t) || !GodotObject.IsInstanceValid(t) || !t.IsVisibleInTree();
+				if (badgeGone || targetGone)
+				{
+					if (!badgeGone)
+					{
+						badge.GetParent()?.RemoveChild(badge);
+						badge.QueueFree();
+					}
+					_inGameBadges.RemoveAt(i);
+				}
+			}
 		}
 	}
 
