@@ -630,26 +630,50 @@ public class OverlayManager
 					}
 					else
 					{
-						// Even on CARD REWARD: remove badges if their parent is hidden or freed
-						// (happens when pile viewer opens over the reward screen)
-						bool anyOrphaned = false;
+						// Even on CARD REWARD: remove badges if their parent is hidden/freed,
+						// or if a pile viewer / overlay screen opened on top
+						bool shouldClean = false;
 						foreach (Node badge in badges)
 						{
 							if (badge == null || !GodotObject.IsInstanceValid(badge)) continue;
 							Node parent = badge.GetParent();
 							if (parent == null || !GodotObject.IsInstanceValid(parent))
 							{
-								anyOrphaned = true;
+								shouldClean = true;
 								break;
 							}
 							if (parent is Control ctrl && !ctrl.IsVisibleInTree())
 							{
-								anyOrphaned = true;
+								shouldClean = true;
 								break;
 							}
 						}
-						if (anyOrphaned)
+						// Detect pile/deck/browse viewers: count NGridCardHolder nodes in tree.
+						// Card reward has 3-4; if more exist, a pile viewer is overlaying.
+						if (!shouldClean)
+						{
+							var allHolders = new List<Control>();
+							FindNodesByTypeName(btree.Root, "NGridCardHolder", allHolders, 8);
+							if (allHolders.Count > badges.Count + 2)
+							{
+								Plugin.Log($"Pile viewer detected: {allHolders.Count} NGridCardHolder nodes vs {badges.Count} badges — cleaning up");
+								shouldClean = true;
+							}
+						}
+						// Also scan for any overlay screen node covering the card reward
+						if (!shouldClean && IsOverlayScreenPresent(btree.Root))
+						{
+							Plugin.Log("Overlay screen detected over card reward — cleaning up badges");
+							shouldClean = true;
+						}
+						if (shouldClean)
 							CleanupInjectedBadges(btree.Root);
+						else
+						{
+							// Diagnostic: dump top-level node types when badges persist
+							// so we can identify new overlay types to block
+							LogVisibleScreenNodes(btree.Root);
+						}
 					}
 				}
 			}
@@ -850,6 +874,76 @@ public class OverlayManager
 			if (found != null) return found;
 		}
 		return null;
+	}
+
+	private ulong _lastScreenNodeDump = 0;
+
+	/// <summary>
+	/// Diagnostic: log visible screen-like node types at shallow depth (rate-limited to once per 10s).
+	/// Helps identify pile viewer node types we haven't blocked yet.
+	/// </summary>
+	private void LogVisibleScreenNodes(Node root)
+	{
+		ulong now = Time.GetTicksMsec();
+		if (now - _lastScreenNodeDump < 10000) return;
+		_lastScreenNodeDump = now;
+		var screenNodes = new List<string>();
+		CollectScreenNodeTypes(root, 0, 4, screenNodes);
+		if (screenNodes.Count > 0)
+			Plugin.Log($"Visible screen nodes while badges active: {string.Join(", ", screenNodes)}");
+	}
+
+	private static void CollectScreenNodeTypes(Node node, int depth, int maxDepth, List<string> results)
+	{
+		if (node == null || depth > maxDepth) return;
+		if (node is CanvasLayer) return; // skip our overlay
+		string typeName = node.GetType().Name;
+		if (depth >= 1 && node is Control ctrl && ctrl.IsVisibleInTree() &&
+		    (typeName.StartsWith("N") && typeName.Length > 2 && char.IsUpper(typeName[1])))
+		{
+			results.Add(typeName);
+		}
+		foreach (Node child in node.GetChildren())
+			CollectScreenNodeTypes(child, depth + 1, maxDepth, results);
+	}
+
+	/// <summary>
+	/// Detects if any overlay screen (pile viewer, deck browser, etc.) is present on top of the card reward.
+	/// Scans shallow tree depth for visible Screen/Selection/Pile/Browse nodes that aren't the card reward.
+	/// </summary>
+	private static bool IsOverlayScreenPresent(Node root)
+	{
+		if (root == null) return false;
+		// Scan depth 2-4 for screen-like nodes that could overlay the card reward
+		return ScanForOverlayScreen(root, 0, 5);
+	}
+
+	private static bool ScanForOverlayScreen(Node node, int depth, int maxDepth)
+	{
+		if (node == null || depth > maxDepth) return false;
+		string typeName = node.GetType().Name;
+		// Skip our own overlay and the card reward screen itself
+		if (typeName == "CanvasLayer" || typeName == "NCardRewardSelectionScreen")
+		{
+			// Don't recurse into our own overlay
+			if (node is CanvasLayer) return false;
+		}
+		// Detect pile/deck/browse viewers by node type name patterns
+		if (depth >= 2 && node is Control ctrl && ctrl.IsVisibleInTree())
+		{
+			if (typeName.Contains("Pile") || typeName.Contains("DeckView") ||
+			    typeName.Contains("Browse") || typeName.Contains("CardCollection") ||
+			    typeName.Contains("CardList"))
+			{
+				return true;
+			}
+		}
+		foreach (Node child in node.GetChildren())
+		{
+			if (ScanForOverlayScreen(child, depth + 1, maxDepth))
+				return true;
+		}
+		return false;
 	}
 
 	private static bool HasNodeOfType(Node root, string typeName, int maxDepth)
@@ -3547,9 +3641,10 @@ public class OverlayManager
 			if (HasNodeOfType(badgeTree.Root, "NDeckEnchantSelectScreen", 4) ||
 			    HasNodeOfType(badgeTree.Root, "NDeckTransformSelectScreen", 4) ||
 			    HasNodeOfType(badgeTree.Root, "NDeckUpgradeSelectScreen", 4) ||
-			    HasNodeOfType(badgeTree.Root, "NEventRoom", 4))
+			    HasNodeOfType(badgeTree.Root, "NEventRoom", 4) ||
+			    IsOverlayScreenPresent(badgeTree.Root))
 			{
-				Plugin.Log("Skipping badge injection — enchant/transform/upgrade/event screen detected");
+				Plugin.Log("Skipping badge injection — overlay/enchant/transform/upgrade/event screen detected");
 				return;
 			}
 		}
@@ -3585,7 +3680,8 @@ public class OverlayManager
 		    (HasNodeOfType(deferTree.Root, "NDeckEnchantSelectScreen", 4) ||
 		     HasNodeOfType(deferTree.Root, "NDeckTransformSelectScreen", 4) ||
 		     HasNodeOfType(deferTree.Root, "NDeckUpgradeSelectScreen", 4) ||
-		     HasNodeOfType(deferTree.Root, "NEventRoom", 4)))
+		     HasNodeOfType(deferTree.Root, "NEventRoom", 4) ||
+		     IsOverlayScreenPresent(deferTree.Root)))
 			return;
 		try
 		{
