@@ -87,6 +87,10 @@ public class OverlayManager
 	// Feature 6: Relic tenure
 	private int _currentFloor;
 
+	// Stored context for advice re-generation on toggle
+	private string _currentEventId;
+	private List<string> _currentEnemyIds;
+
 	// Debug overlay (F10)
 	private bool _showDebug;
 
@@ -942,6 +946,8 @@ public class OverlayManager
 		_currentScreen = "COMBAT";
 		_currentFloor = floor;
 		_currentGameState = gameState;
+		_currentEnemyIds = enemyIds;
+		_currentEventId = null;
 		_mapAdvice = new List<(string, string, Color)>();
 
 		// Enemy-specific tips (prepended before generic)
@@ -993,7 +999,9 @@ public class OverlayManager
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "EVENT";
 		_currentFloor = floor;
-		_currentGameState = null;
+		_currentGameState = new GameState { CurrentHP = currentHP, MaxHP = maxHP, Gold = gold, ActNumber = actNumber, Floor = floor };
+		_currentEventId = eventId;
+		_currentEnemyIds = null;
 		_mapAdvice = new List<(string, string, Color)>();
 
 		// Event-specific advice (prepended before generic)
@@ -1038,16 +1046,105 @@ public class OverlayManager
 	public void ShowMapAdvice(DeckAnalysis deckAnalysis, int currentHP, int maxHP, int gold, int actNumber, int floor)
 	{
 		_currentFloor = floor;
-		_currentGameState = null;
+		_currentGameState = new GameState { CurrentHP = currentHP, MaxHP = maxHP, Gold = gold, ActNumber = actNumber, Floor = floor };
 		_currentCards = null;
 		_currentRelics = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "MAP";
+		_currentEventId = null;
+		_currentEnemyIds = null;
 		_mapAdvice = _settings.ShowMapAdvice
 			? GenerateMapAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor)
 			: new List<(string, string, Color)>();
 		MarkUpdated();
+		Rebuild();
+	}
+
+	/// <summary>
+	/// Re-generates _mapAdvice from stored context after a settings toggle change.
+	/// </summary>
+	private void RegenerateAdvice()
+	{
+		var da = _currentDeckAnalysis;
+		if (da == null) { Rebuild(); return; }
+		var gs = _currentGameState;
+		int hp = gs?.CurrentHP ?? 0;
+		int maxHP = gs?.MaxHP ?? 1;
+		int gold = gs?.Gold ?? 0;
+		int act = gs?.ActNumber ?? 1;
+		int floor = _currentFloor;
+
+		switch (_currentScreen)
+		{
+			case "COMBAT":
+				_mapAdvice = new List<(string, string, Color)>();
+				if (_settings.ShowEnemyTips && _currentEnemyIds != null && Plugin.EnemyAdvisor != null)
+				{
+					var tips = Plugin.EnemyAdvisor.GetTips(_currentEnemyIds);
+					if (tips != null)
+						foreach (var enemy in tips)
+						{
+							Color dangerColor = enemy.DangerLevel switch
+							{
+								"extreme" => ClrNegative, "high" => ClrExpensive,
+								"medium" => ClrAccent, _ => ClrSub
+							};
+							string dangerIcon = enemy.DangerLevel switch
+							{
+								"extreme" => "\u2620", "high" => "\u26a0",
+								"medium" => "\u25c6", _ => "\u25cb"
+							};
+							_mapAdvice.Add((dangerIcon, $"{enemy.EnemyName} [{enemy.DangerLevel?.ToUpperInvariant()}]", dangerColor));
+							if (enemy.Tips != null)
+								foreach (var tip in enemy.Tips)
+									_mapAdvice.Add(("\u2022", tip, ClrCream));
+						}
+				}
+				if (_settings.ShowCombatAdvice)
+					_mapAdvice.AddRange(GenerateCombatAdvice(da, hp, maxHP, act, floor));
+				break;
+
+			case "EVENT":
+				_mapAdvice = new List<(string, string, Color)>();
+				if (_settings.ShowEventAdvice && _currentEventId != null && Plugin.EventAdvisor != null)
+				{
+					var entry = Plugin.EventAdvisor.GetAdvice(_currentEventId);
+					if (entry != null)
+					{
+						int deckSize = da?.TotalCards ?? 0;
+						var choices = Plugin.EventAdvisor.EvaluateChoices(entry, hp, maxHP, gold, deckSize, act);
+						if (choices != null && choices.Count > 0)
+						{
+							_mapAdvice.Add(("\u2139", $"Event: {entry.EventName}", ClrHeader));
+							foreach (var (label, rating, notes) in choices)
+							{
+								string icon = rating switch { "good" => "\u2714", "bad" => "\u2716", _ => "\u25c6" };
+								Color color = rating switch { "good" => ClrPositive, "bad" => ClrNegative, _ => ClrExpensive };
+								string text = string.IsNullOrEmpty(notes) ? label : $"{label} — {notes}";
+								_mapAdvice.Add((icon, text, color));
+							}
+						}
+					}
+				}
+				if (_settings.ShowEventAdvice)
+					_mapAdvice.AddRange(GenerateEventAdvice(da, hp, maxHP, gold, act, floor));
+				break;
+
+			case "MAP":
+				_mapAdvice = _settings.ShowMapAdvice
+					? GenerateMapAdvice(da, hp, maxHP, gold, act, floor)
+					: new List<(string, string, Color)>();
+				break;
+
+			case "REST SITE":
+				_mapAdvice = GenerateRestSiteAdvice(da, hp, maxHP, act, floor, gs);
+				break;
+
+			default:
+				Rebuild();
+				return;
+		}
 		Rebuild();
 	}
 
@@ -1138,10 +1235,10 @@ public class OverlayManager
 		AddSettingsToggle(menuVBox, "In-Game Badges", _showInGameBadges, () => { ToggleInGameBadges(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Decision Log", _showHistory, () => { ToggleHistory(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Deck Breakdown", _showDeckBreakdown, () => { _showDeckBreakdown = !_showDeckBreakdown; _settings.ShowDeckBreakdown = _showDeckBreakdown; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
-		AddSettingsToggle(menuVBox, "Enemy Tips", _settings.ShowEnemyTips, () => { _settings.ShowEnemyTips = !_settings.ShowEnemyTips; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
-		AddSettingsToggle(menuVBox, "Event Advice", _settings.ShowEventAdvice, () => { _settings.ShowEventAdvice = !_settings.ShowEventAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
-		AddSettingsToggle(menuVBox, "Map Advice", _settings.ShowMapAdvice, () => { _settings.ShowMapAdvice = !_settings.ShowMapAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
-		AddSettingsToggle(menuVBox, "Combat Advice", _settings.ShowCombatAdvice, () => { _settings.ShowCombatAdvice = !_settings.ShowCombatAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Enemy Tips", _settings.ShowEnemyTips, () => { _settings.ShowEnemyTips = !_settings.ShowEnemyTips; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Event Advice", _settings.ShowEventAdvice, () => { _settings.ShowEventAdvice = !_settings.ShowEventAdvice; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Map Advice", _settings.ShowMapAdvice, () => { _settings.ShowMapAdvice = !_settings.ShowMapAdvice; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Combat Advice", _settings.ShowCombatAdvice, () => { _settings.ShowCombatAdvice = !_settings.ShowCombatAdvice; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Cloud Sync", _settings.CloudSyncEnabled, () => { _settings.CloudSyncEnabled = !_settings.CloudSyncEnabled; _settings.Save(); RefreshSettingsMenu(); });
 
 		// Opacity section
@@ -1602,6 +1699,15 @@ public class OverlayManager
 		}
 		if (!hasCards && !hasRelics && _mapAdvice != null && _mapAdvice.Count > 0)
 		{
+			string adviceHeader = _currentScreen switch
+			{
+				"COMBAT" => "COMBAT TIPS",
+				"EVENT" => "EVENT ADVICE",
+				"MAP" => "PATH ADVICE",
+				"REST SITE" => "REST SITE",
+				_ => "ADVICE"
+			};
+			AddSectionHeader(adviceHeader);
 			foreach (var (icon, text, color) in _mapAdvice)
 			{
 				PanelContainer advPanel = new PanelContainer();
