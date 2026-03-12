@@ -18,11 +18,15 @@ public class OverlaySettings
 	public bool ShowDeckBreakdown { get; set; } = true;
 	public bool ShowDecisionHistory { get; set; } = false;
 	public bool ShowDrawProbability { get; set; } = true;
-	public bool CloudSyncEnabled { get; set; } = true;
+	public bool ShowEnemyTips { get; set; } = true;
+	public bool ShowEventAdvice { get; set; } = true;
+	public bool ShowMapAdvice { get; set; } = true;
+	public bool ShowCombatAdvice { get; set; } = true;
+	public bool CloudSyncEnabled { get; set; } = false;
 
 	// Bump this when defaults change to force migration on old saved files
 	public int SettingsVersion { get; set; } = 0;
-	private const int CurrentVersion = 3;
+	private const int CurrentVersion = 4;
 
 	private static string GetSettingsPath()
 	{
@@ -47,6 +51,9 @@ public class OverlaySettings
 						if (settings.SettingsVersion < 2)
 							settings.ShowDecisionHistory = false;
 						// v2 → v3: CloudSyncEnabled defaults to true (no action needed)
+						// v3 → v4: CloudSyncEnabled disabled (no server deployed yet)
+						if (settings.SettingsVersion < 4)
+							settings.CloudSyncEnabled = false;
 						settings.SettingsVersion = CurrentVersion;
 						settings.Save();
 					}

@@ -29,6 +29,11 @@ public static class GamePatches
 	// don't inject badges on unrelated screens (discard pile, removal, etc.)
 	private static WeakReference<NCardRewardSelectionScreen> _activeCardRewardScreen;
 
+	// Whitelist flag: true only when a genuine card reward ShowScreen/RefreshOptions was detected
+	// Prevents badge injection on screens that reuse NCardRewardSelectionScreen (events, upgrades, etc.)
+	public static bool IsGenuineCardReward => _isGenuineCardReward;
+	private static bool _isGenuineCardReward;
+
 	// Dedup: track last recorded card reward to prevent ShowScreen+RefreshOptions double-recording
 	private static string _lastCardRewardFingerprint;
 
@@ -38,6 +43,12 @@ public static class GamePatches
 	private static void RecordHook(string hookName)
 	{
 		HookLastFired[hookName] = DateTime.Now;
+		// Any non-card-reward hook clears the genuine card reward flag and active screen reference
+		if (hookName != "OnCardRewardOpened" && hookName != "OnCardRewardRefreshed")
+		{
+			_isGenuineCardReward = false;
+			_activeCardRewardScreen = null;
+		}
 	}
 
 	private static void EnsureOverlay()
@@ -88,6 +99,7 @@ public static class GamePatches
 			}
 			EnsureOverlay();
 			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__result);
+			_isGenuineCardReward = true;
 			Plugin.Log("Card reward screen detected — analyzing...");
 			RecordHook("OnCardRewardOpened");
 			if (options != null)
@@ -120,6 +132,7 @@ public static class GamePatches
 			EnsureOverlay();
 			RecordHook("OnCardRewardRefreshed");
 			_activeCardRewardScreen = new WeakReference<NCardRewardSelectionScreen>(__instance);
+			_isGenuineCardReward = true;
 			Plugin.Log("Card reward RefreshOptions detected — re-analyzing...");
 			if (options != null)
 				GameStateReader._lastCardOptions = options;
@@ -139,6 +152,12 @@ public static class GamePatches
 
 	private static bool TryShowCardRewardFromScreen(NCardRewardSelectionScreen screen)
 	{
+		// Guard: only proceed if this is still a genuine card reward context
+		if (!_isGenuineCardReward)
+		{
+			Plugin.Log("TryShowCardRewardFromScreen skipped — not a genuine card reward");
+			return true; // return true to stop retries
+		}
 		// Guard: verify the screen node is still valid and visible (retries may fire after screen changed)
 		if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsVisibleInTree())
 		{
@@ -369,7 +388,7 @@ public static class GamePatches
 		}
 	}
 
-	public static void OnCombatSetup(NCombatRoom __result)
+	public static void OnCombatSetup(NCombatRoom __result, object __0)
 	{
 		try
 		{
@@ -379,92 +398,112 @@ public static class GamePatches
 			List<string> enemyIds = null;
 			try
 			{
-				// Strategy 1: Try encounter ID from NCombatRoom fields/properties
-				// Game logs show "Creating NCombatRoom with encounter=SHRINKER_BEETLE_WEAK"
+				// NCombatRoom.Create(ICombatRoomVisuals visuals, CombatRoomMode mode)
+				// visuals is a CombatRoom with Encounter property → EncounterModel → Id.Entry
 				string encounterId = null;
-				foreach (var name in new[] { "Encounter", "_encounter", "EncounterId", "_encounterId", "encounter" })
+				if (__0 != null)
 				{
-					var field = __result.GetType().GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					if (field != null)
+					// __0 = ICombatRoomVisuals (CombatRoom). Get Encounter.Id.Entry
+					var encounterProp = __0.GetType().GetProperty("Encounter",
+						BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					var encounterObj = encounterProp?.GetValue(__0);
+					if (encounterObj != null)
 					{
-						var val = field.GetValue(__result);
-						if (val != null)
+						var idProp = encounterObj.GetType().GetProperty("Id",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						var idObj = idProp?.GetValue(encounterObj);
+						if (idObj != null)
 						{
-							// Could be an enum, Id type, or string
-							var entryProp = val.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
-							encounterId = entryProp?.GetValue(val)?.ToString() ?? val.ToString();
-							Plugin.Log($"Encounter field '{name}': {encounterId} (type={val.GetType().Name})");
-							break;
+							var entryProp = idObj.GetType().GetProperty("Entry",
+								BindingFlags.Instance | BindingFlags.Public);
+							encounterId = entryProp?.GetValue(idObj)?.ToString();
 						}
+						Plugin.Log($"Encounter from visuals: {encounterId} (type={encounterObj.GetType().Name})");
 					}
-					var prop = __result.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					if (prop != null)
+					// Also try to get enemy names from Enemies property
+					if (encounterId == null)
 					{
-						var val = prop.GetValue(__result);
-						if (val != null)
+						var enemiesProp = __0.GetType().GetProperty("Enemies",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						if (enemiesProp != null)
 						{
-							var entryProp = val.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
-							encounterId = entryProp?.GetValue(val)?.ToString() ?? val.ToString();
-							Plugin.Log($"Encounter prop '{name}': {encounterId} (type={val.GetType().Name})");
-							break;
+							var enemiesObj = enemiesProp.GetValue(__0);
+							if (enemiesObj is System.Collections.IEnumerable enemies)
+							{
+								var tempIds = new List<string>();
+								foreach (var enemy in enemies)
+								{
+									if (enemy == null) continue;
+									var eidProp = enemy.GetType().GetProperty("Id",
+										BindingFlags.Instance | BindingFlags.Public);
+									var eidObj = eidProp?.GetValue(enemy);
+									var eEntryProp = eidObj?.GetType().GetProperty("Entry",
+										BindingFlags.Instance | BindingFlags.Public);
+									var entry = eEntryProp?.GetValue(eidObj)?.ToString();
+									if (entry != null) tempIds.Add(entry);
+								}
+								if (tempIds.Count > 0)
+								{
+									enemyIds = tempIds;
+									Plugin.Log($"Enemy IDs from Enemies: {string.Join(", ", tempIds)}");
+								}
+							}
 						}
 					}
 				}
 				if (encounterId != null)
 				{
-					enemyIds = new List<string> { encounterId };
-					// Also try splitting compound encounter IDs (e.g., "SLAVER_RED_AND_BLUE")
-					// and stripping variant suffixes like _WEAK, _ELITE
-					string baseId = System.Text.RegularExpressions.Regex.Replace(encounterId, @"_(WEAK|ELITE|STRONG|BOSS|HARD|EASY)$", "");
-					if (baseId != encounterId)
+					// Encounter Entry is Title Case with spaces (e.g., "Slimes Weak")
+					// Convert to UPPER_SNAKE_CASE for lookup (e.g., "SLIMES_WEAK")
+					string snakeId = encounterId.Replace(" ", "_").ToUpperInvariant();
+					enemyIds = new List<string> { snakeId };
+					// Also add variant-stripped version
+					string baseId = System.Text.RegularExpressions.Regex.Replace(snakeId, @"_(WEAK|ELITE|STRONG|BOSS|HARD|EASY|NORMAL)$", "");
+					if (baseId != snakeId)
 						enemyIds.Add(baseId);
+					// Also add the original Title Case for flexible matching
+					enemyIds.Add(encounterId);
+					Plugin.Log($"Encounter IDs: {string.Join(", ", enemyIds)}");
 				}
-				// Strategy 2: Scan all fields for IEnumerable of enemy-like objects
-				if (enemyIds == null)
+				else if (enemyIds == null)
 				{
-					foreach (var field in __result.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+					// Fallback: try RunManager current room
+					try
 					{
-						try
+						var rmType = AccessTools.TypeByName("MegaCrit.Sts2.Core.Runs.RunManager");
+						if (rmType != null)
 						{
-							var val = field.GetValue(__result);
-							if (val is System.Collections.IEnumerable list && val is not string && val is not byte[])
+							var instProp = rmType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+							var rm = instProp?.GetValue(null);
+							var runStateProp = rm?.GetType().GetProperty("RunState", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+							var runState = runStateProp?.GetValue(rm);
+							var curRoomProp = runState?.GetType().GetProperty("CurrentRoom", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+							var curRoom = curRoomProp?.GetValue(runState);
+							if (curRoom != null)
 							{
-								var tempIds = new List<string>();
-								foreach (var item in list)
+								var encProp = curRoom.GetType().GetProperty("Encounter",
+									BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+								var enc = encProp?.GetValue(curRoom);
+								var idP = enc?.GetType().GetProperty("Id", BindingFlags.Instance | BindingFlags.Public);
+								var idO = idP?.GetValue(enc);
+								var entP = idO?.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
+								var entry = entP?.GetValue(idO)?.ToString();
+								if (entry != null)
 								{
-									if (item == null) continue;
-									var idProp = item.GetType().GetProperty("Id", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-									var entryProp = idProp?.GetValue(item)?.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
-									var entry = entryProp?.GetValue(idProp.GetValue(item))?.ToString();
-									if (entry != null) tempIds.Add(entry);
-									else
-									{
-										var nameProp = item.GetType().GetProperty("Name", BindingFlags.Instance | BindingFlags.Public);
-										var nameVal = nameProp?.GetValue(item)?.ToString();
-										if (nameVal != null) tempIds.Add(nameVal);
-									}
-								}
-								if (tempIds.Count > 0)
-								{
-									enemyIds = tempIds;
-									Plugin.Log($"Enemy IDs from field '{field.Name}': {string.Join(", ", tempIds)}");
-									break;
+									string sId = entry.Replace(" ", "_").ToUpperInvariant();
+									enemyIds = new List<string> { sId, entry };
+									Plugin.Log($"Encounter from RunManager: {entry} → {sId}");
 								}
 							}
 						}
-						catch { }
+					}
+					catch (Exception ex2)
+					{
+						Plugin.Log($"RunManager fallback failed: {ex2.Message}");
 					}
 				}
-				if (enemyIds != null && enemyIds.Count > 0)
-					Plugin.Log($"Enemy IDs extracted: {string.Join(", ", enemyIds)}");
-				else
-				{
-					// Log all available members for debugging
-					var members = __result.GetType().GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-						.Select(m => $"{m.MemberType}:{m.Name}").Take(30);
-					Plugin.Log($"No enemy IDs found. NCombatRoom members: {string.Join(", ", members)}");
-					enemyIds = null;
-				}
+				if (enemyIds == null || enemyIds.Count == 0)
+					Plugin.Log("No encounter ID found for combat room.");
 			}
 			catch (Exception ex)
 			{
@@ -731,6 +770,7 @@ public static class GamePatches
 			}
 			Plugin.Log("Card picked: " + (text ?? "(unknown)"));
 			Plugin.RunTracker?.UpdateLastDecisionChoice(text);
+			_isGenuineCardReward = false;
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = null;
 			GameStateReader._lastMerchantInventory = null;
@@ -766,6 +806,7 @@ public static class GamePatches
 			}
 			Plugin.Log("Relic picked: " + (text ?? "(unknown)"));
 			Plugin.RunTracker?.UpdateLastDecisionChoice(text);
+			_isGenuineCardReward = false;
 			GameStateReader._lastCardOptions = null;
 			GameStateReader._lastRelicOptions = null;
 			GameStateReader._lastMerchantInventory = null;

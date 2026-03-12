@@ -27,13 +27,17 @@ public class EnemyAdvisor
 						if (!string.IsNullOrEmpty(entry.EnemyId))
 						{
 							_tipsByEnemyId[entry.EnemyId] = entry;
-							// Also index by UPPER_SNAKE_CASE and PascalCase variants
+							// Also index by UPPER_SNAKE_CASE, PascalCase, and Title Case variants
 							string snake = PascalToSnake(entry.EnemyId);
 							if (snake != entry.EnemyId)
 								_tipsByEnemyId.TryAdd(snake, entry);
 							string pascal = SnakeToPascal(entry.EnemyId);
 							if (pascal != entry.EnemyId)
 								_tipsByEnemyId.TryAdd(pascal, entry);
+							// Title Case with spaces (game's EncounterModel.Id.Entry format)
+							string titleCase = entry.EnemyId.Replace("_", " ");
+							if (titleCase != entry.EnemyId)
+								_tipsByEnemyId.TryAdd(titleCase, entry);
 						}
 					}
 				}

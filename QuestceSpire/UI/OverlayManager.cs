@@ -624,7 +624,7 @@ public class OverlayManager
 				var badges = btree.GetNodesInGroup(GradeBadgeGroup);
 				if (badges.Count > 0)
 				{
-					if (_currentScreen != "CARD REWARD")
+					if (_currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 					{
 						CleanupInjectedBadges(btree.Root);
 					}
@@ -956,7 +956,7 @@ public class OverlayManager
 		_mapAdvice = new List<(string, string, Color)>();
 
 		// Enemy-specific tips (prepended before generic)
-		if (enemyIds != null && Plugin.EnemyAdvisor != null)
+		if (_settings.ShowEnemyTips && enemyIds != null && Plugin.EnemyAdvisor != null)
 		{
 			var tips = Plugin.EnemyAdvisor.GetTips(enemyIds);
 			if (tips != null)
@@ -990,7 +990,8 @@ public class OverlayManager
 		}
 
 		// Generic combat advice (appended)
-		_mapAdvice.AddRange(GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor));
+		if (_settings.ShowCombatAdvice)
+			_mapAdvice.AddRange(GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor));
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1007,7 +1008,7 @@ public class OverlayManager
 		_mapAdvice = new List<(string, string, Color)>();
 
 		// Event-specific advice (prepended before generic)
-		if (eventId != null && Plugin.EventAdvisor != null)
+		if (_settings.ShowEventAdvice && eventId != null && Plugin.EventAdvisor != null)
 		{
 			var entry = Plugin.EventAdvisor.GetAdvice(eventId);
 			if (entry != null)
@@ -1039,7 +1040,8 @@ public class OverlayManager
 		}
 
 		// Generic event advice (appended)
-		_mapAdvice.AddRange(GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor));
+		if (_settings.ShowEventAdvice)
+			_mapAdvice.AddRange(GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor));
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1053,7 +1055,9 @@ public class OverlayManager
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "MAP";
-		_mapAdvice = GenerateMapAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
+		_mapAdvice = _settings.ShowMapAdvice
+			? GenerateMapAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor)
+			: new List<(string, string, Color)>();
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1145,6 +1149,10 @@ public class OverlayManager
 		AddSettingsToggle(menuVBox, "In-Game Badges", _showInGameBadges, () => { ToggleInGameBadges(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Decision Log", _showHistory, () => { ToggleHistory(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Deck Breakdown", _showDeckBreakdown, () => { _showDeckBreakdown = !_showDeckBreakdown; _settings.ShowDeckBreakdown = _showDeckBreakdown; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Enemy Tips", _settings.ShowEnemyTips, () => { _settings.ShowEnemyTips = !_settings.ShowEnemyTips; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Event Advice", _settings.ShowEventAdvice, () => { _settings.ShowEventAdvice = !_settings.ShowEventAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Map Advice", _settings.ShowMapAdvice, () => { _settings.ShowMapAdvice = !_settings.ShowMapAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Combat Advice", _settings.ShowCombatAdvice, () => { _settings.ShowCombatAdvice = !_settings.ShowCombatAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Cloud Sync", _settings.CloudSyncEnabled, () => { _settings.CloudSyncEnabled = !_settings.CloudSyncEnabled; _settings.Save(); RefreshSettingsMenu(); });
 
 		// Opacity section
@@ -1469,8 +1477,8 @@ public class OverlayManager
 		// Invalidate any pending deferred badge calls on screen change
 		if (screenChanged)
 			_badgeEpoch++;
-		// Clean up in-game badges whenever we're not on a card reward screen
-		if (_currentScreen != "CARD REWARD")
+		// Clean up in-game badges whenever we're not on a genuine card reward screen
+		if (_currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 		{
 			try
 			{
@@ -3521,7 +3529,12 @@ public class OverlayManager
 	{
 		if (!_showInGameBadges || screenNode == null || !GodotObject.IsInstanceValid(screenNode) || scoredCards == null || scoredCards.Count == 0)
 			return;
-		// Only inject on card reward screens (not removal/shop/upgrade/pile viewers which reuse the same screen class)
+		// Only inject when GamePatches confirmed this is a genuine card reward (not reused screen)
+		if (!GamePatches.IsGenuineCardReward)
+		{
+			Plugin.Log("InjectCardGrades skipped — not a genuine card reward");
+			return;
+		}
 		if (_currentScreen != "CARD REWARD" || IsInsideMerchant(screenNode))
 			return;
 		// Card rewards have 3-4 cards; draw/discard pile viewers have many more
@@ -3564,7 +3577,7 @@ public class OverlayManager
 		// Stale deferred call — screen changed since injection was queued
 		if (epoch != _badgeEpoch)
 			return;
-		if (!_showInGameBadges || _currentScreen != "CARD REWARD")
+		if (!_showInGameBadges || _currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 			return;
 		// Double-check: skip if enchant/transform/upgrade/event screen appeared between queue and deferred execution
 		SceneTree deferTree = Engine.GetMainLoop() as SceneTree;

@@ -1,948 +1,622 @@
 {
   "character": "necrobinder",
+  "source": "https://www.youtube.com/watch?v=-1gZiFN7heQ",
   "cards": [
     {
       "id": "Strike Necrobinder",
       "baseTier": "D",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
       "notes": "Starter strike, replace when possible"
     },
     {
       "id": "Defend Necrobinder",
       "baseTier": "D",
-      "synergies": [
-        "block"
-      ],
+      "synergies": ["block"],
       "antiSynergies": [],
       "notes": "Starter defend, replace when possible"
     },
     {
       "id": "Bodyguard",
       "baseTier": "C",
-      "synergies": [
-        "block",
-        "minion",
-        "summon"
-      ],
+      "synergies": ["block", "summon"],
       "antiSynergies": [],
-      "notes": "Starter skill, basic self-target block"
+      "notes": "Starter summon 5 skill. Built-in barricade via Aussie HP carrying over turns"
     },
     {
       "id": "Unleash",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "minion",
-        "summon"
-      ],
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "Starter attack, basic single-target damage"
+      "notes": "Starter attack, damage scales with Aussie HP. Blocking keeps Aussie alive = more damage"
     },
     {
       "id": "Afterlife",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "soul"
-      ],
+      "baseTier": "C",
+      "synergies": ["block", "summon", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost exhaust skill. Strong payoff in exhaust-heavy builds"
+      "notes": "Summon 6 exhaust for 1 energy. Basically a worse starter effect with exhaust. Never exciting"
     },
     {
       "id": "Banshees Cry",
-      "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "damage"
-      ],
+      "baseTier": "S",
+      "synergies": ["aoe", "damage", "ethereal"],
       "antiSynergies": [],
-      "notes": "Rare 6-cost AoE attack. Massive cost but huge AoE payoff"
+      "notes": "33 AoE for 6 energy, reduced by 2 per ethereal played. Often 33 to all for 0 since good cards happen to be ethereal. Wins long fights"
     },
     {
       "id": "Blight Strike",
-      "baseTier": "A",
-      "synergies": [
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "doom"],
       "antiSynergies": [],
-      "notes": "1-cost common strike variant. Filler attack with Strike tag"
+      "notes": "1 energy deal damage + apply doom equal to damage. ~16 effective damage. Better ways to get this effect; doom doesn't scale like poison"
     },
     {
       "id": "Bone Shards",
-      "baseTier": "C",
-      "synergies": [
-        "aoe",
-        "damage",
-        "minion",
-        "summon"
-      ],
+      "baseTier": "A",
+      "synergies": ["aoe", "damage", "block", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon AoE attack. Solid multi-target damage"
+      "notes": "1 energy 9 AoE + 9 block but Aussie dies. Bottom of A. Aussie dying is real downside when stacking HP, but early game Aussie is often dead anyway. Upgrades to 12/12"
     },
     {
       "id": "Borrowed Time",
-      "baseTier": "A",
-      "synergies": [
-        "draw",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["energy", "infinite"],
       "antiSynergies": [],
-      "notes": "0-cost uncommon skill. Free card with great tempo"
+      "notes": "0 energy gain 1 energy, apply 3 doom to self. Doom on self barely matters. Two-card infinite with Capture Spirit. Upgrade to 2 energy makes any deck infinite"
     },
     {
       "id": "Bury",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "4-cost uncommon attack. High cost but strong single-target removal"
+      "notes": "52 damage for 4 energy. Almost never playable — basically a curse. Clunky, doesn't block, payoff isn't worth the draw reliance"
     },
     {
       "id": "Calcify",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Passive block scaling"
+      "notes": "Power: Aussie attacks deal 4 additional damage. Aussie attack package is the weakest archetype. Mediocre, rarely needed"
     },
     {
       "id": "Call Of The Void",
       "baseTier": "A",
-      "synergies": [
-        "scaling",
-        "soul",
-        "death"
-      ],
+      "synergies": ["draw", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Strong scaling engine for soul/death builds"
+      "notes": "1 energy rare power: add 1 random ethereal card to hand each turn. Hello World that doesn't clog. One-card solve for long fights. Random gen is strong when you're blocking all the time"
     },
     {
       "id": "Capture Spirit",
-      "baseTier": "B",
-      "synergies": [
-        "soul",
-        "debuff"
-      ],
+      "baseTier": "S",
+      "synergies": ["soul", "damage", "infinite"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon skill targeting single enemy. Captures soul resources"
+      "notes": "1 energy, enemy loses 3 HP, add 3 souls to draw pile. Two-card infinite with Borrowed Time. 6 draw worth of stuff for 1 energy. Completely overstated"
     },
     {
       "id": "Cleanse",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "exhaust"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "exhaust", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon skill. Utility removal of debuffs"
+      "notes": "1 energy summon 3 + exhaust 1 card from draw pile. Targeted exhaust is incredibly strong for thinning to infinite. Also gives barricade block"
     },
     {
       "id": "Countdown",
-      "baseTier": "S",
-      "synergies": [
-        "doom",
-        "scaling",
-        "death"
-      ],
+      "baseTier": "B",
+      "synergies": ["doom", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Builds doom stacks passively each turn"
+      "notes": "1 energy power: apply 6 doom to random enemy each turn. Essentially 6 passive damage/turn. Opens all doom synergies (Death's Door, etc). Well-designed bridge card. Could move up"
     },
     {
       "id": "Danse Macabre",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "scaling",
-        "soul"
-      ],
+      "baseTier": "D",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Rewards exhaust-heavy playstyle"
+      "notes": "1 energy power: gain 3 block when playing 2+ cost card. Can't proc more than once per turn. Worse than Metallicize. So much work for no payoff"
     },
     {
       "id": "Deathbringer",
       "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "damage",
-        "death"
-      ],
+      "synergies": ["aoe", "doom", "debuff"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon AoE skill. Strong damage spread"
+      "notes": "2 energy apply 21 doom + 1 weak to all enemies. Top of A, could argue S. Weak is crazy in this game. Big AoE doom number. Great early game pickup"
     },
     {
       "id": "Death March",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "death",
-        "doom"
-      ],
+      "synergies": ["damage", "soul", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack. Steady doom-flavored damage"
+      "notes": "1 energy deal 8 + 3 per card drawn this turn. 8 damage floor is decent consolation. Scales huge with soul chains (24+ damage). Solid early damage card"
     },
     {
       "id": "Deaths Door",
-      "baseTier": "S",
-      "synergies": [
-        "block",
-        "soul",
-        "self_damage"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "doom"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon skill. Risk/reward defensive option"
+      "notes": "1 energy gain 6 block, if doom applied this turn gain block 2 additional times (=18 block). Works great with Countdown. Massive block. Bottom of A"
     },
     {
       "id": "Debilitate",
       "baseTier": "A",
-      "synergies": [
-        "debuff",
-        "weak",
-        "damage"
-      ],
+      "synergies": ["damage", "debuff"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack with debuff. Strong enemy weakening"
+      "notes": "1 energy deal 7, vuln+weak are 2x effective for 3 turns. Weak now blocks for half instead of 25%. Disgusting card. Invalidates enemy damage for 3 turns"
     },
     {
       "id": "Defile",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "synergies": ["damage", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost common ethereal attack. Decent damage, disappears if unplayed"
+      "notes": "1 energy ethereal deal 13 (upgrades 17). Hemokinesis without downside. Ethereal is upside on this character. Solid early damage"
     },
     {
       "id": "Defy",
-      "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "S",
+      "synergies": ["block", "debuff", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost common ethereal skill. Block that vanishes if unused"
+      "notes": "1 energy ethereal gain 6 block + 1 weak. Best common in the class. Upgraded: 2 weak 7 block = effectively block 20 for 1 energy. Ethereal is pure upside. Take multiple copies. Slam on sight"
     },
     {
       "id": "Delay",
       "baseTier": "C",
-      "synergies": [
-        "block",
-        "doom",
-        "death"
-      ],
+      "synergies": ["block", "energy"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon skill. Expensive stall, low impact"
+      "notes": "2 energy gain 11 block, next turn gain 1 energy. OK card but Defy exists at effectively block 20 for 1 energy, making this unnecessary. No ethereal keyword"
     },
     {
       "id": "Demesne",
       "baseTier": "S",
-      "synergies": [
-        "minion",
-        "scaling",
-        "summon",
-        "soul"
-      ],
+      "synergies": ["energy", "draw", "ethereal"],
       "antiSynergies": [],
-      "notes": "3-cost rare ethereal power. Build-defining minion scaling, buffs all minions"
+      "notes": "3 energy ethereal power: gain 1 energy + draw 1 additional card each turn. Upgrades to 2 energy cost. Extra energy and draw every turn is broken. Both resources at once"
     },
     {
       "id": "Devour Life",
       "baseTier": "A",
-      "synergies": [
-        "soul",
-        "scaling",
-        "death"
-      ],
+      "synergies": ["soul", "summon", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Life drain scaling, sustains through fights"
+      "notes": "1 energy power: whenever you play a soul, summon 1 (upgrades to 2). Every soul = barricade block that also scales starter card damage. Top of A, needs soul synergy but payoff is massive"
     },
     {
       "id": "Dirge",
-      "baseTier": "B",
-      "synergies": [
-        "soul",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["soul", "summon", "infinite", "scaling"],
       "antiSynergies": [],
-      "notes": "0-cost uncommon skill. Free soul generation utility"
+      "notes": "X cost summon 3 X times + add X souls to draw pile. Main reason infinite is so easy. Scales damage, blocks, and adds draw simultaneously. 'Durge slop' with Borrowed Time"
     },
     {
       "id": "Drain Power",
       "baseTier": "C",
-      "synergies": [
-        "damage",
-        "debuff"
-      ],
+      "synergies": ["damage", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost common attack. Steals enemy strength"
+      "notes": "1 energy deal 10 + upgrade 2 random cards in discard. Janky scaling solution. Too slow most of the time. Some early game damage value"
     },
     {
       "id": "Dredge",
       "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "synergies": ["draw", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon exhaust skill. Recovers cards from exhaust pile"
+      "notes": "1 energy put 3 cards from discard into hand, exhaust. Top of B. Sets up combo pieces (Borrowed Time, souls, defy). Exhausts itself. Good when fights go long"
     },
     {
       "id": "Eidolon",
-      "baseTier": "A",
-      "synergies": [
-        "summon",
-        "minion",
-        "soul"
-      ],
+      "baseTier": "B",
+      "synergies": ["exhaust", "infinite"],
       "antiSynergies": [],
-      "notes": "2-cost rare skill. Strong spirit summon, core minion card"
+      "notes": "2 energy exhaust hand, 9 cards exhausted = intangible. Nine-card threshold rarely met without souls. But exhausting hand enables infinite faster. Exhaust statuses"
     },
     {
       "id": "End Of Days",
       "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "doom",
-        "damage",
-        "death"
-      ],
+      "synergies": ["aoe", "doom", "damage"],
       "antiSynergies": [],
-      "notes": "3-cost rare AoE skill. Massive doom payoff finisher"
+      "notes": "3 energy apply 29 doom to all + kill enemies with doom >= HP. Bottom of A. Enough to kill early/mid. Kills millipedes in act 2. Character struggles with that otherwise"
     },
     {
       "id": "Enfeebling Touch",
       "baseTier": "A",
-      "synergies": [
-        "debuff",
-        "weak",
-        "damage"
-      ],
+      "synergies": ["debuff", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon ethereal skill. -8 strength is devastating debuff"
+      "notes": "Ethereal, enemy loses 8 strength this turn. Could argue S tier. Massive block output vs multi-attackers. If you don't need it, it exhausts itself via ethereal"
     },
     {
       "id": "Eradicate",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "retain",
-        "exhaust"
-      ],
+      "synergies": ["damage", "retain"],
       "antiSynergies": [],
-      "notes": "0-cost rare retain attack. Hold for the right moment, free to play"
+      "notes": "X cost retain, deal 11 damage X times. Top of B. Incredibly buffed Skewer with retain. Hold for big turns. Rare rarity bumps it down"
     },
     {
       "id": "Fear",
-      "baseTier": "C",
-      "synergies": [
-        "debuff",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "debuff", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost common ethereal attack. Debuff + damage, vanishes if unplayed"
+      "notes": "Ethereal deal 7 + apply 1 vuln. Bottom of B. Ethereal keyword turns on Banshee's Cry. Upgrades to 2 vuln. Decent filler"
     },
     {
       "id": "Fetch",
-      "baseTier": "B",
-      "synergies": [
-        "minion",
-        "damage",
-        "summon"
-      ],
+      "baseTier": "A",
+      "synergies": ["damage", "draw", "summon"],
       "antiSynergies": [],
-      "notes": "0-cost uncommon attack. Free minion-synergy damage"
+      "notes": "0 energy Aussie deals 3 damage, first time each turn draw 1 card. Free damage + free draw. Like FTL but doesn't turn off. Bridges into Aussie synergy"
     },
     {
       "id": "Flatten",
       "baseTier": "C",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "2-cost common attack. Heavy but expensive, filler damage"
+      "notes": "2 energy Aussie deals 12, costs 0 if Aussie attacked this turn. Desperation damage. 2 energy brick in bad draw order. Aussie attack package is weakest"
     },
     {
       "id": "Forbidden Grimoire",
       "baseTier": "S",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "scaling",
-        "draw"
-      ],
+      "synergies": ["exhaust", "scaling"],
       "antiSynergies": [],
-      "notes": "2-cost ancient eternal power. Never exhausts, build-defining soul/exhaust engine"
+      "notes": "Eternal power: at end of combat remove a card from deck. Removing cards is completely broken — just go infinite. Build-defining"
     },
     {
       "id": "Friendship",
-      "baseTier": "A",
-      "synergies": [
-        "minion",
-        "scaling",
-        "summon"
-      ],
+      "baseTier": "S",
+      "synergies": ["energy"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Buffs minions passively"
+      "notes": "1 energy power: lose 2 strength, gain 1 energy each turn. Bottom of S. Strength loss doesn't matter since damage comes from Aussie/doom/effects. Basically free energy every turn"
     },
     {
       "id": "Glimpse Beyond",
       "baseTier": "B",
-      "synergies": [
-        "draw",
-        "exhaust",
-        "soul"
-      ],
+      "synergies": ["draw", "exhaust", "soul"],
       "antiSynergies": [],
-      "notes": "1-cost rare exhaust skill. Special target type, card selection"
+      "notes": "Multiplayer card, not rated in tier list"
     },
     {
       "id": "Graveblast",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "draw", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost common exhaust attack. Damage scales with exhaust pile size"
+      "notes": "1 energy deal 4 damage, put card from discard to hand, exhaust. Damage hologram. Never felt the need to pick it"
     },
     {
       "id": "Grave Warden",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "minion",
-        "summon"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "soul", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost common skill. Basic defensive minion support"
+      "notes": "1 energy gain 8 block + add soul to draw pile. Common. 8 block + draw 2 (via soul) is ridiculous value. Upgrades to soul+ (draw 3) and 10 block"
     },
     {
       "id": "Hang",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "death"
-      ],
+      "baseTier": "A",
+      "synergies": ["damage", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost rare attack. Conditional execution-style finisher"
+      "notes": "1 energy deal 10, double damage of all Hang cards. Claw but good. One-card solve for boss damage. 10 baseline is solid. Rare"
     },
     {
       "id": "Haunt",
-      "baseTier": "B",
-      "synergies": [
-        "debuff",
-        "doom",
-        "death"
-      ],
+      "baseTier": "A",
+      "synergies": ["soul", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Persistent debuff on enemies"
+      "notes": "1 energy power: whenever you play a soul, random enemy loses 6 HP. Infinite payoff but also good without. Capture Spirit = 18 free damage"
     },
     {
       "id": "High Five",
-      "baseTier": "C",
-      "synergies": [
-        "minion",
-        "aoe",
-        "damage",
-        "summon"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "aoe", "debuff"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon AoE attack. Minion interaction, expensive for effect"
+      "notes": "2 energy deal 11 + apply 2 vuln to all. Bottom of B, maybe C. AoE vuln is OK but 2 energy cost is high"
     },
     {
       "id": "Invoke",
-      "baseTier": "A",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "draw"
-      ],
+      "baseTier": "B",
+      "synergies": ["summon", "energy"],
       "antiSynergies": [],
-      "notes": "1-cost common skill. Core soul cycling, excellent early pickup"
+      "notes": "1 energy: next turn summon 2 + gain 2 energy. Top of B, maybe bottom A. Like Outmaneuver but better. Extra energy on barricade character is strong. Upgrade: summon 3, 3 energy"
     },
     {
       "id": "Legion Of Bone",
       "baseTier": "A",
-      "synergies": [
-        "summon",
-        "minion",
-        "scaling"
-      ],
+      "synergies": ["summon", "scaling"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon exhaust skill. Mass summon, core minion army builder"
+      "notes": "Multiplayer card, not rated in tier list"
     },
     {
       "id": "Lethality",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "scaling"
-      ],
+      "baseTier": "A",
+      "synergies": ["damage", "scaling", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon ethereal power. Damage amplification, vanishes if unplayed"
+      "notes": "1 energy ethereal power: first attack each turn deals 50% additional damage. Often only playing one attack (starter). Stacks additively. Combos with Eradicate and Hang"
     },
     {
       "id": "Melancholy",
-      "baseTier": "C",
-      "synergies": [
-        "soul",
-        "block"
-      ],
+      "baseTier": "B",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "3-cost uncommon skill. Very expensive for a skill, low impact"
+      "notes": "3 energy gain 13 block, cost reduces by 1 whenever anyone dies (including Aussie). Top of B. Can become 0-cost 13 block through Aussie death loops"
     },
     {
       "id": "Misery",
       "baseTier": "A",
-      "synergies": [
-        "damage",
-        "debuff",
-        "doom",
-        "death"
-      ],
+      "synergies": ["damage", "debuff", "aoe"],
       "antiSynergies": [],
-      "notes": "0-cost rare attack. Free damage with debuff, conditional scaling"
+      "notes": "0 energy deal 7 + apply enemy's debuffs to all others. Transfer doom/weak/strength down to all. Free damage. A or high B, may be slightly overrated"
     },
     {
       "id": "Necro Mastery",
-      "baseTier": "S",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "minion",
-        "scaling",
-        "summon"
-      ],
+      "baseTier": "B",
+      "synergies": ["summon", "aoe"],
       "antiSynergies": [],
-      "notes": "2-cost rare power. Bridges soul and minion archetypes, ultimate scaling"
+      "notes": "2 energy rare power: summon 5, whenever Aussie loses HP all enemies lose that much HP. Bottom of B. Weird AoE that never really popped off. Doesn't work with Bone Shards kill"
     },
     {
       "id": "Negative Pulse",
       "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "debuff"
-      ],
+      "synergies": ["block", "doom", "aoe"],
       "antiSynergies": [],
-      "notes": "1-cost common AoE skill. Decent AoE debuff application"
+      "notes": "1 energy gain 5 block + apply 7 doom to all enemies. Common. Upgrades to 7 block / 11 doom. Block + AoE damage at common rarity is insane"
     },
     {
       "id": "Neurosurge",
-      "baseTier": "A",
-      "synergies": [
-        "scaling",
-        "draw",
-        "soul"
-      ],
+      "baseTier": "S",
+      "synergies": ["draw", "energy"],
       "antiSynergies": [],
-      "notes": "0-cost rare power. Free power with no energy investment, incredible tempo"
+      "notes": "0 energy draw 2 + gain 3 energy next turn, apply 3 doom to self. Essentially Offering/Adrenaline. Doom barely matters, sometimes even positive. Just ridiculous"
     },
     {
       "id": "No Escape",
-      "baseTier": "A",
-      "synergies": [
-        "doom",
-        "damage",
-        "death"
-      ],
+      "baseTier": "B",
+      "synergies": ["doom", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon skill. Applies 3 doom per turn, threshold 10 for payoff"
+      "notes": "1 energy apply 10 doom + 5 per 10 doom already on enemy. Uncommon that kills bosses. Bad frontload but scales. Tech card for boss matchups"
     },
     {
       "id": "Oblivion",
-      "baseTier": "A",
-      "synergies": [
-        "doom",
-        "debuff",
-        "death"
-      ],
+      "baseTier": "C",
+      "synergies": ["doom"],
       "antiSynergies": [],
-      "notes": "0-cost rare skill. Free doom application, strong scaling potential"
+      "notes": "0 energy whenever you play a card apply 3 doom. C or D. Worse payoff than Haunt. Doom doesn't kill until next turn. Not a power so it clogs"
     },
     {
       "id": "Pagestorm",
-      "baseTier": "B",
-      "synergies": [
-        "draw",
-        "exhaust"
-      ],
+      "baseTier": "A",
+      "synergies": ["draw", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Passive draw engine for exhaust decks"
+      "notes": "1 energy power (upgrades to 0): whenever you draw ethereal card, draw 1 more. Fills hand constantly. At 0 cost very easy to carry. Consistency engine"
     },
     {
       "id": "Parse",
-      "baseTier": "C",
-      "synergies": [
-        "draw"
-      ],
+      "baseTier": "B",
+      "synergies": ["draw", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon ethereal skill. Minor card manipulation, low impact"
+      "notes": "1 energy ethereal draw 3. Just Skim. Hard to justify when Grave Warden exists. Good draw rate but wants block stapled on"
     },
     {
       "id": "Poke",
-      "baseTier": "D",
-      "synergies": [
-        "damage",
-        "minion",
-        "zero_cost",
-        "summon"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "0-cost common attack. Free minion poke, filler"
+      "notes": "0 energy Aussie deals 6 damage. Lets you deal damage while spending energy on blocking. Bridges into Aussie synergy. Simple honest card"
     },
     {
       "id": "Protector",
-      "baseTier": "A",
-      "synergies": [
-        "minion",
-        "block",
-        "damage",
-        "summon"
-      ],
+      "baseTier": "S",
+      "synergies": ["damage", "summon", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost ancient attack. Special rarity, strong minion defense"
+      "notes": "1 energy Aussie deals 10 + additional damage equal to Aussie max HP. Disgusting card in a vacuum. Ancient rarity so competes against boss relics"
     },
     {
       "id": "Pull Aggro",
       "baseTier": "B",
-      "synergies": [
-        "minion",
-        "block",
-        "summon"
-      ],
+      "synergies": ["block", "summon"],
       "antiSynergies": [],
-      "notes": "2-cost common skill. Redirects attacks to minions, needs minion board"
+      "notes": "2 energy summon 4 + gain 7 block. Bottom of B. Block 11 total with some carrying over. Block commons have better rate"
     },
     {
       "id": "Pull From Below",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "draw",
-        "multi_hit"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack. 3 hits, retrieves from exhaust pile"
+      "notes": "1 energy deal 5 per ethereal card played this combat. Top of C. Slow scaling. Souls don't count (exhaust not ethereal). Better options exist"
     },
     {
       "id": "Putrefy",
       "baseTier": "A",
-      "synergies": [
-        "debuff",
-        "exhaust"
-      ],
+      "synergies": ["debuff", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon exhaust skill. Applies 2 stacks of decay debuff"
+      "notes": "1 energy apply 2 weak + 2 vuln, exhaust. Upgrades to 3 of each. Debuffs are just good. Weak invalidates enemies"
     },
     {
       "id": "Rattle",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "minion",
-        "multi_hit",
-        "summon"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack. 3 hits, solid minion-synergy damage"
+      "notes": "1 energy Aussie deals 7, hits additional time per other Aussie attack this turn. Hard to get payoff. Defile exists at 13 with no condition"
     },
     {
       "id": "Reanimate",
-      "baseTier": "A",
-      "synergies": [
-        "summon",
-        "minion",
-        "soul"
-      ],
+      "baseTier": "B",
+      "synergies": ["block", "summon"],
       "antiSynergies": [],
-      "notes": "3-cost rare exhaust skill. Revive dead minions, core minion recovery"
+      "notes": "3 energy summon 20, exhaust. Big barricade block that carries over turns. Like Impervious with Barricade. Expensive. Honest middle-of-pack card"
     },
     {
       "id": "Reap",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "retain",
-        "soul"
-      ],
+      "synergies": ["damage", "retain"],
       "antiSynergies": [],
-      "notes": "3-cost common retain attack. Hold for big hit, soul harvesting"
+      "notes": "3 energy retain deal 27. Bottom of B. Retaining big attack for act 1 kills. Only draw it once if you don't need it"
     },
     {
       "id": "Reaper Form",
-      "baseTier": "S",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "damage",
-        "scaling"
-      ],
+      "baseTier": "A",
+      "synergies": ["damage", "doom", "scaling"],
       "antiSynergies": [],
-      "notes": "3-cost rare power. Build-defining death form, massive scaling with exhaust"
+      "notes": "3 energy power: attacks also apply doom equal to damage dealt. Top of A, bottom of S. Doubles your damage output. Expensive but worth it in boss fights"
     },
     {
       "id": "Reave",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "soul"
-      ],
+      "synergies": ["damage", "soul"],
       "antiSynergies": [],
-      "notes": "1-cost common attack. Solid damage with soul synergy"
+      "notes": "1 energy deal damage + add soul to draw pile. Honest damage common like Pommel Strike. Does the thing"
     },
     {
-      "id": "Right Hand Hand",
-      "baseTier": "B",
-      "synergies": [
-        "minion",
-        "damage",
-        "zero_cost",
-        "summon"
-      ],
+      "id": "Right Hand",
+      "baseTier": "C",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "0-cost uncommon attack. Free minion damage, good tempo"
+      "notes": "0 energy Aussie deals 4 damage, returns to hand when you play 2+ cost card. Strange, hard to get pieces working"
     },
     {
       "id": "Sacrifice",
-      "baseTier": "A",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "minion",
-        "retain",
-        "summon"
-      ],
+      "baseTier": "B",
+      "synergies": ["block", "summon", "retain"],
       "antiSynergies": [],
-      "notes": "1-cost rare retain skill. Sacrifice minion for power, bridges archetypes"
+      "notes": "1 energy retain: if Aussie alive he dies + gain block equal to double his max HP. Bad early, strong later. Upgrades to 0 energy. Enables big power plays"
     },
     {
       "id": "Scourge",
-      "baseTier": "A",
-      "synergies": [
-        "debuff",
-        "aoe"
-      ],
+      "baseTier": "B",
+      "synergies": ["doom", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost common skill targeting single enemy. Debuff spread"
+      "notes": "1 energy apply 13 doom + draw 1 card. Upgrades to 16 doom draw 2. Damage common that draws. Gets through shields. Fine"
     },
     {
       "id": "Sculpting Strike",
       "baseTier": "C",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost common strike variant. Basic attack with Strike tag"
+      "notes": "Deal 8 damage + add ethereal to a card in hand. Low damage number. Ethereal to hand doesn't work well with Page Storm. Weird card"
     },
     {
       "id": "Seance",
-      "baseTier": "A",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "draw"
-      ],
+      "baseTier": "S",
+      "synergies": ["soul", "infinite", "exhaust", "ethereal"],
       "antiSynergies": [],
-      "notes": "0-cost rare ethereal skill. Free exhaust pile manipulation, excellent cycling"
+      "notes": "0 energy ethereal: transform a card in draw pile into a soul. Immediately enables infinite. Exhausts itself when deck is empty. 'Don't know why this is in the game'"
     },
     {
       "id": "Sentry Mode",
-      "baseTier": "B",
-      "synergies": [
-        "minion",
-        "block",
-        "scaling",
-        "summon"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "2-cost rare power. Defensive minion stance, passive block from minions"
+      "notes": "2 energy rare power: add Sweeping Gaze (0 cost Aussie 10 damage) to hand each turn. Way worse than Countdown. 'Why is this rare?'"
     },
     {
       "id": "Severance",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "soul"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon attack. Strong single-target with exhaust synergy"
+      "notes": "2 energy deal 13 + add soul to hand, draw pile, and discard pile. Makes souls in multiple zones. Can enable loops"
     },
     {
       "id": "Shared Fate",
-      "baseTier": "B",
-      "synergies": [
-        "debuff",
-        "minion",
-        "summon"
-      ],
+      "baseTier": "A",
+      "synergies": ["debuff"],
       "antiSynergies": [],
-      "notes": "0-cost rare exhaust skill. -2 str to both sides, situational debuff"
+      "notes": "0 energy: lose 2 strength, enemy loses 2 strength, exhaust. Strength downside doesn't matter. Zero-cost Disarm. Great block output increase"
     },
     {
       "id": "Shroud",
       "baseTier": "B",
-      "synergies": [
-        "block",
-        "scaling"
-      ],
+      "synergies": ["block", "doom"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon power. Passive death shroud defense"
+      "notes": "Power: whenever you apply doom gain 2 block (upgrades to 3). Top of B, maybe A. Solid with doom package. Depends on deck composition"
     },
     {
       "id": "Sic Em",
-      "baseTier": "B",
-      "synergies": [
-        "minion",
-        "damage",
-        "summon"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack. Command minion to attack, solid output"
+      "notes": "1 energy Aussie deals 5 + summon 2 whenever Aussie hits this enemy this turn. D or C. Aussie attack package is weakest. Never had a run where this worked"
     },
     {
       "id": "Sleight Of Flesh",
       "baseTier": "B",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "draw"
-      ],
+      "synergies": ["damage", "debuff"],
       "antiSynergies": [],
-      "notes": "2-cost uncommon power. Draw + exhaust engine piece"
+      "notes": "2 energy power: whenever you apply debuff, enemy takes 9 damage. Expensive but AoE with debuff cards. Doom counts as a debuff"
     },
     {
       "id": "Snap",
-      "baseTier": "D",
-      "synergies": [
-        "damage",
-        "minion",
-        "summon"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "retain"],
       "antiSynergies": [],
-      "notes": "1-cost common attack. Basic minion-synergy damage"
+      "notes": "1 energy deal 7 + add retain to a card in hand. Retain is good but 7 damage too low. Want to retain while blocking, not attacking"
     },
     {
       "id": "Soul Storm",
-      "baseTier": "A",
-      "synergies": [
-        "soul",
-        "damage",
-        "aoe"
-      ],
+      "baseTier": "B",
+      "synergies": ["soul", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost rare attack. AoE damage scaling with soul count, key soul payoff"
+      "notes": "1 energy deal 9 + 2 per soul in exhaust pile. Top of B. 9 damage baseline is decent. Boss killing card. Rare"
     },
     {
       "id": "Sow",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "retain",
-        "aoe"
-      ],
+      "synergies": ["damage", "aoe", "retain"],
       "antiSynergies": [],
-      "notes": "1-cost common retain AoE attack. Hold for right timing, decent spread"
+      "notes": "1 energy retain deal 8 to all enemies. Cleave with retain. Solid act 1 AoE pickup"
     },
     {
       "id": "Spirit Of Ash",
-      "baseTier": "S",
-      "synergies": [
-        "exhaust",
-        "block",
-        "scaling"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "ethereal", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Gain 4 block every exhaust, build-defining exhaust payoff"
+      "notes": "Power: whenever you play ethereal gain 4 block. Mental Fortress equivalent. Procs at least once per turn with Defy. With Defy = blocking ~25. Floor is very good"
     },
     {
       "id": "Spur",
-      "baseTier": "C",
-      "synergies": [
-        "minion",
-        "retain",
-        "summon"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "summon", "retain"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon retain skill. Minor minion buff, hold for timing"
+      "notes": "1 energy retain summon 3 + Aussie heals 5 HP. Bottom of A. Retain is great. Upgraded: summon 5 heal 7 = 12 barricade block for 1 energy"
     },
     {
       "id": "Squeeze",
-      "baseTier": "B",
-      "synergies": [
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "summon"],
       "antiSynergies": [],
-      "notes": "3-cost rare attack. Expensive but high single-target damage"
+      "notes": "Aussie deals 25 + 5 per other Aussie attack this turn. D or C. Aussie attack package is weakest archetype. Bridge cards for this package aren't strong enough"
     },
     {
       "id": "The Scythe",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "exhaust",
-        "scaling"
-      ],
+      "baseTier": "S",
+      "synergies": ["damage", "scaling", "exhaust"],
       "antiSynergies": [],
-      "notes": "2-cost rare exhaust attack. Gains +3 damage each play, signature weapon"
+      "notes": "2 energy deal 13, permanently increases damage by 3, exhaust. Ritual Dagger but doesn't need lethal. Meta scaling that snowballs. Need it early"
     },
     {
       "id": "Times Up",
-      "baseTier": "S",
-      "synergies": [
-        "doom",
-        "damage",
-        "exhaust",
-        "death"
-      ],
+      "baseTier": "C",
+      "synergies": ["doom", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost rare exhaust attack. Doom timer payoff, strong finisher"
+      "notes": "2 energy deal damage equal to enemy's doom, exhaust. Can kill bosses but hard to combo. Situational boss-kill card"
     },
     {
       "id": "Transfigure",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost rare exhaust skill. Transform cards via exhaust cycling"
+      "notes": "1 energy exhaust: add replay to a card in hand (costs extra energy). Top of C. Replay is strong but very situational. Needs miracle draw orders"
     },
     {
       "id": "Undeath",
-      "baseTier": "A",
-      "synergies": [
-        "soul",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "0-cost rare skill. Free soul scaling, excellent value"
+      "notes": "0 energy gain 7 block + add copy to discard pile. Decent frontload block. Rare. Needs targeted exhaust to control cloning. Awkward in bosses"
     },
     {
       "id": "Veilpiercer",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "soul"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "energy", "ethereal"],
       "antiSynergies": [],
-      "notes": "1-cost uncommon attack. Piercing soul damage, bypasses block"
+      "notes": "1 energy deal 10 + next ethereal card costs 0. Solid damage + energy cheating. Can cheat Demesne into play. Decent card"
     },
     {
       "id": "Wisp",
-      "baseTier": "C",
-      "synergies": [
-        "soul",
-        "exhaust",
-        "zero_cost"
-      ],
+      "baseTier": "D",
+      "synergies": ["energy", "exhaust"],
       "antiSynergies": [],
-      "notes": "0-cost common exhaust skill. Free soul gen, cycles out of deck"
+      "notes": "0 energy gain 1 energy, exhaust. Upgrade doesn't go to 2 energy. Low-impact. Too often a brick. Rather have reusable energy like Borrowed Time"
     }
   ]
 }
