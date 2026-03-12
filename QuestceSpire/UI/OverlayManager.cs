@@ -3764,14 +3764,12 @@ public class OverlayManager
 	}
 
 	/// <summary>
-	/// Creates a floating grade badge on our own CanvasLayer, positioned to overlay the target game node.
-	/// Badges live on our layer (not as children of game nodes) so they never leak into other screens.
+	/// Creates a floating grade badge as a child of the target game node.
+	/// Badges are tracked in _inGameBadges for reliable cleanup (no node groups needed).
 	/// </summary>
 	private void AttachGradeBadge(Control targetNode, TierGrade grade, bool isBestPick, float score = -1f)
 	{
 		if (targetNode == null || !GodotObject.IsInstanceValid(targetNode))
-			return;
-		if (_layer == null || !GodotObject.IsInstanceValid(_layer))
 			return;
 
 		string subGrade = score >= 0f ? TierEngine.ScoreToSubGrade(score) : grade.ToString();
@@ -3806,32 +3804,30 @@ public class OverlayManager
 		gradeLbl.VerticalAlignment = VerticalAlignment.Center;
 		badge.AddChild(gradeLbl, forceReadableName: false, Node.InternalMode.Disabled);
 
+		badge.ZIndex = 10; // Above sibling game UI
 		badge.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-		// Add to our CanvasLayer (not the game tree) — prevents any leaking
-		_layer.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
+		// Add as child of target node (inherits z-order, goes behind popups)
+		targetNode.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
 		_inGameBadges.Add((badge, new WeakReference<Control>(targetNode)));
-		// Position after adding (deferred so layout is resolved)
-		Callable.From(() => PositionBadgeOverTarget(badge, targetNode)).CallDeferred();
+		// Position after adding (deferred so size is known)
+		Callable.From(() => PositionBadgeInParent(badge, targetNode)).CallDeferred();
 	}
 
 	/// <summary>
-	/// Position a badge on our CanvasLayer to overlay the bottom-center of the target game node.
-	/// Converts the target's global position to our CanvasLayer coordinate space.
+	/// Position a badge within its parent node (bottom-center, local coordinates).
+	/// Badge is a child of the target, so we use parent size, not global coords.
 	/// </summary>
-	private static void PositionBadgeOverTarget(PanelContainer badge, Control target)
+	private static void PositionBadgeInParent(PanelContainer badge, Control parent)
 	{
 		if (badge == null || !GodotObject.IsInstanceValid(badge) ||
-		    target == null || !GodotObject.IsInstanceValid(target))
+		    parent == null || !GodotObject.IsInstanceValid(parent))
 			return;
-		// Target's global rect gives us the screen-space position
-		Rect2 targetRect = target.GetGlobalRect();
+		float parentW = parent.Size.X;
+		float parentH = parent.Size.Y;
 		float badgeW = badge.GetCombinedMinimumSize().X;
 		float badgeH = badge.GetCombinedMinimumSize().Y;
-		// Place at bottom-center of the target
-		badge.Position = new Vector2(
-			targetRect.Position.X + (targetRect.Size.X - badgeW) / 2f,
-			targetRect.Position.Y + targetRect.Size.Y - badgeH - 4f);
+		badge.Position = new Vector2((parentW - badgeW) / 2f, parentH - badgeH - 4f);
 	}
 
 	public void CleanupAllBadges()
@@ -3840,8 +3836,8 @@ public class OverlayManager
 	}
 
 	/// <summary>
-	/// Remove all in-game badges from our CanvasLayer.
-	/// Since badges live on our layer, this is simple and complete — no game tree scanning needed.
+	/// Remove all in-game badges (children of game card nodes).
+	/// Tracked list makes cleanup simple — no game tree scanning needed.
 	/// </summary>
 	private void ClearInGameBadges()
 	{
@@ -3910,8 +3906,8 @@ public class OverlayManager
 				anyInvalid = true;
 				continue;
 			}
-			// Update position to follow target
-			PositionBadgeOverTarget(badge, target);
+			// Update position within parent (local coords)
+			PositionBadgeInParent(badge, target);
 		}
 		// Clean up invalid entries
 		if (anyInvalid)
