@@ -1392,7 +1392,7 @@ public class OverlayManager
 				SceneTree tree = Engine.GetMainLoop() as SceneTree;
 				Node screenNode = tree?.Root != null ? FindNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4) : null;
 				if (screenNode != null)
-					InjectCardGrades(screenNode, _currentCards);
+					InjectCardGrades(screenNode, _currentCards, force: true);
 			}
 			catch (Exception ex)
 			{
@@ -3505,12 +3505,13 @@ public class OverlayManager
 	/// Inject grade badges directly onto the game's card reward screen nodes.
 	/// Walks the scene tree from the screen node to find card-holder children.
 	/// </summary>
-	public void InjectCardGrades(Node screenNode, List<ScoredCard> scoredCards)
+	public void InjectCardGrades(Node screenNode, List<ScoredCard> scoredCards, bool force = false)
 	{
 		if (!_showInGameBadges || screenNode == null || !GodotObject.IsInstanceValid(screenNode) || scoredCards == null || scoredCards.Count == 0)
 			return;
 		// Only inject when GamePatches confirmed this is a genuine card reward (not reused screen)
-		if (!GamePatches.IsGenuineCardReward)
+		// force=true bypasses this check (used by toggle reinject where we know the context is valid)
+		if (!force && !GamePatches.IsGenuineCardReward)
 		{
 			Plugin.Log("InjectCardGrades skipped — not a genuine card reward");
 			return;
