@@ -1,5 +1,6 @@
 {
   "character": "silent",
+  "source": "https://www.youtube.com/watch?v=ToKDj1lLeZ0",
   "cards": [
     {
       "id": "Strike Silent",
@@ -364,13 +365,13 @@
     },
     {
       "id": "Flanking",
-      "baseTier": "B",
+      "baseTier": "D",
       "synergies": [
         "damage",
         "draw"
       ],
       "antiSynergies": [],
-      "notes": "2-cost targeted attack with draw"
+      "notes": "Multiplayer card, not relevant for solo play"
     },
     {
       "id": "Flechettes",

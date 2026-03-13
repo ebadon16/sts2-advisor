@@ -1,5 +1,6 @@
 {
   "character": "regent",
+  "source": "https://www.youtube.com/watch?v=dcGa6DklLBU",
   "cards": [
     {
       "id": "Strike Regent",
@@ -486,10 +487,10 @@
     },
     {
       "id": "Resonance",
-      "baseTier": "D",
+      "baseTier": "C",
       "synergies": ["stellar"],
       "antiSynergies": [],
-      "notes": "Strength not what this character wants. Too many stars cost, doesn't feel good. Bottom of C / D"
+      "notes": "Bottom of C. Strength not what this character wants. Too many stars cost, doesn't feel good. Never drafted it"
     },
     {
       "id": "Royal Gamble",
