@@ -6,6 +6,16 @@ namespace QuestceSpire.Core;
 
 public class DeckAnalyzer
 {
+	// Job definitions: each job maps to tags that indicate coverage, with a threshold
+	private static readonly Dictionary<string, (string[] Tags, int Threshold)> JobDefinitions = new()
+	{
+		["frontloaded_damage"] = (new[] { "damage", "multi_hit", "vulnerable" }, 3),
+		["aoe"] = (new[] { "aoe" }, 2),
+		["block"] = (new[] { "block", "dexterity", "weak" }, 3),
+		["scaling"] = (new[] { "strength", "dexterity", "focus", "poison_scaling", "scaling", "orb", "shiv_synergy" }, 2),
+		["draw"] = (new[] { "draw", "discard" }, 2),
+	};
+
 	public DeckAnalysis Analyze(string character, List<CardInfo> deck, TierEngine tierEngine = null)
 	{
 		DeckAnalysis deckAnalysis = new DeckAnalysis
@@ -13,6 +23,8 @@ public class DeckAnalyzer
 			Character = character,
 			TotalCards = deck.Count
 		};
+		int totalCost = 0;
+		int costCards = 0;
 		foreach (CardInfo item3 in deck)
 		{
 			HashSet<string> hashSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -49,11 +61,30 @@ public class DeckAnalyzer
 				deckAnalysis.EnergyCurve[costBucket]++;
 			else
 				deckAnalysis.EnergyCurve[costBucket] = 1;
+			// Average cost tracking
+			if (item3.Cost >= 0)
+			{
+				totalCost += item3.Cost;
+				costCards++;
+			}
 			// Type counting
 			string typeLower = item3.Type?.ToLowerInvariant() ?? "";
 			if (typeLower == "attack") deckAnalysis.AttackCount++;
 			else if (typeLower == "skill") deckAnalysis.SkillCount++;
 			else if (typeLower == "power") deckAnalysis.PowerCount++;
+		}
+		// Compute average cost
+		deckAnalysis.AverageCost = costCards > 0 ? (float)totalCost / costCards : 1.0f;
+		// Compute job coverage
+		foreach (var (jobName, jobDef) in JobDefinitions)
+		{
+			int count = 0;
+			foreach (string tag in jobDef.Tags)
+			{
+				if (deckAnalysis.TagCounts.TryGetValue(tag, out int c))
+					count += c;
+			}
+			deckAnalysis.JobCoverage[jobName] = Math.Min(1f, (float)count / jobDef.Threshold);
 		}
 		string key = character?.ToLowerInvariant() ?? "";
 		if (!ArchetypeDefinitions.ByCharacter.TryGetValue(key, out var value))

@@ -7,9 +7,17 @@ namespace QuestceSpire.Core;
 
 public class SynergyScorer
 {
-	private const float SynergyBoostPerMatch = 0.5f;
+	// --- Synergy scoring (graduated, replaces flat 0.5/0.8) ---
+	// Base synergy value = 0.3 + archetype.Strength * 0.5 (ranges 0.3–0.8)
+	// Diminishing per match: 1st=100%, 2nd=60%, 3rd=30%
+	private static readonly float[] SynergyDiminishing = { 1.0f, 0.6f, 0.3f };
 
-	private const float StrongSynergyBoost = 0.8f;
+	// Saturation: reduce synergy bonus when deck already has many cards with the tag
+	// <4 cards = full, 4-6 = 70%, 7+ = 40%
+	private const int SaturationSoftCap = 4;
+	private const int SaturationHardCap = 7;
+	private const float SaturationSoftMult = 0.7f;
+	private const float SaturationHardMult = 0.4f;
 
 	private const float AntiSynergyPenalty = 0.6f;
 
@@ -23,15 +31,39 @@ public class SynergyScorer
 
 	private const float MissingPieceBonus = 0.5f;
 
-	private const int ThinDeckThreshold = 15;
+	// Deck size thresholds (aligned with community consensus: 20-25 ideal)
+	private const int ThinDeckThreshold = 18;
 
-	private const int BloatedDeckThreshold = 30;
+	private const int BloatedDeckThreshold = 25;
 
 	private const float ThinDeckPenalty = -0.2f;
 
 	private const float BloatedDeckPenalty = -0.4f;
 
 	private const float UpgradeBonus = 0.4f;
+
+	// Energy curve: penalize expensive cards in expensive decks
+	private const float ExpensiveCardPenalty = -0.3f;
+	private const float VeryExpensiveCardPenalty = -0.5f;
+	private const float CheapCardBonus = 0.15f;
+
+	// Job gap: bonus for filling a missing functional role
+	private const float JobGapMaxBonus = 0.4f;
+
+	// Card type balance
+	private const float PowerGapBonus = 0.2f;
+	private const float PowerGlutPenalty = -0.2f;
+	private const float AoEGapBonus = 0.3f;
+
+	// Job-to-tag mapping for card evaluation
+	private static readonly Dictionary<string, string[]> JobTags = new()
+	{
+		["frontloaded_damage"] = new[] { "damage", "multi_hit", "vulnerable" },
+		["aoe"] = new[] { "aoe" },
+		["block"] = new[] { "block", "dexterity", "weak" },
+		["scaling"] = new[] { "strength", "dexterity", "focus", "poison_scaling", "scaling", "orb", "shiv_synergy" },
+		["draw"] = new[] { "draw", "discard" },
+	};
 
 	private static readonly HashSet<string> ScalingTags = new HashSet<string> { "strength", "dexterity", "focus", "poison_scaling", "scaling", "orb", "shiv_synergy" };
 
@@ -141,15 +173,28 @@ public class SynergyScorer
 		var list = new List<ScoredCard>();
 		foreach (var card in candidates)
 		{
-			// Score the card as-is (unupgraded)
+			string baseId = card.Id.EndsWith("+") ? card.Id.Substring(0, card.Id.Length - 1) : card.Id;
+
+			// Skip already-upgraded cards — can't upgrade them again
+			if (card.Upgraded)
+			{
+				var skip = new ScoredCard
+				{
+					Id = baseId, Name = card.Name ?? baseId, Type = card.Type, Cost = card.Cost,
+					Upgraded = true, FinalScore = 0f, FinalGrade = TierGrade.F, UpgradeDelta = 0f,
+					SynergyReasons = new List<string> { "Already upgraded" },
+					AntiSynergyReasons = new List<string>(), Notes = "", ScoreSource = "static"
+				};
+				list.Add(skip);
+				continue;
+			}
+
+			// Score the card as-is (unupgraded) to get its base strength
 			var currentCard = new CardInfo
 			{
-				Id = card.Id, Name = card.Name, Cost = card.Cost,
+				Id = baseId, Name = card.Name, Cost = card.Cost,
 				Type = card.Type, Rarity = card.Rarity, Upgraded = false, Tags = card.Tags
 			};
-			string baseId = card.Id.EndsWith("+") ? card.Id.Substring(0, card.Id.Length - 1) : card.Id;
-			currentCard.Id = baseId;
-
 			CardTierEntry currentTier = tierEngine.GetCardTier(character, baseId);
 			ScoredCard currentScored = ScoreCard(currentCard, currentTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
 
@@ -163,21 +208,27 @@ public class SynergyScorer
 			ScoredCard upgradedScored = ScoreCard(upgradedCard, upgradedTier, deckAnalysis, actNumber, floorNumber, character, adaptiveScorer);
 
 			float delta = upgradedScored.FinalScore - currentScored.FinalScore;
+
+			// Upgrade priority = base card strength (better cards benefit more from upgrades)
+			// Use the unupgraded score as the primary signal since delta is usually flat
+			float baseStrength = currentScored.FinalScore;
+			// Bonus for cards that have actual separate upgrade tier entries
+			bool hasSeparateUpgradeTier = tierEngine.GetCardTier(character, baseId + "+") != null;
+			float tierDeltaBonus = hasSeparateUpgradeTier ? delta * 2f : 0f;
+			// Final upgrade priority score: base strength + any real tier delta
+			float upgradePriority = Math.Min(5.5f, baseStrength + tierDeltaBonus);
+
 			upgradedScored.UpgradeDelta = delta;
 			upgradedScored.Id = baseId;
 			upgradedScored.Name = card.Name ?? baseId;
-			upgradedScored.Upgraded = card.Upgraded;
-			upgradedScored.SynergyReasons.Insert(0, $"+{delta:F1} upgrade value ({currentScored.FinalScore:F1} → {upgradedScored.FinalScore:F1})");
-			upgradedScored.ScoreSource = currentScored.ScoreSource;
-			// Grade reflects upgrade VALUE, not absolute card strength.
-			// Scale delta (typically 0-2) to grade range (0-5) so grades are meaningful:
-			// delta >= 1.0 → S, 0.7 → A, 0.4 → B, 0.2 → C, 0.1 → D, <0.1 → F
-			float upgradeGradeScore = Math.Min(5f, delta * 5f);
-			upgradedScored.FinalScore = Math.Max(0f, upgradeGradeScore);
+			upgradedScored.Upgraded = false;
+			upgradedScored.FinalScore = Math.Max(0f, upgradePriority);
 			upgradedScored.FinalGrade = TierEngine.ScoreToGrade(upgradedScored.FinalScore);
+			upgradedScored.ScoreSource = currentScored.ScoreSource;
+			upgradedScored.SynergyReasons.Insert(0, $"Base strength {baseStrength:F1} — upgrade your best cards first");
 			list.Add(upgradedScored);
 		}
-		list.Sort((a, b) => b.UpgradeDelta.CompareTo(a.UpgradeDelta));
+		list.Sort((a, b) => b.FinalScore.CompareTo(a.FinalScore));
 		if (list.Count > 0)
 			list[0].IsBestPick = true;
 		return list;
@@ -205,6 +256,40 @@ public class SynergyScorer
 			list[bestIdx].IsBestPick = true;
 		}
 		return list;
+	}
+
+	/// <summary>Returns saturation multiplier based on how many cards already have this tag.</summary>
+	private static float GetSaturationMult(DeckAnalysis deck, string tag)
+	{
+		if (!deck.TagCounts.TryGetValue(tag, out int count)) return 1f;
+		if (count >= SaturationHardCap) return SaturationHardMult;
+		if (count >= SaturationSoftCap) return SaturationSoftMult;
+		return 1f;
+	}
+
+	/// <summary>Checks if a card's synergy tags fill any of the 5 functional "jobs".</summary>
+	private static float ComputeJobGapBonus(List<string> cardSynTags, DeckAnalysis deck, List<string> reasons)
+	{
+		float bestBonus = 0f;
+		string bestJob = null;
+		foreach (var (jobName, jobTags) in JobTags)
+		{
+			bool fills = false;
+			foreach (string tag in cardSynTags)
+			{
+				if (Array.IndexOf(jobTags, tag) >= 0) { fills = true; break; }
+			}
+			if (!fills) continue;
+			float gap = deck.JobGap(jobName);
+			if (gap <= 0.1f) continue; // job already covered
+			float bonus = gap * JobGapMaxBonus;
+			if (bonus > bestBonus) { bestBonus = bonus; bestJob = jobName; }
+		}
+		if (bestBonus > 0.05f && bestJob != null)
+		{
+			reasons.Add($"+{bestBonus:F1} fills {bestJob.Replace('_', ' ')} gap");
+		}
+		return bestBonus;
 	}
 
 	private ScoredCard ScoreCard(CardInfo card, CardTierEntry tierEntry, DeckAnalysis deckAnalysis, int actNumber, int floorNumber, string character = null, AdaptiveScorer adaptiveScorer = null)
@@ -240,42 +325,50 @@ public class SynergyScorer
 		float synergyDelta = 0f;
 		float floorAdjust = 0f;
 		float deckSizeAdjust = 0f;
-		List<string> list = new List<string>();
-		List<string> list2 = new List<string>();
-		List<string> list3 = (tierEntry?.Synergies != null && tierEntry.Synergies.Count > 0)
+		List<string> synReasons = new List<string>();
+		List<string> antiReasons = new List<string>();
+		List<string> cardSynTags = (tierEntry?.Synergies != null && tierEntry.Synergies.Count > 0)
 			? tierEntry.Synergies
 			: computedSynTags
 			?? (card.Tags != null ? card.Tags.ConvertAll((string t) => t.ToLowerInvariant()) : new List<string>());
-		List<string> list4 = tierEntry?.AntiSynergies ?? new List<string>();
-		int num2 = 0;
-		foreach (ArchetypeMatch detectedArchetype in deckAnalysis.DetectedArchetypes)
+		List<string> cardAntiTags = tierEntry?.AntiSynergies ?? new List<string>();
+
+		// === GRADUATED SYNERGY with diminishing returns + saturation ===
+		int matchCount = 0;
+		foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
 		{
-			if (num2 >= 2)
+			if (matchCount >= SynergyDiminishing.Length) break;
+			foreach (string tag in cardSynTags)
 			{
-				break;
-			}
-			foreach (string item in list3)
-			{
-				if (detectedArchetype.Archetype.CoreTags.Contains(item) || detectedArchetype.Archetype.SupportTags.Contains(item) || detectedArchetype.Archetype.Id == item)
+				if (arch.Archetype.CoreTags.Contains(tag) || arch.Archetype.SupportTags.Contains(tag) || arch.Archetype.Id == tag)
 				{
-					float num3 = ((detectedArchetype.Strength > 0.5f) ? StrongSynergyBoost : SynergyBoostPerMatch);
-					num += num3;
-					synergyDelta += num3;
-					list.Add($"+{num3:F1} synergy with {detectedArchetype.Archetype.DisplayName}");
-					num2++;
+					// Graduated: scales continuously with archetype strength (0.3 at 0.0 → 0.8 at 1.0)
+					float baseBoost = 0.3f + arch.Strength * 0.5f;
+					// Diminishing per match
+					float dimMult = matchCount < SynergyDiminishing.Length ? SynergyDiminishing[matchCount] : 0f;
+					// Saturation: reduce if deck already has many of this tag
+					float satMult = GetSaturationMult(deckAnalysis, tag);
+					float boost = baseBoost * dimMult * satMult;
+					num += boost;
+					synergyDelta += boost;
+					string satNote = satMult < 1f ? $" (sat {satMult:P0})" : "";
+					synReasons.Add($"+{boost:F2} {arch.Archetype.DisplayName}{satNote}");
+					matchCount++;
 					break;
 				}
 			}
 		}
-		foreach (ArchetypeMatch detectedArchetype2 in deckAnalysis.DetectedArchetypes)
+
+		// === ANTI-SYNERGY — checks both CoreTags AND SupportTags ===
+		foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
 		{
-			foreach (string item2 in list4)
+			foreach (string tag in cardAntiTags)
 			{
-				if (detectedArchetype2.Archetype.CoreTags.Contains(item2) || detectedArchetype2.Archetype.Id == item2)
+				if (arch.Archetype.CoreTags.Contains(tag) || arch.Archetype.SupportTags.Contains(tag) || arch.Archetype.Id == tag)
 				{
 					num -= AntiSynergyPenalty;
 					synergyDelta -= AntiSynergyPenalty;
-					list2.Add($"-{AntiSynergyPenalty:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
+					antiReasons.Add($"-{AntiSynergyPenalty:F1} conflicts with {arch.Archetype.DisplayName}");
 					break;
 				}
 			}
@@ -287,79 +380,135 @@ public class SynergyScorer
 			num += excess;
 			synergyDelta = AntiSynergyCap;
 		}
-		// Floor-aware scoring (replaces act-based logic)
-		bool hasScaling = list3.Any((string s) => ScalingTags.Contains(s));
-		bool hasDefense = list3.Any((string s) => s == "block" || s == "dexterity" || s == "weak");
+
+		// === JOB GAP BONUS — fills a missing functional role ===
+		float jobBonus = ComputeJobGapBonus(cardSynTags, deckAnalysis, synReasons);
+		num += jobBonus;
+		synergyDelta += jobBonus;
+
+		// === ENERGY CURVE — penalize expensive cards in expensive decks ===
+		float energyAdjust = 0f;
+		if (card.Cost >= 3 && deckAnalysis.AverageCost > 2.2f)
+		{
+			energyAdjust = VeryExpensiveCardPenalty;
+			antiReasons.Add($"{VeryExpensiveCardPenalty:F1} too expensive (avg cost {deckAnalysis.AverageCost:F1})");
+		}
+		else if (card.Cost >= 3 && deckAnalysis.AverageCost > 1.8f)
+		{
+			energyAdjust = ExpensiveCardPenalty;
+			antiReasons.Add($"{ExpensiveCardPenalty:F1} expensive (avg cost {deckAnalysis.AverageCost:F1})");
+		}
+		else if (card.Cost == 0 && deckAnalysis.AverageCost > 1.5f)
+		{
+			energyAdjust = CheapCardBonus;
+			synReasons.Add($"+{CheapCardBonus:F2} 0-cost helps energy curve");
+		}
+		num += energyAdjust;
+
+		// === CARD TYPE BALANCE ===
+		string cardType = card.Type?.ToLowerInvariant() ?? "";
+		if (cardType == "power" && deckAnalysis.PowerCount == 0 && floorNumber > 6)
+		{
+			num += PowerGapBonus;
+			synReasons.Add($"+{PowerGapBonus:F1} first power (thins draw pool)");
+		}
+		else if (cardType == "power" && deckAnalysis.PowerCount >= 4)
+		{
+			num += PowerGlutPenalty;
+			antiReasons.Add($"{PowerGlutPenalty:F1} too many powers already");
+		}
+
+		// === AoE BONUS (STS2: harsher on single-target-only decks) ===
+		bool cardHasAoE = cardSynTags.Contains("aoe");
+		if (cardHasAoE)
+		{
+			int deckAoE = 0;
+			deckAnalysis.TagCounts.TryGetValue("aoe", out deckAoE);
+			if (deckAoE == 0)
+			{
+				num += AoEGapBonus;
+				synReasons.Add($"+{AoEGapBonus:F1} deck needs AoE");
+			}
+			else if (deckAoE == 1)
+			{
+				float smallAoE = 0.1f;
+				num += smallAoE;
+				synReasons.Add($"+{smallAoE:F1} backup AoE");
+			}
+		}
+
+		// === FLOOR-AWARE SCORING ===
+		bool hasScaling = cardSynTags.Any((string s) => ScalingTags.Contains(s));
+		bool hasDefense = cardSynTags.Any((string s) => s == "block" || s == "dexterity" || s == "weak");
 		if (floorNumber <= 6 && deckAnalysis.IsUndefined)
 		{
-			if (list3.Count >= 2)
+			if (cardSynTags.Count >= 2)
 			{
 				num += EarlyFloorDamageBonus;
 				floorAdjust += EarlyFloorDamageBonus;
-				list.Add($"+{EarlyFloorDamageBonus:F1} flexible (early floors)");
+				synReasons.Add($"+{EarlyFloorDamageBonus:F1} flexible (early floors)");
 			}
 		}
 		else if (floorNumber >= 19 && hasScaling)
 		{
 			num += LateFloorScalingBonus;
 			floorAdjust += LateFloorScalingBonus;
-			list.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
+			synReasons.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
 		}
 		if (floorNumber >= 7 && !deckAnalysis.IsUndefined && hasDefense && !(floorNumber >= 19 && hasScaling))
 		{
 			num += MidFloorBlockBonus;
 			floorAdjust += MidFloorBlockBonus;
-			list.Add($"+{MidFloorBlockBonus:F1} defense (mid floors)");
+			synReasons.Add($"+{MidFloorBlockBonus:F1} defense (mid floors)");
 		}
-		bool flag = false;
-		foreach (ArchetypeMatch detectedArchetype3 in deckAnalysis.DetectedArchetypes)
+
+		// === MISSING PIECE BONUS ===
+		bool foundMissing = false;
+		foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
 		{
-			if (flag)
+			if (foundMissing) break;
+			if (!(arch.Strength > 0.3f) || !(arch.Strength < 0.7f)) continue;
+			foreach (string tag in cardSynTags)
 			{
-				break;
-			}
-			if (!(detectedArchetype3.Strength > 0.3f) || !(detectedArchetype3.Strength < 0.7f))
-			{
-				continue;
-			}
-			foreach (string item3 in list3)
-			{
-				if (detectedArchetype3.Archetype.SupportTags.Contains(item3))
+				if (arch.Archetype.SupportTags.Contains(tag))
 				{
-					string key = item3.ToLowerInvariant();
-					if (!deckAnalysis.TagCounts.TryGetValue(key, out var value) || value == 0)
+					string key = tag.ToLowerInvariant();
+					if (!deckAnalysis.TagCounts.TryGetValue(key, out var val) || val == 0)
 					{
-						num += 0.5f;
-						synergyDelta += 0.5f;
-						list.Add($"+{0.5f:F1} fills gap: {item3}");
-						flag = true;
+						num += MissingPieceBonus;
+						synergyDelta += MissingPieceBonus;
+						synReasons.Add($"+{MissingPieceBonus:F1} fills gap: {tag}");
+						foundMissing = true;
 						break;
 					}
 				}
 			}
 		}
-		// Deck size awareness — use score-in-progress, not static tier
+
+		// === DECK SIZE (tighter thresholds: 18 thin, 25 bloated) ===
 		int deckSize = deckAnalysis.TotalCards;
 		if (deckSize <= ThinDeckThreshold && num < 2.5f)
 		{
 			num += ThinDeckPenalty;
 			deckSizeAdjust += ThinDeckPenalty;
-			list2.Add($"{ThinDeckPenalty:F1} be selective (thin deck)");
+			antiReasons.Add($"{ThinDeckPenalty:F1} be selective (thin deck)");
 		}
 		else if (deckSize >= BloatedDeckThreshold && num < 3.5f)
 		{
 			num += BloatedDeckPenalty;
 			deckSizeAdjust += BloatedDeckPenalty;
-			list2.Add($"{BloatedDeckPenalty:F1} only take great cards (bloated deck)");
+			antiReasons.Add($"{BloatedDeckPenalty:F1} only take great cards (bloated deck)");
 		}
-		// Upgrade bonus
+
+		// === UPGRADE BONUS ===
 		float upgradeAdjust = 0f;
 		if (card.Upgraded)
 		{
 			num += UpgradeBonus;
 			upgradeAdjust += UpgradeBonus;
-			list.Add($"+{UpgradeBonus:F1} upgraded");
+			synReasons.Add($"+{UpgradeBonus:F1} upgraded");
 		}
+
 		num = Math.Max(0f, Math.Min(6.0f, num));
 		return new ScoredCard
 		{
@@ -370,8 +519,8 @@ public class SynergyScorer
 			BaseTier = tierGrade,
 			FinalScore = num,
 			FinalGrade = TierEngine.ScoreToGrade(num),
-			SynergyReasons = list,
-			AntiSynergyReasons = list2,
+			SynergyReasons = synReasons,
+			AntiSynergyReasons = antiReasons,
 			Notes = (tierEntry?.Notes ?? ""),
 			BaseScore = baseScore,
 			SynergyDelta = synergyDelta,
@@ -392,36 +541,40 @@ public class SynergyScorer
 		float num = baseScore;
 		float synergyDelta = 0f;
 		float floorAdjust = 0f;
-		List<string> list = new List<string>();
-		List<string> list2 = new List<string>();
-		List<string> list3 = tierEntry?.Synergies ?? new List<string>();
-		List<string> list4 = tierEntry?.AntiSynergies ?? new List<string>();
-		int archetypeBonuses = 0;
-		foreach (ArchetypeMatch detectedArchetype in deckAnalysis.DetectedArchetypes)
+		List<string> synReasons = new List<string>();
+		List<string> antiReasons = new List<string>();
+		List<string> relicSynTags = tierEntry?.Synergies ?? new List<string>();
+		List<string> relicAntiTags = tierEntry?.AntiSynergies ?? new List<string>();
+		// Graduated synergy with diminishing returns (same as cards)
+		int matchCount = 0;
+		foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
 		{
-			if (archetypeBonuses >= 2) break;
-			foreach (string item in list3)
+			if (matchCount >= SynergyDiminishing.Length) break;
+			foreach (string tag in relicSynTags)
 			{
-				if (detectedArchetype.Archetype.CoreTags.Contains(item) || detectedArchetype.Archetype.SupportTags.Contains(item) || detectedArchetype.Archetype.Id == item)
+				if (arch.Archetype.CoreTags.Contains(tag) || arch.Archetype.SupportTags.Contains(tag) || arch.Archetype.Id == tag)
 				{
-					float num2 = ((detectedArchetype.Strength > 0.5f) ? StrongSynergyBoost : SynergyBoostPerMatch);
-					num += num2;
-					synergyDelta += num2;
-					list.Add($"+{num2:F1} synergy with {detectedArchetype.Archetype.DisplayName}");
-					archetypeBonuses++;
+					float baseBoost = 0.3f + arch.Strength * 0.5f;
+					float dimMult = matchCount < SynergyDiminishing.Length ? SynergyDiminishing[matchCount] : 0f;
+					float boost = baseBoost * dimMult;
+					num += boost;
+					synergyDelta += boost;
+					synReasons.Add($"+{boost:F2} {arch.Archetype.DisplayName}");
+					matchCount++;
 					break;
 				}
 			}
 		}
-		foreach (ArchetypeMatch detectedArchetype2 in deckAnalysis.DetectedArchetypes)
+		// Anti-synergy — checks both CoreTags AND SupportTags
+		foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
 		{
-			foreach (string item2 in list4)
+			foreach (string tag in relicAntiTags)
 			{
-				if (detectedArchetype2.Archetype.CoreTags.Contains(item2) || detectedArchetype2.Archetype.Id == item2)
+				if (arch.Archetype.CoreTags.Contains(tag) || arch.Archetype.SupportTags.Contains(tag) || arch.Archetype.Id == tag)
 				{
 					num -= AntiSynergyPenalty;
 					synergyDelta -= AntiSynergyPenalty;
-					list2.Add($"-{AntiSynergyPenalty:F1} conflicts with {detectedArchetype2.Archetype.DisplayName}");
+					antiReasons.Add($"-{AntiSynergyPenalty:F1} conflicts with {arch.Archetype.DisplayName}");
 					break;
 				}
 			}
@@ -434,11 +587,11 @@ public class SynergyScorer
 			synergyDelta = AntiSynergyCap;
 		}
 		// Floor-aware: late-game scaling bonus for relics too
-		if (floorNumber >= 19 && list3.Any((string s) => ScalingTags.Contains(s)))
+		if (floorNumber >= 19 && relicSynTags.Any((string s) => ScalingTags.Contains(s)))
 		{
 			num += LateFloorScalingBonus;
 			floorAdjust += LateFloorScalingBonus;
-			list.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
+			synReasons.Add($"+{LateFloorScalingBonus:F1} scaling (late floors)");
 		}
 		num = Math.Max(0f, Math.Min(6.0f, num));
 		return new ScoredRelic
@@ -449,8 +602,8 @@ public class SynergyScorer
 			BaseTier = tierGrade,
 			FinalScore = num,
 			FinalGrade = TierEngine.ScoreToGrade(num),
-			SynergyReasons = list,
-			AntiSynergyReasons = list2,
+			SynergyReasons = synReasons,
+			AntiSynergyReasons = antiReasons,
 			Notes = (tierEntry?.Notes ?? ""),
 			BaseScore = baseScore,
 			SynergyDelta = synergyDelta,

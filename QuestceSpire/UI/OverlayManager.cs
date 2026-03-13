@@ -954,8 +954,9 @@ public class OverlayManager
 		if (_settings.ShowEnemyTips && enemyIds != null && Plugin.EnemyAdvisor != null)
 		{
 			var tips = Plugin.EnemyAdvisor.GetTips(enemyIds);
-			if (tips != null)
+			if (tips != null && tips.Count > 0)
 			{
+				_mapAdvice.Add(("##", "ENEMY INTEL", ClrAccent));
 				foreach (var enemy in tips)
 				{
 					Color dangerColor = enemy.DangerLevel switch
@@ -986,7 +987,14 @@ public class OverlayManager
 
 		// Generic combat advice (appended)
 		if (_settings.ShowCombatAdvice)
-			_mapAdvice.AddRange(GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor));
+		{
+			var combatAdvice = GenerateCombatAdvice(deckAnalysis, currentHP, maxHP, actNumber, floor);
+			if (combatAdvice.Count > 0)
+			{
+				_mapAdvice.Add(("##", "DECK STRATEGY", ClrAccent));
+				_mapAdvice.AddRange(combatAdvice);
+			}
+		}
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1014,7 +1022,7 @@ public class OverlayManager
 				var choices = Plugin.EventAdvisor.EvaluateChoices(entry, currentHP, maxHP, gold, deckSize, actNumber);
 				if (choices != null && choices.Count > 0)
 				{
-					_mapAdvice.Add(("\u2139", $"Event: {entry.EventName}", ClrHeader));
+					_mapAdvice.Add(("##", $"EVENT: {entry.EventName}", ClrAccent));
 					foreach (var (label, rating, notes) in choices)
 					{
 						string icon = rating switch
@@ -1038,7 +1046,14 @@ public class OverlayManager
 
 		// Generic event advice (appended)
 		if (_settings.ShowEventAdvice)
-			_mapAdvice.AddRange(GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor));
+		{
+			var eventAdvice = GenerateEventAdvice(deckAnalysis, currentHP, maxHP, gold, actNumber, floor);
+			if (eventAdvice.Count > 0)
+			{
+				_mapAdvice.Add(("##", "GENERAL TIPS", ClrAccent));
+				_mapAdvice.AddRange(eventAdvice);
+			}
+		}
 		MarkUpdated();
 		Rebuild();
 	}
@@ -1082,7 +1097,9 @@ public class OverlayManager
 				if (_settings.ShowEnemyTips && _currentEnemyIds != null && Plugin.EnemyAdvisor != null)
 				{
 					var tips = Plugin.EnemyAdvisor.GetTips(_currentEnemyIds);
-					if (tips != null)
+					if (tips != null && tips.Count > 0)
+					{
+						_mapAdvice.Add(("##", "ENEMY INTEL", ClrAccent));
 						foreach (var enemy in tips)
 						{
 							Color dangerColor = enemy.DangerLevel switch
@@ -1100,9 +1117,17 @@ public class OverlayManager
 								foreach (var tip in enemy.Tips)
 									_mapAdvice.Add(("\u2022", tip, ClrCream));
 						}
+					}
 				}
 				if (_settings.ShowCombatAdvice)
-					_mapAdvice.AddRange(GenerateCombatAdvice(da, hp, maxHP, act, floor));
+				{
+					var combatAdvice = GenerateCombatAdvice(da, hp, maxHP, act, floor);
+					if (combatAdvice.Count > 0)
+					{
+						_mapAdvice.Add(("##", "DECK STRATEGY", ClrAccent));
+						_mapAdvice.AddRange(combatAdvice);
+					}
+				}
 				break;
 
 			case "EVENT":
@@ -1116,7 +1141,7 @@ public class OverlayManager
 						var choices = Plugin.EventAdvisor.EvaluateChoices(entry, hp, maxHP, gold, deckSize, act);
 						if (choices != null && choices.Count > 0)
 						{
-							_mapAdvice.Add(("\u2139", $"Event: {entry.EventName}", ClrHeader));
+							_mapAdvice.Add(("##", $"EVENT: {entry.EventName}", ClrAccent));
 							foreach (var (label, rating, notes) in choices)
 							{
 								string icon = rating switch { "good" => "\u2714", "bad" => "\u2716", _ => "\u25c6" };
@@ -1128,7 +1153,14 @@ public class OverlayManager
 					}
 				}
 				if (_settings.ShowEventAdvice)
-					_mapAdvice.AddRange(GenerateEventAdvice(da, hp, maxHP, gold, act, floor));
+				{
+					var eventAdvice = GenerateEventAdvice(da, hp, maxHP, gold, act, floor);
+					if (eventAdvice.Count > 0)
+					{
+						_mapAdvice.Add(("##", "GENERAL TIPS", ClrAccent));
+						_mapAdvice.AddRange(eventAdvice);
+					}
+				}
 				break;
 
 			case "MAP":
@@ -1650,23 +1682,29 @@ public class OverlayManager
 				skipLbl.AddThemeFontSizeOverride("font_size", 13);
 				_content.AddChild(skipLbl, forceReadableName: false, Node.InternalMode.Disabled);
 			}
-			// Skip recommendation — consider deck size, card quality, and archetype fit
+			// Skip recommendation — tighter thresholds aligned with community consensus
+			// Guides: ideal deck 20-25 cards, skip aggressively, every card dilutes draw pool
 			if (!isRemoval && !isShop && !isUpgrade && !isEventOffer)
 			{
 				int deckSize = _currentDeckAnalysis?.TotalCards ?? 20;
 				bool hasFocusedDeck = _currentDeckAnalysis?.DetectedArchetypes?.Count > 0 &&
 					_currentDeckAnalysis.DetectedArchetypes[0].Strength > 0.4f;
-				// Higher threshold for lean/focused decks (harder to justify adding cards)
-				float skipThreshold = deckSize <= 12 ? 2.5f : deckSize <= 18 ? 2.0f : hasFocusedDeck ? 1.8f : 1.5f;
+				// Tighter skip thresholds: 20-25 is ideal, past 25 is bloated
+				float skipThreshold = deckSize <= 15 ? 2.5f
+					: deckSize <= 20 ? 2.2f
+					: deckSize <= 25 ? (hasFocusedDeck ? 2.8f : 2.5f)
+					: 3.0f; // 25+ cards: only take A-tier or better
 				bool allWeak = _currentCards.All(c => c.FinalScore < skipThreshold);
-				bool bestIsLow = _currentCards.Count > 0 && _currentCards.Max(c => c.FinalScore) < 2.0f;
+				bool bestIsLow = _currentCards.Count > 0 && _currentCards.Max(c => c.FinalScore) < 2.5f;
 				if (allWeak)
 				{
-					string skipMsg = deckSize <= 15
+					string skipMsg = deckSize <= 18
 						? "None of these improve your deck — skip to stay lean."
-						: hasFocusedDeck
-							? "Nothing fits your archetype — consider skipping."
-							: "All offerings are weak — skipping keeps your deck lean.";
+						: deckSize <= 25
+							? (hasFocusedDeck
+								? "Nothing fits your archetype — consider skipping."
+								: "All offerings are weak — skip to keep deck focused.")
+							: $"At {deckSize} cards your deck is bloated — only take S/A-tier cards.";
 					AddSkipEntry("\u26A0 CONSIDER SKIPPING", skipMsg);
 				}
 				else if (bestIsLow && deckSize >= 20)
@@ -1710,6 +1748,20 @@ public class OverlayManager
 			AddSectionHeader(adviceHeader);
 			foreach (var (icon, text, color) in _mapAdvice)
 			{
+				// Sub-section header marker
+				if (icon == "##")
+				{
+					HSeparator subSep = new HSeparator();
+					subSep.AddThemeStyleboxOverride("separator", new StyleBoxLine { Color = new Color(ClrBorder, 0.3f), Thickness = 1 });
+					_content.AddChild(subSep, forceReadableName: false, Node.InternalMode.Disabled);
+					Label subHeader = new Label();
+					subHeader.Text = text;
+					ApplyFont(subHeader, _fontBold);
+					subHeader.AddThemeColorOverride("font_color", color);
+					subHeader.AddThemeFontSizeOverride("font_size", 15);
+					_content.AddChild(subHeader, forceReadableName: false, Node.InternalMode.Disabled);
+					continue;
+				}
 				PanelContainer advPanel = new PanelContainer();
 				StyleBoxFlat advStyle = new StyleBoxFlat();
 				advStyle.BgColor = new Color(0.05f, 0.07f, 0.12f, 0.5f);
