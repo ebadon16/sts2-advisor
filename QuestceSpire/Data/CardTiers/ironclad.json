@@ -1,878 +1,615 @@
 {
   "character": "ironclad",
+  "source": "https://www.youtube.com/watch?v=GFc8Bh2RYvI",
   "cards": [
     {
       "id": "Strike Ironclad",
       "baseTier": "D",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
       "notes": "Starter strike, replace when possible"
     },
     {
       "id": "Defend Ironclad",
       "baseTier": "D",
-      "synergies": [
-        "block"
-      ],
+      "synergies": ["block"],
       "antiSynergies": [],
       "notes": "Starter defend, replace when possible"
     },
     {
       "id": "Bash",
       "baseTier": "C",
-      "synergies": [
-        "vulnerable"
-      ],
+      "synergies": ["vulnerable"],
       "antiSynergies": [],
       "notes": "Starter. 2-cost is clunky but vulnerable application is useful"
     },
     {
       "id": "Aggression",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["draw", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Strength-related damage scaling"
+      "notes": "Rare power, slow draw/scaling engine. Not needed when infinite is so consistent"
     },
     {
       "id": "Anger",
-      "baseTier": "C",
-      "synergies": [
-        "strength",
-        "damage"
-      ],
-      "antiSynergies": [
-        "exhaust"
-      ],
-      "notes": "0-cost attack, adds copy to discard. Free damage but deck bloat risk"
+      "baseTier": "B",
+      "synergies": ["strength", "damage", "exhaust"],
+      "antiSynergies": [],
+      "notes": "0-cost attack, strong act 1 pick. Pairs with Burning Pact as free exhaust fodder"
     },
     {
       "id": "Armaments",
-      "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "1-cost block + upgrade a card in hand. Upgraded upgrades entire hand"
+      "notes": "1-cost block + upgrade. Essentially just a defend, too slow in current meta"
     },
     {
       "id": "Ashen Strike",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost strike variant with exhaust tag. Mediocre base"
+      "notes": "1-cost slow scaling damage. If you're exhausting enough for this to matter, better payoffs exist"
     },
     {
       "id": "Barricade",
-      "baseTier": "S",
-      "synergies": [
-        "block",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["block", "scaling"],
       "antiSynergies": [],
-      "notes": "3-cost power, block no longer decays. Build-defining, enables Body Slam"
+      "notes": "3-cost power, block retention. Much worse than Spire 1 — no enablers for block builds"
     },
     {
       "id": "Battle Trance",
       "baseTier": "A",
-      "synergies": [
-        "draw"
-      ],
+      "synergies": ["draw"],
       "antiSynergies": [],
-      "notes": "0-cost draw 3, cannot draw more this turn. Huge draw, minor downside"
+      "notes": "0-cost draw 3. Lines up combo pieces, great for finding exhaust + energy cards"
     },
     {
       "id": "Blood Wall",
-      "baseTier": "B",
-      "synergies": [
-        "self_damage",
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["self_damage", "block"],
       "antiSynergies": [],
-      "notes": "2-cost block that scales with HP loss. Fits self-damage builds"
+      "notes": "2-cost ~14 block. Not needed when going infinite, doesn't help win fights faster"
     },
     {
       "id": "Bloodletting",
-      "baseTier": "A",
-      "synergies": [
-        "self_damage",
-        "scaling"
-      ],
+      "baseTier": "S",
+      "synergies": ["self_damage", "scaling", "exhaust"],
       "antiSynergies": [],
-      "notes": "0-cost, lose HP gain energy. Enables Rupture and big turns"
+      "notes": "0-cost reusable energy at COMMON. Core infinite enabler. Lose 3 HP often a bonus. Pick on sight"
     },
     {
       "id": "Bludgeon",
       "baseTier": "B",
-      "synergies": [
-        "strength",
-        "damage"
-      ],
+      "synergies": ["strength", "damage"],
       "antiSynergies": [],
-      "notes": "3-cost huge single hit. Good with strength but clunky cost"
+      "notes": "3-cost 32 damage, uncommon. Big bonk for act 1, combos with Bloodletting energy. Skip once engine assembled"
     },
     {
       "id": "Body Slam",
-      "baseTier": "S",
-      "synergies": [
-        "block",
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["block", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost, damage equal to block. S-tier with Barricade, mediocre otherwise"
+      "notes": "1-cost damage = block. No enablers for block builds in Spire 2, Feel No Pain much worse, no Power Through"
     },
     {
       "id": "Brand",
       "baseTier": "A",
-      "synergies": [
-        "damage",
-        "strength"
-      ],
+      "synergies": ["exhaust", "self_damage", "strength"],
       "antiSynergies": [],
-      "notes": "0-cost skill. Marks target for bonus damage"
+      "notes": "0-cost targeted exhaust + 1 str, lose 1 HP. Rare hurts it but zero cost exhaust is incredible"
     },
     {
       "id": "Break",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "vulnerable"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "vulnerable"],
       "antiSynergies": [],
-      "notes": "Ancient 2-cost attack. Special rarity, decent damage"
+      "notes": "Ancient boon. 2-cost 20 damage + 5 vuln. Not needed when infinite by act 2, worse than other boon options"
     },
     {
       "id": "Breakthrough",
-      "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["aoe", "damage", "self_damage"],
       "antiSynergies": [],
-      "notes": "1-cost AoE attack. Decent for hallway fights"
+      "notes": "1-cost AoE 9 damage, lose 1 HP. Worst AoE but AoE is AoE. Act 1 survival card"
     },
     {
       "id": "Bully",
       "baseTier": "B",
-      "synergies": [
-        "vulnerable",
-        "damage"
-      ],
+      "synergies": ["vulnerable", "damage"],
       "antiSynergies": [],
-      "notes": "0-cost attack with bonus vs vulnerable enemies"
+      "notes": "0-cost attack. Energy plays more often on Clad due to Bash. Bottom of B, vuln synergy mostly irrelevant"
     },
     {
       "id": "Burning Pact",
       "baseTier": "S",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "synergies": ["exhaust", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost exhaust a card, draw 2. Excellent deck thinning and draw"
+      "notes": "1-cost exhaust + draw 2 (3 upgraded). #1 infinite enabler. Self-cycles, does both exhaust and draw. Pick on sight"
     },
     {
       "id": "Cascade",
-      "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust", "draw"],
       "antiSynergies": [],
-      "notes": "X-cost skill, chain exhaust and draw utility"
+      "notes": "X-cost play top X cards. Awkward, can play wrong cards at wrong time. Doesn't enable infinite"
     },
     {
       "id": "Cinder",
-      "baseTier": "D",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost attack that exhausts 1 card. Clunky cost for the effect"
+      "notes": "2-cost 17 damage, exhaust top of draw pile. No control over what gets exhausted, can brick your run"
     },
     {
       "id": "Colossus",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "block"
-      ],
+      "baseTier": "B",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "1-cost rare skill. Colossus effect with big impact"
+      "notes": "1-cost block + 50% less vuln damage. Common but not needed when going infinite. Bottom of B"
     },
     {
       "id": "Conflagration",
-      "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "damage",
-        "strength"
-      ],
+      "baseTier": "C",
+      "synergies": ["aoe", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost rare AoE attack. Strong multi-target damage"
+      "notes": "1-cost rare AoE. Bonus damage per attack played but outclassed by uncommon Stomp. Rarely enters deck"
     },
     {
       "id": "Corruption",
-      "baseTier": "S",
-      "synergies": [
-        "exhaust",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["exhaust", "scaling"],
       "antiSynergies": [],
-      "notes": "Ancient 3-cost power. Skills cost 0 and exhaust. Game-warping with Feel No Pain and Dark Embrace"
+      "notes": "Ancient boon. Skills cost 0 and exhaust. Dark Embrace now rare, Power Through gone. Much worse context"
     },
     {
       "id": "Crimson Mantle",
-      "baseTier": "A",
-      "synergies": [
-        "self_damage",
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["self_damage", "block"],
       "antiSynergies": [],
-      "notes": "1-cost power. Strength through self-harm, strong scaling engine"
+      "notes": "1-cost rare power, lose 1 HP gain 8 block/turn. Doesn't block turn played. Awkward, never justifiable late"
     },
     {
       "id": "Cruelty",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["vulnerable", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Conditional damage bonus"
+      "notes": "1-cost power, vuln enemies take 25% more. Crazy effect but irrelevant when playing infinite attacks"
     },
     {
       "id": "Dark Embrace",
       "baseTier": "S",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "synergies": ["exhaust", "draw"],
       "antiSynergies": [],
-      "notes": "2-cost power, draw 1 on exhaust. Core exhaust draw engine"
+      "notes": "2-cost rare power, draw 1 on exhaust. Upgrades to 1-cost. Insane acceleration, draws entire deck"
     },
     {
       "id": "Demon Form",
-      "baseTier": "S",
-      "synergies": [
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["strength", "scaling"],
       "antiSynergies": [],
-      "notes": "3-cost power, gain strength every turn. Wins long fights singlehandedly"
+      "notes": "3-cost +2 str/turn. Curse in endgame when infinite. Only useful to kill act 1 boss/elites"
     },
     {
       "id": "Demonic Shield",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "exhaust"
-      ],
+      "baseTier": "C",
+      "synergies": ["block", "exhaust"],
       "antiSynergies": [],
-      "notes": "0-cost block with exhaust. Decent emergency block, no target needed"
+      "notes": "0-cost block with exhaust. Multiplayer focused but exhausts for free"
     },
     {
       "id": "Dismantle",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "synergies": ["damage", "vulnerable"],
       "antiSynergies": [],
-      "notes": "1-cost attack with utility effect"
+      "notes": "1-cost 8 damage, hits twice if vuln. Effectively 24 damage with Bash vuln. Solid act 1 card"
     },
     {
       "id": "Dominate",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "baseTier": "D",
+      "synergies": ["vulnerable", "strength"],
       "antiSynergies": [],
-      "notes": "1-cost skill targeting enemy, exhaust. Solid with exhaust synergy"
+      "notes": "1-cost gain str per vuln on enemy, exhaust. Draw order reliant, you'd rather just play a strike"
     },
     {
       "id": "Drum Of Battle",
-      "baseTier": "B",
-      "synergies": [
-        "draw"
-      ],
+      "baseTier": "C",
+      "synergies": ["draw", "exhaust"],
       "antiSynergies": [],
-      "notes": "0-cost power. Draw at start of turn, decent passive draw engine"
+      "notes": "0-cost draw 2 then exhaust top each turn. Can brick infinite by exhausting key cards. Extremely niche"
     },
     {
       "id": "Evil Eye",
       "baseTier": "B",
-      "synergies": [
-        "vulnerable",
-        "weak"
-      ],
+      "synergies": ["block", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost debuff application. Solid utility"
+      "notes": "1-cost 8 block, 16 if exhausted this turn. Lines up with Burning Pact. Can stall to exhaust down"
     },
     {
       "id": "Expect A Fight",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "strength"
-      ],
+      "baseTier": "S",
+      "synergies": ["block", "strength", "scaling"],
       "antiSynergies": [],
-      "notes": "2-cost skill, gain block and 3 energy next turn. Slow but high value"
+      "notes": "2-cost gain energy per attack in hand. Makes 5-7 energy/turn. Reusable. Disgusting energy generation"
     },
     {
       "id": "Feed",
       "baseTier": "A",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "synergies": ["damage", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost, raise max HP on kill, exhaust. Incredible long-run value"
+      "notes": "1-cost +3 max HP on kill, exhaust. Great long-run value but doesn't enable engine. Less needed in Spire 2"
     },
     {
       "id": "Feel No Pain",
-      "baseTier": "S",
-      "synergies": [
-        "exhaust",
-        "block",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["exhaust", "block"],
       "antiSynergies": [],
-      "notes": "1-cost power, gain 3 block whenever a card is exhausted. Best exhaust payoff"
+      "notes": "1-cost +3 block per exhaust. Biggest fall from grace — was easy S in Spire 1. Not needed when going infinite"
     },
     {
       "id": "Fiend Fire",
       "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "damage",
-        "strength"
-      ],
+      "synergies": ["exhaust", "damage", "strength"],
       "antiSynergies": [],
-      "notes": "2-cost, exhaust entire hand for massive damage. Insane with exhaust payoffs"
+      "notes": "2-cost exhaust hand, deal 7 per card. Mass exhaust, often wins fight next turn. Dark Embrace now rare though"
     },
     {
       "id": "Fight Me",
-      "baseTier": "B",
-      "synergies": [
-        "strength",
-        "vulnerable",
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["strength", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost attack. Steals 3 enemy strength"
+      "notes": "2-cost deal 5x2, gain 2 str, enemy gains 1 str. Buffs enemy. Makes run harder. Never pick"
     },
     {
       "id": "Flame Barrier",
-      "baseTier": "A",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "B",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "2-cost block + deal 4 damage back when hit. Excellent vs multi-attack enemies"
+      "notes": "2-cost 12 block + 4 thorns. Good early game, great vs multi-attack enemies. Top of B"
     },
     {
       "id": "Forgotten Ritual",
-      "baseTier": "B",
-      "synergies": [
-        "self_damage",
-        "scaling"
-      ],
+      "baseTier": "S",
+      "synergies": ["exhaust", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost skill. Scaling power through self-harm"
+      "notes": "1-cost gain 3 energy if exhausted this turn. Upgrades to 4 (net +3). Infinite energy generation. Broken"
     },
     {
       "id": "Grapple",
-      "baseTier": "S",
-      "synergies": [
-        "damage",
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "block"],
       "antiSynergies": [],
-      "notes": "1-cost attack + block. Decent two-for-one"
+      "notes": "1-cost deal 7 + damage per block gained this turn. Numbers too small, you'd rather play Bash + attacks"
     },
     {
       "id": "Havoc",
-      "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "draw"
-      ],
+      "baseTier": "D",
+      "synergies": ["exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost, play top card of draw pile and exhaust it. Good with exhaust synergy"
+      "notes": "1-cost play + exhaust top of draw pile. All enablers from Spire 1 gone (Frozen Eye, more Dark Embrace)"
     },
     {
       "id": "Headbutt",
-      "baseTier": "A",
-      "synergies": [
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "1-cost damage + put card from discard on top of draw pile. Great deck manipulation"
+      "notes": "1-cost damage + top deck from discard. Puts Bash/combos on top. Decent act 1 but doesn't contribute to infinite"
     },
     {
       "id": "Hellraiser",
       "baseTier": "B",
-      "synergies": [
-        "self_damage",
-        "damage"
-      ],
+      "synergies": ["self_damage", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost rare power. Self-harm themed scaling"
+      "notes": "2-cost rare power, strikes auto-play. Fun but soft-lock protection limits it. Doesn't help infinite plan"
     },
     {
       "id": "Hemokinesis",
       "baseTier": "B",
-      "synergies": [
-        "self_damage",
-        "damage"
-      ],
+      "synergies": ["self_damage", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost, lose HP for big damage. Triggers Rupture, good early Act 1 damage"
+      "notes": "1-cost lose 2 HP deal 14. Big early damage, combos with Bash vuln. Not exceptional like Spire 1"
     },
     {
       "id": "Howl From Beyond",
-      "baseTier": "B",
-      "synergies": [
-        "aoe",
-        "strength",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["aoe", "damage"],
       "antiSynergies": [],
-      "notes": "3-cost AoE attack. Expensive but hits all enemies"
+      "notes": "3-cost AoE 16, plays from exhaust pile. Awkward — needs manual exhaust, returns to deck. Bottom of C"
     },
     {
       "id": "Impervious",
-      "baseTier": "S",
-      "synergies": [
-        "block",
-        "exhaust"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "exhaust"],
       "antiSynergies": [],
-      "notes": "2-cost, massive block, exhaust. Best defensive card in the game"
+      "notes": "2-cost 30 block, exhaust. Slam on sight in act 1, huge number. Don't pick once infinite is assembled"
     },
     {
       "id": "Infernal Blade",
-      "baseTier": "D",
-      "synergies": [
-        "exhaust"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost, add random attack to hand, exhaust. Too random to rely on"
+      "notes": "1-cost random attack to hand, exhaust. Too random, less useful attacks to cheat out. Desperation only"
     },
     {
       "id": "Inferno",
       "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "synergies": ["self_damage", "aoe"],
       "antiSynergies": [],
-      "notes": "1-cost power. Fire damage on exhaust. Needs exhaust support"
+      "notes": "Power: lose 1 HP/turn, deal 6 AoE on HP loss. Underrated. Power gets out of deck. Decent act 1 AoE bridge"
     },
     {
       "id": "Inflame",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["strength", "scaling"],
       "antiSynergies": [],
-      "notes": "1-cost power, permanent +2 strength. Simple and effective"
+      "notes": "1-cost +2 str. Way worse in Spire 2 — strength irrelevant when playing infinite attacks. Only for act 1"
     },
     {
       "id": "Iron Wave",
       "baseTier": "C",
-      "synergies": [
-        "block",
-        "strength",
-        "damage"
-      ],
+      "synergies": ["block", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost deal damage and gain block. Reliable but unexciting"
+      "notes": "1-cost 5 block + 5 damage. Strike+defend in one card. Prevents chip in hallways. Skip if possible"
     },
     {
       "id": "Juggernaut",
-      "baseTier": "A",
-      "synergies": [
-        "block",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["block", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost power, deal damage on block gain. Good in block-heavy decks"
+      "notes": "2-cost deal 5 on block gain. Clad not blocking frequently. No Feel No Pain combos anymore. Bad"
     },
     {
       "id": "Juggling",
-      "baseTier": "B",
-      "synergies": [
-        "multi_hit",
-        "strength"
-      ],
-      "antiSynergies": [],
-      "notes": "1-cost power. Extra hits, scales with strength"
+      "baseTier": "D",
+      "synergies": ["multi_hit"],
+      "antiSynergies": ["exhaust"],
+      "notes": "1-cost power, copies 3rd attack played. Actively bricks infinite. Almost never want. Complete brick"
     },
     {
       "id": "Mangle",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "strength",
-        "weak"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "weak"],
       "antiSynergies": [],
-      "notes": "3-cost rare attack. Removes 10 enemy strength. Devastating debuff"
+      "notes": "3-cost rare, 15 damage + enemy loses 10 str this turn. Costs all energy. Should cost 2. Top of C"
     },
     {
       "id": "Molten Fist",
-      "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "damage",
-        "strength"
-      ],
+      "baseTier": "C",
+      "synergies": ["vulnerable", "exhaust", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost attack with exhaust. Feeds exhaust synergies"
+      "notes": "1-cost 10 damage, double enemy vuln, exhaust. Vuln stacking strategy doesn't work. Desperation pick"
     },
     {
       "id": "Offering",
       "baseTier": "S",
-      "synergies": [
-        "self_damage",
-        "draw"
-      ],
+      "synergies": ["self_damage", "draw"],
       "antiSynergies": [],
-      "notes": "0-cost, lose HP, gain energy + draw 3, exhaust. Best card in Ironclad"
+      "notes": "0-cost lose 6 HP, +2 energy, draw 3, exhaust. Top of S tier. Insane acceleration. Life loss irrelevant"
     },
     {
       "id": "One Two Punch",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "1-cost rare skill. Play extra attacks from draw pile"
+      "notes": "1-cost next attack plays extra time. No big attacks to double. Not good in Spire 1, not good here"
     },
     {
       "id": "Pacts End",
       "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "aoe",
-        "damage"
-      ],
+      "synergies": ["exhaust", "aoe", "damage"],
       "antiSynergies": [],
-      "notes": "0-cost rare AoE attack. Strong finisher with exhaust synergy"
+      "notes": "0-cost 17 AoE, needs 3+ cards in exhaust. Condition trivially easy. Great payoff. Bottom of S / top of A"
     },
     {
       "id": "Perfected Strike",
-      "baseTier": "D",
+      "baseTier": "C",
       "synergies": [],
-      "antiSynergies": [
-        "exhaust"
-      ],
-      "notes": "2-cost, scales with Strike cards in deck. Strike synergy is a trap"
+      "antiSynergies": ["exhaust"],
+      "notes": "2-cost scales with strikes. Falls off fast. Desperation pick. Strikes get removed at shops anyway"
     },
     {
       "id": "Pillage",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "strength"
-      ],
+      "baseTier": "S",
+      "synergies": ["damage", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost attack with bonus effect"
+      "notes": "1-cost 6 damage, draw until non-attack. Can redraw entire deck. Infinite enabler. Good in act 1 AND endgame"
     },
     {
       "id": "Pommel Strike",
       "baseTier": "S",
-      "synergies": [
-        "draw",
-        "strength",
-        "damage"
-      ],
+      "synergies": ["draw", "strength", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost damage + draw 1. Efficient card that fits any deck"
+      "notes": "1-cost 9 damage + draw 1 (draw 2 upgraded). Main infinite enabler at COMMON. Goes infinite with Bloodletting"
     },
     {
       "id": "Primal Force",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "0-cost rare skill. Strong strength scaling effect"
+      "notes": "0-cost transform attacks into Giant Rock (16 damage). Carries act 1 single-handedly. Useless after"
     },
     {
       "id": "Pyre",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["scaling"],
       "antiSynergies": [],
-      "notes": "2-cost power. Fire damage on exhaust triggers"
+      "notes": "2-cost gain 1 energy/turn. Gets you through early game. Hard-capped, can't generate exponential energy"
     },
     {
       "id": "Rage",
       "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "0-cost skill, gain 3 block whenever you play an attack this turn"
+      "notes": "0-cost +3 block per attack this turn. Top of B. Turns Pommels into block cards. Great act 1, falls off"
     },
     {
       "id": "Rampage",
-      "baseTier": "C",
-      "synergies": [
-        "damage"
-      ],
-      "antiSynergies": [
-        "exhaust"
-      ],
-      "notes": "1-cost, damage increases by 5 each play. Needs thin deck and long fights"
+      "baseTier": "B",
+      "synergies": ["damage"],
+      "antiSynergies": ["exhaust"],
+      "notes": "1-cost +5 damage each play. Much improved from Spire 1 — better numbers, smaller decks. Kills act 1 bosses"
     },
     {
       "id": "Rupture",
-      "baseTier": "A",
-      "synergies": [
-        "self_damage",
-        "strength",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["self_damage", "strength"],
       "antiSynergies": [],
-      "notes": "1-cost power, gain strength on HP loss. Key self-damage synergy piece"
+      "notes": "1-cost +1 str on HP loss. Strength just not needed when going infinite. Needs upgrade. Bottom of C"
     },
     {
       "id": "Second Wind",
-      "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "block"
-      ],
+      "baseTier": "S",
+      "synergies": ["exhaust", "block"],
       "antiSynergies": [],
-      "notes": "1-cost, exhaust all non-attack cards, gain block per card. Great with Corruption"
+      "notes": "1-cost exhaust all non-attacks, gain block per card. Main enabler. Enables Pillage, clears statuses. Bottom of S"
     },
     {
       "id": "Setup Strike",
       "baseTier": "C",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["strength", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost strike variant. Mediocre base damage"
+      "notes": "1-cost 7 damage + 2 temp str. Strength this turn doesn't pay off, Clad not spamming 0-costs"
     },
     {
       "id": "Shrug It Off",
-      "baseTier": "S",
-      "synergies": [
-        "block",
-        "draw"
-      ],
+      "baseTier": "B",
+      "synergies": ["block", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost block + draw 1. Best common skill, always good"
+      "notes": "1-cost 8 block + draw 1. Act 1 card. No sundial infinite needed, turns off Pillage. Much worse than Spire 1"
     },
     {
       "id": "Spite",
-      "baseTier": "B",
-      "synergies": [
-        "damage"
-      ],
+      "baseTier": "S",
+      "synergies": ["damage", "self_damage", "draw"],
       "antiSynergies": [],
-      "notes": "0-cost attack with conditional bonus"
+      "notes": "0-cost 6 damage, draw 1 on HP loss. Infinite with 2 Spites + Bloodletting. At worst it's Anger. Pick on sight"
     },
     {
       "id": "Stampede",
       "baseTier": "B",
-      "synergies": [
-        "strength",
-        "scaling"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "2-cost power. Attack scaling over time"
+      "notes": "2-cost power, random attack plays end of turn. Cheats energy. Decent act 1. Bottom of B"
     },
     {
       "id": "Stoke",
-      "baseTier": "A",
-      "synergies": [
-        "strength",
-        "scaling",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["exhaust", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost skill with exhaust. Decent strength buff"
+      "notes": "1-cost exhaust hand, draw equal cards, exhaust. Fiend Fire + Dark Embrace on ONE card. Upgrades to 0-cost. Insane"
     },
     {
       "id": "Stomp",
-      "baseTier": "B",
-      "synergies": [
-        "aoe",
-        "vulnerable",
-        "damage"
-      ],
+      "baseTier": "S",
+      "synergies": ["aoe", "damage"],
       "antiSynergies": [],
-      "notes": "3-cost AoE + vulnerable. Expensive but good AoE option"
+      "notes": "3-cost 12 AoE, -1 cost per attack played. Often free. Best AoE at uncommon. Great act 1 AND endgame. Bottom of S"
     },
     {
       "id": "Stone Armor",
-      "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "1-cost power. Passive block generation each turn"
+      "notes": "1-cost +4 plating (decays 1/turn now). Much worse than metallicize. Blocks ~10 total. Top of C"
     },
     {
       "id": "Sword Boomerang",
-      "baseTier": "B",
-      "synergies": [
-        "strength",
-        "multi_hit"
-      ],
+      "baseTier": "D",
+      "synergies": ["strength", "multi_hit"],
       "antiSynergies": [],
-      "notes": "1-cost random multi-hit. Scales very well with strength"
+      "notes": "1-cost 3 damage x3 random. Strength way worse, can't target, AoE fights more prevalent. Complete crap"
     },
     {
       "id": "Tank",
-      "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "1-cost rare power. Passive block generation"
+      "notes": "Multiplayer-focused rare power. Block generation, niche"
     },
     {
       "id": "Taunt",
       "baseTier": "A",
-      "synergies": [
-        "vulnerable"
-      ],
+      "synergies": ["vulnerable", "block"],
       "antiSynergies": [],
-      "notes": "1-cost skill targeting enemy. Applies vulnerable and draws aggro"
+      "notes": "1-cost 7 block + 1 vuln. Extends Bash vuln, lets you block and not rush. Combos with Vicious for draw"
     },
     {
       "id": "Tear Asunder",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "strength",
-        "multi_hit"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "self_damage"],
       "antiSynergies": [],
-      "notes": "2-cost rare, hits 4 times. Scales extremely well with strength"
+      "notes": "2-cost hits per HP lost this combat. If you lost HP enough for this, you already won via Bloodletting loops"
     },
     {
       "id": "Thrash",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "block"
-      ],
+      "baseTier": "A",
+      "synergies": ["damage", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost rare attack. Damage + block in one card"
+      "notes": "1-cost rare, 4x2 damage + exhaust random attack from hand + add its damage. Solid scaling, exhausts cards"
     },
     {
       "id": "Thunderclap",
       "baseTier": "B",
-      "synergies": [
-        "aoe",
-        "vulnerable"
-      ],
+      "synergies": ["aoe", "vulnerable"],
       "antiSynergies": [],
-      "notes": "1-cost AoE damage + vulnerable to all. Great hallway utility"
+      "notes": "1-cost 4 AoE + 1 vuln all. Much better with Vicious in pool (draws per vuln). Combos with Stomp. Act 1 pick"
     },
     {
       "id": "Tremble",
       "baseTier": "C",
-      "synergies": [
-        "weak"
-      ],
+      "synergies": ["vulnerable"],
       "antiSynergies": [],
-      "notes": "1-cost skill targeting enemy. Applies debuff, situational"
+      "notes": "1-cost apply 2 vuln. Better vuln options exist. Bottom of C"
     },
     {
       "id": "True Grit",
       "baseTier": "B",
-      "synergies": [
-        "block",
-        "exhaust"
-      ],
+      "synergies": ["block", "exhaust"],
       "antiSynergies": [],
-      "notes": "1-cost block + exhaust a card. Solid in exhaust decks"
+      "notes": "1-cost 7 block + random exhaust. Demands upgrade for targeted exhaust. More pickable than Spire 1 due to exhaust value"
     },
     {
       "id": "Twin Strike",
       "baseTier": "C",
-      "synergies": [
-        "strength",
-        "multi_hit",
-        "damage"
-      ],
+      "synergies": ["strength", "multi_hit", "damage"],
       "antiSynergies": [],
-      "notes": "1-cost strike with 2 hits. Scales with strength but low base"
+      "notes": "1-cost 5 damage x2. Middling, strength payoff worse in this game"
     },
     {
       "id": "Unmovable",
-      "baseTier": "A",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "C",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "2-cost rare power. Strong block scaling and block retention"
+      "notes": "2-cost rare, double first block gain each turn. Can kill a boss but completely useless in endgame"
     },
     {
       "id": "Unrelenting",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "strength"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "2-cost attack. Persistent pressure"
+      "notes": "2-cost 12 damage, next attack costs 0. Cheats energy, plays Bash free next turn. Decent hemo alternative"
     },
     {
       "id": "Uppercut",
-      "baseTier": "A",
-      "synergies": [
-        "vulnerable",
-        "weak",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["vulnerable", "weak", "damage"],
       "antiSynergies": [],
-      "notes": "2-cost damage + weak + vulnerable. Both debuffs, strong utility"
+      "notes": "2-cost 13 damage + weak + vuln. Weak less important when not blocking. Kills act 1 boss upgraded. Clunky"
     },
     {
       "id": "Vicious",
-      "baseTier": "B",
-      "synergies": [
-        "strength",
-        "damage"
-      ],
+      "baseTier": "S",
+      "synergies": ["vulnerable", "draw"],
       "antiSynergies": [],
-      "notes": "1-cost power. Conditional damage bonus"
+      "notes": "1-cost power, draw 1 per vuln applied (draw 2 upgraded). Rushdown but better. Base deck draws cards. Enables infinite"
     },
     {
       "id": "Whirlwind",
-      "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "strength",
-        "multi_hit"
-      ],
+      "baseTier": "C",
+      "synergies": ["aoe", "strength", "multi_hit"],
       "antiSynergies": [],
-      "notes": "X-cost AoE. Scales with strength and energy generation"
+      "notes": "X-cost AoE. Mediocre without strength/upgrade. Needs upgrade which is harder to get. Outclassed by Stomp"
     }
   ]
 }
