@@ -704,7 +704,7 @@ public class OverlayManager
 		if (gameState.OfferedCards != null && gameState.OfferedCards.Count > 0)
 		{
 			Plugin.Log($"Event card offering detected (from state): {gameState.OfferedCards.Count} cards");
-			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 			List<ScoredCard> scored = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, da, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(scored, da, gameState.Character, "EVENT CARD OFFER");
 			// No in-game badges for events — can't distinguish reward from upgrade/transform
@@ -721,7 +721,7 @@ public class OverlayManager
 			var offeredCards = ExtractCardsFromScreen(cardScreen);
 			if (offeredCards == null || offeredCards.Count == 0) return;
 			Plugin.Log($"Event card offering detected (from screen node): {offeredCards.Count} cards");
-			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 			List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(cards, deckAnalysis, gameState.Character, "EVENT CARD OFFER");
 		}
@@ -812,7 +812,7 @@ public class OverlayManager
 			}
 		}
 
-		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);

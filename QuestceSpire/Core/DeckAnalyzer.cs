@@ -16,13 +16,29 @@ public class DeckAnalyzer
 		["draw"] = (new[] { "draw", "discard" }, 2),
 	};
 
-	public DeckAnalysis Analyze(string character, List<CardInfo> deck, TierEngine tierEngine = null)
+	public DeckAnalysis Analyze(string character, List<CardInfo> deck, TierEngine tierEngine = null, List<RelicInfo> relics = null)
 	{
 		DeckAnalysis deckAnalysis = new DeckAnalysis
 		{
 			Character = character,
 			TotalCards = deck.Count
 		};
+		// Relic-aware archetype detection: feed relic synergy tags into tag counts
+		// so relics like Shuriken (strength) or Snecko Eye boost archetype detection
+		if (relics != null && tierEngine != null)
+		{
+			foreach (RelicInfo relic in relics)
+			{
+				var relicTier = tierEngine.GetRelicTier(character, relic.Id);
+				if (relicTier?.Synergies != null)
+				{
+					foreach (string tag in relicTier.Synergies)
+					{
+						IncrementTag(deckAnalysis.TagCounts, tag.ToLowerInvariant());
+					}
+				}
+			}
+		}
 		int totalCost = 0;
 		int costCards = 0;
 		foreach (CardInfo item3 in deck)

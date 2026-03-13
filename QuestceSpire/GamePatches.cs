@@ -221,7 +221,7 @@ public static class GamePatches
 			return false;
 		}
 
-		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 		Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		Plugin.Overlay?.ShowCardAdvice(cards, deckAnalysis, gameState.Character);
@@ -280,7 +280,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				List<ScoredRelic> relics2 = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.OfferedRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				Plugin.Overlay?.ShowRelicAdvice(relics2, deckAnalysis, gameState.Character);
@@ -311,7 +311,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
@@ -337,7 +337,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				Plugin.Overlay?.ShowRestSiteAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.ActNumber, gameState.Floor, gameState);
 			}
@@ -358,7 +358,7 @@ public static class GamePatches
 			if (gameState == null) return;
 
 			string character = gameState.Character ?? "unknown";
-			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine);
+			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 
 			// Convert offered CardModels to CardInfo and score for upgrade delta
 			if (cards != null && cards.Count > 0)
@@ -512,7 +512,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				Plugin.Overlay?.ShowCombatAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.ActNumber, gameState.Floor, gameState, enemyIds);
 			}
@@ -559,7 +559,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				Plugin.Overlay?.ShowEventAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor, eventId);
 			}
@@ -583,7 +583,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				Plugin.Overlay?.ShowMapAdvice(deckAnalysis, gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
 			}
@@ -606,7 +606,7 @@ public static class GamePatches
 			GameState gameState = GameStateReader.ReadCurrentState();
 			if (gameState != null)
 			{
-				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine);
+				DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				List<ScoredCard> removalCandidates = Plugin.SynergyScorer.ScoreForRemoval(gameState.DeckCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				Plugin.Overlay?.ShowCardRemovalAdvice(removalCandidates, deckAnalysis, gameState.Character);
