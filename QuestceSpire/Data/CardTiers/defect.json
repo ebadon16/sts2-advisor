@@ -1,924 +1,622 @@
 {
   "character": "defect",
+  "source": "https://www.youtube.com/watch?v=_SMfBDBTyo0",
   "cards": [
     {
       "id": "Strike Defect",
       "baseTier": "D",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
       "notes": "Starter strike, replace when possible"
     },
     {
       "id": "Defend Defect",
       "baseTier": "D",
-      "synergies": [
-        "block"
-      ],
+      "synergies": ["block"],
       "antiSynergies": [],
       "notes": "Starter defend, replace when possible"
     },
     {
       "id": "Dualcast",
       "baseTier": "C",
-      "synergies": [
-        "evoke",
-        "orb"
-      ],
+      "synergies": ["evoke", "orb"],
       "antiSynergies": [],
       "notes": "Starter. Evoke front orb twice"
     },
     {
       "id": "Zap",
       "baseTier": "C",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb"
-      ],
+      "synergies": ["lightning", "channel", "orb"],
       "antiSynergies": [],
       "notes": "Starter. Channel 1 lightning"
     },
     {
       "id": "Adaptive Strike",
       "baseTier": "B",
-      "synergies": [
-        "orb",
-        "damage",
-        "scaling"
-      ],
+      "synergies": ["orb", "damage", "scaling"],
       "antiSynergies": [],
-      "notes": "Damage scales with orb count"
+      "notes": "Deal 18 for 2, copies itself. Slow boss scaling. Good act 1 but falls off"
     },
     {
       "id": "All For One",
-      "baseTier": "A",
-      "synergies": [
-        "zero_cost",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["zero_cost", "damage"],
       "antiSynergies": [],
-      "notes": "Retrieve all 0-cost from discard — build-around"
+      "notes": "Zero-cost archetype has fundamental paradox problems. Draw order reliance"
     },
     {
       "id": "Ball Lightning",
       "baseTier": "B",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb",
-        "damage"
-      ],
+      "synergies": ["lightning", "channel", "orb", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + channel lightning"
+      "notes": "Deal 7 + channel lightning. Good early, falls off. Less need to rush damage in STS2"
     },
     {
       "id": "Barrage",
       "baseTier": "A",
-      "synergies": [
-        "orb",
-        "multi_hit",
-        "damage"
-      ],
+      "synergies": ["orb", "multi_hit", "damage"],
       "antiSynergies": [],
-      "notes": "Hit per channeled orb, 3 calculated hits"
+      "notes": "Upgraded from 4 to 5 damage per orb. Scales with enchantments. Much better in STS2"
     },
     {
       "id": "Beam Cell",
-      "baseTier": "F",
-      "synergies": [
-        "damage",
-        "vulnerable"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "vulnerable"],
       "antiSynergies": [],
-      "notes": "0-cost, small damage + vulnerable"
+      "notes": "0-cost, 3 damage + 1 vulnerable. Vulnerable doesn't scale orb damage. Niche"
     },
     {
       "id": "Biased Cognition",
-      "baseTier": "S",
-      "synergies": [
-        "focus",
-        "orb",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["focus", "orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Ancient. +4 focus, lose 1/turn — best focus card in the game"
+      "notes": "Ancient. Was best card in STS1 but temp focus is plentiful now. No artifact to negate downside"
     },
     {
       "id": "Boost Away",
       "baseTier": "C",
-      "synergies": [
-        "block",
-        "orb"
-      ],
+      "synergies": ["block", "orb"],
       "antiSynergies": [],
-      "notes": "0-cost block with orb utility"
+      "notes": "Gain 6 block + daze in discard. Number not big enough. Status bridge doesn't work well"
     },
     {
       "id": "Boot Sequence",
-      "baseTier": "D",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "A",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "Innate block, exhausts. Only useful early"
+      "notes": "Innate 10 block for zero energy. Skip turn 1 decisions and set up freely. Easy A"
     },
     {
       "id": "Buffer",
-      "baseTier": "S",
-      "synergies": [
-        "scaling",
-        "block"
-      ],
+      "baseTier": "A",
+      "synergies": ["scaling", "block"],
       "antiSynergies": [],
-      "notes": "Negate next damage instance — strong defensive power"
+      "notes": "One-time damage prevention. Not as crazy without Heart but still solid"
     },
     {
       "id": "Bulk Up",
       "baseTier": "B",
-      "synergies": [
-        "block",
-        "scaling",
-        "orb"
-      ],
+      "synergies": ["block", "scaling", "orb"],
       "antiSynergies": [],
-      "notes": "Power that provides ongoing block/strength"
+      "notes": "Lose 1 orb slot, gain 2 strength + 2 dex. Good early but too slow once doing orb stuff"
     },
     {
       "id": "Capacitor",
-      "baseTier": "A",
-      "synergies": [
-        "orb",
-        "channel",
-        "scaling"
-      ],
+      "baseTier": "S",
+      "synergies": ["orb", "channel", "scaling"],
       "antiSynergies": [],
-      "notes": "+2/+3 orb slots — enables orb strategies"
+      "notes": "One copy solves endgame output. Orb slots + focus is multiplicative"
     },
     {
       "id": "Chaos",
       "baseTier": "C",
-      "synergies": [
-        "orb",
-        "channel"
-      ],
+      "synergies": ["orb", "channel"],
       "antiSynergies": [],
-      "notes": "Channel random orb"
+      "notes": "Channel 1 random orb. Needs buffs. Almost never pick it"
     },
     {
       "id": "Charge Battery",
-      "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "baseTier": "A",
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "Block + gain 1 energy next turn"
+      "notes": "Premium block common. 7 block + 1 energy next turn. Never falls off"
     },
     {
       "id": "Chill",
-      "baseTier": "C",
-      "synergies": [
-        "frost",
-        "orb",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["frost", "orb", "block", "aoe"],
       "antiSynergies": [],
-      "notes": "Frost support with exhaust, Sly keyword"
+      "notes": "Multi-enemy fights it blocks a ton for zero energy. Upgrade removes exhaust. Disgusting card"
     },
     {
       "id": "Claw",
-      "baseTier": "A",
-      "synergies": [
-        "zero_cost",
-        "scaling",
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["zero_cost", "scaling", "damage"],
       "antiSynergies": [],
-      "notes": "0-cost, +2 damage per Claw played this combat — scaling archetype"
+      "notes": "Meme card. Number too low. Zero-cost archetype problems"
     },
     {
       "id": "Cold Snap",
       "baseTier": "A",
-      "synergies": [
-        "frost",
-        "channel",
-        "orb",
-        "damage"
-      ],
+      "synergies": ["frost", "channel", "orb", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + channel frost — efficient common"
+      "notes": "Deal 6 + channel frost. Reads 'deal 6, block 2 for rest of fight.' Excellent common"
     },
     {
       "id": "Compact",
       "baseTier": "B",
-      "synergies": [
-        "draw",
-        "orb"
-      ],
+      "synergies": ["draw", "orb", "block"],
       "antiSynergies": [],
-      "notes": "Deck compression utility"
+      "notes": "Gain 6 block + transform statuses to fuel. Number not great but effect is strong"
     },
     {
       "id": "Compile Driver",
-      "baseTier": "A",
-      "synergies": [
-        "draw",
-        "orb",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["draw", "orb", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + draw per unique orb type (3 calc)"
+      "notes": "Deal 7, draw per unique orb. More orb types in STS2. Usually draws 2"
     },
     {
       "id": "Consuming Shadow",
-      "baseTier": "B",
-      "synergies": [
-        "dark",
-        "orb",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["dark", "orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Dark orb scaling power"
+      "notes": "2 energy power, channel 2 dark + evoke leftmost each turn. Awkward, doesn't enter deck often"
     },
     {
       "id": "Coolant",
-      "baseTier": "B",
-      "synergies": [
-        "frost",
-        "orb",
-        "focus"
-      ],
+      "baseTier": "A",
+      "synergies": ["frost", "orb", "focus", "block"],
       "antiSynergies": [],
-      "notes": "Frost support power"
+      "notes": "Power giving block per unique orb each turn. Passive scaling that never falls off"
     },
     {
       "id": "Coolheaded",
-      "baseTier": "A",
-      "synergies": [
-        "frost",
-        "draw",
-        "channel",
-        "orb"
-      ],
+      "baseTier": "S",
+      "synergies": ["frost", "draw", "channel", "orb"],
       "antiSynergies": [],
-      "notes": "Channel frost + draw 1 — excellent common"
+      "notes": "Best common. Frost + draw. Upgrade to draw 2 is insane. Main enabler for defect"
     },
     {
       "id": "Creative Ai",
-      "baseTier": "S",
-      "synergies": [
-        "scaling",
-        "draw"
-      ],
+      "baseTier": "A",
+      "synergies": ["scaling", "draw"],
       "antiSynergies": [],
-      "notes": "Generate random power each turn — value engine for long fights"
+      "notes": "Boss scaling that solves endgame. Random powers are strong. More time to set up in STS2"
     },
     {
       "id": "Darkness",
-      "baseTier": "B",
-      "synergies": [
-        "dark",
-        "channel",
-        "orb",
-        "damage"
-      ],
+      "baseTier": "S",
+      "synergies": ["dark", "channel", "orb", "damage"],
       "antiSynergies": [],
-      "notes": "Channel dark orb"
+      "notes": "Darkness+ baseline from STS1. Insane single-target damage. Upgrade triggers dark passive twice"
     },
     {
       "id": "Defragment",
       "baseTier": "S",
-      "synergies": [
-        "focus",
-        "orb",
-        "scaling"
-      ],
+      "synergies": ["focus", "orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Permanent +1 focus — always strong, core of orb builds"
+      "notes": "Straight into S. One permanent focus outscales almost every fight. Upgrade to 2 is nuts"
     },
     {
       "id": "Double Energy",
       "baseTier": "A",
-      "synergies": [
-        "exhaust",
-        "scaling"
-      ],
+      "synergies": ["exhaust", "scaling"],
       "antiSynergies": [],
-      "notes": "Double current energy, exhausts. Strong burst turns"
+      "notes": "Cheat energy. Really nice with Coolheaded. Good for power setup turns"
     },
     {
       "id": "Echo Form",
       "baseTier": "S",
-      "synergies": [
-        "scaling"
-      ],
+      "synergies": ["scaling"],
       "antiSynergies": [],
-      "notes": "Ethereal. First card each turn plays twice — game-winning power"
+      "notes": "Probably the best card in the class. Playing best card twice is broken. Worth carrying as brick"
     },
     {
       "id": "Energy Surge",
-      "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "scaling"
-      ],
+      "baseTier": "D",
+      "synergies": ["exhaust", "scaling"],
       "antiSynergies": [],
-      "notes": "Gain energy, exhaust. Burst enabler"
+      "notes": "Multiplayer card, not relevant in solo"
     },
     {
       "id": "Feral",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "scaling"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "scaling"],
       "antiSynergies": [],
-      "notes": "Aggressive scaling power"
+      "notes": "2 energy power returning zero-cost attacks. Bad Echo Form. Output not enough"
     },
     {
       "id": "Fight Through",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "block"
-      ],
+      "synergies": ["damage", "block"],
       "antiSynergies": [],
-      "notes": "Damage + block in one card"
+      "notes": "Gain 13 block + 2 wounds. Solid early block but wounds brick future draw cycles"
     },
     {
       "id": "Flak Cannon",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "multi_hit",
-        "aoe"
-      ],
+      "baseTier": "C",
+      "synergies": ["damage", "multi_hit", "aoe"],
       "antiSynergies": [],
-      "notes": "3 calculated random hits, decent AoE"
+      "notes": "Exhaust all statuses, deal 8 damage per. Status package needs more support"
     },
     {
       "id": "Focused Strike",
-      "baseTier": "B",
-      "synergies": [
-        "focus",
-        "damage"
-      ],
+      "baseTier": "A",
+      "synergies": ["focus", "damage"],
       "antiSynergies": [],
-      "notes": "Damage scales with focus"
+      "notes": "Common. Deal 9 + 1 temp focus. Upgrade: 11 + 2 focus. De facto common that never falls off"
     },
     {
       "id": "Ftl",
-      "baseTier": "B",
-      "synergies": [
-        "draw",
-        "zero_cost",
-        "damage"
-      ],
+      "baseTier": "A",
+      "synergies": ["draw", "zero_cost", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + draw if <3 cards played this turn"
+      "notes": "Zero energy, deal 5, draw 1 if <3 cards played. Free damage. Don't take with Echo Form"
     },
     {
       "id": "Fusion",
-      "baseTier": "A",
-      "synergies": [
-        "orb",
-        "channel"
-      ],
+      "baseTier": "C",
+      "synergies": ["orb", "channel"],
       "antiSynergies": [],
-      "notes": "Channel plasma orb for energy"
+      "notes": "Channel plasma for 2 energy. Less needed. Better/easier ways to make energy"
     },
     {
       "id": "Genetic Algorithm",
-      "baseTier": "A",
-      "synergies": [
-        "block",
-        "scaling"
-      ],
+      "baseTier": "S",
+      "synergies": ["block", "scaling"],
       "antiSynergies": [],
-      "notes": "Block grows +3 per combat — run-long scaling, exhaust"
+      "notes": "Scales into insane block over the game. Combos with Echo Form. Rare so comes pre-upgraded"
     },
     {
       "id": "Glacier",
       "baseTier": "S",
-      "synergies": [
-        "frost",
-        "block",
-        "channel",
-        "orb"
-      ],
+      "synergies": ["frost", "block", "channel", "orb"],
       "antiSynergies": [],
-      "notes": "Block + channel 2 frost — top tier defensive card"
+      "notes": "Nerfed 1 block from STS1, doesn't matter. Makes two frost, that's all you need to know"
     },
     {
       "id": "Glasswork",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "frost"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "orb", "aoe"],
       "antiSynergies": [],
-      "notes": "Block with frost synergy"
+      "notes": "Gain 5 block, channel glass orb. New orb type for AoE. Very easy to pick in act 1"
     },
     {
       "id": "Go For The Eyes",
-      "baseTier": "B",
-      "synergies": [
-        "weak",
-        "zero_cost",
-        "damage"
-      ],
+      "baseTier": "A",
+      "synergies": ["weak", "zero_cost", "damage"],
       "antiSynergies": [],
-      "notes": "0-cost, apply weak if enemy intends to attack"
+      "notes": "Zero energy, deal 3 + apply weak. Overperforming card. Standalone good"
     },
     {
       "id": "Gunk Up",
       "baseTier": "D",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "Adds Slimed to enemy deck, minor disruption"
+      "notes": "Deal 4x3 + add slab. Number too low vs ball lightning. Payoff not good enough"
     },
     {
       "id": "Hailstorm",
       "baseTier": "A",
-      "synergies": [
-        "frost",
-        "channel",
-        "orb",
-        "aoe"
-      ],
+      "synergies": ["frost", "channel", "orb", "aoe"],
       "antiSynergies": [],
-      "notes": "Channel frost whenever you play attack — ongoing value"
+      "notes": "Power: end of turn deal 6 AoE if you have frost. Condition basically always met. Doesn't fall off"
     },
     {
       "id": "Helix Drill",
       "baseTier": "B",
-      "synergies": [
-        "damage",
-        "zero_cost",
-        "multi_hit"
-      ],
+      "synergies": ["damage", "zero_cost", "multi_hit"],
       "antiSynergies": [],
-      "notes": "0-cost rare attack, solid damage"
+      "notes": "Zero energy, 3 damage per energy spent. Usually does 9. As a rare, numbers don't justify slot"
     },
     {
       "id": "Hologram",
       "baseTier": "A",
-      "synergies": [
-        "block",
-        "draw"
-      ],
+      "synergies": ["block", "draw"],
       "antiSynergies": [],
-      "notes": "Block + retrieve card from discard — flexible and strong"
+      "notes": "Put card from discard to hand. Not as broken as people think. Could be top of B"
     },
     {
       "id": "Hotfix",
-      "baseTier": "C",
-      "synergies": [
-        "draw",
-        "zero_cost"
-      ],
+      "baseTier": "S",
+      "synergies": ["focus", "zero_cost", "orb"],
       "antiSynergies": [],
-      "notes": "0-cost utility, minor draw effect"
+      "notes": "Best temp focus card. Zero energy, gain 2 focus this turn (upgrades to 3). Common rarity. Bonkers"
     },
     {
       "id": "Hyperbeam",
-      "baseTier": "A",
-      "synergies": [
-        "aoe",
-        "damage"
-      ],
-      "antiSynergies": [
-        "focus"
-      ],
-      "notes": "Massive AoE damage, lose 3 focus — strong but costly"
+      "baseTier": "C",
+      "synergies": ["aoe", "damage"],
+      "antiSynergies": ["focus"],
+      "notes": "Deal 26 AoE, lose 3 focus. Better in STS2 but still a break in hard fights"
     },
     {
       "id": "Ice Lance",
-      "baseTier": "C",
-      "synergies": [
-        "frost",
-        "damage",
-        "orb"
-      ],
+      "baseTier": "A",
+      "synergies": ["frost", "damage", "orb"],
       "antiSynergies": [],
-      "notes": "Expensive frost attack, needs frost orbs channeled"
+      "notes": "3 energy, deal 19 + channel 3 frost. Slightly overcosted but frost is just that good"
     },
     {
       "id": "Ignition",
-      "baseTier": "B",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "baseTier": "D",
+      "synergies": ["damage", "exhaust"],
       "antiSynergies": [],
-      "notes": "Damage burst, exhausts"
+      "notes": "Multiplayer card, not relevant in solo"
     },
     {
       "id": "Iteration",
       "baseTier": "B",
-      "synergies": [
-        "draw",
-        "zero_cost",
-        "scaling"
-      ],
+      "synergies": ["draw", "zero_cost", "scaling"],
       "antiSynergies": [],
-      "notes": "Power: extra draw for 0-cost cards"
+      "notes": "First status drawn each turn draws 2. Average card, saves draw cycles from bricking"
     },
     {
       "id": "Leap",
       "baseTier": "B",
-      "synergies": [
-        "block"
-      ],
+      "synergies": ["block"],
       "antiSynergies": [],
-      "notes": "Solid block card"
+      "notes": "Gain 9 block for 1 energy. Not as good as Charge Battery but big number early"
     },
     {
       "id": "Lightning Rod",
-      "baseTier": "B",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb"
-      ],
+      "baseTier": "A",
+      "synergies": ["lightning", "channel", "orb", "block"],
       "antiSynergies": [],
-      "notes": "Channel lightning, lightning support"
+      "notes": "Slow block + channel lightning. Does damage while blocking in act 1"
     },
     {
       "id": "Loop",
       "baseTier": "A",
-      "synergies": [
-        "orb",
-        "scaling"
-      ],
+      "synergies": ["orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Front orb triggers at start of turn — value over time"
+      "notes": "Trigger rightmost orb passive at start of turn. Worse than STS1 without permanent focus but still great"
     },
     {
       "id": "Machine Learning",
-      "baseTier": "S",
-      "synergies": [
-        "draw",
-        "scaling"
-      ],
+      "baseTier": "A",
+      "synergies": ["draw", "scaling"],
       "antiSynergies": [],
-      "notes": "Draw +1 card per turn permanently"
+      "notes": "Draw 1 extra per turn. Slightly better than STS1 due to needing to line up Hot Fix"
     },
     {
       "id": "Meteor Strike",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "orb",
-        "channel"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "orb", "channel"],
       "antiSynergies": [],
-      "notes": "24 damage + 3 plasma. 5 cost but huge payoff"
+      "notes": "Was easy S in STS1 but payoff for playing it is worse. Can still go infinite with coolheaded"
     },
     {
       "id": "Modded",
-      "baseTier": "C",
-      "synergies": [
-        "orb",
-        "draw"
-      ],
+      "baseTier": "S",
+      "synergies": ["orb", "draw", "scaling"],
       "antiSynergies": [],
-      "notes": "Flexible utility card"
+      "notes": "Free orb slot, replaces itself, scales throughout the fight. No downside"
     },
     {
       "id": "Momentum Strike",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "orb"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "Damage scales with orb-related condition"
+      "notes": "Deal 10, reduces to zero cost. Decent early common, nothing exceptional"
     },
     {
       "id": "Multi Cast",
-      "baseTier": "A",
-      "synergies": [
-        "orb",
-        "evoke",
-        "dark"
-      ],
+      "baseTier": "C",
+      "synergies": ["orb", "evoke", "dark"],
       "antiSynergies": [],
-      "notes": "X-cost evoke front orb X times — devastating with dark orb"
+      "notes": "X energy evoke rightmost X times. Less need for mega dark orb. Energy harder to combine"
     },
     {
       "id": "Null",
-      "baseTier": "C",
-      "synergies": [
-        "orb",
-        "focus",
-        "damage"
-      ],
+      "baseTier": "A",
+      "synergies": ["dark", "orb", "weak", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + orb/focus utility"
+      "notes": "Deal 10, apply 2 weak, channel dark. Weakness + dark orb. Very solid"
     },
     {
       "id": "Overclock",
-      "baseTier": "A",
-      "synergies": [
-        "draw"
-      ],
+      "baseTier": "C",
+      "synergies": ["draw"],
       "antiSynergies": [],
-      "notes": "Draw 2, adds Burn to discard — strong draw"
+      "notes": "Draw 2 + burn. Burn bricks future cycles which matters more now with temp focus"
     },
     {
       "id": "Quadcast",
       "baseTier": "A",
-      "synergies": [
-        "orb",
-        "evoke"
-      ],
+      "synergies": ["orb", "evoke"],
       "antiSynergies": [],
-      "notes": "Ancient. Evoke front orb 4 times — huge with dark orb"
+      "notes": "Ancient. Evoke rightmost orb 4 times. Block 20 from frost evoke or one-shot boss with dark"
     },
     {
       "id": "Rainbow",
-      "baseTier": "A",
-      "synergies": [
-        "orb",
-        "frost",
-        "lightning",
-        "dark",
-        "channel"
-      ],
+      "baseTier": "C",
+      "synergies": ["orb", "frost", "lightning", "dark", "channel"],
       "antiSynergies": [],
-      "notes": "Channel 1 of each orb type, exhausts"
+      "notes": "2 energy channel 1 of each orb type. Jack of all trades, does nothing well"
     },
     {
       "id": "Reboot",
-      "baseTier": "D",
-      "synergies": [
-        "draw",
-        "exhaust"
-      ],
+      "baseTier": "B",
+      "synergies": ["draw", "exhaust"],
       "antiSynergies": [],
-      "notes": "Shuffle hand+discard into draw, draw 4. Exhaust"
+      "notes": "Shuffle all cards, draw 4, exhaust. Not doing anything crazy as a rare but has uses"
     },
     {
       "id": "Refract",
-      "baseTier": "B",
-      "synergies": [
-        "frost",
-        "block",
-        "orb",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["frost", "block", "orb", "damage"],
       "antiSynergies": [],
-      "notes": "Damage + channel frost"
+      "notes": "3 energy, deal 9x2 + channel 2 glass. Clunky, no energy left to block"
     },
     {
       "id": "Rocket Punch",
       "baseTier": "B",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage", "draw"],
       "antiSynergies": [],
-      "notes": "Solid damage uncommon"
+      "notes": "Deal 13 draw 1; goes to zero cost when status created. Combos with turbo"
     },
     {
       "id": "Scavenge",
-      "baseTier": "B",
-      "synergies": [
-        "draw",
-        "exhaust"
-      ],
+      "baseTier": "C",
+      "synergies": ["draw", "exhaust"],
       "antiSynergies": [],
-      "notes": "Look through exhaust pile for a card"
+      "notes": "Exhaust a card, gain 2 energy next turn. Worse than STS1 recycle (delayed energy)"
     },
     {
       "id": "Scrape",
-      "baseTier": "A",
-      "synergies": [
-        "zero_cost",
-        "draw",
-        "damage"
-      ],
+      "baseTier": "D",
+      "synergies": ["zero_cost", "draw", "damage"],
       "antiSynergies": [],
-      "notes": "Draw 3-4, discard non-0-cost. Core of Claw/0-cost decks"
+      "notes": "Deal 7 + draw 4 but discard non-zero. Paradox: can't click first, can't build toward it"
     },
     {
       "id": "Shadow Shield",
-      "baseTier": "B",
-      "synergies": [
-        "block",
-        "draw"
-      ],
+      "baseTier": "A",
+      "synergies": ["block", "dark", "orb"],
       "antiSynergies": [],
-      "notes": "Block scales with hand size"
+      "notes": "2 energy, 11 block + channel dark. Keeps getting bumped up. 11 block is solid for setup character"
     },
     {
       "id": "Shatter",
-      "baseTier": "B",
-      "synergies": [
-        "frost",
-        "aoe",
-        "damage",
-        "orb"
-      ],
+      "baseTier": "A",
+      "synergies": ["frost", "aoe", "damage", "orb", "evoke"],
       "antiSynergies": [],
-      "notes": "AoE damage, frost synergy"
+      "notes": "Deal 11 AoE + evoke all orbs. Evoking is often upside in STS2"
     },
     {
       "id": "Signal Boost",
       "baseTier": "C",
-      "synergies": [
-        "focus",
-        "orb",
-        "exhaust"
-      ],
+      "synergies": ["focus", "orb", "exhaust"],
       "antiSynergies": [],
-      "notes": "Temporary focus boost, exhausts"
+      "notes": "Next power played twice, exhaust. Too situational. Less defrags to double"
     },
     {
       "id": "Skim",
       "baseTier": "A",
-      "synergies": [
-        "draw"
-      ],
+      "synergies": ["draw"],
       "antiSynergies": [],
-      "notes": "Draw 3 — simple and strong"
+      "notes": "Draw 3 for 1 energy. Cares about drawing powers and hot fixes. Very clickable"
     },
     {
       "id": "Smokestack",
-      "baseTier": "B",
-      "synergies": [
-        "exhaust",
-        "damage"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust", "damage", "aoe"],
       "antiSynergies": [],
-      "notes": "Power: deal damage when you exhaust"
+      "notes": "Deal 5 AoE per status created. How often do you create statuses? Situational"
     },
     {
       "id": "Spinner",
-      "baseTier": "C",
-      "synergies": [
-        "damage",
-        "scaling"
-      ],
+      "baseTier": "B",
+      "synergies": ["damage", "scaling", "orb"],
       "antiSynergies": [],
-      "notes": "Rare power with spinning damage effect"
+      "notes": "Channel glass each turn. Early game damage. Not exceptional but fills a role"
     },
     {
       "id": "Storm",
-      "baseTier": "A",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb"
-      ],
+      "baseTier": "C",
+      "synergies": ["lightning", "channel", "orb"],
       "antiSynergies": [],
-      "notes": "Channel lightning whenever you play a power"
+      "notes": "Channel lightning per power played. No heat sinks makes it worse. Situational"
     },
     {
       "id": "Subroutine",
       "baseTier": "B",
-      "synergies": [
-        "orb",
-        "channel"
-      ],
+      "synergies": ["orb", "channel", "scaling"],
       "antiSynergies": [],
-      "notes": "Orb channeling support power"
+      "notes": "Gain 1 energy per power played. Less power spam in STS2 so less needed"
     },
     {
       "id": "Sunder",
       "baseTier": "A",
-      "synergies": [
-        "damage"
-      ],
+      "synergies": ["damage"],
       "antiSynergies": [],
-      "notes": "Big hit, energy refund on kill"
+      "notes": "Deal 24; if kills, gain 3 energy. Pseudo-AoE. Good in hallways, falls off vs bosses"
     },
     {
       "id": "Supercritical",
-      "baseTier": "A",
-      "synergies": [
-        "damage",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["scaling", "exhaust"],
       "antiSynergies": [],
-      "notes": "0-cost, massive damage potential, exhausts"
+      "notes": "Zero energy, gain 4 energy, exhaust. Tons of acceleration. Lets you chain draw and play all powers"
     },
     {
       "id": "Sweeping Beam",
       "baseTier": "B",
-      "synergies": [
-        "aoe",
-        "draw",
-        "damage"
-      ],
+      "synergies": ["aoe", "draw", "damage"],
       "antiSynergies": [],
-      "notes": "AoE damage + draw 1"
+      "notes": "Deal 6 AoE + draw 1. AoE more needed in STS2. Self-cycles. Just fine"
     },
     {
       "id": "Synchronize",
-      "baseTier": "B",
-      "synergies": [
-        "orb",
-        "focus",
-        "exhaust"
-      ],
+      "baseTier": "S",
+      "synergies": ["orb", "focus", "scaling"],
       "antiSynergies": [],
-      "notes": "Gain 2 calculated focus, exhaust"
+      "notes": "Can make 4-8 focus per turn based on unique orbs. Upgrade removes exhaust. Loop for insane scaling"
     },
     {
       "id": "Synthesis",
       "baseTier": "C",
-      "synergies": [
-        "orb",
-        "damage"
-      ],
+      "synergies": ["orb", "damage"],
       "antiSynergies": [],
-      "notes": "Orb-based damage attack"
+      "notes": "Deal 12, next power costs zero. Doesn't cheat much energy. Number too low"
     },
     {
       "id": "Tempest",
-      "baseTier": "B",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb"
-      ],
+      "baseTier": "C",
+      "synergies": ["lightning", "channel", "orb"],
       "antiSynergies": [],
-      "notes": "X-cost: channel X+1 lightning"
+      "notes": "X cost channel X lightning. Less energy, less focus. Better ways to deal boss damage"
     },
     {
       "id": "Tesla Coil",
-      "baseTier": "A",
-      "synergies": [
-        "lightning",
-        "damage"
-      ],
+      "baseTier": "B",
+      "synergies": ["lightning", "damage"],
       "antiSynergies": [],
-      "notes": "0-cost attack, passive lightning damage on orb channel"
+      "notes": "Zero energy, deal 3 + trigger all lightning. Solid early damage, scales with focus"
     },
     {
       "id": "Thunder",
-      "baseTier": "A",
-      "synergies": [
-        "lightning",
-        "orb",
-        "scaling"
-      ],
+      "baseTier": "C",
+      "synergies": ["lightning", "orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Lightning power, ongoing lightning support"
+      "notes": "Extra 6 damage per lightning evoke. Awkward to pick. Harder to evoke than let sit"
     },
     {
       "id": "Trash To Treasure",
-      "baseTier": "D",
-      "synergies": [
-        "exhaust"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust", "orb"],
       "antiSynergies": [],
-      "notes": "Exhaust a card, gain a random rare — high variance"
+      "notes": "Channel random orb per status created. Status archetype too weak currently"
     },
     {
       "id": "Turbo",
       "baseTier": "A",
-      "synergies": [
-        "zero_cost",
-        "scaling"
-      ],
+      "synergies": ["zero_cost", "scaling"],
       "antiSynergies": [],
-      "notes": "0-cost: gain 2 energy, add Void to discard"
+      "notes": "Zero energy, gain 2 energy + void in discard. Bridges into status cards. Energy gen is great"
     },
     {
       "id": "Uproar",
       "baseTier": "C",
-      "synergies": [
-        "damage",
-        "orb"
-      ],
+      "synergies": ["damage", "orb"],
       "antiSynergies": [],
-      "notes": "Orb-powered damage attack"
+      "notes": "Deal 5x2 + play random attack from draw. Weird, random cards not desirable"
     },
     {
       "id": "Voltaic",
-      "baseTier": "C",
-      "synergies": [
-        "lightning",
-        "channel",
-        "orb",
-        "exhaust"
-      ],
+      "baseTier": "A",
+      "synergies": ["lightning", "channel", "orb", "scaling"],
       "antiSynergies": [],
-      "notes": "Channel 2 lightning, exhaust. Sly keyword"
+      "notes": "Channel lightning equal to lightning already channeled. Exponential scaling for boss damage"
     },
     {
       "id": "White Noise",
-      "baseTier": "D",
-      "synergies": [
-        "exhaust"
-      ],
+      "baseTier": "C",
+      "synergies": ["exhaust"],
       "antiSynergies": [],
-      "notes": "Add random power to hand, exhaust. Inconsistent"
+      "notes": "Random power into hand, exhaust. Desperation pick only. Average power quality too low"
     }
   ]
 }
