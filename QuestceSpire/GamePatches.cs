@@ -317,11 +317,7 @@ public static class GamePatches
 				List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				List<ScoredPotion> potions = Plugin.SynergyScorer.ScorePotionOfferings(gameState.ShopPotions, deckAnalysis, gameState.Character, Plugin.TierEngine);
 				Plugin.Overlay?.ShowShopAdvice(cards, relics, potions, deckAnalysis, gameState.Character);
-				// Record shop decisions for cards, relics, and potions separately
-				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopCard, gameState.ShopCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
-				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopRelic, gameState.ShopRelics.ConvertAll((RelicInfo r) => r.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
-				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopPotion, gameState.ShopPotions.ConvertAll((PotionInfo p) => p.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
-				// Shop purchase hooks (OnShopCardPurchased etc.) will update chosenId when player buys.
+				// Shop purchase tracking handled by RefreshShopIfChanged (inventory diff detection)
 			}
 		}
 		catch (Exception value)
@@ -346,7 +342,6 @@ public static class GamePatches
 				}
 			}
 			Plugin.Log("Shop card purchased: " + (cardId ?? "(unknown)"));
-			Plugin.RunTracker?.RecordShopPurchase("card", cardId);
 		}
 		catch (Exception ex)
 		{
@@ -370,7 +365,6 @@ public static class GamePatches
 				}
 			}
 			Plugin.Log("Shop relic purchased: " + (relicId ?? "(unknown)"));
-			Plugin.RunTracker?.RecordShopPurchase("relic", relicId);
 		}
 		catch (Exception ex)
 		{
@@ -394,7 +388,6 @@ public static class GamePatches
 				}
 			}
 			Plugin.Log("Shop potion purchased: " + (potionId ?? "(unknown)"));
-			Plugin.RunTracker?.RecordShopPurchase("potion", potionId);
 		}
 		catch (Exception ex)
 		{

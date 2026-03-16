@@ -799,7 +799,7 @@ public class OverlayManager
 	{
 		GameState gameState = GameStateReader.ReadCurrentState();
 		if (gameState == null) return;
-		int currentCount = (gameState.ShopCards?.Count ?? 0) + (gameState.ShopRelics?.Count ?? 0);
+		int currentCount = (gameState.ShopCards?.Count ?? 0) + (gameState.ShopRelics?.Count ?? 0) + (gameState.ShopPotions?.Count ?? 0);
 		if (currentCount == _shopItemCount) return;
 		// Item count changed — a purchase happened
 		Plugin.Log($"Shop inventory changed ({_shopItemCount} → {currentCount}), refreshing...");
@@ -840,7 +840,8 @@ public class OverlayManager
 		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-		ShowShopAdvice(cards, relics, potions: null, deckAnalysis: deckAnalysis, character: gameState.Character);
+		List<ScoredPotion> potions = Plugin.SynergyScorer.ScorePotionOfferings(gameState.ShopPotions, deckAnalysis, gameState.Character, Plugin.TierEngine);
+		ShowShopAdvice(cards, relics, potions, deckAnalysis, gameState.Character);
 	}
 
 	private static bool IsInsideMerchant(Node node)
@@ -1220,7 +1221,7 @@ public class OverlayManager
 		_currentPotions = potions;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
-		_shopItemCount = (cards?.Count ?? 0) + (relics?.Count ?? 0);
+		_shopItemCount = (cards?.Count ?? 0) + (relics?.Count ?? 0) + (potions?.Count ?? 0);
 		_shopCardIds = new HashSet<string>(cards?.Select(c => c.Id) ?? Enumerable.Empty<string>());
 		_shopRelicIds = new HashSet<string>(relics?.Select(r => r.Id) ?? Enumerable.Empty<string>());
 		_currentScreen = "MERCHANT SHOP";
