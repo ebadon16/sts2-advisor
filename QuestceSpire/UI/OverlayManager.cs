@@ -3681,9 +3681,9 @@ public class OverlayManager
 			return;
 		try
 		{
-			// Clean up ALL previous badges (they live on our layer, so this is clean)
+			// Clean up ALL previous badges and invalidate any pending deferred calls
 			ClearInGameBadges();
-			// Capture epoch so deferred call can detect stale invocations
+			_badgeEpoch++;
 			int epoch = _badgeEpoch;
 			LogNodeTree(screenNode, "CardReward", 0, 5);
 			Callable.From(() => InjectCardGradesDeferred(screenNode, scoredCards, epoch)).CallDeferred();
@@ -3698,15 +3698,15 @@ public class OverlayManager
 	{
 		if (screenNode == null || !GodotObject.IsInstanceValid(screenNode))
 			return;
-		// Stale deferred call — screen changed since injection was queued
+		// Stale deferred call — a newer InjectCardGrades call superseded this one
 		if (epoch != _badgeEpoch)
 			return;
 		if (!_showInGameBadges || _currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
 			return;
-		// No need to scan game tree for overlay screens — badges are on our layer
-		// and will be cleaned up by ClearInGameBadges when screen changes.
 		try
 		{
+			// Clear any badges from earlier deferred calls that slipped through
+			ClearInGameBadges();
 			// Strategy: Find all Control children that look like card holders
 			// Card reward screens typically have a container with N children (one per card)
 			// We look for containers whose child count matches our scored card count
