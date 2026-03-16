@@ -707,7 +707,18 @@ public class OverlayManager
 			DeckAnalysis da = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 			List<ScoredCard> scored = Plugin.SynergyScorer.ScoreOfferings(gameState.OfferedCards, da, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(scored, da, gameState.Character, "EVENT CARD OFFER");
-			// No in-game badges for events — can't distinguish reward from upgrade/transform
+			// Inject in-game badges for event card offerings
+			try
+			{
+				SceneTree tree = Engine.GetMainLoop() as SceneTree;
+				Node screenNode = tree?.Root != null ? FindNodeOfType(tree.Root, "NCardRewardSelectionScreen", 4) : null;
+				if (screenNode != null)
+					InjectCardGrades(screenNode, _currentCards ?? scored, force: true);
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log($"CheckForEventCardOffering badge inject error: {ex.Message}");
+			}
 			return;
 		}
 		// ShowScreen may not have fired — try to find card screen node and extract cards via reflection
@@ -724,6 +735,15 @@ public class OverlayManager
 			DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 			List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(offeredCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 			ShowCardAdvice(cards, deckAnalysis, gameState.Character, "EVENT CARD OFFER");
+			// Inject in-game badges using the screen node we already found
+			try
+			{
+				InjectCardGrades(cardScreen, _currentCards ?? cards, force: true);
+			}
+			catch (Exception ex2)
+			{
+				Plugin.Log($"CheckForEventCardOffering badge inject error: {ex2.Message}");
+			}
 		}
 		catch (Exception ex)
 		{
@@ -1514,7 +1534,7 @@ public class OverlayManager
 		// Always clean up existing badges first
 		ClearInGameBadges();
 		// Re-inject if turning on and a badge-supporting screen is active
-		if (_showInGameBadges && _currentScreen == "CARD REWARD" && _currentCards != null)
+		if (_showInGameBadges && (_currentScreen == "CARD REWARD" || _currentScreen == "EVENT CARD OFFER") && _currentCards != null)
 		{
 			try
 			{
@@ -3674,7 +3694,7 @@ public class OverlayManager
 			Plugin.Log("InjectCardGrades skipped — not a genuine card reward");
 			return;
 		}
-		if (_currentScreen != "CARD REWARD" || IsInsideMerchant(screenNode))
+		if ((_currentScreen != "CARD REWARD" && _currentScreen != "EVENT CARD OFFER") || IsInsideMerchant(screenNode))
 			return;
 		// Card rewards have 3-4 cards; draw/discard pile viewers have many more
 		if (scoredCards.Count > 5)
@@ -3701,7 +3721,7 @@ public class OverlayManager
 		// Stale deferred call — a newer InjectCardGrades call superseded this one
 		if (epoch != _badgeEpoch)
 			return;
-		if (!_showInGameBadges || _currentScreen != "CARD REWARD" || !GamePatches.IsGenuineCardReward)
+		if (!_showInGameBadges || (_currentScreen != "CARD REWARD" && _currentScreen != "EVENT CARD OFFER") || (!GamePatches.IsGenuineCardReward && _currentScreen != "EVENT CARD OFFER"))
 			return;
 		try
 		{

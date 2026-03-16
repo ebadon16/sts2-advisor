@@ -3,1139 +3,928 @@
     {
       "enemyId": "ShrinkerBeetleWeak",
       "enemyName": "Shrinker Beetle",
-      "tips": ["A simple early fight. Use it to thin strikes from your deck."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "SHRINKER_BEETLE_WEAK",
-      "enemyName": "Shrinker Beetle",
-      "tips": ["A simple early fight. Use it to thin strikes from your deck."],
+      "tips": [
+        "A simple early fight (38-40 HP). Use it to thin strikes from your deck.",
+        "May apply a shrink debuff reducing your attack damage. Kill quickly to avoid stacking.",
+        "Good opportunity to practice combos without much risk."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "BowlbugsWeak",
       "enemyName": "Bowlbugs",
-      "tips": ["Low-threat opening encounter. Focus on learning enemy patterns."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "BOWLBUGS_WEAK",
-      "enemyName": "Bowlbugs",
-      "tips": ["Low-threat opening encounter. Focus on learning enemy patterns."],
+      "tips": [
+        "Low-threat opening encounter. Focus on learning enemy patterns.",
+        "Bowlbug Rocks may have natural armor. Heavy single hits work better than multi-strike.",
+        "Conserve HP here for tougher fights ahead."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "CorpseSlugsWeak",
       "enemyName": "Corpse Slugs",
-      "tips": ["Weak slugs. Kill them quickly and conserve HP for harder fights ahead."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "CORPSE_SLUGS_WEAK",
-      "enemyName": "Corpse Slugs",
-      "tips": ["Weak slugs. Kill them quickly and conserve HP for harder fights ahead."],
+      "tips": [
+        "Weak slugs. Kill them quickly and conserve HP for harder fights ahead.",
+        "May leave slime status cards in your deck. End the fight fast to minimize clutter.",
+        "AOE can help if multiple slugs appear."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "DevotedSculptorWeak",
       "enemyName": "Devoted Sculptor",
-      "tips": ["A straightforward weak encounter. Practice your card combos here."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "DEVOTED_SCULPTOR_WEAK",
-      "enemyName": "Devoted Sculptor",
-      "tips": ["A straightforward weak encounter. Practice your card combos here."],
+      "tips": [
+        "Despite being weak, has a surprisingly high 162 HP. This is a longer fight than most weak encounters.",
+        "Practice your card combos and build engine turns while chipping away at its health.",
+        "Block on big attack turns; its damage output is low but the fight drags on."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "ExoskeletonsWeak",
       "enemyName": "Exoskeletons",
-      "tips": ["Armored enemies. You may need to break through block before dealing damage."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "EXOSKELETONS_WEAK",
-      "enemyName": "Exoskeletons",
-      "tips": ["Armored enemies. You may need to break through block before dealing damage."],
+      "tips": [
+        "Armored enemies with natural block. Heavy single hits break through better than multi-strike.",
+        "A safe weak fight. Focus on dealing efficient damage per card.",
+        "Good practice for learning to read block-related intents."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "FuzzyWurmCrawlerWeak",
       "enemyName": "Fuzzy Wurm Crawler",
-      "tips": ["A simple crawler. Dispatch quickly to save HP."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "FUZZY_WURM_CRAWLER_WEAK",
-      "enemyName": "Fuzzy Wurm Crawler",
-      "tips": ["A simple crawler. Dispatch quickly to save HP."],
+      "tips": [
+        "A simple crawler with 55-57 HP. Dispatch quickly to save HP.",
+        "May curl up for defense then strike hard. Watch intents for wind-up attacks.",
+        "Straightforward fight -- use it to set up your deck."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "NibbitsWeak",
       "enemyName": "Nibbits",
-      "tips": ["Small enemies in a group. AOE helps clear them efficiently."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "NIBBITS_WEAK",
-      "enemyName": "Nibbits",
-      "tips": ["Small enemies in a group. AOE helps clear them efficiently."],
+      "tips": [
+        "Small enemies (42-46 HP each) that may appear in groups. AOE helps clear them efficiently.",
+        "Individually weak, but multiple nibbits attacking each turn adds up.",
+        "Kill the group fast to limit total incoming damage."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "ScrollsOfBitingWeak",
       "enemyName": "Scrolls of Biting",
-      "tips": ["Weak scrolls. Kill them before they stack debuffs on you."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "SCROLLS_OF_BITING_WEAK",
-      "enemyName": "Scrolls of Biting",
-      "tips": ["Weak scrolls. Kill them before they stack debuffs on you."],
+      "tips": [
+        "Weak scrolls (31-38 HP). Kill them before they stack debuffs on you.",
+        "May inflict status cards or wounds into your deck. Speed is key.",
+        "A quick fight if you have decent early damage."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "SeapunkWeak",
       "enemyName": "Seapunk",
-      "tips": ["An easy introductory fight. Take minimal damage here."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "SEAPUNK_WEAK",
-      "enemyName": "Seapunk",
-      "tips": ["An easy introductory fight. Take minimal damage here."],
+      "tips": [
+        "An easy introductory fight (44-46 HP). Take minimal damage here.",
+        "Straightforward attack patterns. Use this to learn the combat system.",
+        "Conserve potions and resources for harder encounters."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "SlimesWeak",
       "enemyName": "Slimes",
-      "tips": ["Weak slimes. AOE can clean them up fast if there are multiples."],
+      "tips": [
+        "Weak slimes. AOE can clean them up fast if there are multiples.",
+        "May split into smaller slimes when killed. Be ready with follow-up damage.",
+        "Low individual HP but watch for slime status cards clogging your deck."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
-      "enemyId": "SLIMES_WEAK",
-      "enemyName": "Slimes",
-      "tips": ["Weak slimes. AOE can clean them up fast if there are multiples."],
+      "enemyId": "SludgeSpinnerWeak",
+      "enemyName": "Sludge Spinner",
+      "tips": [
+        "Applies sludge or status cards (37-39 HP). End the fight before your deck clogs.",
+        "Prioritize killing it quickly over blocking -- the status cards are the real threat.",
+        "A weak encounter but can snowball if you let it linger."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "ThievingHopperWeak",
       "enemyName": "Thieving Hopper",
-      "tips": ["May steal gold. Kill it fast to minimize losses."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "THIEVING_HOPPER_WEAK",
-      "enemyName": "Thieving Hopper",
-      "tips": ["May steal gold. Kill it fast to minimize losses."],
+      "tips": [
+        "May steal gold (79 HP). Kill it fast to minimize losses.",
+        "Higher HP than most weak encounters. Focus all damage on it immediately.",
+        "If it steals gold, you may recover some by killing it quickly."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "ToadpolesWeak",
       "enemyName": "Toadpoles",
-      "tips": ["Small grouped enemies. AOE is efficient here."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "TOADPOLES_WEAK",
-      "enemyName": "Toadpoles",
-      "tips": ["Small grouped enemies. AOE is efficient here."],
+      "tips": [
+        "Small grouped enemies (21-25 HP each). AOE is efficient here.",
+        "Individually fragile but can overwhelm if left alive too long.",
+        "A great fight to test your AOE cards early on."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "TunnelerWeak",
       "enemyName": "Tunneler",
-      "tips": ["A burrowing enemy. Hit it when it surfaces."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-    {
-      "enemyId": "TUNNELER_WEAK",
-      "enemyName": "Tunneler",
-      "tips": ["A burrowing enemy. Hit it when it surfaces."],
+      "tips": [
+        "A burrowing enemy with 87 HP. Hit it when it surfaces.",
+        "When underground, it takes reduced or no damage. Save your big attacks for when it emerges.",
+        "Higher HP for a weak fight. Be patient and time your damage."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
     {
       "enemyId": "TurretOperatorWeak",
-      "enemyName": "Turret Operator",
-      "tips": ["Kill the operator first — the Living Shield is just a blocker.", "Focus damage past the shield onto the operator."],
+      "enemyName": "Turret Operator + Living Shield",
+      "tips": [
+        "Kill the Turret Operator (41 HP) first -- the Living Shield (55 HP) is just a blocker.",
+        "The operator deals the real damage. The shield protects it.",
+        "If you can bypass the shield with targeted attacks, focus the operator directly."
+      ],
       "dangerLevel": "low",
       "priority": 1
     },
-    {
-      "enemyId": "TURRET_OPERATOR_WEAK",
-      "enemyName": "Turret Operator",
-      "tips": ["Kill the operator first — the Living Shield is just a blocker.", "Focus damage past the shield onto the operator."],
-      "dangerLevel": "low",
-      "priority": 1
-    },
-
     {
       "enemyId": "AxebotsNormal",
       "enemyName": "Axebots",
-      "tips": ["Mechanical enemies that hit hard. Block on big attack turns.", "Focus one down to reduce incoming damage."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "AXEBOTS_NORMAL",
-      "enemyName": "Axebots",
-      "tips": ["Mechanical enemies that hit hard. Block on big attack turns.", "Focus one down to reduce incoming damage."],
+      "tips": [
+        "Mechanical enemies (40-44 HP) that hit hard. Block on big attack turns.",
+        "May appear in groups. AOE helps thin their numbers quickly.",
+        "Watch for wind-up attacks signaling a heavy hit next turn."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "BowlbugsNormal",
       "enemyName": "Bowlbugs",
-      "tips": ["Bowlbug Rocks have armored shells. Break their block before dealing HP damage.", "Multiple bugs — AOE is effective."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "BOWLBUGS_NORMAL",
-      "enemyName": "Bowlbugs",
-      "tips": ["Bowlbug Rocks have armored shells. Break their block before dealing HP damage.", "Multiple bugs — AOE is effective."],
+      "tips": [
+        "Bowlbug Rocks (45-48 HP) have armored shells. Break their block before dealing HP damage.",
+        "Heavy single-hit attacks are more efficient than multi-strike against their armor.",
+        "Prioritize the one that is attacking rather than the one blocking."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "ChompersNormal",
       "enemyName": "Chompers",
-      "tips": ["Aggressive biters. Block when they wind up big attacks.", "Kill quickly before damage accumulates."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "CHOMPERS_NORMAL",
-      "enemyName": "Chompers",
-      "tips": ["Aggressive biters. Block when they wind up big attacks.", "Kill quickly before damage accumulates."],
+      "tips": [
+        "Aggressive biters (60-64 HP). Block when they wind up big attacks.",
+        "Their damage can spike on certain turns. Read intents carefully each turn.",
+        "Straightforward damage race -- kill them before they whittle you down."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "ConstructMenagerieNormal",
       "enemyName": "Construct Menagerie",
-      "tips": ["Mixed construct types — Punch Construct hits hard, Cubex Construct is trickier.", "Focus the higher-damage construct first."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "CONSTRUCT_MENAGERIE_NORMAL",
-      "enemyName": "Construct Menagerie",
-      "tips": ["Mixed construct types — Punch Construct hits hard, Cubex Construct is trickier.", "Focus the higher-damage construct first."],
+      "tips": [
+        "Mixed construct types -- Punch Construct (55 HP) hits hard, Cubex Construct (65 HP) has trickier abilities.",
+        "Focus the Punch Construct first to reduce incoming burst damage.",
+        "AOE helps chip both down simultaneously if you have it."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "CorpseSlugsNormal",
       "enemyName": "Corpse Slugs",
-      "tips": ["Tougher than their weak version. May apply debuffs.", "Kill them before they slow you down with status effects."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "CORPSE_SLUGS_NORMAL",
-      "enemyName": "Corpse Slugs",
-      "tips": ["Tougher than their weak version. May apply debuffs.", "Kill them before they slow you down with status effects."],
+      "tips": [
+        "Tougher than their weak version (25-27 HP each). May apply debuffs.",
+        "Can clog your deck with status cards if the fight drags on.",
+        "AOE clears the group quickly. Prioritize speed over perfect blocking."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "CubexConstructNormal",
       "enemyName": "Cubex Construct",
-      "tips": ["A single construct. Straightforward damage race.", "Watch for any special mechanics it telegraphs."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "CUBEX_CONSTRUCT_NORMAL",
-      "enemyName": "Cubex Construct",
-      "tips": ["A single construct. Straightforward damage race.", "Watch for any special mechanics it telegraphs."],
+      "tips": [
+        "A single construct (65 HP). Straightforward damage race.",
+        "May have block or special defensive abilities. Look for vulnerability windows.",
+        "Moderate threat -- save potions for harder encounters."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "CultistsNormal",
       "enemyName": "Cultists",
-      "tips": ["Calcified and Damp Cultists have different abilities — read their intents.", "Focus whichever one buffs or scales first."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "CULTISTS_NORMAL",
-      "enemyName": "Cultists",
-      "tips": ["Calcified and Damp Cultists have different abilities — read their intents.", "Focus whichever one buffs or scales first."],
+      "tips": [
+        "Calcified (38-41 HP) and Damp (51-53 HP) Cultists have different abilities -- read their intents.",
+        "If one buffs or heals the other, kill the support cultist first.",
+        "The Damp Cultist has more HP and may be the bigger threat. Prioritize based on intents."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "ExoskeletonsNormal",
       "enemyName": "Exoskeletons",
-      "tips": ["Armored enemies with natural block. Need strong single hits to break through.", "Multi-hit attacks chip away at armor effectively."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "EXOSKELETONS_NORMAL",
-      "enemyName": "Exoskeletons",
-      "tips": ["Armored enemies with natural block. Need strong single hits to break through.", "Multi-hit attacks chip away at armor effectively."],
+      "tips": [
+        "Armored enemies (24-28 HP) with natural block. Need strong single hits to break through.",
+        "Multi-strike attacks waste damage against their armor. Use heavy hitters.",
+        "Low individual HP but armor makes the fight feel longer than expected."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "FabricatorNormal",
       "enemyName": "Fabricator",
-      "tips": ["May create or summon additional enemies. Kill it before it builds up.", "Focus the Fabricator to prevent snowballing."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "FABRICATOR_NORMAL",
-      "enemyName": "Fabricator",
-      "tips": ["May create or summon additional enemies. Kill it before it builds up.", "Focus the Fabricator to prevent snowballing."],
+      "tips": [
+        "High HP (150) enemy that may create or summon additional enemies. Rush it down.",
+        "Kill it before it builds an army. Every turn it lives makes the fight harder.",
+        "Save your strongest attacks for this fight. Potions are justified here.",
+        "Ignoring summons to focus the Fabricator is usually the correct strategy."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "FlyconidNormal",
       "enemyName": "Flyconid",
-      "tips": ["A flying enemy. May be harder to pin down.", "Consistent damage output is key."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "FLYCONID_NORMAL",
-      "enemyName": "Flyconid",
-      "tips": ["A flying enemy. May be harder to pin down.", "Consistent damage output is key."],
+      "tips": [
+        "A flying enemy (47-49 HP). May have evasion reducing incoming damage.",
+        "If it has flight, focus on high single-hit damage to bypass damage reduction.",
+        "Moderate threat. Manageable if you read intents and block appropriately."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "FogmogNormal",
       "enemyName": "Fogmog",
-      "tips": ["A fog-based enemy that may obscure intents or apply debuffs.", "Stay aggressive to end the fight before visibility becomes an issue."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "FOGMOG_NORMAL",
-      "enemyName": "Fogmog",
-      "tips": ["A fog-based enemy that may obscure intents or apply debuffs.", "Stay aggressive to end the fight before visibility becomes an issue."],
+      "tips": [
+        "A fog-based enemy (74 HP) that may obscure intents or apply debuffs.",
+        "When intents are hidden, assume the worst and block defensively.",
+        "Decent HP pool. Bring consistent damage to cut through the fog."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "FossilStalkerNormal",
       "enemyName": "Fossil Stalker",
-      "tips": ["A dangerous normal encounter. Watch for high-damage attacks.", "Block on big turns, push damage when it is passive."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "FOSSIL_STALKER_NORMAL",
-      "enemyName": "Fossil Stalker",
-      "tips": ["A dangerous normal encounter. Watch for high-damage attacks.", "Block on big turns, push damage when it is passive."],
+      "tips": [
+        "A dangerous normal encounter (51-53 HP). Watch for high-damage attacks.",
+        "May have ambush or first-strike mechanics. Block early turns.",
+        "Can spike damage unexpectedly. Treat it with more respect than typical normals."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "FrogKnightNormal",
       "enemyName": "Frog Knight",
-      "tips": ["An armored fighter. Expect a mix of attacks and blocks.", "Save your big hits for turns when it is not blocking."],
+      "tips": [
+        "An armored fighter with very high HP (191 HP). Expect a long fight with mixed attacks and blocks.",
+        "This is one of the toughest normal encounters. Potions are justified.",
+        "Watch for shield-up turns where attacking is wasted. Time your big hits for open turns.",
+        "May counter-attack. Be cautious with low-damage pokes."
+      ],
       "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "FROG_KNIGHT_NORMAL",
-      "enemyName": "Frog Knight",
-      "tips": ["An armored fighter. Expect a mix of attacks and blocks.", "Save your big hits for turns when it is not blocking."],
-      "dangerLevel": "medium",
-      "priority": 2
+      "priority": 3
     },
     {
       "enemyId": "GlobeHeadNormal",
       "enemyName": "Globe Head",
-      "tips": ["May have unusual attack patterns. Read intents carefully.", "Consistent block and steady damage work well."],
+      "tips": [
+        "High HP enemy (148 HP) with unusual attack patterns. Read intents carefully each turn.",
+        "May cycle through different attack modes. Adapt your strategy accordingly.",
+        "A long fight -- pace yourself and block on heavy turns.",
+        "Consider using potions if you fall behind on the damage race."
+      ],
       "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "GLOBE_HEAD_NORMAL",
-      "enemyName": "Globe Head",
-      "tips": ["May have unusual attack patterns. Read intents carefully.", "Consistent block and steady damage work well."],
-      "dangerLevel": "medium",
-      "priority": 2
+      "priority": 3
     },
     {
       "enemyId": "GremlinMercNormal",
       "enemyName": "Gremlin Merc",
-      "tips": ["A mercenary gremlin — hits hard for a normal encounter.", "Block on attack turns, race it down."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "GREMLIN_MERC_NORMAL",
-      "enemyName": "Gremlin Merc",
-      "tips": ["A mercenary gremlin — hits hard for a normal encounter.", "Block on attack turns, race it down."],
+      "tips": [
+        "A mercenary gremlin (47-49 HP) that hits hard for a normal encounter.",
+        "Fast and aggressive. Prioritize blocking on attack turns.",
+        "Short fight if you have decent damage output. Don't overthink it."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "HauntedShipNormal",
       "enemyName": "Haunted Ship",
-      "tips": ["A spectral vessel. May have phasing or damage reduction mechanics.", "Sustained damage over multiple turns is more reliable than burst."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "HAUNTED_SHIP_NORMAL",
-      "enemyName": "Haunted Ship",
-      "tips": ["A spectral vessel. May have phasing or damage reduction mechanics.", "Sustained damage over multiple turns is more reliable than burst."],
+      "tips": [
+        "A spectral vessel (63 HP). May have phasing or damage reduction mechanics.",
+        "If it phases, save your big attacks for when it is fully materialized.",
+        "May apply debuffs or summon ghost minions. End the fight quickly."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "HunterKillerNormal",
       "enemyName": "Hunter Killer",
-      "tips": ["Aggressive enemy that escalates damage. Kill it quickly.", "Front-load your damage output."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "HUNTER_KILLER_NORMAL",
-      "enemyName": "Hunter Killer",
-      "tips": ["Aggressive enemy that escalates damage. Kill it quickly.", "Front-load your damage output."],
+      "tips": [
+        "Aggressive enemy (121 HP) that escalates damage. Kill it quickly before it overwhelms you.",
+        "High HP for a normal encounter. This is a serious threat -- consider potions.",
+        "Its damage ramps each turn. Speed is more important than blocking perfectly.",
+        "One of the hardest normal encounters. Don't be greedy with resources."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "InkletsNormal",
       "enemyName": "Inklets",
-      "tips": ["Multiple small enemies. AOE clears them efficiently.", "Pick off individuals if you lack AOE."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "INKLETS_NORMAL",
-      "enemyName": "Inklets",
-      "tips": ["Multiple small enemies. AOE clears them efficiently.", "Pick off individuals if you lack AOE."],
+      "tips": [
+        "Multiple small enemies (11-17 HP each). AOE clears them efficiently.",
+        "Individually fragile but their combined attacks add up fast.",
+        "Kill as many as possible each turn to reduce incoming damage."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "LivingFogNormal",
       "enemyName": "Living Fog",
-      "tips": ["An amorphous enemy. May apply debuffs or reduce your accuracy.", "End the fight fast before it wears you down."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "LIVING_FOG_NORMAL",
-      "enemyName": "Living Fog",
-      "tips": ["An amorphous enemy. May apply debuffs or reduce your accuracy.", "End the fight fast before it wears you down."],
+      "tips": [
+        "An amorphous enemy (80 HP). May apply debuffs or reduce your accuracy.",
+        "If it applies weakness or frail, cleanse them if possible or play around the debuffs.",
+        "Moderate HP. Consistent damage output is more important than burst here."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "LouseProgenitorNormal",
       "enemyName": "Louse Progenitor",
-      "tips": ["May spawn smaller lice. Kill the progenitor to stop reinforcements.", "AOE handles spawns if they appear."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "LOUSE_PROGENITOR_NORMAL",
-      "enemyName": "Louse Progenitor",
-      "tips": ["May spawn smaller lice. Kill the progenitor to stop reinforcements.", "AOE handles spawns if they appear."],
+      "tips": [
+        "High HP (134-136 HP). May spawn smaller lice. Kill the progenitor to stop reinforcements.",
+        "Ignore the spawned lice unless they become overwhelming. Focus the progenitor.",
+        "AOE can manage spawns while you chip away at the main target.",
+        "A long fight that punishes slow decks. Bring your A-game."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "MawlerNormal",
       "enemyName": "Mawler",
-      "tips": ["A heavy hitter. Block on attack turns and counter when possible.", "Do not let the fight drag on."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "MAWLER_NORMAL",
-      "enemyName": "Mawler",
-      "tips": ["A heavy hitter. Block on attack turns and counter when possible.", "Do not let the fight drag on."],
+      "tips": [
+        "A heavy hitter (72 HP). Block on attack turns and counter when possible.",
+        "May wind up for devastating attacks. Watch for multi-turn charge-up intents.",
+        "Punishing if you skip blocking, but manageable with good defense timing."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "MytesNormal",
       "enemyName": "Mytes",
-      "tips": ["Small grouped enemies. AOE is very effective.", "Individually weak but dangerous in numbers."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "MYTES_NORMAL",
-      "enemyName": "Mytes",
-      "tips": ["Small grouped enemies. AOE is very effective.", "Individually weak but dangerous in numbers."],
+      "tips": [
+        "Small grouped enemies (61-67 HP each). AOE is very effective.",
+        "Their combined damage per turn is significant. Thin the group ASAP.",
+        "Single-target strategies struggle here. Prioritize AOE cards in your deck."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "NibbitsNormal",
       "enemyName": "Nibbits",
-      "tips": ["Tougher version of the weak nibbits. AOE still works well.", "Focus them down one at a time if no AOE available."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "NIBBITS_NORMAL",
-      "enemyName": "Nibbits",
-      "tips": ["Tougher version of the weak nibbits. AOE still works well.", "Focus them down one at a time if no AOE available."],
+      "tips": [
+        "Tougher version of the weak nibbits (42-46 HP). AOE still works well.",
+        "Higher HP means AOE needs more power to one-shot them.",
+        "Focus on reducing enemy count each turn to limit incoming damage."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "OvergrowthCrawlers",
       "enemyName": "Overgrowth Crawlers",
-      "tips": ["Mixed group with Shrinker Beetle and Fuzzy Wurm. AOE is efficient.", "Kill the more dangerous enemy first based on intent."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "OVERGROWTH_CRAWLERS",
-      "enemyName": "Overgrowth Crawlers",
-      "tips": ["Mixed group with Shrinker Beetle and Fuzzy Wurm. AOE is efficient.", "Kill the more dangerous enemy first based on intent."],
+      "tips": [
+        "Mixed group: Shrinker Beetle (38-40 HP) and Fuzzy Wurm Crawler (55-57 HP).",
+        "Kill the Shrinker Beetle first if it applies debuffs that reduce your damage.",
+        "AOE is efficient here to damage both targets simultaneously."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "OvicopterNormal",
       "enemyName": "Ovicopter",
-      "tips": ["A flying construct. Expect ranged attacks.", "Steady damage takes it down."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "OVICOPTER_NORMAL",
-      "enemyName": "Ovicopter",
-      "tips": ["A flying construct. Expect ranged attacks.", "Steady damage takes it down."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "OwlMagistrateNormal",
-      "enemyName": "Owl Magistrate",
-      "tips": ["May buff itself or apply debuffs. Watch intents closely.", "Kill before it scales out of control."],
+      "tips": [
+        "A flying construct (124-130 HP). Expect ranged attacks and possible flight damage reduction.",
+        "High HP for a normal encounter. Treat it seriously and block when needed.",
+        "If it has flight, use heavy single hits rather than multi-strike to bypass damage reduction.",
+        "Potions may be warranted against this tanky flier."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
-      "enemyId": "OWL_MAGISTRATE_NORMAL",
+      "enemyId": "OwlMagistrateNormal",
       "enemyName": "Owl Magistrate",
-      "tips": ["May buff itself or apply debuffs. Watch intents closely.", "Kill before it scales out of control."],
+      "tips": [
+        "Very high HP (234 HP) for a normal encounter. May buff itself or apply debuffs.",
+        "This is essentially a mini-boss. Use potions and play carefully.",
+        "Watch intents closely -- if it buffs, you need to race before it snowballs.",
+        "One of the most dangerous normal encounters. Do not underestimate it."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "PunchConstructNormal",
       "enemyName": "Punch Construct",
-      "tips": ["Hits hard with melee attacks. Block on attack turns.", "A straightforward damage race."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "PUNCH_CONSTRUCT_NORMAL",
-      "enemyName": "Punch Construct",
-      "tips": ["Hits hard with melee attacks. Block on attack turns.", "A straightforward damage race."],
+      "tips": [
+        "Hits hard with melee attacks (55 HP). Block on attack turns.",
+        "Straightforward fight. Read intents and alternate between offense and defense.",
+        "Moderate HP -- a quick kill if you have strong early damage."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "RubyRaidersNormal",
       "enemyName": "Ruby Raiders",
-      "tips": ["A group encounter. AOE is valuable to thin numbers.", "Prioritize the most dangerous raider by intent."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "RUBY_RAIDERS_NORMAL",
-      "enemyName": "Ruby Raiders",
-      "tips": ["A group encounter. AOE is valuable to thin numbers.", "Prioritize the most dangerous raider by intent."],
+      "tips": [
+        "A group encounter with multiple raider types (18-33 HP each). AOE is valuable to thin numbers.",
+        "Focus on reducing enemy count rather than single-target damage.",
+        "Low individual HP but their combined attacks are punishing. Clear them fast."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "ScrollsOfBitingNormal",
       "enemyName": "Scrolls of Biting",
-      "tips": ["Tougher scrolls. May inflict status cards or debuffs.", "Kill them before your deck gets clogged."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SCROLLS_OF_BITING_NORMAL",
-      "enemyName": "Scrolls of Biting",
-      "tips": ["Tougher scrolls. May inflict status cards or debuffs.", "Kill them before your deck gets clogged."],
+      "tips": [
+        "Tougher scrolls (31-38 HP). May inflict status cards or debuffs.",
+        "Kill them quickly before they pollute your deck with junk cards.",
+        "AOE handles groups of scrolls effectively."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "SewerClamNormal",
       "enemyName": "Sewer Clam",
-      "tips": ["Alternates between open and closed states. Attack when open.", "Do not waste big attacks when it is shielded."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SEWER_CLAM_NORMAL",
-      "enemyName": "Sewer Clam",
-      "tips": ["Alternates between open and closed states. Attack when open.", "Do not waste big attacks when it is shielded."],
+      "tips": [
+        "Alternates between open and closed states (56 HP). Attack when open, block when closed.",
+        "Attacking a closed clam wastes damage. Time your attacks to its open phase.",
+        "Read intents to predict when it opens. Save your big hits for those turns."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "SlimedBerserkerNormal",
       "enemyName": "Slimed Berserker",
-      "tips": ["Gets stronger over time. Kill quickly before it ramps up.", "May add slime status cards to your deck."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "SLIMED_BERSERKER_NORMAL",
-      "enemyName": "Slimed Berserker",
-      "tips": ["Gets stronger over time. Kill quickly before it ramps up.", "May add slime status cards to your deck."],
+      "tips": [
+        "Extremely high HP (266 HP) and gets stronger over time. Kill quickly before it ramps up.",
+        "This is effectively a mini-boss. Use potions and your best cards.",
+        "Its damage escalates each turn. The longer the fight, the worse it gets.",
+        "Block on big turns but prioritize offense. You are on a clock."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "SlimesNormal",
       "enemyName": "Slimes",
-      "tips": ["Multiple slimes of varying sizes. AOE handles groups well.", "Larger slimes may split when killed — be ready for extra enemies."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SLIMES_NORMAL",
-      "enemyName": "Slimes",
-      "tips": ["Multiple slimes of varying sizes. AOE handles groups well.", "Larger slimes may split when killed — be ready for extra enemies."],
+      "tips": [
+        "Multiple slimes of varying sizes (7-35 HP). AOE handles groups well.",
+        "Small slimes split from large ones when killed. Be ready with follow-up AOE.",
+        "Status cards from slimes can clog your deck. End the fight fast."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "SlitheringStranglerNormal",
       "enemyName": "Slithering Strangler",
-      "tips": ["Paired with Snapping Jaxfruit. Kill the strangler first — it is more dangerous.", "AOE hits both targets."],
+      "tips": [
+        "Paired with Snapping Jaxfruit. Strangler (53-55 HP) is more dangerous -- kill it first.",
+        "The Strangler may constrict or apply debuffs that scale over time.",
+        "Jaxfruit (31-33 HP) is the secondary threat. Clean it up after the Strangler dies."
+      ],
       "dangerLevel": "medium",
       "priority": 3
-    },
-    {
-      "enemyId": "SLITHERING_STRANGLER_NORMAL",
-      "enemyName": "Slithering Strangler",
-      "tips": ["Paired with Snapping Jaxfruit. Kill the strangler first — it is more dangerous.", "AOE hits both targets."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "SludgeSpinnerWeak",
-      "enemyName": "Sludge Spinner",
-      "tips": ["Applies sludge or status cards. End the fight before your deck clogs.", "Exhaust effects counter status card flooding."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SLUDGE_SPINNER_WEAK",
-      "enemyName": "Sludge Spinner",
-      "tips": ["Applies sludge or status cards. End the fight before your deck clogs.", "Exhaust effects counter status card flooding."],
-      "dangerLevel": "medium",
-      "priority": 2
     },
     {
       "enemyId": "SlumberingBeetleNormal",
       "enemyName": "Slumbering Beetle",
-      "tips": ["The beetle is sleeping — deal with the bowlbugs first.", "When the beetle wakes, it hits hard. Be ready with block."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "SLUMBERING_BEETLE_NORMAL",
-      "enemyName": "Slumbering Beetle",
-      "tips": ["The beetle is sleeping — deal with the bowlbugs first.", "When the beetle wakes, it hits hard. Be ready with block."],
+      "tips": [
+        "The beetle (86 HP) is sleeping. Deal with the Bowlbugs (45-48 + 40-43 HP) first.",
+        "Waking the beetle early makes the fight much harder. Avoid AOE that hits it.",
+        "Once the bowlbugs are dead, burst down the beetle before it fully powers up.",
+        "If you must use AOE, accept the beetle will wake and plan accordingly."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "SnappingJaxfruitNormal",
-      "enemyName": "Snapping Jaxfruit",
-      "tips": ["Paired with a Flyconid. Kill the more threatening enemy first.", "AOE to damage both simultaneously."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SNAPPING_JAXFRUIT_NORMAL",
-      "enemyName": "Snapping Jaxfruit",
-      "tips": ["Paired with a Flyconid. Kill the more threatening enemy first.", "AOE to damage both simultaneously."],
+      "enemyName": "Snapping Jaxfruit + Flyconid",
+      "tips": [
+        "Paired fight: Jaxfruit (31-33 HP) and Flyconid (47-49 HP). Kill the bigger threat first.",
+        "Read intents to determine which enemy is attacking hardest this turn.",
+        "Manageable encounter. AOE chips both down; single-target finishes the weaker one."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "SpinyToadNormal",
       "enemyName": "Spiny Toad",
-      "tips": ["May have thorns or retaliation damage. Avoid multi-hit attacks if it retaliates.", "Big single hits are safer than many small hits."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "SPINY_TOAD_NORMAL",
-      "enemyName": "Spiny Toad",
-      "tips": ["May have thorns or retaliation damage. Avoid multi-hit attacks if it retaliates.", "Big single hits are safer than many small hits."],
+      "tips": [
+        "May have thorns or retaliation damage (116-119 HP). Avoid multi-hit attacks if it retaliates.",
+        "High HP. Use big single hits to minimize thorn procs while dealing maximum damage.",
+        "If it has thorns, shiv and multi-strike builds suffer. Adapt your card play."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "TheLostAndForgottenNormal",
       "enemyName": "The Lost and Forgotten",
-      "tips": ["Two enemies — The Lost and The Forgotten. Focus the one that scales or buffs.", "AOE is efficient against this pair."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "THE_LOST_AND_FORGOTTEN_NORMAL",
-      "enemyName": "The Lost and Forgotten",
-      "tips": ["Two enemies — The Lost and The Forgotten. Focus the one that scales or buffs.", "AOE is efficient against this pair."],
+      "tips": [
+        "Two enemies: The Lost (93 HP) and The Forgotten (106 HP). Focus the one that scales or buffs.",
+        "Read intents to identify which one is the bigger threat each turn.",
+        "A tough normal fight with nearly 200 combined HP. Play carefully.",
+        "AOE is valuable to damage both. Single-target the more dangerous one when possible."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "TheObscuraNormal",
       "enemyName": "The Obscura",
-      "tips": ["A mysterious enemy. Watch for unusual attack patterns.", "Stay flexible and react to its intents each turn."],
-      "dangerLevel": "medium",
-      "priority": 3
-    },
-    {
-      "enemyId": "THE_OBSCURA_NORMAL",
-      "enemyName": "The Obscura",
-      "tips": ["A mysterious enemy. Watch for unusual attack patterns.", "Stay flexible and react to its intents each turn."],
+      "tips": [
+        "A mysterious enemy (123 HP). Watch for unusual attack patterns.",
+        "May have hidden intents or mechanics that change mid-fight.",
+        "High HP for a normal. Bring consistent damage and block when uncertain.",
+        "Treat it as a serious threat until you learn its patterns."
+      ],
       "dangerLevel": "medium",
       "priority": 3
     },
     {
       "enemyId": "ToadpolesNormal",
-      "enemyName": "Toadpoles",
-      "tips": ["Paired with a Calcified Cultist. Kill the cultist first if it buffs.", "AOE clears the toadpoles efficiently."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "TOADPOLES_NORMAL",
-      "enemyName": "Toadpoles",
-      "tips": ["Paired with a Calcified Cultist. Kill the cultist first if it buffs.", "AOE clears the toadpoles efficiently."],
+      "enemyName": "Toadpoles + Cultist",
+      "tips": [
+        "Paired with a Calcified Cultist (38-41 HP). Kill the cultist first if it buffs.",
+        "Toadpoles (21-25 HP) are fragile. AOE cleans them up after the cultist dies.",
+        "If the cultist applies ritual or strength buffs, it becomes the priority target."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "TunnelerNormal",
       "enemyName": "Tunneler",
-      "tips": ["Burrows underground periodically. Hit it hard when it surfaces.", "Time your big attacks for when it is vulnerable."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "TUNNELER_NORMAL",
-      "enemyName": "Tunneler",
-      "tips": ["Burrows underground periodically. Hit it hard when it surfaces.", "Time your big attacks for when it is vulnerable."],
+      "tips": [
+        "Burrows underground periodically (87 HP). Hit it hard when it surfaces.",
+        "When underground, attacks may miss or deal reduced damage. Save your energy.",
+        "Time your big attacks for surface turns to maximize damage output."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "TwoTailedRatsNormal",
       "enemyName": "Two-Tailed Rats",
-      "tips": ["Multiple rats. AOE clears them fast.", "Individually weak but they add up."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-    {
-      "enemyId": "TWO_TAILED_RATS_NORMAL",
-      "enemyName": "Two-Tailed Rats",
-      "tips": ["Multiple rats. AOE clears them fast.", "Individually weak but they add up."],
+      "tips": [
+        "Multiple rats (17-21 HP each). AOE clears them fast.",
+        "Low individual HP but the group's combined attacks add up.",
+        "Kill as many as possible each turn. Single-target is inefficient here."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
     {
       "enemyId": "VineShamblerNormal",
       "enemyName": "Vine Shambler",
-      "tips": ["A plant-based enemy. May regenerate HP or grow stronger.", "Kill it decisively — do not let it heal back."],
+      "tips": [
+        "A plant-based enemy (61 HP). May regenerate HP or grow stronger over time.",
+        "If it heals, you need to out-damage its regeneration. Burst is better than chip.",
+        "Moderate threat. Don't let the fight drag or its healing becomes a problem."
+      ],
       "dangerLevel": "medium",
       "priority": 2
     },
-    {
-      "enemyId": "VINE_SHAMBLER_NORMAL",
-      "enemyName": "Vine Shambler",
-      "tips": ["A plant-based enemy. May regenerate HP or grow stronger.", "Kill it decisively — do not let it heal back."],
-      "dangerLevel": "medium",
-      "priority": 2
-    },
-
     {
       "enemyId": "BygoneEffigyElite",
       "enemyName": "Bygone Effigy",
-      "tips": ["An ancient construct elite. Expect high damage and special mechanics.", "Watch for turns where it charges up a big attack — block heavily.", "Sustained damage output is better than trying to burst it down."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "BYGONE_EFFIGY_ELITE",
-      "enemyName": "Bygone Effigy",
-      "tips": ["An ancient construct elite. Expect high damage and special mechanics.", "Watch for turns where it charges up a big attack — block heavily.", "Sustained damage output is better than trying to burst it down."],
+      "tips": [
+        "An ancient construct elite (127 HP). Expect high damage and special mechanics.",
+        "May have artifact charges blocking your debuffs. Strip them with weak attacks first.",
+        "Block on heavy attack turns. Its burst damage can be devastating.",
+        "Use potions if you fall behind. Elite fights are worth investing resources."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "ByrdonisElite",
       "enemyName": "Byrdonis",
-      "tips": ["A powerful bird elite. May have flight mechanics reducing damage.", "Multi-hit attacks can strip flight or armor effectively.", "Block on big attack turns and push damage when it is passive."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "BYRDONIS_ELITE",
-      "enemyName": "Byrdonis",
-      "tips": ["A powerful bird elite. May have flight mechanics reducing damage.", "Multi-hit attacks can strip flight or armor effectively.", "Block on big attack turns and push damage when it is passive."],
+      "tips": [
+        "A powerful bird elite (91-94 HP). May have flight mechanics reducing incoming damage.",
+        "If it has flight, focus on heavy single hits to bypass the damage reduction.",
+        "Multi-strike attacks lose value against flight. Adjust your card play accordingly.",
+        "Moderate HP for an elite but its damage reduction makes it feel tankier."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "DecimillipedeElite",
       "enemyName": "Decimillipede",
-      "tips": ["Multi-segment enemy (front, middle, back). Killing segments reduces its power.", "AOE damages all segments simultaneously.", "Focus front or back segments to reduce incoming attacks fastest."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "DECIMILLIPEDE_ELITE",
-      "enemyName": "Decimillipede",
-      "tips": ["Multi-segment enemy (front, middle, back). Killing segments reduces its power.", "AOE damages all segments simultaneously.", "Focus front or back segments to reduce incoming attacks fastest."],
+      "tips": [
+        "Multi-segment enemy (Front, Middle, Back). Killing segments reduces its power.",
+        "Each segment contributes to its total damage output. Prioritize killing segments quickly.",
+        "AOE damages all segments simultaneously -- very effective here.",
+        "Back segment may be the safest to kill first if front segment retaliates."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "EntomancerElite",
       "enemyName": "Entomancer",
-      "tips": ["Summons bugs as minions. Kill the Entomancer to stop reinforcements.", "AOE handles the bug swarm while you focus the summoner.", "Do not ignore the adds — they deal real damage."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "ENTOMANCER_ELITE",
-      "enemyName": "Entomancer",
-      "tips": ["Summons bugs as minions. Kill the Entomancer to stop reinforcements.", "AOE handles the bug swarm while you focus the summoner.", "Do not ignore the adds — they deal real damage."],
+      "tips": [
+        "Summons bugs as minions (145 HP). Kill the Entomancer to stop reinforcements.",
+        "Ignore the bugs unless they become overwhelming. Focus the summoner.",
+        "AOE can manage bug swarms while you chip away at the Entomancer.",
+        "The longer this fight goes, the more bugs it summons. Speed is critical."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "InfestedPrismsElite",
       "enemyName": "Infested Prisms",
-      "tips": ["Multiple prism enemies. AOE is essential to manage the fight.", "They may buff each other — killing one early simplifies things.", "Block on synchronized attack turns."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "INFESTED_PRISMS_ELITE",
-      "enemyName": "Infested Prisms",
-      "tips": ["Multiple prism enemies. AOE is essential to manage the fight.", "They may buff each other — killing one early simplifies things.", "Block on synchronized attack turns."],
+      "tips": [
+        "High HP prism enemy (200 HP). AOE may be needed if it splits or spawns adds.",
+        "May reflect damage or have crystalline defenses. Watch for retaliation mechanics.",
+        "A tanky elite. Sustained damage output is key.",
+        "Use potions to accelerate the kill. This fight can drag dangerously."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "KnightsElite",
       "enemyName": "Knights",
-      "tips": ["Three knights: Flail, Spectral, and Magi. Each has different abilities.", "Focus the MagiKnight first — spellcasters tend to buff or debuff.", "AOE is critical for a three-enemy elite fight."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "KNIGHTS_ELITE",
-      "enemyName": "Knights",
-      "tips": ["Three knights: Flail, Spectral, and Magi. Each has different abilities.", "Focus the MagiKnight first — spellcasters tend to buff or debuff.", "AOE is critical for a three-enemy elite fight."],
+      "tips": [
+        "Three knights: Flail (101 HP), Spectral (93 HP), and Magi (82 HP). Each has different abilities.",
+        "Kill the Magi Knight first -- it likely buffs or heals the others.",
+        "The Spectral Knight may have phasing or damage reduction. Time your attacks.",
+        "AOE is extremely valuable to whittle down all three simultaneously."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "MechaKnightElite",
       "enemyName": "Mecha Knight",
-      "tips": ["A heavily armored mechanical elite. Expect big hits and high block.", "Need strong attacks to break through its defenses.", "Watch for charge-up turns and block accordingly."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "MECHA_KNIGHT_ELITE",
-      "enemyName": "Mecha Knight",
-      "tips": ["A heavily armored mechanical elite. Expect big hits and high block.", "Need strong attacks to break through its defenses.", "Watch for charge-up turns and block accordingly."],
+      "tips": [
+        "A heavily armored mechanical elite with massive HP (300 HP). Expect big hits and high block.",
+        "This is essentially a mini-boss. Commit potions and your strongest cards.",
+        "Block on its heavy attack turns. Its burst damage can end your run.",
+        "Look for turns where it buffs or charges up -- those are your damage windows."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "PhantasmalGardenersElite",
       "enemyName": "Phantasmal Gardeners",
-      "tips": ["Multiple spectral enemies. May phase in and out of vulnerability.", "AOE keeps all gardeners under pressure.", "Kill one early to reduce total incoming damage."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "PHANTASMAL_GARDENERS_ELITE",
-      "enemyName": "Phantasmal Gardeners",
-      "tips": ["Multiple spectral enemies. May phase in and out of vulnerability.", "AOE keeps all gardeners under pressure.", "Kill one early to reduce total incoming damage."],
+      "tips": [
+        "Multiple spectral enemies (28-32 HP each). May phase in and out of vulnerability.",
+        "AOE is essential to manage multiple gardeners at once.",
+        "When they are intangible, don't waste big attacks. Wait for solid turns.",
+        "Kill them one by one once you identify which are vulnerable."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "PhrogParasiteElite",
       "enemyName": "Phrog Parasite",
-      "tips": ["A parasitic frog elite. May drain your stats or attach debuffs.", "Cleanse or prevent debuffs if possible.", "Burst it down before the parasitic effects compound."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "PHROG_PARASITE_ELITE",
-      "enemyName": "Phrog Parasite",
-      "tips": ["A parasitic frog elite. May drain your stats or attach debuffs.", "Cleanse or prevent debuffs if possible.", "Burst it down before the parasitic effects compound."],
+      "tips": [
+        "A parasitic frog elite (61-64 HP). May drain your stats or attach debuffs.",
+        "Lower HP for an elite but its debuffs are the real danger.",
+        "Cleanse debuffs if possible. Strength down and dexterity down cripple your output.",
+        "Rush it down before its debuffs stack too high."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "SkulkingColonyElite",
       "enemyName": "Skulking Colony",
-      "tips": ["May summon or split into smaller enemies. AOE is your friend.", "Focus the colony core to prevent spawning.", "Do not let the fight drag out — it gets harder over time."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "SKULKING_COLONY_ELITE",
-      "enemyName": "Skulking Colony",
-      "tips": ["May summon or split into smaller enemies. AOE is your friend.", "Focus the colony core to prevent spawning.", "Do not let the fight drag out — it gets harder over time."],
+      "tips": [
+        "May summon or split into smaller enemies (79 HP). AOE is your friend.",
+        "If it splits, the smaller pieces may recombine. Kill the fragments quickly.",
+        "Lower HP for an elite but the splitting mechanic extends the fight.",
+        "Keep AOE cards in hand for when it divides."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "SoulNexusElite",
       "enemyName": "Soul Nexus",
-      "tips": ["A soul-based elite. May drain or manipulate your energy or cards.", "Focus on consistent damage each turn.", "Watch for turns where it absorbs damage — do not waste your best cards."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-    {
-      "enemyId": "SOUL_NEXUS_ELITE",
-      "enemyName": "Soul Nexus",
-      "tips": ["A soul-based elite. May drain or manipulate your energy or cards.", "Focus on consistent damage each turn.", "Watch for turns where it absorbs damage — do not waste your best cards."],
+      "tips": [
+        "A soul-based elite (234 HP). May drain or manipulate your energy or cards.",
+        "Very high HP. This is a marathon fight -- pace your resources.",
+        "If it steals energy, you need to play efficiently with fewer cards per turn.",
+        "Potions and high-value cards are critical. Don't hold back."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
     {
       "enemyId": "TerrorEelElite",
       "enemyName": "Terror Eel",
-      "tips": ["A fast, aggressive aquatic elite. Hits hard and often.", "Block on multi-attack turns, push damage on single-attack turns.", "Do not let the fight go long — damage escalates."],
+      "tips": [
+        "A fast, aggressive aquatic elite (140 HP). Hits hard and often.",
+        "Expect frequent high-damage attacks. Blocking consistently is essential.",
+        "Its relentless pace means you need strong defense AND offense.",
+        "One of the more straightforward elites -- just a pure damage race with blocking."
+      ],
       "dangerLevel": "high",
       "priority": 5
     },
-    {
-      "enemyId": "TERROR_EEL_ELITE",
-      "enemyName": "Terror Eel",
-      "tips": ["A fast, aggressive aquatic elite. Hits hard and often.", "Block on multi-attack turns, push damage on single-attack turns.", "Do not let the fight go long — damage escalates."],
-      "dangerLevel": "high",
-      "priority": 5
-    },
-
     {
       "enemyId": "CeremonialBeastBoss",
       "enemyName": "Ceremonial Beast",
-      "tips": ["A massive beast boss. Expect powerful attacks with heavy damage.", "Learn its attack rotation and block on the biggest hits.", "Save your strongest combos for windows after its big attacks.", "Sustain and scaling are more important than pure burst."],
+      "tips": [
+        "A massive beast boss (252 HP). Expect powerful attacks with heavy damage.",
+        "May perform ritual-like abilities that scale its damage over time.",
+        "Block on its biggest attack turns. Let smaller hits through to maximize your offense.",
+        "Potions are essential. This fight tests both your deck's damage and defense."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "CEREMONIAL_BEAST_BOSS",
-      "enemyName": "Ceremonial Beast",
-      "tips": ["A massive beast boss. Expect powerful attacks with heavy damage.", "Learn its attack rotation and block on the biggest hits.", "Save your strongest combos for windows after its big attacks.", "Sustain and scaling are more important than pure burst."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "DoormakerBoss",
       "enemyName": "Doormaker",
-      "tips": ["Summons doors as minions. Destroy doors to prevent special effects.", "AOE handles the doors while you chip away at the boss.", "Prioritize dangerous doors — some may heal the boss or buff it.", "Balance clearing doors with dealing boss damage."],
+      "tips": [
+        "Two targets: Door (155 HP) and Doormaker (489 HP). The Doormaker is the real threat.",
+        "Destroying the Door may remove buffs or special effects protecting the Doormaker.",
+        "Massive combined HP pool (644 total). Pace your potions across the fight.",
+        "Focus the Door first if it provides significant buffs, otherwise go straight for the Doormaker."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "DOORMAKER_BOSS",
-      "enemyName": "Doormaker",
-      "tips": ["Summons doors as minions. Destroy doors to prevent special effects.", "AOE handles the doors while you chip away at the boss.", "Prioritize dangerous doors — some may heal the boss or buff it.", "Balance clearing doors with dealing boss damage."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "KaiserCrabBoss",
       "enemyName": "Kaiser Crab",
-      "tips": ["Two-enemy boss fight with Crusher and Rocket components.", "Crusher deals heavy melee damage — block on its attack turns.", "Rocket may deal ranged or AOE damage — track both intents.", "AOE hits both parts. Focus whichever component is more threatening."],
+      "tips": [
+        "Two-part boss: Crusher (199 HP) and Rocket (189 HP). Nearly 400 combined HP.",
+        "The Crusher likely deals heavy melee damage while the Rocket uses ranged attacks.",
+        "Kill one component first to simplify the fight. Prioritize the higher-damage threat.",
+        "AOE damages both parts. Use it to chip them down simultaneously."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "KAISER_CRAB_BOSS",
-      "enemyName": "Kaiser Crab",
-      "tips": ["Two-enemy boss fight with Crusher and Rocket components.", "Crusher deals heavy melee damage — block on its attack turns.", "Rocket may deal ranged or AOE damage — track both intents.", "AOE hits both parts. Focus whichever component is more threatening."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "KnowledgeDemonBoss",
       "enemyName": "Knowledge Demon",
-      "tips": ["A demon that may punish certain card types or play patterns.", "Read its mechanics carefully — it likely has a gimmick to play around.", "Adapt your strategy to its rules rather than just brute-forcing.", "Scaling and flexibility are key to this fight."],
+      "tips": [
+        "A demon boss (379 HP) that may punish certain card types or play patterns.",
+        "Pay attention to any restrictions it imposes. Playing forbidden cards may trigger penalties.",
+        "Massive HP pool requires sustained damage. Plan for a long fight.",
+        "Adapt your play style to its rules. Flexibility is more valuable than raw power here."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "KNOWLEDGE_DEMON_BOSS",
-      "enemyName": "Knowledge Demon",
-      "tips": ["A demon that may punish certain card types or play patterns.", "Read its mechanics carefully — it likely has a gimmick to play around.", "Adapt your strategy to its rules rather than just brute-forcing.", "Scaling and flexibility are key to this fight."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "LagavulinMatriarchBoss",
       "enemyName": "Lagavulin Matriarch",
-      "tips": ["An upgraded Lagavulin. Expect heavy debuffs to strength and dexterity.", "Either burst it down fast or build enough scaling to overcome debuffs.", "Block heavily — its attacks hit very hard.", "Powers and scaling that cannot be debuffed are extremely valuable."],
+      "tips": [
+        "An upgraded Lagavulin (222 HP). Expect heavy debuffs to strength and dexterity.",
+        "Debuffs are the core threat. If you lose too much strength, your damage collapses.",
+        "Front-load your damage before debuffs stack. Early turns are your strongest.",
+        "Artifact charges or debuff immunity relics are extremely valuable in this fight."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "LAGAVULIN_MATRIARCH_BOSS",
-      "enemyName": "Lagavulin Matriarch",
-      "tips": ["An upgraded Lagavulin. Expect heavy debuffs to strength and dexterity.", "Either burst it down fast or build enough scaling to overcome debuffs.", "Block heavily — its attacks hit very hard.", "Powers and scaling that cannot be debuffed are extremely valuable."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "QueenBoss",
-      "enemyName": "The Queen",
-      "tips": ["Two-enemy fight: TorchHead Amalgam and the Queen herself.", "Kill the Amalgam first to simplify the fight, or focus Queen to end it.", "AOE damages both — very efficient.", "The Queen likely scales over time — do not let the fight drag on."],
+      "enemyName": "Queen",
+      "tips": [
+        "Two-enemy fight: TorchHead Amalgam (199 HP) and the Queen (400 HP). 599 total HP.",
+        "The TorchHead Amalgam may shield or buff the Queen. Consider killing it first.",
+        "The Queen herself is the primary threat with massive HP. Pace your resources.",
+        "This is one of the longest boss fights. Save your best potions for the Queen phase."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "QUEEN_BOSS",
-      "enemyName": "The Queen",
-      "tips": ["Two-enemy fight: TorchHead Amalgam and the Queen herself.", "Kill the Amalgam first to simplify the fight, or focus Queen to end it.", "AOE damages both — very efficient.", "The Queen likely scales over time — do not let the fight drag on."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "SoulFyshBoss",
       "enemyName": "Soul Fysh",
-      "tips": ["A soul-powered aquatic boss. May drain or manipulate your resources.", "Watch for soul-based mechanics that punish specific play styles.", "Consistent damage and strong block are essential.", "Adapt to its gimmick — brute force alone may not work."],
+      "tips": [
+        "A soul-powered aquatic boss (211 HP). May drain or manipulate your resources.",
+        "Watch for energy drain or card theft mechanics. Play your key cards before they are stolen.",
+        "Moderate HP for a boss. If you can avoid its resource manipulation, it falls quickly.",
+        "Cleansing or prevention relics shine here."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "SOUL_FYSH_BOSS",
-      "enemyName": "Soul Fysh",
-      "tips": ["A soul-powered aquatic boss. May drain or manipulate your resources.", "Watch for soul-based mechanics that punish specific play styles.", "Consistent damage and strong block are essential.", "Adapt to its gimmick — brute force alone may not work."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "TestSubjectBoss",
       "enemyName": "Test Subject",
-      "tips": ["An experimental boss. May transform or gain new abilities mid-fight.", "Be ready for phase transitions or mechanic changes.", "Scaling that persists through phases is very valuable.", "Block heavily during transition turns."],
+      "tips": [
+        "An experimental boss that may transform or gain new abilities mid-fight.",
+        "Be ready to adapt your strategy when it changes forms.",
+        "Each form may have different weaknesses. Watch intents carefully after transformations.",
+        "Save potions for the most dangerous form rather than using them early."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "TEST_SUBJECT_BOSS",
-      "enemyName": "Test Subject",
-      "tips": ["An experimental boss. May transform or gain new abilities mid-fight.", "Be ready for phase transitions or mechanic changes.", "Scaling that persists through phases is very valuable.", "Block heavily during transition turns."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "TheInsatiableBoss",
       "enemyName": "The Insatiable",
-      "tips": ["An ever-hungry boss that grows stronger as the fight continues.", "Speed is critical — every turn it gets more dangerous.", "Front-load your damage and use your best cards early.", "Block on its biggest attack turns but prioritize killing it fast."],
+      "tips": [
+        "An ever-hungry boss (321 HP) that grows stronger as the fight continues.",
+        "Every turn it gets more powerful. This is a pure DPS race.",
+        "Front-load all your damage. Potions, powers, and scaling should come out immediately.",
+        "If the fight goes long, its damage becomes unsurvivable. Speed is everything."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "THE_INSATIABLE_BOSS",
-      "enemyName": "The Insatiable",
-      "tips": ["An ever-hungry boss that grows stronger as the fight continues.", "Speed is critical — every turn it gets more dangerous.", "Front-load your damage and use your best cards early.", "Block on its biggest attack turns but prioritize killing it fast."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "TheKinBoss",
       "enemyName": "The Kin",
-      "tips": ["Two-enemy boss: Kin Follower and Kin Priest work together.", "The Priest likely heals or buffs — kill the Priest first.", "AOE damages both enemies simultaneously.", "Watch for coordinated attacks where both enemies sync up."],
+      "tips": [
+        "Two-enemy boss: Kin Follower (58-59 HP) and Kin Priest (190 HP). They work together.",
+        "The Kin Priest is the main threat. The Follower may buff, heal, or shield it.",
+        "Kill the Follower first to remove its support, then focus the Priest.",
+        "AOE damages both. Use it to chip the Follower while attacking the Priest."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "THE_KIN_BOSS",
-      "enemyName": "The Kin",
-      "tips": ["Two-enemy boss: Kin Follower and Kin Priest work together.", "The Priest likely heals or buffs — kill the Priest first.", "AOE damages both enemies simultaneously.", "Watch for coordinated attacks where both enemies sync up."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "VantomBoss",
       "enemyName": "Vantom",
-      "tips": ["A phantom boss. May have intangibility or damage reduction phases.", "Multi-hit attacks bypass intangibility — use them when available.", "Track its attack cycle and block on the most dangerous turns.", "Patience and consistency beat this boss better than raw burst."],
+      "tips": [
+        "A phantom boss (173 HP). May have intangibility or damage reduction phases.",
+        "When intangible, all damage is reduced to 1. Don't waste big attacks during these turns.",
+        "Time your burst damage for corporeal phases. Save energy and cards for those windows.",
+        "Lower HP for a boss but intangibility phases effectively double the fight length."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "VANTOM_BOSS",
-      "enemyName": "Vantom",
-      "tips": ["A phantom boss. May have intangibility or damage reduction phases.", "Multi-hit attacks bypass intangibility — use them when available.", "Track its attack cycle and block on the most dangerous turns.", "Patience and consistency beat this boss better than raw burst."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     },
     {
       "enemyId": "WaterfallGiantBoss",
       "enemyName": "Waterfall Giant",
-      "tips": ["A colossal boss with massive HP and devastating attacks.", "Block on its wind-up turns — the big hits can end your run.", "Scaling damage is essential for a fight this long.", "Powers and passive damage help whittle it down over time."],
+      "tips": [
+        "A colossal boss (250 HP) with massive, devastating attacks.",
+        "Its big attacks hit extremely hard. Blocking is non-negotiable on those turns.",
+        "Look for wind-up turns where it charges. Those are your windows to deal damage.",
+        "Potions and defensive cards keep you alive. One missed block can end the run."
+      ],
       "dangerLevel": "extreme",
-      "priority": 10
-    },
-    {
-      "enemyId": "WATERFALL_GIANT_BOSS",
-      "enemyName": "Waterfall Giant",
-      "tips": ["A colossal boss with massive HP and devastating attacks.", "Block on its wind-up turns — the big hits can end your run.", "Scaling damage is essential for a fight this long.", "Powers and passive damage help whittle it down over time."],
-      "dangerLevel": "extreme",
-      "priority": 10
+      "priority": 5
     }
   ]
 }

@@ -9,8 +9,16 @@
           "defaultRating": "good",
           "notes": "Full heal is extremely valuable, especially mid-run. The curse added to your deck is a minor price.",
           "conditions": [
-            { "when": "high_hp", "rating": "situational", "notes": "You don't need the heal — consider the other options instead." },
-            { "when": "small_deck", "rating": "situational", "notes": "A curse hurts more in a thin deck since you'll draw it more often." }
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "You don't need the heal \u00e2\u20ac\u201d consider the other options instead."
+            },
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "A curse hurts more in a thin deck since you'll draw it more often."
+            }
           ]
         },
         {
@@ -18,8 +26,16 @@
           "defaultRating": "situational",
           "notes": "Max HP is a long-term investment. Better in Act 1 when you'll benefit from it for the whole run.",
           "conditions": [
-            { "when": "act1", "rating": "good", "notes": "Early max HP pays dividends across the entire run." },
-            { "when": "act3", "rating": "bad", "notes": "Too late in the run for max HP to matter much." }
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early max HP pays dividends across the entire run."
+            },
+            {
+              "when": "act3",
+              "rating": "bad",
+              "notes": "Too late in the run for max HP to matter much."
+            }
           ]
         },
         {
@@ -38,8 +54,16 @@
           "defaultRating": "good",
           "notes": "The gold is substantial and helps you buy key cards or relics at the next shop.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "The trap damage can kill you or leave you dangerously low." },
-            { "when": "high_hp", "rating": "good", "notes": "You can absorb the trap damage comfortably." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "The trap damage can kill you or leave you dangerously low."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can absorb the trap damage comfortably."
+            }
           ]
         },
         {
@@ -47,7 +71,11 @@
           "defaultRating": "situational",
           "notes": "Safe but you miss out on significant gold. Only worth it if you can't afford HP loss.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Preserving HP is more important than gold when you're low." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Preserving HP is more important than gold when you're low."
+            }
           ]
         }
       ]
@@ -64,7 +92,7 @@
         {
           "label": "Trade for a random rare relic",
           "defaultRating": "situational",
-          "notes": "High variance — you might get something amazing or something useless. Worth it if the downside is manageable."
+          "notes": "High variance \u00e2\u20ac\u201d you might get something amazing or something useless. Worth it if the downside is manageable."
         },
         {
           "label": "Swap your starter relic",
@@ -82,7 +110,11 @@
           "defaultRating": "good",
           "notes": "A free upgrade is always solid. Prioritize upgrading key scaling or damage cards.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "Upgrades are more impactful when your deck is lean." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Upgrades are more impactful when your deck is lean."
+            }
           ]
         },
         {
@@ -90,8 +122,16 @@
           "defaultRating": "good",
           "notes": "Card removal thins your deck and improves consistency. Remove Strikes first, then Defends.",
           "conditions": [
-            { "when": "large_deck", "rating": "good", "notes": "Bloated decks benefit enormously from removal." },
-            { "when": "small_deck", "rating": "situational", "notes": "Your deck is already thin — an upgrade may be better." }
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Bloated decks benefit enormously from removal."
+            },
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Your deck is already thin \u00e2\u20ac\u201d an upgrade may be better."
+            }
           ]
         }
       ]
@@ -105,7 +145,11 @@
           "defaultRating": "good",
           "notes": "A curated card selection is excellent for finding cards that fit your archetype.",
           "conditions": [
-            { "when": "small_deck", "rating": "situational", "notes": "Be selective — only take a card if it genuinely improves your deck." }
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Be selective \u00e2\u20ac\u201d only take a card if it genuinely improves your deck."
+            }
           ]
         },
         {
@@ -113,7 +157,11 @@
           "defaultRating": "situational",
           "notes": "The heal is decent but you miss the card selection opportunity.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "If you're dangerously low, surviving takes priority over card quality." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "If you're dangerously low, surviving takes priority over card quality."
+            }
           ]
         }
       ]
@@ -127,8 +175,16 @@
           "defaultRating": "situational",
           "notes": "Bites provide sustain through lifesteal but you lose all Strikes. Strong if your deck doesn't rely on Strike synergies.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "In a thin deck, Bites become a reliable healing engine." },
-            { "when": "large_deck", "rating": "situational", "notes": "With many cards, you draw Bites less often so the sustain is diluted." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "In a thin deck, Bites become a reliable healing engine."
+            },
+            {
+              "when": "large_deck",
+              "rating": "situational",
+              "notes": "With many cards, you draw Bites less often so the sustain is diluted."
+            }
           ]
         },
         {
@@ -147,7 +203,11 @@
           "defaultRating": "good",
           "notes": "A solid heal when you need it. Simple and reliable.",
           "conditions": [
-            { "when": "high_hp", "rating": "bad", "notes": "You don't need healing — consider other options if available." }
+            {
+              "when": "high_hp",
+              "rating": "bad",
+              "notes": "You don't need healing \u00e2\u20ac\u201d consider other options if available."
+            }
           ]
         },
         {
@@ -155,7 +215,11 @@
           "defaultRating": "good",
           "notes": "Upgrades have lasting value. Prefer this if your HP is comfortable.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "Healing may be more urgent than upgrading right now." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "Healing may be more urgent than upgrading right now."
+            }
           ]
         }
       ]
@@ -169,8 +233,16 @@
           "defaultRating": "situational",
           "notes": "The reward can be strong but the curse pollutes your deck. Worth it if you have curse removal options.",
           "conditions": [
-            { "when": "small_deck", "rating": "bad", "notes": "A curse in a thin deck is devastating to consistency." },
-            { "when": "large_deck", "rating": "situational", "notes": "The curse is diluted in a larger deck, making the trade more acceptable." }
+            {
+              "when": "small_deck",
+              "rating": "bad",
+              "notes": "A curse in a thin deck is devastating to consistency."
+            },
+            {
+              "when": "large_deck",
+              "rating": "situational",
+              "notes": "The curse is diluted in a larger deck, making the trade more acceptable."
+            }
           ]
         },
         {
@@ -189,8 +261,16 @@
           "defaultRating": "good",
           "notes": "The relic is usually worth the HP cost. Relics provide permanent value.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "You can't afford the HP loss when you're already hurting." },
-            { "when": "high_hp", "rating": "good", "notes": "Plenty of HP to spare — take the relic." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "You can't afford the HP loss when you're already hurting."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "Plenty of HP to spare \u00e2\u20ac\u201d take the relic."
+            }
           ]
         },
         {
@@ -214,7 +294,11 @@
           "defaultRating": "situational",
           "notes": "Gold is useful but upgrades tend to provide more lasting value.",
           "conditions": [
-            { "when": "low_gold", "rating": "good", "notes": "If you're broke with a shop coming, the gold can be critical." }
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "If you're broke with a shop coming, the gold can be critical."
+            }
           ]
         }
       ]
@@ -228,8 +312,16 @@
           "defaultRating": "situational",
           "notes": "The reward varies. Worth it if you have gold to spare.",
           "conditions": [
-            { "when": "low_gold", "rating": "bad", "notes": "Don't spend gold you can't afford." },
-            { "when": "high_gold", "rating": "good", "notes": "You have plenty of gold — invest it here for a bonus." }
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "Don't spend gold you can't afford."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You have plenty of gold \u00e2\u20ac\u201d invest it here for a bonus."
+            }
           ]
         },
         {
@@ -253,10 +345,26 @@
           "defaultRating": "situational",
           "notes": "Relics are powerful permanent upgrades, but losing max HP weakens your survivability for the rest of the run.",
           "conditions": [
-            { "when": "high_hp", "rating": "good", "notes": "You have HP to spare — the relic is likely worth the trade." },
-            { "when": "low_hp", "rating": "bad", "notes": "Losing max HP when you're already low is extremely dangerous." },
-            { "when": "act1", "rating": "situational", "notes": "Early max HP loss hurts for the whole run, but an early relic compounds in value too." },
-            { "when": "act3", "rating": "good", "notes": "Less run remaining to suffer from reduced max HP. Take the relic." }
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You have HP to spare \u00e2\u20ac\u201d the relic is likely worth the trade."
+            },
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Losing max HP when you're already low is extremely dangerous."
+            },
+            {
+              "when": "act1",
+              "rating": "situational",
+              "notes": "Early max HP loss hurts for the whole run, but an early relic compounds in value too."
+            },
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "Less run remaining to suffer from reduced max HP. Take the relic."
+            }
           ]
         },
         {
@@ -275,7 +383,11 @@
           "defaultRating": "good",
           "notes": "Gold fuels your shop purchases. A solid, low-risk reward.",
           "conditions": [
-            { "when": "high_gold", "rating": "situational", "notes": "You already have plenty of gold — the heal might be better." }
+            {
+              "when": "high_gold",
+              "rating": "situational",
+              "notes": "You already have plenty of gold \u00e2\u20ac\u201d the heal might be better."
+            }
           ]
         },
         {
@@ -283,8 +395,16 @@
           "defaultRating": "good",
           "notes": "Healing is always useful. Choose this over gold when your HP is hurting.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Healing takes priority when you're in danger." },
-            { "when": "high_hp", "rating": "bad", "notes": "You're healthy — take the gold instead." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Healing takes priority when you're in danger."
+            },
+            {
+              "when": "high_hp",
+              "rating": "bad",
+              "notes": "You're healthy \u00e2\u20ac\u201d take the gold instead."
+            }
           ]
         }
       ]
@@ -298,8 +418,16 @@
           "defaultRating": "situational",
           "notes": "Potions can swing tough fights. Worth buying if you have open potion slots and upcoming elites or bosses.",
           "conditions": [
-            { "when": "low_gold", "rating": "bad", "notes": "Even at a discount, you might need that gold for more impactful shop purchases." },
-            { "when": "high_gold", "rating": "good", "notes": "Stock up — potions give you insurance for hard fights." }
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "Even at a discount, you might need that gold for more impactful shop purchases."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "Stock up \u00e2\u20ac\u201d potions give you insurance for hard fights."
+            }
           ]
         },
         {
@@ -334,7 +462,11 @@
           "defaultRating": "situational",
           "notes": "The safe option. Guaranteed but modest reward. Good when you can't afford to lose HP.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Don't risk falling when you're already hurting." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Don't risk falling when you're already hurting."
+            }
           ]
         },
         {
@@ -342,8 +474,16 @@
           "defaultRating": "good",
           "notes": "The high-reward option. The potential relic or large gold payout is usually worth the risk.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Falling could end your run. Play it safe." },
-            { "when": "high_hp", "rating": "good", "notes": "You can absorb a fall. Go for the big reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Falling could end your run. Play it safe."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can absorb a fall. Go for the big reward."
+            }
           ]
         },
         {
@@ -362,8 +502,16 @@
           "defaultRating": "situational",
           "notes": "The buff is permanent but so is the downside. Evaluate whether the upside outweighs the cost for your build.",
           "conditions": [
-            { "when": "act1", "rating": "good", "notes": "More time to benefit from the buff. The downside is manageable early." },
-            { "when": "act3", "rating": "situational", "notes": "Less time to benefit, so the downside matters more relative to the upside." }
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "More time to benefit from the buff. The downside is manageable early."
+            },
+            {
+              "when": "act3",
+              "rating": "situational",
+              "notes": "Less time to benefit, so the downside matters more relative to the upside."
+            }
           ]
         },
         {
@@ -382,7 +530,11 @@
           "defaultRating": "good",
           "notes": "Free potions are strong. Potions can carry you through elite fights and bosses.",
           "conditions": [
-            { "when": "low_gold", "rating": "situational", "notes": "If there's a gold cost, be cautious when you're broke." }
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "If there's a gold cost, be cautious when you're broke."
+            }
           ]
         },
         {
@@ -406,7 +558,11 @@
           "defaultRating": "good",
           "notes": "Treasure events are high-value. The reward is almost always worth pursuing.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "If exploring costs HP, be careful when you're low." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "If exploring costs HP, be careful when you're low."
+            }
           ]
         },
         {
@@ -439,10 +595,18 @@
         {
           "label": "Inhale deeply (random positive and negative effects)",
           "defaultRating": "situational",
-          "notes": "High variance — could grant great buffs or painful debuffs. Take the gamble when your run feels average.",
+          "notes": "High variance \u00e2\u20ac\u201d could grant great buffs or painful debuffs. Take the gamble when your run feels average.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Random damage effects could end your run." },
-            { "when": "high_hp", "rating": "good", "notes": "You can survive bad outcomes. Roll the dice." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Random damage effects could end your run."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can survive bad outcomes. Roll the dice."
+            }
           ]
         },
         {
@@ -466,7 +630,11 @@
           "defaultRating": "good",
           "notes": "The rewards from the fight are usually worth it. Nest fights tend to be manageable in Act 1.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "You can't afford combat damage when you're already hurting." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "You can't afford combat damage when you're already hurting."
+            }
           ]
         },
         {
@@ -490,8 +658,16 @@
           "defaultRating": "good",
           "notes": "The combat is usually worth the reward. Treat it like a slightly easier elite encounter.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Event combat when you're low is a run-ending risk." },
-            { "when": "high_hp", "rating": "good", "notes": "You're healthy — fight for the reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Event combat when you're low is a run-ending risk."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're healthy \u00e2\u20ac\u201d fight for the reward."
+            }
           ]
         },
         {
@@ -499,7 +675,11 @@
           "defaultRating": "situational",
           "notes": "You avoid damage but miss the reward. A fine choice when survival matters more than loot.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Staying alive is the priority." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Staying alive is the priority."
+            }
           ]
         }
       ]
@@ -511,7 +691,7 @@
         {
           "label": "Go left (path A rewards)",
           "defaultRating": "situational",
-          "notes": "Maze paths offer different rewards. Pick based on what your run needs — cards, gold, or healing."
+          "notes": "Maze paths offer different rewards. Pick based on what your run needs \u00e2\u20ac\u201d cards, gold, or healing."
         },
         {
           "label": "Go right (path B rewards)",
@@ -534,8 +714,16 @@
           "defaultRating": "good",
           "notes": "Transforming a weak card like Strike can yield a powerful replacement. High upside with manageable risk.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "Every card matters more in a small deck — transform your worst card for a potential upgrade." },
-            { "when": "large_deck", "rating": "good", "notes": "You have plenty of filler to transform. Go for it." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Every card matters more in a small deck \u00e2\u20ac\u201d transform your worst card for a potential upgrade."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "You have plenty of filler to transform. Go for it."
+            }
           ]
         },
         {
@@ -554,12 +742,20 @@
           "defaultRating": "good",
           "notes": "The healing is significant. The trap risk is usually worth it for the HP recovery.",
           "conditions": [
-            { "when": "high_hp", "rating": "situational", "notes": "You don't need the heal badly. The trap risk may not be worth it." },
-            { "when": "low_hp", "rating": "good", "notes": "You need the healing. The risk is worth taking." }
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "You don't need the heal badly. The trap risk may not be worth it."
+            },
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "You need the healing. The risk is worth taking."
+            }
           ]
         },
         {
-          "label": "Suspicious — leave",
+          "label": "Suspicious \u00e2\u20ac\u201d leave",
           "defaultRating": "situational",
           "notes": "The safe play. Pick this if you're in a comfortable HP range and don't want to gamble."
         }
@@ -574,8 +770,16 @@
           "defaultRating": "good",
           "notes": "The delayed reward is usually worth the investment. The payoff compounds over the run.",
           "conditions": [
-            { "when": "low_gold", "rating": "bad", "notes": "You can't afford to invest gold you need for immediate purchases." },
-            { "when": "act1", "rating": "good", "notes": "More time for the seed to pay off. Plant early." }
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You can't afford to invest gold you need for immediate purchases."
+            },
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "More time for the seed to pay off. Plant early."
+            }
           ]
         },
         {
@@ -599,7 +803,11 @@
           "defaultRating": "situational",
           "notes": "Information helps you plan your route but doesn't directly strengthen your deck.",
           "conditions": [
-            { "when": "act1", "rating": "good", "notes": "Early information is more valuable — you have more decisions ahead." }
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early information is more valuable \u00e2\u20ac\u201d you have more decisions ahead."
+            }
           ]
         },
         {
@@ -618,8 +826,16 @@
           "defaultRating": "good",
           "notes": "Trading gold for a relic is almost always worthwhile. Relics provide permanent power.",
           "conditions": [
-            { "when": "low_gold", "rating": "bad", "notes": "You can't afford the offering. Save your gold." },
-            { "when": "high_gold", "rating": "good", "notes": "You have gold to spare. Invest in a permanent relic." }
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You can't afford the offering. Save your gold."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You have gold to spare. Invest in a permanent relic."
+            }
           ]
         },
         {
@@ -643,7 +859,11 @@
           "defaultRating": "good",
           "notes": "Free healing with no downside. Take it when you're below full HP.",
           "conditions": [
-            { "when": "high_hp", "rating": "situational", "notes": "You're already healthy. The upgrade might serve you better." }
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "You're already healthy. The upgrade might serve you better."
+            }
           ]
         },
         {
@@ -651,7 +871,11 @@
           "defaultRating": "good",
           "notes": "A free upgrade is very strong. Choose this when your HP is comfortable.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "Consider healing first — you can find upgrades elsewhere." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "Consider healing first \u00e2\u20ac\u201d you can find upgrades elsewhere."
+            }
           ]
         }
       ]
@@ -665,7 +889,11 @@
           "defaultRating": "good",
           "notes": "The whispers often reveal powerful options. Risk is usually minimal.",
           "conditions": [
-            { "when": "small_deck", "rating": "situational", "notes": "Be selective about adding cards to an already tight deck." }
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Be selective about adding cards to an already tight deck."
+            }
           ]
         },
         {
@@ -678,8 +906,16 @@
           "defaultRating": "situational",
           "notes": "High risk, high reward. The aggressive option when your run needs a boost.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Too risky when you're already fragile." },
-            { "when": "high_hp", "rating": "good", "notes": "You can handle the downside. Swing for the fences." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Too risky when you're already fragile."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can handle the downside. Swing for the fences."
+            }
           ]
         }
       ]
@@ -693,8 +929,16 @@
           "defaultRating": "good",
           "notes": "A curated card add is strong in Act 1 when you're building your deck's identity.",
           "conditions": [
-            { "when": "small_deck", "rating": "situational", "notes": "Only take the card if it genuinely fits your strategy." },
-            { "when": "act1", "rating": "good", "notes": "Building your deck early is critical. A good card here sets your direction." }
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Only take the card if it genuinely fits your strategy."
+            },
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Building your deck early is critical. A good card here sets your direction."
+            }
           ]
         },
         {
@@ -707,7 +951,11 @@
           "defaultRating": "situational",
           "notes": "Gold is fine but the card or upgrade options usually provide more lasting value.",
           "conditions": [
-            { "when": "low_gold", "rating": "good", "notes": "If you need gold for a crucial shop purchase, take it." }
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "If you need gold for a crucial shop purchase, take it."
+            }
           ]
         }
       ]
@@ -721,8 +969,16 @@
           "defaultRating": "good",
           "notes": "The healing is substantial. The cost is usually worth paying for the recovery.",
           "conditions": [
-            { "when": "high_hp", "rating": "bad", "notes": "Don't pay the cost when you don't need the heal." },
-            { "when": "low_hp", "rating": "good", "notes": "You desperately need the HP. Pay the price." }
+            {
+              "when": "high_hp",
+              "rating": "bad",
+              "notes": "Don't pay the cost when you don't need the heal."
+            },
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "You desperately need the HP. Pay the price."
+            }
           ]
         },
         {
@@ -746,7 +1002,11 @@
           "defaultRating": "good",
           "notes": "The light door offers a reliable, positive outcome. Good for stable runs.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Play it safe when you're vulnerable." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Play it safe when you're vulnerable."
+            }
           ]
         },
         {
@@ -754,8 +1014,16 @@
           "defaultRating": "situational",
           "notes": "Higher ceiling but also a potential downside. Choose when your run needs a power spike.",
           "conditions": [
-            { "when": "high_hp", "rating": "good", "notes": "You can handle a bad outcome. Go for the bigger reward." },
-            { "when": "low_hp", "rating": "bad", "notes": "A bad dark door outcome could be fatal." }
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can handle a bad outcome. Go for the bigger reward."
+            },
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "A bad dark door outcome could be fatal."
+            }
           ]
         }
       ]
@@ -769,9 +1037,21 @@
           "defaultRating": "good",
           "notes": "The gold payout is large enough to justify the combat. Treat it as an investment.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Combat when you're low is a run-ending gamble." },
-            { "when": "high_hp", "rating": "good", "notes": "You can afford the fight. Dive in for the gold." },
-            { "when": "high_gold", "rating": "situational", "notes": "You already have plenty of gold — the risk may not be worth it." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Combat when you're low is a run-ending gamble."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can afford the fight. Dive in for the gold."
+            },
+            {
+              "when": "high_gold",
+              "rating": "situational",
+              "notes": "You already have plenty of gold \u00e2\u20ac\u201d the risk may not be worth it."
+            }
           ]
         },
         {
@@ -795,7 +1075,11 @@
           "defaultRating": "good",
           "notes": "Significant healing. One of the best heal events in the game.",
           "conditions": [
-            { "when": "high_hp", "rating": "situational", "notes": "Less value when you're already near full. Consider the relic option." }
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "Less value when you're already near full. Consider the relic option."
+            }
           ]
         },
         {
@@ -803,8 +1087,16 @@
           "defaultRating": "good",
           "notes": "A relic is permanent power. Choose this when your HP is healthy.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "The heal may be more critical to your survival right now." },
-            { "when": "high_hp", "rating": "good", "notes": "You don't need healing — grab the relic." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "The heal may be more critical to your survival right now."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You don't need healing \u00e2\u20ac\u201d grab the relic."
+            }
           ]
         },
         {
@@ -823,7 +1115,11 @@
           "defaultRating": "good",
           "notes": "Card trading lets you upgrade your deck quality without changing deck size. Trade away your worst card.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "Every card swap matters more in a thin deck." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Every card swap matters more in a thin deck."
+            }
           ]
         },
         {
@@ -836,7 +1132,11 @@
           "defaultRating": "situational",
           "notes": "Random events can swing either way. Only pick this if you're feeling lucky.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Random bad outcomes are too dangerous when you're fragile." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Random bad outcomes are too dangerous when you're fragile."
+            }
           ]
         }
       ]
@@ -850,7 +1150,11 @@
           "defaultRating": "good",
           "notes": "The rewards for exploring are generally worth the minor risks.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "Be cautious — some holes may have hazards." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "Be cautious \u00e2\u20ac\u201d some holes may have hazards."
+            }
           ]
         },
         {
@@ -874,8 +1178,16 @@
           "defaultRating": "good",
           "notes": "The combat reward is substantial. The fight is manageable if your deck has reasonable damage output.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Event combat is too risky at low HP." },
-            { "when": "high_hp", "rating": "good", "notes": "You're healthy enough to fight. Go for the reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Event combat is too risky at low HP."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're healthy enough to fight. Go for the reward."
+            }
           ]
         },
         {
@@ -883,7 +1195,11 @@
           "defaultRating": "situational",
           "notes": "Skip the fight and take a smaller guaranteed reward. The practical choice.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Take what you can safely. No need to risk a fight." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Take what you can safely. No need to risk a fight."
+            }
           ]
         }
       ]
@@ -897,8 +1213,16 @@
           "defaultRating": "good",
           "notes": "Knight fights in Act 2 offer elite-tier rewards. Worth it if your deck can handle it.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Don't pick a fight you might not survive." },
-            { "when": "high_hp", "rating": "good", "notes": "You're in fighting shape. Claim the reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Don't pick a fight you might not survive."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're in fighting shape. Claim the reward."
+            }
           ]
         },
         {
@@ -906,7 +1230,11 @@
           "defaultRating": "situational",
           "notes": "A peaceful resolution with a smaller payoff. The diplomat's choice.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Talk your way out when you can't afford to fight." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Talk your way out when you can't afford to fight."
+            }
           ]
         },
         {
@@ -925,7 +1253,11 @@
           "defaultRating": "good",
           "notes": "Modifying your deck is almost always valuable. Transform weak cards or upgrade key ones.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "Deck modifications are extra impactful in thin decks." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Deck modifications are extra impactful in thin decks."
+            }
           ]
         },
         {
@@ -938,7 +1270,11 @@
           "defaultRating": "situational",
           "notes": "Immediate rewards over long-term deck improvement. Good when you need gold for an upcoming shop.",
           "conditions": [
-            { "when": "low_gold", "rating": "good", "notes": "If a shop is coming, the gold could let you buy a key card or relic." }
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "If a shop is coming, the gold could let you buy a key card or relic."
+            }
           ]
         }
       ]
@@ -952,7 +1288,11 @@
           "defaultRating": "good",
           "notes": "Reliable healing. The Tea Master is one of the better heal events.",
           "conditions": [
-            { "when": "high_hp", "rating": "situational", "notes": "You don't need healing. Consider the other teas." }
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "You don't need healing. Consider the other teas."
+            }
           ]
         },
         {
@@ -960,8 +1300,16 @@
           "defaultRating": "situational",
           "notes": "Gold is useful for shop purchases. Pick this when you're healthy but short on funds.",
           "conditions": [
-            { "when": "low_gold", "rating": "good", "notes": "You need the gold more than healing right now." },
-            { "when": "high_gold", "rating": "bad", "notes": "You already have plenty of gold." }
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "You need the gold more than healing right now."
+            },
+            {
+              "when": "high_gold",
+              "rating": "bad",
+              "notes": "You already have plenty of gold."
+            }
           ]
         },
         {
@@ -980,7 +1328,11 @@
           "defaultRating": "good",
           "notes": "Following the wisp leads to hidden rewards. The journey is usually worth the detour.",
           "conditions": [
-            { "when": "low_hp", "rating": "situational", "notes": "The path might have hazards. Proceed with caution." }
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "The path might have hazards. Proceed with caution."
+            }
           ]
         },
         {
@@ -1004,8 +1356,16 @@
           "defaultRating": "situational",
           "notes": "Gambling events are high variance. The expected value can be positive but the floor is losing your bet.",
           "conditions": [
-            { "when": "high_gold", "rating": "good", "notes": "You can afford to lose the bet. Play for the upside." },
-            { "when": "low_gold", "rating": "bad", "notes": "Don't gamble what you can't afford to lose." }
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You can afford to lose the bet. Play for the upside."
+            },
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "Don't gamble what you can't afford to lose."
+            }
           ]
         },
         {
@@ -1013,8 +1373,16 @@
           "defaultRating": "situational",
           "notes": "Maximum risk, maximum reward. Only for runs where you need a miracle or have gold to burn.",
           "conditions": [
-            { "when": "high_gold", "rating": "situational", "notes": "High reward potential but you could lose a lot." },
-            { "when": "low_gold", "rating": "bad", "notes": "You absolutely cannot afford this." }
+            {
+              "when": "high_gold",
+              "rating": "situational",
+              "notes": "High reward potential but you could lose a lot."
+            },
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You absolutely cannot afford this."
+            }
           ]
         },
         {
@@ -1033,8 +1401,16 @@
           "defaultRating": "good",
           "notes": "The Zen Weaver offers strong, targeted card additions. Look for cards that complement your archetype.",
           "conditions": [
-            { "when": "small_deck", "rating": "situational", "notes": "Only add a card if it truly strengthens your deck's game plan." },
-            { "when": "large_deck", "rating": "good", "notes": "A good card won't hurt a larger deck and might fill a missing piece." }
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Only add a card if it truly strengthens your deck's game plan."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "A good card won't hurt a larger deck and might fill a missing piece."
+            }
           ]
         },
         {
@@ -1042,8 +1418,16 @@
           "defaultRating": "good",
           "notes": "Card removal is premium. Thin your deck by removing Strikes or other dead weight.",
           "conditions": [
-            { "when": "large_deck", "rating": "good", "notes": "Your deck needs trimming. Remove the weakest card." },
-            { "when": "small_deck", "rating": "situational", "notes": "Your deck is already lean. Only remove if something is actively bad." }
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Your deck needs trimming. Remove the weakest card."
+            },
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Your deck is already lean. Only remove if something is actively bad."
+            }
           ]
         },
         {
@@ -1062,16 +1446,28 @@
           "defaultRating": "situational",
           "notes": "This 'shop' is actually a trap fight. Be ready for combat when you interact. The reward after winning is good.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "Walking into a surprise fight at low HP is extremely dangerous." },
-            { "when": "high_hp", "rating": "good", "notes": "You can handle the ambush. Win the fight, claim the reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Walking into a surprise fight at low HP is extremely dangerous."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can handle the ambush. Win the fight, claim the reward."
+            }
           ]
         },
         {
-          "label": "Something seems off — leave (avoid the trap)",
+          "label": "Something seems off \u00e2\u20ac\u201d leave (avoid the trap)",
           "defaultRating": "situational",
           "notes": "If you recognize the trap, leaving saves you from an unwanted fight. Smart when you're fragile.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Trust your instincts and get out safely." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Trust your instincts and get out safely."
+            }
           ]
         }
       ]
@@ -1090,8 +1486,16 @@
           "defaultRating": "situational",
           "notes": "The loot is tempting but the curse can hurt. Worth it if you have curse removal or a large deck to dilute it.",
           "conditions": [
-            { "when": "small_deck", "rating": "bad", "notes": "A curse in a thin deck is crippling." },
-            { "when": "large_deck", "rating": "good", "notes": "The curse is diluted in a bigger deck. Take the treasure." }
+            {
+              "when": "small_deck",
+              "rating": "bad",
+              "notes": "A curse in a thin deck is crippling."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "The curse is diluted in a bigger deck. Take the treasure."
+            }
           ]
         },
         {
@@ -1110,8 +1514,16 @@
           "defaultRating": "good",
           "notes": "Red mushrooms provide reliable healing. A safe pick when your HP is low.",
           "conditions": [
-            { "when": "high_hp", "rating": "bad", "notes": "You don't need healing. Try a different mushroom." },
-            { "when": "low_hp", "rating": "good", "notes": "Eat up and recover." }
+            {
+              "when": "high_hp",
+              "rating": "bad",
+              "notes": "You don't need healing. Try a different mushroom."
+            },
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Eat up and recover."
+            }
           ]
         },
         {
@@ -1119,7 +1531,11 @@
           "defaultRating": "good",
           "notes": "The blue mushroom offers power upgrades. Good when your HP is fine and you want to grow stronger.",
           "conditions": [
-            { "when": "high_hp", "rating": "good", "notes": "You're healthy — invest in power instead of healing." }
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're healthy \u00e2\u20ac\u201d invest in power instead of healing."
+            }
           ]
         },
         {
@@ -1127,8 +1543,16 @@
           "defaultRating": "situational",
           "notes": "High variance. Could be amazing or painful. The gambler's mushroom.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "A bad random effect could end your run." },
-            { "when": "high_hp", "rating": "situational", "notes": "You can survive a bad roll, but the blue mushroom might be more reliable." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "A bad random effect could end your run."
+            },
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "You can survive a bad roll, but the blue mushroom might be more reliable."
+            }
           ]
         }
       ]
@@ -1142,7 +1566,11 @@
           "defaultRating": "good",
           "notes": "Ranwid offers powerful Act 3 cards. Late-game card additions should be strong scaling or finishers.",
           "conditions": [
-            { "when": "small_deck", "rating": "situational", "notes": "Only take a card if it's genuinely excellent for your build." }
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Only take a card if it's genuinely excellent for your build."
+            }
           ]
         },
         {
@@ -1155,8 +1583,16 @@
           "defaultRating": "good",
           "notes": "Healing plus card removal is an excellent combo. Great for cleaning up your deck before the boss.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Healing before the final boss is critical." },
-            { "when": "large_deck", "rating": "good", "notes": "Remove a weak card to improve your deck's consistency for the boss." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Healing before the final boss is critical."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Remove a weak card to improve your deck's consistency for the boss."
+            }
           ]
         }
       ]
@@ -1170,7 +1606,11 @@
           "defaultRating": "situational",
           "notes": "Evaluate carefully. Trade away relics that don't fit your build for ones that might. High variance.",
           "conditions": [
-            { "when": "act3", "rating": "good", "notes": "By Act 3 you know which relics are dead weight. Trade them for potential upgrades." }
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "By Act 3 you know which relics are dead weight. Trade them for potential upgrades."
+            }
           ]
         },
         {
@@ -1197,10 +1637,18 @@
         {
           "label": "Steal from the party (gain gold, risk consequences)",
           "defaultRating": "situational",
-          "notes": "Risky but profitable. The consequences vary — could be a curse, combat, or just bad reputation.",
+          "notes": "Risky but profitable. The consequences vary \u00e2\u20ac\u201d could be a curse, combat, or just bad reputation.",
           "conditions": [
-            { "when": "low_gold", "rating": "situational", "notes": "Tempting when broke, but the consequences might cost more than you gain." },
-            { "when": "high_hp", "rating": "situational", "notes": "If consequences involve combat, at least you can handle it." }
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "Tempting when broke, but the consequences might cost more than you gain."
+            },
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "If consequences involve combat, at least you can handle it."
+            }
           ]
         },
         {
@@ -1219,8 +1667,16 @@
           "defaultRating": "good",
           "notes": "Act 3 trial combat is tough but the rewards are excellent. A test of your deck's readiness for the boss.",
           "conditions": [
-            { "when": "low_hp", "rating": "bad", "notes": "You can't afford a hard fight right before the boss." },
-            { "when": "high_hp", "rating": "good", "notes": "You're ready. Prove your worth and claim the reward." }
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "You can't afford a hard fight right before the boss."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're ready. Prove your worth and claim the reward."
+            }
           ]
         },
         {
@@ -1228,7 +1684,11 @@
           "defaultRating": "situational",
           "notes": "Preserving HP for the boss is sometimes more important than one more reward.",
           "conditions": [
-            { "when": "low_hp", "rating": "good", "notes": "Save your HP for the fights that matter." }
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Save your HP for the fights that matter."
+            }
           ]
         }
       ]
@@ -1242,7 +1702,11 @@
           "defaultRating": "good",
           "notes": "Card modification in Act 3 can push a good deck to great. Upgrade your most important card.",
           "conditions": [
-            { "when": "small_deck", "rating": "good", "notes": "Every upgrade is amplified in a lean deck." }
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Every upgrade is amplified in a lean deck."
+            }
           ]
         },
         {
@@ -1255,8 +1719,16 @@
           "defaultRating": "situational",
           "notes": "Gold in Act 3 is only useful if there's still a shop ahead. Otherwise, take the card or relic upgrade.",
           "conditions": [
-            { "when": "low_gold", "rating": "situational", "notes": "Only if a shop is still on your path." },
-            { "when": "act3", "rating": "bad", "notes": "Late in Act 3, gold is usually less useful than direct power." }
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "Only if a shop is still on your path."
+            },
+            {
+              "when": "act3",
+              "rating": "bad",
+              "notes": "Late in Act 3, gold is usually less useful than direct power."
+            }
           ]
         }
       ]
@@ -1275,7 +1747,11 @@
           "defaultRating": "good",
           "notes": "Permanent buffs heading into the final boss are extremely valuable. Usually the best pick.",
           "conditions": [
-            { "when": "act3", "rating": "good", "notes": "A combat buff right before the boss is exactly what you want." }
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "A combat buff right before the boss is exactly what you want."
+            }
           ]
         },
         {
@@ -1283,7 +1759,1103 @@
           "defaultRating": "situational",
           "notes": "A smaller reward but still useful. Good if the buff option doesn't appeal.",
           "conditions": [
-            { "when": "low_gold", "rating": "good", "notes": "The gold can fund final shop purchases." }
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "The gold can fund final shop purchases."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "eventId": "AMALGAMATOR",
+      "eventName": "Amalgamator",
+      "choices": [
+        {
+          "label": "Feed it a card (remove a card, gain a reward)",
+          "defaultRating": "good",
+          "notes": "Card removal with a bonus reward is excellent. Feed it your worst card \u00e2\u20ac\u201d Strikes are prime candidates.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Your deck is already lean. Only feed it something genuinely bad."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Trim the fat from your bloated deck and get rewarded for it."
+            }
+          ]
+        },
+        {
+          "label": "Feed it a relic (trade a relic for a different one)",
+          "defaultRating": "situational",
+          "notes": "High variance relic swap. Only worthwhile if you have a relic that provides no value to your current build."
+        },
+        {
+          "label": "Leave it alone",
+          "defaultRating": "bad",
+          "notes": "The Amalgamator offers free card removal at minimum. Walking away is wasteful."
+        }
+      ]
+    },
+    {
+      "eventId": "BATTLEWORN_DUMMY",
+      "eventName": "Battleworn Dummy",
+      "choices": [
+        {
+          "label": "Practice on the dummy (upgrade an Attack card)",
+          "defaultRating": "good",
+          "notes": "A free Attack upgrade is solid. Upgrade your highest-impact damage card.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Upgrading your damage early helps clear Act 1 elites."
+            }
+          ]
+        },
+        {
+          "label": "Salvage the dummy (gain gold or materials)",
+          "defaultRating": "situational",
+          "notes": "The gold is decent but usually less valuable than a permanent card upgrade.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "If you need gold for a crucial shop purchase, take it."
+            }
+          ]
+        },
+        {
+          "label": "Leave",
+          "defaultRating": "bad",
+          "notes": "A free upgrade is always worth taking. Don't walk away."
+        }
+      ]
+    },
+    {
+      "eventId": "BUGSLAYER",
+      "eventName": "Bugslayer",
+      "choices": [
+        {
+          "label": "Help the bugslayer (event combat, gain a reward)",
+          "defaultRating": "good",
+          "notes": "Fighting alongside the bugslayer makes the combat easier than a solo fight, and the reward is worth it.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "Even assisted combat costs HP. Be careful when you're low."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're healthy \u00e2\u20ac\u201d help out and claim the reward."
+            }
+          ]
+        },
+        {
+          "label": "Ask for supplies instead (gain potions or gold)",
+          "defaultRating": "situational",
+          "notes": "A safe alternative that gives you immediate value without combat risk."
+        },
+        {
+          "label": "Leave",
+          "defaultRating": "bad",
+          "notes": "Both other options provide value. Don't walk away empty-handed."
+        }
+      ]
+    },
+    {
+      "eventId": "COLORFUL_PHILOSOPHERS",
+      "eventName": "Colorful Philosophers",
+      "choices": [
+        {
+          "label": "Listen to the red philosopher (gain an Attack card or buff)",
+          "defaultRating": "situational",
+          "notes": "Offensive rewards suit aggressive builds. Pick this if your deck needs more damage output."
+        },
+        {
+          "label": "Listen to the blue philosopher (gain a Skill card or defensive buff)",
+          "defaultRating": "situational",
+          "notes": "Defensive rewards help shore up weaknesses. Good if your deck lacks block generation."
+        },
+        {
+          "label": "Listen to the green philosopher (gain a Power card or unique effect)",
+          "defaultRating": "good",
+          "notes": "Power cards scale over long fights. Usually the best pick since permanent scaling is king.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early Power cards compound in value across the entire run."
+            }
+          ]
+        },
+        {
+          "label": "Ignore them all",
+          "defaultRating": "bad",
+          "notes": "Every philosopher offers something useful. Don't pass up a free reward."
+        }
+      ]
+    },
+    {
+      "eventId": "DROWNING_BEACON",
+      "eventName": "Drowning Beacon",
+      "choices": [
+        {
+          "label": "Activate the beacon (gain a powerful relic, take damage)",
+          "defaultRating": "good",
+          "notes": "Relics are permanent power. The HP cost is usually worth paying for a lasting advantage.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "The damage could be fatal. Don't risk it when you're fragile."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can absorb the cost. Claim the relic."
+            }
+          ]
+        },
+        {
+          "label": "Salvage from the water (gain gold)",
+          "defaultRating": "situational",
+          "notes": "A safer option with a smaller payout. Good when you can't afford the HP loss.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Take the safe gold and preserve your health."
+            }
+          ]
+        },
+        {
+          "label": "Leave the beacon",
+          "defaultRating": "bad",
+          "notes": "Even the salvage option gives you something. Don't leave empty-handed."
+        }
+      ]
+    },
+    {
+      "eventId": "ENDLESS_CONVEYOR",
+      "eventName": "Endless Conveyor",
+      "choices": [
+        {
+          "label": "Grab from the conveyor (gain a random card)",
+          "defaultRating": "situational",
+          "notes": "The card is random but free. Worth taking if it fits your build, but don't bloat your deck with junk.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Be very selective \u00e2\u20ac\u201d a random card can dilute a tight deck."
+            },
+            {
+              "when": "large_deck",
+              "rating": "situational",
+              "notes": "Your deck is already large. Only grab something genuinely useful."
+            }
+          ]
+        },
+        {
+          "label": "Ride the conveyor (explore for a better reward)",
+          "defaultRating": "good",
+          "notes": "Exploring further typically yields better options. The journey may cost some HP but the payoff improves.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "The ride might have hazards. Weigh the risk."
+            }
+          ]
+        },
+        {
+          "label": "Walk away",
+          "defaultRating": "bad",
+          "notes": "At minimum, grabbing a free card is better than nothing."
+        }
+      ]
+    },
+    {
+      "eventId": "LUMINOUS_CHOIR",
+      "eventName": "Luminous Choir",
+      "choices": [
+        {
+          "label": "Join the choir (gain max HP or a blessing)",
+          "defaultRating": "good",
+          "notes": "Max HP and blessings are permanent benefits. The choir rewards generosity with lasting power.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early max HP gains pay off for the entire run."
+            },
+            {
+              "when": "act3",
+              "rating": "situational",
+              "notes": "Max HP matters less this late. Consider whether the blessing is impactful."
+            }
+          ]
+        },
+        {
+          "label": "Demand tribute (gain gold, anger the choir)",
+          "defaultRating": "situational",
+          "notes": "Gold is useful but angering the choir may have consequences. Weigh the risk.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "The gold is tempting but the consequences could be worse."
+            }
+          ]
+        },
+        {
+          "label": "Listen quietly and leave",
+          "defaultRating": "situational",
+          "notes": "The peaceful exit. Sometimes discretion is the better part of valor."
+        }
+      ]
+    },
+    {
+      "eventId": "PUNCH_OFF",
+      "eventName": "Punch Off",
+      "choices": [
+        {
+          "label": "Accept the challenge (event combat for a prize)",
+          "defaultRating": "good",
+          "notes": "The Punch Off is a straightforward combat event. Win the fight, earn a solid reward.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Don't enter a fistfight when you're already beaten up."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're in fighting shape. Step up and claim the prize."
+            }
+          ]
+        },
+        {
+          "label": "Bet on the fight (gamble gold on the outcome)",
+          "defaultRating": "situational",
+          "notes": "Gambling on combat is risky but can pay well. Better when you have gold to spare.",
+          "conditions": [
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You can afford to lose the bet. The potential payout is worth it."
+            },
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "Don't bet what you can't afford."
+            }
+          ]
+        },
+        {
+          "label": "Walk away",
+          "defaultRating": "situational",
+          "notes": "The safe exit. Reasonable when you're low on HP and don't want to risk combat."
+        }
+      ]
+    },
+    {
+      "eventId": "REFLECTIONS",
+      "eventName": "Reflections",
+      "choices": [
+        {
+          "label": "Face your reflection (event combat against a mirror of your deck)",
+          "defaultRating": "good",
+          "notes": "Fighting your own reflection tests your deck's versatility. The reward is premium if you win.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Mirror fights can be brutal. Don't engage when you're weakened."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "A strong deck should be able to beat its own shadow. Go for it."
+            }
+          ]
+        },
+        {
+          "label": "Shatter the mirror (gain gold, risk a curse)",
+          "defaultRating": "situational",
+          "notes": "Breaking the mirror gets you gold but may curse you. Consider your deck size and curse tolerance.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "bad",
+              "notes": "A curse in a thin deck is too punishing."
+            },
+            {
+              "when": "large_deck",
+              "rating": "situational",
+              "notes": "The curse is diluted. The gold might be worth it."
+            }
+          ]
+        },
+        {
+          "label": "Look away and leave",
+          "defaultRating": "situational",
+          "notes": "The safe exit. Neither the fight nor the curse risk appeals when you're doing well."
+        }
+      ]
+    },
+    {
+      "eventId": "SPIRALING_WHIRLPOOL",
+      "eventName": "Spiraling Whirlpool",
+      "choices": [
+        {
+          "label": "Dive into the whirlpool (high risk, high reward)",
+          "defaultRating": "situational",
+          "notes": "The whirlpool can yield incredible treasures but the HP cost is significant. A true gamble.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "The whirlpool's damage can easily end your run."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You have HP to burn. Dive deep for the treasure."
+            }
+          ]
+        },
+        {
+          "label": "Fish along the edge (safe, moderate reward)",
+          "defaultRating": "good",
+          "notes": "A balanced approach that gives you a decent reward without the extreme risk of diving in.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Stay safe on the edge. The moderate reward is still worthwhile."
+            }
+          ]
+        },
+        {
+          "label": "Avoid the whirlpool entirely",
+          "defaultRating": "bad",
+          "notes": "Even fishing the edge is better than walking away. Take something home."
+        }
+      ]
+    },
+    {
+      "eventId": "SPIRIT_GRAFTER",
+      "eventName": "Spirit Grafter",
+      "choices": [
+        {
+          "label": "Graft a spirit onto a card (upgrade and transform a card)",
+          "defaultRating": "good",
+          "notes": "Spirit grafting enhances a card beyond a normal upgrade. Transform your weakest card into something powerful.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "In a thin deck, every card upgrade is amplified. Graft your best candidate."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Plenty of mediocre cards to graft. Pick the one you draw most."
+            }
+          ]
+        },
+        {
+          "label": "Absorb the spirit yourself (gain max HP or a buff)",
+          "defaultRating": "situational",
+          "notes": "A permanent personal buff is solid but less exciting than a powered-up card.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early max HP or buffs compound over the whole run."
+            }
+          ]
+        },
+        {
+          "label": "Decline the grafting",
+          "defaultRating": "bad",
+          "notes": "Both options are strong. Don't pass up free power."
+        }
+      ]
+    },
+    {
+      "eventId": "THE_ARCHITECT",
+      "eventName": "The Architect",
+      "choices": [
+        {
+          "label": "Commission a card (gain a custom rare card)",
+          "defaultRating": "good",
+          "notes": "The Architect creates powerful custom cards. A rare card tailored to your character is extremely valuable.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "The commission likely costs gold. Make sure you can afford it."
+            },
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "A powerful rare card in a thin deck is a huge upgrade."
+            }
+          ]
+        },
+        {
+          "label": "Commission a relic (pay gold for a relic)",
+          "defaultRating": "good",
+          "notes": "Paying gold for a relic is almost always worth it. Relics provide permanent, compounding value.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You can't commission what you can't afford."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "Invest your gold in permanent power."
+            }
+          ]
+        },
+        {
+          "label": "Ask for blueprints (gain map information or a small free reward)",
+          "defaultRating": "situational",
+          "notes": "The free option if you can't afford the commissions. Better than nothing."
+        }
+      ]
+    },
+    {
+      "eventId": "THE_LANTERN_KEY",
+      "eventName": "The Lantern Key",
+      "choices": [
+        {
+          "label": "Use the key to open the locked door (gain a premium reward)",
+          "defaultRating": "good",
+          "notes": "Locked doors hide the best treasures. The premium reward behind the door is almost always worth it.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early premium rewards snowball through the run."
+            },
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "A power spike before the final boss can clinch the win."
+            }
+          ]
+        },
+        {
+          "label": "Keep the lantern (gain a light source relic or buff)",
+          "defaultRating": "situational",
+          "notes": "The lantern itself may be useful, but typically the door reward is stronger.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "situational",
+              "notes": "A persistent light source could help in future events, but the door reward is usually better."
+            }
+          ]
+        },
+        {
+          "label": "Leave both",
+          "defaultRating": "bad",
+          "notes": "Both options give you something. Don't walk away from free value."
+        }
+      ]
+    },
+    {
+      "eventId": "TRASH_HEAP",
+      "eventName": "Trash Heap",
+      "choices": [
+        {
+          "label": "Dig through the trash (find a card or relic, risk a curse)",
+          "defaultRating": "situational",
+          "notes": "One person's trash is another's treasure. You might find something great, but the curse risk is real.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "bad",
+              "notes": "A curse in a thin deck is devastating. The trash isn't worth it."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "You can absorb a curse in a bigger deck. Dig for treasure."
+            }
+          ]
+        },
+        {
+          "label": "Scavenge for gold (guaranteed small gold reward)",
+          "defaultRating": "good",
+          "notes": "Safe and reliable. Not exciting, but gold is always useful.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "Every bit of gold counts when you're broke."
+            }
+          ]
+        },
+        {
+          "label": "Ignore the heap",
+          "defaultRating": "bad",
+          "notes": "Even scavenging for a little gold is better than nothing."
+        }
+      ]
+    },
+    {
+      "eventId": "UNREST_SITE",
+      "eventName": "Unrest Site",
+      "choices": [
+        {
+          "label": "Quell the unrest (event combat for a relic or card reward)",
+          "defaultRating": "good",
+          "notes": "Putting down unrest earns a heroic reward. The combat is manageable for most decks.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Don't wade into conflict when you're already wounded."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're strong enough to handle this. Claim the reward."
+            }
+          ]
+        },
+        {
+          "label": "Loot the chaos (gain gold from the unrest)",
+          "defaultRating": "situational",
+          "notes": "Profiting from chaos without fighting. A morally gray but practical choice.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "Gold is gold, regardless of how you got it."
+            }
+          ]
+        },
+        {
+          "label": "Pass through quietly",
+          "defaultRating": "situational",
+          "notes": "The safest option. Reasonable when you can't afford combat and don't need gold."
+        }
+      ]
+    },
+    {
+      "eventId": "WATERLOGGED_SCRIPTORIUM",
+      "eventName": "Waterlogged Scriptorium",
+      "choices": [
+        {
+          "label": "Read the waterlogged texts (upgrade a random card)",
+          "defaultRating": "good",
+          "notes": "Even a random upgrade adds value. The texts contain ancient knowledge worth salvaging.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "In a small deck, any upgrade has a higher chance of hitting a key card."
+            }
+          ]
+        },
+        {
+          "label": "Salvage the scriptorium materials (gain gold or potions)",
+          "defaultRating": "situational",
+          "notes": "Practical rewards from a waterlogged ruin. Good if you need supplies more than upgrades.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "The gold from salvage can fund critical shop purchases."
+            }
+          ]
+        },
+        {
+          "label": "Search for hidden chambers (risk for a relic)",
+          "defaultRating": "situational",
+          "notes": "Hidden chambers might contain relics but could also have hazards. A rewarding gamble.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Hidden chambers could have traps. Don't risk it when fragile."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can handle whatever's in there. Hunt for the relic."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "eventId": "DARV",
+      "eventName": "Darv",
+      "choices": [
+        {
+          "label": "Accept Darv's offer (gain a unique reward with a trade-off)",
+          "defaultRating": "situational",
+          "notes": "Ancient encounters offer powerful but unique bargains. Darv's deal is worth taking if the trade-off aligns with your build.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "Early ancient rewards shape your entire run. Take the deal if the cost is manageable."
+            },
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "Ancient deals often cost HP or max HP. Be cautious when vulnerable."
+            }
+          ]
+        },
+        {
+          "label": "Decline Darv's offer",
+          "defaultRating": "situational",
+          "notes": "Some ancient deals aren't worth the price. Decline if the trade-off would cripple your strategy."
+        }
+      ]
+    },
+    {
+      "eventId": "NEOW",
+      "eventName": "Neow",
+      "choices": [
+        {
+          "label": "Choose a blessing (various bonuses)",
+          "defaultRating": "good",
+          "notes": "Neow's blessings define your run's early trajectory. Prioritize card removal, relics, or gold based on your character.",
+          "conditions": [
+            {
+              "when": "act1",
+              "rating": "good",
+              "notes": "This is always Act 1. Choose the option that best sets up your first elite fight."
+            }
+          ]
+        },
+        {
+          "label": "Swap your starter relic (trade for a random boss relic)",
+          "defaultRating": "situational",
+          "notes": "Boss relics are powerful but you lose your starter synergy. High variance \u00e2\u20ac\u201d usually worth the gamble on higher ascensions."
+        }
+      ]
+    },
+    {
+      "eventId": "NONUPEIPE",
+      "eventName": "Nonupeipe",
+      "choices": [
+        {
+          "label": "Accept Nonupeipe's gift (gain a unique card or relic)",
+          "defaultRating": "good",
+          "notes": "Ancient beings offer rare gifts not found elsewhere. The unique reward is usually powerful and worth any minor cost.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "If the gift is a card, make sure it fits your lean deck strategy."
+            }
+          ]
+        },
+        {
+          "label": "Request a different boon (alternative reward)",
+          "defaultRating": "situational",
+          "notes": "The alternative may suit your build better. Compare both options before deciding."
+        },
+        {
+          "label": "Politely refuse",
+          "defaultRating": "bad",
+          "notes": "Ancient gifts are rare and powerful. Refusing is almost never correct."
+        }
+      ]
+    },
+    {
+      "eventId": "OROBAS",
+      "eventName": "Orobas",
+      "choices": [
+        {
+          "label": "Make a pact with Orobas (gain great power at a cost)",
+          "defaultRating": "situational",
+          "notes": "Demonic pacts offer immense power but always demand a steep price. Evaluate whether the power spike is worth the sacrifice.",
+          "conditions": [
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You can pay the price. The power boost could carry you through the hardest fights."
+            },
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Pacts with demons are lethal when you can't pay the cost."
+            },
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "A power spike right before the final boss can be decisive."
+            }
+          ]
+        },
+        {
+          "label": "Challenge Orobas (event combat for a premium reward)",
+          "defaultRating": "situational",
+          "notes": "Fighting a demon is dangerous but earns respect and powerful loot. Only if your deck is strong.",
+          "conditions": [
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're battle-ready. Show this demon what you're made of."
+            },
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "Demon fights are brutal. Don't engage while wounded."
+            }
+          ]
+        },
+        {
+          "label": "Refuse the demon",
+          "defaultRating": "situational",
+          "notes": "Walking away from a demon is sometimes the wisest choice. No shame in self-preservation."
+        }
+      ]
+    },
+    {
+      "eventId": "PAEL",
+      "eventName": "Pael",
+      "choices": [
+        {
+          "label": "Accept Pael's wisdom (gain a card upgrade or transform)",
+          "defaultRating": "good",
+          "notes": "Ancient sages offer knowledge that permanently improves your deck. Take the wisdom.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "good",
+              "notes": "Upgrades and transforms are amplified in a lean deck."
+            }
+          ]
+        },
+        {
+          "label": "Ask Pael for healing (restore HP and gain a small buff)",
+          "defaultRating": "situational",
+          "notes": "A gentler gift. Good when you need recovery more than power.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Healing from an ancient being is potent. Take it when you need it."
+            },
+            {
+              "when": "high_hp",
+              "rating": "bad",
+              "notes": "You don't need healing. The wisdom option is better."
+            }
+          ]
+        },
+        {
+          "label": "Decline Pael's audience",
+          "defaultRating": "bad",
+          "notes": "Rejecting an ancient sage's gift is almost never correct. Take what's offered."
+        }
+      ]
+    },
+    {
+      "eventId": "TANX",
+      "eventName": "Tanx",
+      "choices": [
+        {
+          "label": "Trade with Tanx (exchange gold for a rare relic)",
+          "defaultRating": "good",
+          "notes": "Tanx offers rare relics at a premium price. Relics are permanent power and usually worth the investment.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You can't afford Tanx's prices. Move on."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You have the gold to invest in a rare relic. Do it."
+            }
+          ]
+        },
+        {
+          "label": "Ask Tanx for a favor (gain a smaller free reward)",
+          "defaultRating": "situational",
+          "notes": "A free reward from an ancient trader is still valuable, even if it's not the premium option."
+        },
+        {
+          "label": "Leave Tanx's domain",
+          "defaultRating": "bad",
+          "notes": "Tanx always offers something of value. Don't walk away empty-handed."
+        }
+      ]
+    },
+    {
+      "eventId": "TEZCATARA",
+      "eventName": "Tezcatara",
+      "choices": [
+        {
+          "label": "Accept Tezcatara's trial (event combat for a legendary reward)",
+          "defaultRating": "good",
+          "notes": "Tezcatara's trials are among the hardest event combats but the rewards are exceptional. A true test of your deck.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "You can't survive a legendary trial while wounded. Decline."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're ready for the challenge. The reward is worth the fight."
+            }
+          ]
+        },
+        {
+          "label": "Request Tezcatara's blessing (gain a buff without combat)",
+          "defaultRating": "situational",
+          "notes": "A safer path that still grants ancient power. Good when you respect the trial's difficulty.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Take the blessing without the fight. Live to see the next battle."
+            }
+          ]
+        },
+        {
+          "label": "Decline and leave",
+          "defaultRating": "bad",
+          "notes": "Ancient encounters are rare. At minimum, take the blessing."
+        }
+      ]
+    },
+    {
+      "eventId": "VAKUU",
+      "eventName": "Vakuu",
+      "choices": [
+        {
+          "label": "Accept Vakuu's void gift (gain a powerful card with a curse)",
+          "defaultRating": "situational",
+          "notes": "Void gifts are immensely powerful but always come with a curse. Worth it if your deck can handle the curse dilution.",
+          "conditions": [
+            {
+              "when": "small_deck",
+              "rating": "bad",
+              "notes": "A curse devastates a thin deck. The void gift isn't worth it."
+            },
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "The curse is diluted. The void card's power outweighs the cost."
+            }
+          ]
+        },
+        {
+          "label": "Ask Vakuu to purge (remove cards from your deck)",
+          "defaultRating": "good",
+          "notes": "Void purging removes multiple cards at once. Incredible for trimming a bloated deck.",
+          "conditions": [
+            {
+              "when": "large_deck",
+              "rating": "good",
+              "notes": "Mass removal is exactly what a bloated deck needs."
+            },
+            {
+              "when": "small_deck",
+              "rating": "situational",
+              "notes": "Your deck may already be lean. Only purge if there's genuine dead weight."
+            }
+          ]
+        },
+        {
+          "label": "Resist the void",
+          "defaultRating": "situational",
+          "notes": "The void is dangerous but also generous. Only resist if both options would harm your build."
+        }
+      ]
+    },
+    {
+      "eventId": "SUNKEN_STATUE",
+      "eventName": "The Sunken Statue",
+      "choices": [
+        {
+          "label": "Offer gold to the statue (gain a relic)",
+          "defaultRating": "good",
+          "notes": "Trading gold for a relic is almost always worthwhile. Relics provide permanent power.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "bad",
+              "notes": "You can't afford the offering. Save your gold."
+            },
+            {
+              "when": "high_gold",
+              "rating": "good",
+              "notes": "You have gold to spare. Invest in a permanent relic."
+            }
+          ]
+        },
+        {
+          "label": "Pray without offering (small buff or nothing)",
+          "defaultRating": "situational",
+          "notes": "Free but unreliable. A reasonable fallback if you're short on gold."
+        },
+        {
+          "label": "Leave",
+          "defaultRating": "bad",
+          "notes": "Even praying for free is better than walking away."
+        }
+      ]
+    },
+    {
+      "eventId": "LOST_WISP",
+      "eventName": "The Lost Wisp",
+      "choices": [
+        {
+          "label": "Follow the wisp (explore for rewards)",
+          "defaultRating": "good",
+          "notes": "Following the wisp leads to hidden rewards. The journey is usually worth the detour.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "situational",
+              "notes": "The path might have hazards. Proceed with caution."
+            }
+          ]
+        },
+        {
+          "label": "Capture the wisp (gain a specific reward)",
+          "defaultRating": "situational",
+          "notes": "A guaranteed but smaller reward. Good when you want certainty over adventure."
+        },
+        {
+          "label": "Let it go",
+          "defaultRating": "bad",
+          "notes": "The wisp offers free value. Don't ignore it."
+        }
+      ]
+    },
+    {
+      "eventId": "ROUND_TEA_PARTY",
+      "eventName": "The Round Tea Party",
+      "choices": [
+        {
+          "label": "Join the party (participate for social rewards)",
+          "defaultRating": "good",
+          "notes": "Joining the tea party typically offers healing and a card or relic. A pleasant event with good outcomes."
+        },
+        {
+          "label": "Ask for a special blend (unique reward)",
+          "defaultRating": "situational",
+          "notes": "The special blend has a unique effect. Can be very strong but less predictable than just joining."
+        },
+        {
+          "label": "Steal from the party (gain gold, risk consequences)",
+          "defaultRating": "situational",
+          "notes": "Risky but profitable. The consequences vary \u00e2\u20ac\u201d could be a curse, combat, or just bad reputation.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "situational",
+              "notes": "Tempting when broke, but the consequences might cost more than you gain."
+            },
+            {
+              "when": "high_hp",
+              "rating": "situational",
+              "notes": "If consequences involve combat, at least you can handle it."
+            }
+          ]
+        },
+        {
+          "label": "Politely decline and leave",
+          "defaultRating": "bad",
+          "notes": "The party has gifts for you. Leaving empty-handed is wasteful."
+        }
+      ]
+    },
+    {
+      "eventId": "TRIAL",
+      "eventName": "The Trial",
+      "choices": [
+        {
+          "label": "Accept the trial (event combat for elite-tier rewards)",
+          "defaultRating": "good",
+          "notes": "Act 3 trial combat is tough but the rewards are excellent. A test of your deck's readiness for the boss.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "bad",
+              "notes": "You can't afford a hard fight right before the boss."
+            },
+            {
+              "when": "high_hp",
+              "rating": "good",
+              "notes": "You're ready. Prove your worth and claim the reward."
+            }
+          ]
+        },
+        {
+          "label": "Decline the trial",
+          "defaultRating": "situational",
+          "notes": "Preserving HP for the boss is sometimes more important than one more reward.",
+          "conditions": [
+            {
+              "when": "low_hp",
+              "rating": "good",
+              "notes": "Save your HP for the fights that matter."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "eventId": "WAR_HISTORIAN_REPY",
+      "eventName": "War Historian",
+      "choices": [
+        {
+          "label": "Learn about upcoming enemies (gain combat intelligence)",
+          "defaultRating": "situational",
+          "notes": "Knowing enemy patterns helps you play optimally. More useful if you're unfamiliar with Act 3 encounters."
+        },
+        {
+          "label": "Request a battle blessing (gain a permanent combat buff)",
+          "defaultRating": "good",
+          "notes": "Permanent buffs heading into the final boss are extremely valuable. Usually the best pick.",
+          "conditions": [
+            {
+              "when": "act3",
+              "rating": "good",
+              "notes": "A combat buff right before the boss is exactly what you want."
+            }
+          ]
+        },
+        {
+          "label": "Trade war stories (gain gold or a card)",
+          "defaultRating": "situational",
+          "notes": "A smaller reward but still useful. Good if the buff option doesn't appeal.",
+          "conditions": [
+            {
+              "when": "low_gold",
+              "rating": "good",
+              "notes": "The gold can fund final shop purchases."
+            }
           ]
         }
       ]
