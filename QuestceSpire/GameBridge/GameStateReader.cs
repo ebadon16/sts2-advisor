@@ -82,7 +82,9 @@ public static class GameStateReader
 				OfferedCards = ReadOfferedCards(),
 				OfferedRelics = ReadOfferedRelics(),
 				ShopCards = ReadShopCards(player),
-				ShopRelics = ReadShopRelics(player)
+				ShopRelics = ReadShopRelics(player),
+				ShopPotions = ReadShopPotions(player),
+				CurrentPotions = ReadCurrentPotions(player)
 			};
 			// Read combat piles (best-effort)
 			try
@@ -420,6 +422,179 @@ public static class GameStateReader
 			Plugin.Log($"ReadMerchantPrice error (non-fatal): {ex.Message}");
 		}
 		return 0;
+	}
+
+	private static List<PotionInfo> ReadShopPotions(Player player)
+	{
+		var list = new List<PotionInfo>();
+		try
+		{
+			if (_lastMerchantInventory == null)
+				return list;
+
+			// Access PotionEntries via reflection — type may be IReadOnlyList<MerchantPotionEntry>
+			var prop = _lastMerchantInventory.GetType().GetProperty("PotionEntries",
+				BindingFlags.Instance | BindingFlags.Public);
+			if (prop == null)
+			{
+				Plugin.Log("WARN: MerchantInventory.PotionEntries property not found.");
+				return list;
+			}
+			var entries = prop.GetValue(_lastMerchantInventory) as System.Collections.IEnumerable;
+			if (entries == null)
+				return list;
+
+			foreach (object entry in entries)
+			{
+				var entryType = entry.GetType();
+
+				// Check IsStocked
+				var stockedProp = entryType.GetProperty("IsStocked", BindingFlags.Instance | BindingFlags.Public);
+				if (stockedProp != null && stockedProp.GetValue(entry) is bool stocked && !stocked)
+					continue;
+
+				// Get the PotionModel — try Potion, then Model property
+				object potionModel = null;
+				var potionProp = entryType.GetProperty("Potion", BindingFlags.Instance | BindingFlags.Public)
+					?? entryType.GetProperty("Model", BindingFlags.Instance | BindingFlags.Public);
+				if (potionProp != null)
+					potionModel = potionProp.GetValue(entry);
+
+				if (potionModel == null)
+					continue;
+
+				var info = PotionModelToInfo(potionModel);
+				info.Price = ReadMerchantPrice(entry, player);
+				list.Add(info);
+			}
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log("ReadShopPotions error: " + ex.Message);
+		}
+		return list;
+	}
+
+	private static List<PotionInfo> ReadCurrentPotions(Player player)
+	{
+		var list = new List<PotionInfo>();
+		try
+		{
+			// Try PotionBelt, Potions, or PotionSlots on the player
+			object potionSource = null;
+			PropertyInfo potionProp = null;
+			foreach (var name in new[] { "PotionBelt", "Potions", "PotionSlots" })
+			{
+				potionProp = player.GetType().GetProperty(name,
+					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				if (potionProp != null)
+				{
+					potionSource = potionProp.GetValue(player);
+					if (potionSource != null)
+						break;
+				}
+			}
+
+			if (potionSource == null)
+				return list;
+
+			// If it's directly enumerable (list of PotionModel), iterate
+			System.Collections.IEnumerable slots = potionSource as System.Collections.IEnumerable;
+
+			// If it's a belt/container, look for a Slots or Potions sub-property
+			if (slots == null)
+			{
+				var sourceType = potionSource.GetType();
+				var slotsProp = sourceType.GetProperty("Slots", BindingFlags.Instance | BindingFlags.Public)
+					?? sourceType.GetProperty("Potions", BindingFlags.Instance | BindingFlags.Public)
+					?? sourceType.GetProperty("Items", BindingFlags.Instance | BindingFlags.Public);
+				if (slotsProp != null)
+					slots = slotsProp.GetValue(potionSource) as System.Collections.IEnumerable;
+			}
+
+			if (slots == null)
+				return list;
+
+			foreach (object slot in slots)
+			{
+				if (slot == null)
+					continue;
+
+				// Slot might be the PotionModel directly, or a slot wrapper with a Potion/Model property
+				object potionModel = slot;
+				var slotType = slot.GetType();
+
+				// Check if this is a wrapper by looking for Id property — PotionModel should have it
+				var idProp = slotType.GetProperty("Id", BindingFlags.Instance | BindingFlags.Public);
+				if (idProp == null)
+				{
+					// This is a wrapper — get the inner model
+					var innerProp = slotType.GetProperty("Potion", BindingFlags.Instance | BindingFlags.Public)
+						?? slotType.GetProperty("Model", BindingFlags.Instance | BindingFlags.Public);
+					if (innerProp != null)
+						potionModel = innerProp.GetValue(slot);
+				}
+
+				if (potionModel == null)
+					continue;
+
+				var info = PotionModelToInfo(potionModel);
+				if (info.Id != "unknown")
+					list.Add(info);
+			}
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log("ReadCurrentPotions error: " + ex.Message);
+		}
+		return list;
+	}
+
+	private static PotionInfo PotionModelToInfo(object potionModel)
+	{
+		var info = new PotionInfo { Id = "unknown", Name = "unknown", Rarity = "unknown" };
+		try
+		{
+			var modelType = potionModel.GetType();
+
+			// Id — ModelId with .Entry property
+			var idProp = modelType.GetProperty("Id", BindingFlags.Instance | BindingFlags.Public);
+			if (idProp != null)
+			{
+				object idObj = idProp.GetValue(potionModel);
+				if (idObj != null)
+				{
+					var entryProp = idObj.GetType().GetProperty("Entry", BindingFlags.Instance | BindingFlags.Public);
+					if (entryProp != null)
+						info.Id = entryProp.GetValue(idObj) as string ?? "unknown";
+				}
+			}
+
+			// Name — Title property (may be LocalizedString or string)
+			var titleProp = modelType.GetProperty("Title", BindingFlags.Instance | BindingFlags.Public);
+			if (titleProp != null)
+			{
+				object titleObj = titleProp.GetValue(potionModel);
+				info.Name = titleObj?.ToString() ?? info.Id;
+			}
+			else
+			{
+				info.Name = info.Id;
+			}
+
+			// Rarity
+			var rarityProp = modelType.GetProperty("Rarity", BindingFlags.Instance | BindingFlags.Public);
+			if (rarityProp != null)
+			{
+				object rarityObj = rarityProp.GetValue(potionModel);
+				info.Rarity = rarityObj?.ToString() ?? "unknown";
+			}
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log("PotionModelToInfo error: " + ex.Message);
+		}
+		return info;
 	}
 
 	private static RelicInfo RelicModelToInfo(RelicModel relic)

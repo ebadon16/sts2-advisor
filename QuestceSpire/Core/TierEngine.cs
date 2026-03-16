@@ -10,15 +10,18 @@ public class TierEngine
 	private readonly Dictionary<string, CharacterCardTiers> _cardTiers = new Dictionary<string, CharacterCardTiers>();
 
 	private readonly Dictionary<string, RelicTierFile> _relicTiers = new Dictionary<string, RelicTierFile>();
+	private readonly Dictionary<string, PotionTierFile> _potionTiers = new Dictionary<string, PotionTierFile>();
 
 	// Pre-indexed lookups: character -> normalizedId -> entry
 	private readonly Dictionary<string, Dictionary<string, CardTierEntry>> _cardIndex = new Dictionary<string, Dictionary<string, CardTierEntry>>();
 	private readonly Dictionary<string, Dictionary<string, RelicTierEntry>> _relicIndex = new Dictionary<string, Dictionary<string, RelicTierEntry>>();
+	private readonly Dictionary<string, Dictionary<string, PotionTierEntry>> _potionIndex = new Dictionary<string, Dictionary<string, PotionTierEntry>>();
 
 	public TierEngine(string dataPath)
 	{
 		LoadCardTiers(Path.Combine(dataPath, "CardTiers"));
 		LoadRelicTiers(Path.Combine(dataPath, "RelicTiers"));
+		LoadPotionTiers(Path.Combine(dataPath, "PotionTiers"));
 	}
 
 	private void LoadCardTiers(string folder)
@@ -97,6 +100,44 @@ public class TierEngine
 		}
 	}
 
+	private void LoadPotionTiers(string folder)
+	{
+		if (!Directory.Exists(folder))
+		{
+			Plugin.Log("Potion tier folder not found: " + folder);
+			return;
+		}
+		string[] files = Directory.GetFiles(folder, "*.json");
+		foreach (string text in files)
+		{
+			try
+			{
+				PotionTierFile potionTierFile = JsonConvert.DeserializeObject<PotionTierFile>(File.ReadAllText(text));
+				if (potionTierFile != null && potionTierFile.Category != null)
+				{
+					string catKey = potionTierFile.Category.ToLowerInvariant();
+					_potionTiers[catKey] = potionTierFile;
+					var index = new Dictionary<string, PotionTierEntry>(StringComparer.OrdinalIgnoreCase);
+					if (potionTierFile.Potions != null)
+					{
+						foreach (var potion in potionTierFile.Potions)
+						{
+							string normId = NormalizeId(potion.Id);
+							if (!string.IsNullOrEmpty(normId))
+								index[normId] = potion;
+						}
+					}
+					_potionIndex[catKey] = index;
+					Plugin.Log($"Loaded {potionTierFile.Potions?.Count ?? 0} potion tiers for {potionTierFile.Category}");
+				}
+			}
+			catch (Exception ex)
+			{
+				Plugin.Log("Failed to load potion tiers from " + text + ": " + ex.Message);
+			}
+		}
+	}
+
 	private static string NormalizeId(string id)
 	{
 		if (string.IsNullOrEmpty(id))
@@ -130,6 +171,16 @@ public class TierEngine
 			return entry;
 		}
 		if (_relicIndex.TryGetValue("common", out var commonIdx) && commonIdx.TryGetValue(normId, out var commonEntry))
+		{
+			return commonEntry;
+		}
+		return null;
+	}
+
+	public PotionTierEntry GetPotionTier(string potionId)
+	{
+		string normId = NormalizeId(potionId);
+		if (_potionIndex.TryGetValue("common", out var commonIdx) && commonIdx.TryGetValue(normId, out var commonEntry))
 		{
 			return commonEntry;
 		}

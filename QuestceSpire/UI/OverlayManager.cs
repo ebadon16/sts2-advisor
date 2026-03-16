@@ -39,6 +39,8 @@ public class OverlayManager
 
 	private List<ScoredRelic> _currentRelics;
 
+	private List<ScoredPotion> _currentPotions;
+
 	private DeckAnalysis _currentDeckAnalysis;
 
 	private string _currentScreen = "IDLE";
@@ -73,6 +75,8 @@ public class OverlayManager
 
 	// Feature 1: Decision history
 	private bool _showHistory;
+
+	private bool _showPotionAdvice;
 
 	// Section toggles (persisted)
 	private bool _showDeckBreakdown = true;
@@ -191,6 +195,7 @@ public class OverlayManager
 		_collapsed = _settings.Collapsed;
 		_showDeckBreakdown = _settings.ShowDeckBreakdown;
 		_showHistory = false; // Always start off — user can enable in settings
+		_showPotionAdvice = _settings.ShowPotionAdvice;
 		LoadGameFonts();
 		LoadGameIcons();
 		InitializeStyles();
@@ -835,7 +840,7 @@ public class OverlayManager
 		DeckAnalysis deckAnalysis = Plugin.DeckAnalyzer.Analyze(gameState.Character, gameState.DeckCards, Plugin.TierEngine, gameState.CurrentRelics);
 		List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 		List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-		ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);
+		ShowShopAdvice(cards, relics, potions: null, deckAnalysis: deckAnalysis, character: gameState.Character);
 	}
 
 	private static bool IsInsideMerchant(Node node)
@@ -880,6 +885,7 @@ public class OverlayManager
 	{
 		_currentCards = cards;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_currentScreen = screenLabel;
@@ -898,6 +904,7 @@ public class OverlayManager
 	{
 		_currentRelics = relics;
 		_currentCards = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_currentScreen = "RELIC REWARD";
@@ -910,6 +917,7 @@ public class OverlayManager
 	{
 		_currentCards = removalCandidates?.Take(5).ToList();
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_currentScreen = "CARD REMOVAL";
@@ -934,6 +942,7 @@ public class OverlayManager
 	{
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "REST SITE";
@@ -948,6 +957,7 @@ public class OverlayManager
 	{
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_currentScreen = "CARD UPGRADE";
@@ -961,6 +971,7 @@ public class OverlayManager
 	{
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "COMBAT";
@@ -1023,6 +1034,7 @@ public class OverlayManager
 	{
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "EVENT";
@@ -1084,6 +1096,7 @@ public class OverlayManager
 		_currentGameState = new GameState { CurrentHP = currentHP, MaxHP = maxHP, Gold = gold, ActNumber = actNumber, Floor = floor };
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = deckAnalysis?.Character ?? _currentCharacter;
 		_currentScreen = "MAP";
@@ -1200,10 +1213,11 @@ public class OverlayManager
 		Rebuild();
 	}
 
-	public void ShowShopAdvice(List<ScoredCard> cards, List<ScoredRelic> relics, DeckAnalysis deckAnalysis = null, string character = null)
+	public void ShowShopAdvice(List<ScoredCard> cards, List<ScoredRelic> relics, List<ScoredPotion> potions = null, DeckAnalysis deckAnalysis = null, string character = null)
 	{
 		_currentCards = cards;
 		_currentRelics = relics;
+		_currentPotions = potions;
 		_currentDeckAnalysis = deckAnalysis;
 		_currentCharacter = character;
 		_shopItemCount = (cards?.Count ?? 0) + (relics?.Count ?? 0);
@@ -1219,6 +1233,7 @@ public class OverlayManager
 	{
 		_currentCards = null;
 		_currentRelics = null;
+		_currentPotions = null;
 		_currentDeckAnalysis = null;
 		_mapAdvice = null;
 		_currentScreen = "MAP / COMBAT";
@@ -1292,6 +1307,7 @@ public class OverlayManager
 		AddSettingsToggle(menuVBox, "Map Advice", _settings.ShowMapAdvice, () => { _settings.ShowMapAdvice = !_settings.ShowMapAdvice; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Combat Advice", _settings.ShowCombatAdvice, () => { _settings.ShowCombatAdvice = !_settings.ShowCombatAdvice; _settings.Save(); RegenerateAdvice(); RefreshSettingsMenu(); });
 		AddSettingsToggle(menuVBox, "Cloud Sync", _settings.CloudSyncEnabled, () => { _settings.CloudSyncEnabled = !_settings.CloudSyncEnabled; _settings.Save(); RefreshSettingsMenu(); });
+		AddSettingsToggle(menuVBox, "Potion Advice", _showPotionAdvice, () => { _showPotionAdvice = !_showPotionAdvice; _settings.ShowPotionAdvice = _showPotionAdvice; _settings.Save(); Rebuild(); RefreshSettingsMenu(); });
 
 		// Opacity section
 		HSeparator sep2 = new HSeparator();
@@ -1753,6 +1769,14 @@ public class OverlayManager
 				skipRLbl.AddThemeColorOverride("font_color", ClrSub);
 				skipRLbl.AddThemeFontSizeOverride("font_size", 13);
 				_content.AddChild(skipRLbl, forceReadableName: false, Node.InternalMode.Disabled);
+			}
+		}
+		if (_currentPotions != null && _currentPotions.Count > 0 && _showPotionAdvice)
+		{
+			AddSectionHeader("POTIONS IN SHOP");
+			foreach (ScoredPotion potion in _currentPotions)
+			{
+				AddPotionEntry(potion);
 			}
 		}
 		if (!hasCards && !hasRelics && _mapAdvice != null && _mapAdvice.Count > 0)
@@ -2365,6 +2389,41 @@ public class OverlayManager
 			}
 		}
 		_content.AddChild(panelContainer, forceReadableName: false, Node.InternalMode.Disabled);
+	}
+
+	private void AddPotionEntry(ScoredPotion potion)
+	{
+		PanelContainer panel = CreateEntryPanel(potion.IsBestPick, potion.FinalGrade);
+		HBoxContainer hbox = new HBoxContainer();
+		hbox.AddThemeConstantOverride("separation", 8);
+		panel.AddChild(hbox, forceReadableName: false, Node.InternalMode.Disabled);
+		CenterContainer badge = CreateBadge(potion.FinalGrade, potion.FinalScore);
+		hbox.AddChild(badge, forceReadableName: false, Node.InternalMode.Disabled);
+		VBoxContainer infoBox = new VBoxContainer();
+		hbox.AddChild(infoBox, forceReadableName: false, Node.InternalMode.Disabled);
+
+		// Name + price
+		Label nameLabel = new Label();
+		string priceTag = potion.Price > 0 ? $" ({potion.Price}g)" : "";
+		nameLabel.Text = $"{potion.Name}{priceTag}";
+		ApplyFont(nameLabel, _fontBold);
+		nameLabel.AddThemeFontSizeOverride("font_size", 15);
+		nameLabel.AddThemeColorOverride("font_color", potion.IsBestPick ? ClrAccent : ClrCream);
+		infoBox.AddChild(nameLabel, forceReadableName: false, Node.InternalMode.Disabled);
+
+		// Notes
+		if (!string.IsNullOrEmpty(potion.Notes))
+		{
+			Label notesLabel = new Label();
+			notesLabel.Text = potion.Notes;
+			ApplyFont(notesLabel, _fontBody);
+			notesLabel.AddThemeFontSizeOverride("font_size", 13);
+			notesLabel.AddThemeColorOverride("font_color", ClrSub);
+			notesLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			infoBox.AddChild(notesLabel, forceReadableName: false, Node.InternalMode.Disabled);
+		}
+
+		_content.AddChild(panel, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	private static List<string> ExtractArchetypeTags(List<string> synergyReasons)
@@ -3551,6 +3610,7 @@ public class OverlayManager
 			string character = Plugin.RunTracker?.CurrentCharacter ?? _currentCharacter ?? "unknown";
 			_currentCards = null;
 			_currentRelics = null;
+			_currentPotions = null;
 			_currentDeckAnalysis = null;
 			_currentScreen = outcome == RunOutcome.Win ? "RUN WON!" : "RUN LOST";
 			_mapAdvice = null;

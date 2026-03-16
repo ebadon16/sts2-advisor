@@ -35,4 +35,8 @@ public class GameState
 	public List<CardInfo> DiscardPile { get; set; } = new List<CardInfo>();
 
 	public List<CardInfo> HandCards { get; set; } = new List<CardInfo>();
+
+	public List<PotionInfo> ShopPotions { get; set; } = new List<PotionInfo>();
+
+	public List<PotionInfo> CurrentPotions { get; set; } = new List<PotionInfo>();
 }

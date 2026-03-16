@@ -178,6 +178,31 @@ public class RunTracker
 		}
 	}
 
+	public void RecordShopPurchase(string itemType, string itemId)
+	{
+		if (itemId == null) return;
+		// Map item type to the corresponding DecisionEventType
+		DecisionEventType targetType;
+		switch (itemType)
+		{
+			case "card": targetType = DecisionEventType.ShopCard; break;
+			case "relic": targetType = DecisionEventType.ShopRelic; break;
+			case "potion": targetType = DecisionEventType.ShopPotion; break;
+			default: return;
+		}
+		// Find the most recent decision of the matching type without a chosenId and update it
+		for (int i = _currentEvents.Count - 1; i >= 0; i--)
+		{
+			if (_currentEvents[i].EventType == targetType && _currentEvents[i].ChosenId == null)
+			{
+				_currentEvents[i].ChosenId = itemId;
+				Plugin.Log($"Shop purchase recorded: {itemType} = {itemId}");
+				return;
+			}
+		}
+		Plugin.Log($"Shop purchase: no matching {itemType} decision found for {itemId}");
+	}
+
 	public void EndRun(RunOutcome outcome, int finalFloor, int finalAct)
 	{
 		if (_currentRun == null)

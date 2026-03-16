@@ -315,15 +315,90 @@ public static class GamePatches
 				Plugin.RunTracker?.RecordArchetypeSnapshot(gameState.Floor, deckAnalysis);
 				List<ScoredCard> cards = Plugin.SynergyScorer.ScoreOfferings(gameState.ShopCards, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
 				List<ScoredRelic> relics = Plugin.SynergyScorer.ScoreRelicOfferings(gameState.ShopRelics, deckAnalysis, gameState.Character, gameState.ActNumber, gameState.Floor, Plugin.TierEngine, Plugin.AdaptiveScorer);
-				Plugin.Overlay?.ShowShopAdvice(cards, relics, deckAnalysis, gameState.Character);
-				// Shop decisions not recorded — no purchase hook means chosenId is always null,
-				// and mixed card+relic offered IDs corrupt card stats. Shop tracking deferred
-				// until proper purchase event hooking is implemented.
+				List<ScoredPotion> potions = Plugin.SynergyScorer.ScorePotionOfferings(gameState.ShopPotions, deckAnalysis, gameState.Character, Plugin.TierEngine);
+				Plugin.Overlay?.ShowShopAdvice(cards, relics, potions, deckAnalysis, gameState.Character);
+				// Record shop decisions for cards, relics, and potions separately
+				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopCard, gameState.ShopCards.ConvertAll((CardInfo c) => c.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopRelic, gameState.ShopRelics.ConvertAll((RelicInfo r) => r.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				Plugin.RunTracker?.RecordDecision(DecisionEventType.ShopPotion, gameState.ShopPotions.ConvertAll((PotionInfo p) => p.Id), null, gameState.DeckCards.ConvertAll((CardInfo c) => c.Id), gameState.CurrentRelics.ConvertAll((RelicInfo r) => r.Id), gameState.CurrentHP, gameState.MaxHP, gameState.Gold, gameState.ActNumber, gameState.Floor);
+				// Shop purchase hooks (OnShopCardPurchased etc.) will update chosenId when player buys.
 			}
 		}
 		catch (Exception value)
 		{
 			Plugin.Log($"OnShopOpened error: {value}");
+		}
+	}
+
+	public static void OnShopCardPurchased(object __instance)
+	{
+		try
+		{
+			string cardId = null;
+			if (__instance != null)
+			{
+				var cardProp = __instance.GetType().GetProperty("Card") ?? __instance.GetType().GetProperty("CardModel");
+				var cardObj = cardProp?.GetValue(__instance);
+				if (cardObj != null)
+				{
+					var idObj = cardObj.GetType().GetProperty("Id")?.GetValue(cardObj);
+					cardId = idObj?.GetType().GetProperty("Entry")?.GetValue(idObj)?.ToString();
+				}
+			}
+			Plugin.Log("Shop card purchased: " + (cardId ?? "(unknown)"));
+			Plugin.RunTracker?.RecordShopPurchase("card", cardId);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"OnShopCardPurchased error: {ex}");
+		}
+	}
+
+	public static void OnShopRelicPurchased(object __instance)
+	{
+		try
+		{
+			string relicId = null;
+			if (__instance != null)
+			{
+				var relicProp = __instance.GetType().GetProperty("Relic") ?? __instance.GetType().GetProperty("Model");
+				var relicObj = relicProp?.GetValue(__instance);
+				if (relicObj != null)
+				{
+					var idObj = relicObj.GetType().GetProperty("Id")?.GetValue(relicObj);
+					relicId = idObj?.GetType().GetProperty("Entry")?.GetValue(idObj)?.ToString();
+				}
+			}
+			Plugin.Log("Shop relic purchased: " + (relicId ?? "(unknown)"));
+			Plugin.RunTracker?.RecordShopPurchase("relic", relicId);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"OnShopRelicPurchased error: {ex}");
+		}
+	}
+
+	public static void OnShopPotionPurchased(object __instance)
+	{
+		try
+		{
+			string potionId = null;
+			if (__instance != null)
+			{
+				var potionProp = __instance.GetType().GetProperty("Potion") ?? __instance.GetType().GetProperty("Model");
+				var potionObj = potionProp?.GetValue(__instance);
+				if (potionObj != null)
+				{
+					var idObj = potionObj.GetType().GetProperty("Id")?.GetValue(potionObj);
+					potionId = idObj?.GetType().GetProperty("Entry")?.GetValue(idObj)?.ToString();
+				}
+			}
+			Plugin.Log("Shop potion purchased: " + (potionId ?? "(unknown)"));
+			Plugin.RunTracker?.RecordShopPurchase("potion", potionId);
+		}
+		catch (Exception ex)
+		{
+			Plugin.Log($"OnShopPotionPurchased error: {ex}");
 		}
 	}
 
@@ -682,6 +757,34 @@ public static class GamePatches
 		PatchMethod(harmony, typeof(NCardRewardSelectionScreen), "RefreshOptions", nameof(OnCardRewardRefreshed));
 		PatchMethod(harmony, typeof(NChooseARelicSelection), "ShowScreen", nameof(OnRelicRewardOpened));
 		PatchMethod(harmony, typeof(NMerchantInventory), "Open", nameof(OnShopOpened));
+		// Shop purchase hooks — patch OnTryPurchase on each merchant entry type
+		try
+		{
+			var merchantCardEntry = AccessTools.TypeByName("MegaCrit.Sts2.Core.Entities.Merchant.MerchantCardEntry");
+			if (merchantCardEntry != null)
+				PatchMethod(harmony, merchantCardEntry, "OnTryPurchase", nameof(OnShopCardPurchased));
+			else
+				Plugin.Log("WARN: MerchantCardEntry not found — shop card purchase tracking unavailable");
+		}
+		catch (Exception ex) { Plugin.Log($"WARN: MerchantCardEntry patch failed: {ex.Message}"); }
+		try
+		{
+			var merchantRelicEntry = AccessTools.TypeByName("MegaCrit.Sts2.Core.Entities.Merchant.MerchantRelicEntry");
+			if (merchantRelicEntry != null)
+				PatchMethod(harmony, merchantRelicEntry, "OnTryPurchase", nameof(OnShopRelicPurchased));
+			else
+				Plugin.Log("WARN: MerchantRelicEntry not found — shop relic purchase tracking unavailable");
+		}
+		catch (Exception ex) { Plugin.Log($"WARN: MerchantRelicEntry patch failed: {ex.Message}"); }
+		try
+		{
+			var merchantPotionEntry = AccessTools.TypeByName("MegaCrit.Sts2.Core.Entities.Merchant.MerchantPotionEntry");
+			if (merchantPotionEntry != null)
+				PatchMethod(harmony, merchantPotionEntry, "OnTryPurchase", nameof(OnShopPotionPurchased));
+			else
+				Plugin.Log("WARN: MerchantPotionEntry not found — shop potion purchase tracking unavailable");
+		}
+		catch (Exception ex) { Plugin.Log($"WARN: MerchantPotionEntry patch failed: {ex.Message}"); }
 		// NMerchantCardRemoval.FillSlot fires on shop load, not user click — skip it
 		// Card removal advice shown as part of shop screen instead
 		PatchMethod(harmony, typeof(NMapScreen), "Open", nameof(OnMapScreenEntered));

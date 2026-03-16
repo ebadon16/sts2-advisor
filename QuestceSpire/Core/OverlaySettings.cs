@@ -22,11 +22,12 @@ public class OverlaySettings
 	public bool ShowEventAdvice { get; set; } = true;
 	public bool ShowMapAdvice { get; set; } = true;
 	public bool ShowCombatAdvice { get; set; } = true;
-	public bool CloudSyncEnabled { get; set; } = false;
+	public bool ShowPotionAdvice { get; set; } = true;
+	public bool CloudSyncEnabled { get; set; } = true;
 
 	// Bump this when defaults change to force migration on old saved files
 	public int SettingsVersion { get; set; } = 0;
-	private const int CurrentVersion = 4;
+	private const int CurrentVersion = 5;
 
 	private static string GetSettingsPath()
 	{
@@ -54,6 +55,9 @@ public class OverlaySettings
 						// v3 → v4: CloudSyncEnabled disabled (no server deployed yet)
 						if (settings.SettingsVersion < 4)
 							settings.CloudSyncEnabled = false;
+						// v4 → v5: CloudSyncEnabled re-enabled (backend deployed)
+						if (settings.SettingsVersion < 5)
+							settings.CloudSyncEnabled = true;
 						settings.SettingsVersion = CurrentVersion;
 						settings.Save();
 					}

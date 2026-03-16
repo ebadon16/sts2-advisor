@@ -612,4 +612,95 @@ public class SynergyScorer
 			ScoreSource = scoreSource
 		};
 	}
+
+	public List<ScoredPotion> ScorePotionOfferings(List<PotionInfo> offerings, DeckAnalysis deckAnalysis, string character, TierEngine tierEngine)
+	{
+		List<ScoredPotion> list = new List<ScoredPotion>();
+		foreach (PotionInfo offering in offerings)
+		{
+			PotionTierEntry potionTier = tierEngine.GetPotionTier(offering.Id);
+			TierGrade tierGrade;
+			float baseScore;
+			string scoreSource;
+			List<string> synReasons = new List<string>();
+
+			if (potionTier != null)
+			{
+				tierGrade = TierEngine.ParseGrade(potionTier.BaseTier);
+				baseScore = (float)tierGrade;
+				scoreSource = "static";
+			}
+			else
+			{
+				// Default based on rarity
+				string rarity = offering.Rarity?.ToLowerInvariant() ?? "";
+				if (rarity == "rare")
+				{
+					tierGrade = TierGrade.B;
+					baseScore = (float)TierGrade.B;
+				}
+				else if (rarity == "uncommon")
+				{
+					tierGrade = TierGrade.C;
+					baseScore = (float)TierGrade.C;
+				}
+				else
+				{
+					// Common or unknown — C-
+					tierGrade = TierGrade.C;
+					baseScore = (float)TierGrade.C - 0.3f;
+				}
+				scoreSource = "default";
+			}
+
+			float num = baseScore;
+
+			// Simple synergy check: if potion has synergy tags matching deck archetypes, small bonus
+			List<string> potionSynTags = potionTier?.Synergies ?? new List<string>();
+			foreach (ArchetypeMatch arch in deckAnalysis.DetectedArchetypes)
+			{
+				foreach (string tag in potionSynTags)
+				{
+					if (arch.Archetype.CoreTags.Contains(tag) || arch.Archetype.SupportTags.Contains(tag) || arch.Archetype.Id == tag)
+					{
+						num += 0.3f;
+						synReasons.Add($"+0.3 synergy with {arch.Archetype.DisplayName}");
+						goto donesynergy;
+					}
+				}
+			}
+			donesynergy:
+
+			num = Math.Max(0f, Math.Min(6.0f, num));
+
+			list.Add(new ScoredPotion
+			{
+				Id = offering.Id,
+				Name = offering.Name ?? offering.Id,
+				Rarity = offering.Rarity,
+				BaseTier = tierGrade,
+				FinalScore = num,
+				FinalGrade = TierEngine.ScoreToGrade(num),
+				IsBestPick = false,
+				SynergyReasons = synReasons,
+				AntiSynergyReasons = new List<string>(),
+				Notes = potionTier?.Notes ?? "",
+				Price = offering.Price,
+				ScoreSource = scoreSource
+			});
+		}
+
+		// Mark best pick without reordering — preserve game's order for badge alignment
+		if (list.Count > 0)
+		{
+			int bestIdx = 0;
+			for (int i = 1; i < list.Count; i++)
+			{
+				if (list[i].FinalScore > list[bestIdx].FinalScore)
+					bestIdx = i;
+			}
+			list[bestIdx].IsBestPick = true;
+		}
+		return list;
+	}
 }

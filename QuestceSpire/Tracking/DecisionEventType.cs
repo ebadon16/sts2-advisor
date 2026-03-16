@@ -9,5 +9,6 @@ public enum DecisionEventType
 	CardRemove,
 	CardTransform,
 	ShopCard,
-	ShopRelic
+	ShopRelic,
+	ShopPotion
 }

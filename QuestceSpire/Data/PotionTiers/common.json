@@ -1,0 +1,365 @@
+{
+  "category": "common",
+  "potions": [
+    {
+      "id": "Attack Potion",
+      "baseTier": "C",
+      "synergies": ["strength"],
+      "notes": "Common. Adds random attack to hand. Inconsistent value"
+    },
+    {
+      "id": "Block Potion",
+      "baseTier": "B",
+      "synergies": ["block", "dexterity"],
+      "notes": "Common. Instant block, solid defensive option"
+    },
+    {
+      "id": "Colorless Potion",
+      "baseTier": "C",
+      "synergies": [],
+      "notes": "Common. Random colorless card to hand. Too inconsistent"
+    },
+    {
+      "id": "Dexterity Potion",
+      "baseTier": "A",
+      "synergies": ["dexterity", "block"],
+      "notes": "Common. Permanent +2 dexterity. Strong scaling for block-heavy decks"
+    },
+    {
+      "id": "Energy Potion",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Common. +2 energy this turn. Enables big turns"
+    },
+    {
+      "id": "Explosive Ampoule",
+      "baseTier": "A",
+      "synergies": [],
+      "notes": "Common. AoE damage to all enemies. Great for hallway fights"
+    },
+    {
+      "id": "Fire Potion",
+      "baseTier": "B",
+      "synergies": ["strength"],
+      "notes": "Common. Direct damage to one enemy. Simple and effective"
+    },
+    {
+      "id": "Flex Potion",
+      "baseTier": "C",
+      "synergies": ["strength"],
+      "notes": "Common. Temporary strength, lost at end of turn. Weak unless comboed"
+    },
+    {
+      "id": "Power Potion",
+      "baseTier": "B",
+      "synergies": ["scaling"],
+      "notes": "Common. Random power to hand. Can highroll strong powers"
+    },
+    {
+      "id": "Speed Potion",
+      "baseTier": "B",
+      "synergies": ["dexterity", "block"],
+      "notes": "Common. Temporary dexterity. Good for surviving key turns"
+    },
+    {
+      "id": "Strength Potion",
+      "baseTier": "A",
+      "synergies": ["strength"],
+      "notes": "Common. Permanent +2 strength. Excellent scaling"
+    },
+    {
+      "id": "Swift Potion",
+      "baseTier": "B",
+      "synergies": ["draw"],
+      "notes": "Common. Draw 3 cards. Good for finding key cards"
+    },
+    {
+      "id": "Vulnerable Potion",
+      "baseTier": "B",
+      "synergies": ["strength"],
+      "notes": "Common. Apply vulnerable to enemy. Amplifies damage output"
+    },
+    {
+      "id": "Weak Potion",
+      "baseTier": "C",
+      "synergies": ["block"],
+      "notes": "Common. Apply weak to enemy. Defensive but low impact"
+    },
+    {
+      "id": "Blessing Of The Forge",
+      "baseTier": "B",
+      "synergies": ["strength"],
+      "notes": "Uncommon. Upgrade a random card in hand during combat"
+    },
+    {
+      "id": "Clarity",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. Remove debuffs from target player"
+    },
+    {
+      "id": "Cure All",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. Heal target player. Solid sustain option"
+    },
+    {
+      "id": "Duplicator",
+      "baseTier": "A",
+      "synergies": ["scaling"],
+      "notes": "Uncommon. Duplicate a card in hand. Incredibly strong with key cards"
+    },
+    {
+      "id": "Fortifier",
+      "baseTier": "B",
+      "synergies": ["block"],
+      "notes": "Uncommon. Gain block that persists between turns"
+    },
+    {
+      "id": "Fysh Oil",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. Gain temp HP. Good buffer for tough fights"
+    },
+    {
+      "id": "Gamblers Brew",
+      "baseTier": "D",
+      "synergies": ["draw"],
+      "notes": "Uncommon. Discard hand and redraw. Very risky, rarely worth it"
+    },
+    {
+      "id": "Heart Of Iron",
+      "baseTier": "B",
+      "synergies": ["block"],
+      "notes": "Uncommon. Gain metallicize (block each turn). Good for long fights"
+    },
+    {
+      "id": "Liquid Bronze",
+      "baseTier": "B",
+      "synergies": ["block"],
+      "notes": "Uncommon. Gain thorns. Punishes multi-hit enemies"
+    },
+    {
+      "id": "Potion Of Binding",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. AoE debuff to all enemies. Good crowd control"
+    },
+    {
+      "id": "Radiant Tincture",
+      "baseTier": "B",
+      "synergies": ["scaling"],
+      "notes": "Uncommon. Useful scaling buff for the combat"
+    },
+    {
+      "id": "Regen Potion",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. Regenerate HP over several turns. Good for boss fights"
+    },
+    {
+      "id": "Stable Serum",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Uncommon. Artifact charges protect from debuffs"
+    },
+    {
+      "id": "Touch Of Insanity",
+      "baseTier": "D",
+      "synergies": ["exhaust"],
+      "notes": "Uncommon. Add random cards, chaotic effect. Unreliable"
+    },
+    {
+      "id": "Beetle Juice",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Rare. Strong single-target damage or debuff to enemy"
+    },
+    {
+      "id": "Bottled Potential",
+      "baseTier": "A",
+      "synergies": ["scaling"],
+      "notes": "Rare. Strong buff to target player. Great for setup turns"
+    },
+    {
+      "id": "Distilled Chaos",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Rare. Play random cards from draw pile. High variance but fun"
+    },
+    {
+      "id": "Droplet Of Precognition",
+      "baseTier": "A",
+      "synergies": ["draw"],
+      "notes": "Rare. Scry and draw. Excellent card selection"
+    },
+    {
+      "id": "Entropic Brew",
+      "baseTier": "S",
+      "synergies": [],
+      "notes": "Rare. Fills all empty potion slots. Incredible value, usable any time"
+    },
+    {
+      "id": "Fairy In A Bottle",
+      "baseTier": "S",
+      "synergies": [],
+      "notes": "Rare. Auto-revive on death. Best defensive potion in the game"
+    },
+    {
+      "id": "Fruit Juice",
+      "baseTier": "S",
+      "synergies": [],
+      "notes": "Rare. Permanent max HP increase. Always valuable, usable any time"
+    },
+    {
+      "id": "Gigantification Potion",
+      "baseTier": "A",
+      "synergies": ["strength"],
+      "notes": "Rare. Massive strength buff. Devastating with multi-hit attacks"
+    },
+    {
+      "id": "Liquid Memories",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Rare. Return a card from discard to hand. Good for key card recycling"
+    },
+    {
+      "id": "Lucky Tonic",
+      "baseTier": "A",
+      "synergies": [],
+      "notes": "Rare. Strong luck-based buff. High upside"
+    },
+    {
+      "id": "Mazaleths Gift",
+      "baseTier": "A",
+      "synergies": [],
+      "notes": "Rare. Powerful gift effect. Strong in most situations"
+    },
+    {
+      "id": "Orobics Acid",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Rare. Remove all enemy buffs. Devastating vs scaling enemies"
+    },
+    {
+      "id": "Shackling Potion",
+      "baseTier": "A",
+      "synergies": [],
+      "notes": "Rare. AoE constrain on all enemies. Powerful crowd control"
+    },
+    {
+      "id": "Ship In A Bottle",
+      "baseTier": "A",
+      "synergies": ["draw"],
+      "notes": "Rare. Strong draw/setup potion. Excellent for key turns"
+    },
+    {
+      "id": "Snecko Oil",
+      "baseTier": "A",
+      "synergies": ["draw"],
+      "notes": "Rare. Draw 5 cards and randomize costs. Huge draw with upside"
+    },
+    {
+      "id": "Blood Potion",
+      "baseTier": "B",
+      "synergies": ["self_damage"],
+      "notes": "Ironclad Common. Heal HP. Synergizes with self-damage playstyle"
+    },
+    {
+      "id": "Ashwater",
+      "baseTier": "B",
+      "synergies": ["exhaust", "strength"],
+      "notes": "Ironclad Uncommon. Combat buff tied to Ironclad mechanics"
+    },
+    {
+      "id": "Soldiers Stew",
+      "baseTier": "A",
+      "synergies": ["exhaust", "strength"],
+      "notes": "Ironclad Rare. Powerful Ironclad-specific effect"
+    },
+    {
+      "id": "Poison Potion",
+      "baseTier": "B",
+      "synergies": ["poison"],
+      "notes": "Silent Common. Apply poison to enemy. Core for poison builds"
+    },
+    {
+      "id": "Cunning Potion",
+      "baseTier": "B",
+      "synergies": ["shiv", "draw"],
+      "notes": "Silent Uncommon. Adds shivs or similar to hand"
+    },
+    {
+      "id": "Ghost In A Jar",
+      "baseTier": "A",
+      "synergies": [],
+      "notes": "Silent Rare. Intangible effect. Incredibly strong defensive option"
+    },
+    {
+      "id": "Focus Potion",
+      "baseTier": "A",
+      "synergies": ["focus", "orb"],
+      "notes": "Defect Common. Permanent focus. Core stat for orb builds"
+    },
+    {
+      "id": "Essence Of Darkness",
+      "baseTier": "A",
+      "synergies": ["orb"],
+      "notes": "Defect Rare. Channel dark orbs. Strong scaling for orb decks"
+    },
+    {
+      "id": "Potion Of Capacity",
+      "baseTier": "B",
+      "synergies": ["orb"],
+      "notes": "Defect Uncommon. Increase orb slots. Good for orb-heavy decks"
+    },
+    {
+      "id": "Star Potion",
+      "baseTier": "B",
+      "synergies": ["stellar"],
+      "notes": "Regent Common. Stellar-themed combat buff"
+    },
+    {
+      "id": "Kings Courage",
+      "baseTier": "B",
+      "synergies": ["authority", "scaling"],
+      "notes": "Regent Uncommon. Authority/scaling buff for Regent"
+    },
+    {
+      "id": "Cosmic Concoction",
+      "baseTier": "A",
+      "synergies": ["stellar", "scaling"],
+      "notes": "Regent Rare. Powerful cosmic effect for Regent"
+    },
+    {
+      "id": "Potion Of Doom",
+      "baseTier": "B",
+      "synergies": ["soul"],
+      "notes": "Necrobinder Common. Apply doom/death effect to enemy"
+    },
+    {
+      "id": "Bone Brew",
+      "baseTier": "B",
+      "synergies": ["summon", "soul"],
+      "notes": "Necrobinder Uncommon. Summon or soul-related effect"
+    },
+    {
+      "id": "Pot Of Ghouls",
+      "baseTier": "A",
+      "synergies": ["summon"],
+      "notes": "Necrobinder Rare. Summon undead minions. Strong board presence"
+    },
+    {
+      "id": "Foul Potion",
+      "baseTier": "D",
+      "synergies": [],
+      "notes": "Event. Harmful potion from events. Rarely desirable"
+    },
+    {
+      "id": "Glowwater Potion",
+      "baseTier": "B",
+      "synergies": [],
+      "notes": "Event. Combat-only event potion. Situationally useful"
+    }
+  ]
+}
