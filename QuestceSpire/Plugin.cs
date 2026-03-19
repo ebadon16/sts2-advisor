@@ -127,12 +127,20 @@ public static class Plugin
 		_harmony = new Harmony(HarmonyId);
 		_harmony.PatchAll(typeof(GamePatches).Assembly);
 		GamePatches.ApplyManualPatches(_harmony);
-		MethodInfo methodInfo = typeof(UserDataPathProvider).GetProperty("IsRunningModded", BindingFlags.Static | BindingFlags.Public)?.GetGetMethod();
+		// Force main profile: set IsRunningModded = false directly (v0.99.1 added a setter)
+		var isModdedProp = typeof(UserDataPathProvider).GetProperty("IsRunningModded", BindingFlags.Static | BindingFlags.Public);
+		if (isModdedProp?.GetSetMethod() != null)
+		{
+			isModdedProp.SetValue(null, false);
+			Log("Set IsRunningModded = false directly — using main profile.");
+		}
+		// Also patch the getter so any future reads return false
+		MethodInfo methodInfo = isModdedProp?.GetGetMethod();
 		if (methodInfo != null)
 		{
 			MethodInfo method = typeof(GamePatches).GetMethod("ForceNotModded", BindingFlags.Static | BindingFlags.Public);
 			_harmony.Patch(methodInfo, null, new HarmonyMethod(method));
-			Log("Patched IsRunningModded to false — using main profile.");
+			Log("Patched IsRunningModded getter to false.");
 		}
 		Log("Harmony patches applied.");
 		// Fire-and-forget version check
