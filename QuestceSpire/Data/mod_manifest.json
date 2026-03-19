@@ -2,8 +2,10 @@
   "id": "questcespire",
   "name": "Qu'est-ce Spire?",
   "version": "0.8.0",
-  "description": "Real-time card, relic, and potion tier advisor with synergy analysis",
   "author": "ebadon16",
-  "pck_name": "QuestceSpire",
-  "dll_name": "QuestceSpire"
+  "description": "Real-time card, relic, and potion tier advisor with synergy analysis",
+  "hasPck": true,
+  "hasDll": true,
+  "affectsGameplay": false,
+  "dependencies": []
 }
